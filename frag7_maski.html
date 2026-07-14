@@ -1,0 +1,57 @@
+<h4 id="maski">Maski plików, numery Message Viewer, timestampy Perun, ścieżki MinIO</h4>
+<p>Dane referencyjne do ręcznej obsługi plików (źródło: QuickRef / Procedura skrócona v4.1, HLBP CCCt 4.2).</p>
+
+<h5 id="maski-iva">Maski pliku IVA (upload ręczny)</h5>
+<table class="ref">
+  <thead><tr><th>Iteracja</th><th>Maska pliku</th></tr></thead>
+  <tbody>
+    <tr><td>IDCC(b)</td><td><code>rrrrmmdd-FID2-710-v*-10XPL-TSO------P-to-10V1001C--00264T.xml</code></td></tr>
+    <tr><td>IDCC(c)</td><td><code>rrrrmmdd-FID3C-710-v*-10XPL-TSO------P-to-10V1001C--00264T.xml</code></td></tr>
+    <tr><td>IDCC(d)</td><td><code>rrrrmmdd-FID3-710-v*-10XPL-TSO------P-to-10V1001C--00264T.xml</code></td></tr>
+    <tr><td>Paczka wejściowa (ZIP)</td><td><code>PSE_RRRRMMDD_IDx_v*_input_validation_IDx.zip</code></td></tr>
+  </tbody>
+</table>
+
+<h5 id="maski-mv">Message Viewer CCCt — numery Message Definition</h5>
+<table class="ref">
+  <thead><tr><th>Numer</th><th>Zastosowanie</th></tr></thead>
+  <tbody>
+    <tr><td><strong>310</strong></td><td>Upload IVA — Individual CB Validation (weryfikacja po Manual Upload: Sender=PSE, status Processed)</td></tr>
+    <tr><td><strong>710</strong></td><td>Weryfikacja IVA — Individual CB Validation</td></tr>
+    <tr><td><strong>610, 620, 632, 645, 657, 659, 665, 701</strong></td><td>Składowe paczki Perun (Merged GLSK, CGM, RefProg, Initial FB Domain, Real GLSK, DQC, CB, Vertices) — pobranie brakujących składowych przy czarnym agregacie</td></tr>
+    <tr><td><strong>665 / 620 / 701</strong></td><td>Przy błędzie „za mały plik": 665=CB, 620=CGM, 701=Vertices</td></tr>
+  </tbody>
+</table>
+
+<h5 id="maski-perun">Perun4V — timestampy (F / S / R / Total)</h5>
+<table class="ref">
+  <thead><tr><th>Iteracja</th><th>F / S / R / Total</th><th>Zakres TS</th><th>Godziny</th></tr></thead>
+  <tbody>
+    <tr><td>IDCC(b)</td><td><strong>0 / 24 / 0 / 25</strong></td><td>24</td><td>00:30–23:30</td></tr>
+    <tr><td>IDCC(c)</td><td><strong>0 / 18 / 0 / 19</strong></td><td>18</td><td>06:30–23:30</td></tr>
+    <tr><td>IDCC(d)</td><td><strong>0 / 12 / 0 / 13</strong></td><td>12</td><td>12:30–23:30</td></tr>
+    <tr><td>IDCC(a)</td><td>n/a (brak Perun)</td><td>24</td><td>—</td></tr>
+  </tbody>
+</table>
+<p class="note">Uwaga na przesunięcie osi czasu: <strong>01:30 w Perun4V = godzina 2 w CCCt</strong>.</p>
+
+<h5 id="maski-minio">MinIO — kluczowe ścieżki</h5>
+<table class="ref">
+  <thead><tr><th>Ścieżka</th><th>Zawartość</th></tr></thead>
+  <tbody>
+    <tr><td><code>perun/in/yyyy-mm-dd</code></td><td>Paczka wejściowa do walidacji (ZIP)</td></tr>
+    <tr><td><code>perun/ID_FBCC/out/yyyy-mm-dd</code></td><td>IVA i wyniki z Perun4V (FIDx-710)</td></tr>
+    <tr><td><code>cca/ID_FBCC/out/BD</code></td><td>IVA BACKUP z CCA (oraz FID1-928 dla IDCC(a))</td></tr>
+  </tbody>
+</table>
+
+<h5 id="maski-url">Adresy narzędzi</h5>
+<table class="ref">
+  <thead><tr><th>Narzędzie</th><th>Adres</th><th>Uwagi</th></tr></thead>
+  <tbody>
+    <tr><td>CCM</td><td><code>https://ccm.spsm.pse.pl</code></td><td>„IDCC FB Pulpit dyspozytorski"</td></tr>
+    <tr><td>Perun4V</td><td><code>https://lccv.tscnet.eu</code></td><td>Local Login + akceptacja Policy; user <code>sftp@pse.pl</code>, typ ID CCCt</td></tr>
+    <tr><td>MinIO</td><td><code>https://minio-gui.pse.pl</code></td><td>buckety <code>perun/</code>, <code>cca/</code></td></tr>
+    <tr><td>Core CC Tool</td><td><code>amprion-core-idcc-prod.fb.unicornapps.online</code></td><td>Message Viewer / Manual Upload</td></tr>
+  </tbody>
+</table>

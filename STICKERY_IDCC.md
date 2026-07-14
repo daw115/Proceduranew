@@ -1,113 +1,71 @@
-# Stickery IDCC — wkład (karty skrócone z hiperłączami)
+# STICKERY IDCC — szybkie kroki działania
 
-Hiperłącza prowadzą do kotwic dokumentu `PROCEDURA_IDCC_TSO_v6.html`. Format: tytuł, skrót 1–3 zdania, linki.
+Każdy krok linkuje do pełnej procedury `PROCEDURA_IDCC_TSO_v7.html`.
 
-## 📘 Proces IDCC
+## 🟢 Start dyżuru
 
-Kroki istotne dla PSE: IDCC(a) i wspólnie (b)–(d), pliki FIDx, fallbacki.
+1. [Zaloguj się do CCM, otwórz pulpit IDCC i ustaw dobę](PROCEDURA_IDCC_TSO_v7.html#ccm-c1)
+1. [Sprawdź bramki czasowe bieżącej iteracji](PROCEDURA_IDCC_TSO_v7.html#hlbp-zbiorcza)
+1. [Przejdź checklistę przed iteracją](PROCEDURA_IDCC_TSO_v7.html#aneks)
 
-- **Pełna instrukcja:** [PROCEDURA_IDCC_TSO_v6.html#sec-proces](PROCEDURA_IDCC_TSO_v6.html#sec-proces)
-- Powiązane — katalog plików: [PROCEDURA_IDCC_TSO_v6.html#sec-katalog](PROCEDURA_IDCC_TSO_v6.html#sec-katalog)
-- Powiązane — statusy: [PROCEDURA_IDCC_TSO_v6.html#sec-legenda](PROCEDURA_IDCC_TSO_v6.html#sec-legenda)
+## 👁 Monitorowanie IDCC(b)/(c)/(d)
 
-## 📧 Szablony maili
+1. [Wykonaj 6 kroków przebiegu nominalnego](PROCEDURA_IDCC_TSO_v7.html#hd-6krokow)
+1. [Perun4V: sprawdź timestampy (0 Failed)](PROCEDURA_IDCC_TSO_v7.html#maski-perun)
+1. [Oceń raport CCA z kdm6 (TS + zasadność IVA)](PROCEDURA_IDCC_TSO_v7.html#hd-6krokow)
+1. [Rozpoznaj status kafelka wg legendy](PROCEDURA_IDCC_TSO_v7.html#sec-legenda)
+1. [Sprawdź opis pliku i stany w katalogu](PROCEDURA_IDCC_TSO_v7.html#sec-katalog)
 
-19 szablonów operacyjnych Core ID (EN) + kiedy użyć; oznaczone granice PSE.
+## 👁 Monitorowanie IDCC(a)
 
-- **Pełna instrukcja:** [PROCEDURA_IDCC_TSO_v6.html#proc-mail](PROCEDURA_IDCC_TSO_v6.html#proc-mail)
+1. [Monitoruj FID1-928: v2 zielona po 13:15 D-1](PROCEDURA_IDCC_TSO_v7.html#hd-a)
+1. [Brak v2 po 14:30 → MinIO cca/… → telefon do CCC](PROCEDURA_IDCC_TSO_v7.html#hd-a)
+1. [Pilnuj AC (FID1-831) z ZP i finalnych NTC (FID1-921)](PROCEDURA_IDCC_TSO_v7.html#aczp)
+1. [Kroki PSE w iteracji (a) wg BPD](PROCEDURA_IDCC_TSO_v7.html#proc-a)
 
-## 🧰 Narzędzia
+## 📤 Wysyłka ręczna i status R
 
-CCM, Core CC Tool, Perun4V, MinIO, ZP, Connector, Kreatory, sFTP, wsparcie.
+1. [Wyślij plik przed CET: PPM → Wyślij](PROCEDURA_IDCC_TSO_v7.html#ccm-c4)
+1. [Wyślij po CET: PPM → Wyślij po CET](PROCEDURA_IDCC_TSO_v7.html#ccm-c5)
+1. [Ustaw / przywróć status ręczny R](PROCEDURA_IDCC_TSO_v7.html#ccm-c5)
+1. [Sprawdź maskę pliku przed wysyłką](PROCEDURA_IDCC_TSO_v7.html#maski-iva)
 
-- **Pełna instrukcja:** [PROCEDURA_IDCC_TSO_v6.html#sec-narzedzia](PROCEDURA_IDCC_TSO_v6.html#sec-narzedzia)
-- Powiązane — procedury: [PROCEDURA_IDCC_TSO_v6.html#sec-procedury](PROCEDURA_IDCC_TSO_v6.html#sec-procedury)
-- Powiązane — ryzyka: [PROCEDURA_IDCC_TSO_v6.html#sec-ryzyka](PROCEDURA_IDCC_TSO_v6.html#sec-ryzyka)
+## ⚠️ Kafelki alarmowe
 
-## 🎨 Legenda statusów
+1. [Czerwony „?" (brak ACK) → Message Viewer CCCt](PROCEDURA_IDCC_TSO_v7.html#R04)
+1. [Czerwony „!" (za mały plik) → procedura B2](PROCEDURA_IDCC_TSO_v7.html#hd-b2)
+1. [Czarny agregat (brak ZIP) → procedura B3](PROCEDURA_IDCC_TSO_v7.html#hd-b3)
+1. [ACK Rejected → odczytaj kod (20/21/30)](PROCEDURA_IDCC_TSO_v7.html#ccm-ack)
+1. [Scenariusze backupowe S.1–S.13](PROCEDURA_IDCC_TSO_v7.html#ccm-scen)
 
-13 kafelków → enum statusu. Kolor + znacznik = sytuacja pliku.
+## 🧯 Walidacja — problemy
 
-- **Pełna instrukcja:** [PROCEDURA_IDCC_TSO_v6.html#sec-legenda](PROCEDURA_IDCC_TSO_v6.html#sec-legenda)
-- Powiązane — czynności w CCM: [PROCEDURA_IDCC_TSO_v6.html#sec-ccm](PROCEDURA_IDCC_TSO_v6.html#sec-ccm)
-- Powiązane — stany plików: [PROCEDURA_IDCC_TSO_v6.html#sec-katalog](PROCEDURA_IDCC_TSO_v6.html#sec-katalog)
+1. [ERR-I (część TS) → czekaj na IVA BACKUP v2+](PROCEDURA_IDCC_TSO_v7.html#hd-erri)
+1. [Process failed (0 TS) → wyślij BACKUP v1](PROCEDURA_IDCC_TSO_v7.html#hd-pf)
+1. [Brak SFTP >30 min → ręczna walidacja B1](PROCEDURA_IDCC_TSO_v7.html#hd-b1)
+1. [Awaria ECP/EDX → Manual Upload IVA (B4)](PROCEDURA_IDCC_TSO_v7.html#hd-b4)
+1. [Tryb backup BUP (paczka ręczna, F308)](PROCEDURA_IDCC_TSO_v7.html#wal-bup)
 
-## 🗂️ Katalog plików FIDx
+## 🛠 Awarie narzędzi
 
-78 plików: opis, ścieżka, źródło, TET/CET, profil + warianty stanów.
+1. [Brak dostępu do CCM](PROCEDURA_IDCC_TSO_v7.html#R01)
+1. [Brak dostępu do Core CC Tool](PROCEDURA_IDCC_TSO_v7.html#R03)
+1. [Ręczny upload do CCCt (Manual Upload)](PROCEDURA_IDCC_TSO_v7.html#P01)
+1. [Pobranie pliku ze źródła (aplikacja ZP)](PROCEDURA_IDCC_TSO_v7.html#P02)
+1. [Ręczne uruchomienie obliczeń Perun4V](PROCEDURA_IDCC_TSO_v7.html#P03)
+1. [Obsługa MinIO / Perun4V / CCCt — pełna instrukcja](PROCEDURA_IDCC_TSO_v7.html#sec-ops)
 
-- **Pełna instrukcja:** [PROCEDURA_IDCC_TSO_v6.html#sec-katalog](PROCEDURA_IDCC_TSO_v6.html#sec-katalog)
-- Powiązane — legenda: [PROCEDURA_IDCC_TSO_v6.html#sec-legenda](PROCEDURA_IDCC_TSO_v6.html#sec-legenda)
-- Powiązane — obsługa w CCM: [PROCEDURA_IDCC_TSO_v6.html#sec-ccm](PROCEDURA_IDCC_TSO_v6.html#sec-ccm)
+## 📦 Dane wejściowe PSE
 
-## 🖥️ Czynności w CCM
+1. [Dostarcz IGM do RCC (DACF/IDCF)](PROCEDURA_IDCC_TSO_v7.html#s4a)
+1. [TSO Data Gathering — komplet plików](PROCEDURA_IDCC_TSO_v7.html#s4b)
+1. [Wygeneruj i wyślij CB (FIDx-617)](PROCEDURA_IDCC_TSO_v7.html#s4c)
+1. [Wygeneruj i wyślij GLSK (FIDx-607)](PROCEDURA_IDCC_TSO_v7.html#s4d)
+1. [Publikacja z Kreatora IDCF (GLSK/CBCORA/RA)](PROCEDURA_IDCC_TSO_v7.html#sec-kreator)
 
-C.1–C.5: pulpit, info, wysyłka przed/po CET, status ręczny, błędy walidacji.
+## 📣 Komunikacja i eskalacja
 
-- **Pełna instrukcja:** [PROCEDURA_IDCC_TSO_v6.html#sec-ccm](PROCEDURA_IDCC_TSO_v6.html#sec-ccm)
-- Powiązane — legenda: [PROCEDURA_IDCC_TSO_v6.html#sec-legenda](PROCEDURA_IDCC_TSO_v6.html#sec-legenda)
-- Powiązane — procedury awaryjne: [PROCEDURA_IDCC_TSO_v6.html#sec-procedury](PROCEDURA_IDCC_TSO_v6.html#sec-procedury)
-
-## ✅ Walidacja domeny — NOR
-
-Tryb normalny DA: schemat decyzyjny, Perun4V, raporty CNEC/LTA.
-
-- **Pełna instrukcja:** [PROCEDURA_IDCC_TSO_v6.html#sec-nor](PROCEDURA_IDCC_TSO_v6.html#sec-nor)
-- Powiązane — tryb backup: [PROCEDURA_IDCC_TSO_v6.html#sec-bup](PROCEDURA_IDCC_TSO_v6.html#sec-bup)
-- Powiązane — Perun4V: [PROCEDURA_IDCC_TSO_v6.html#sec-narzedzia](PROCEDURA_IDCC_TSO_v6.html#sec-narzedzia)
-
-## 🛟 Walidacja domeny — BUP
-
-Tryb backup DA: CCA, F320, paczki ZIP, redukcja IVA, RLTA w ZP.
-
-- **Pełna instrukcja:** [PROCEDURA_IDCC_TSO_v6.html#sec-bup](PROCEDURA_IDCC_TSO_v6.html#sec-bup)
-- Powiązane — tryb normalny: [PROCEDURA_IDCC_TSO_v6.html#sec-nor](PROCEDURA_IDCC_TSO_v6.html#sec-nor)
-- Powiązane — P01–P06: [PROCEDURA_IDCC_TSO_v6.html#sec-procedury](PROCEDURA_IDCC_TSO_v6.html#sec-procedury)
-
-## 🔑 GLSK (FIDx-607) — stany
-
-32 stany kafelka: sukces, w toku, błędy, wysyłka ręczna.
-
-- **Pełna instrukcja:** [PROCEDURA_IDCC_TSO_v6.html#sec-fid607](PROCEDURA_IDCC_TSO_v6.html#sec-fid607)
-- Powiązane — legenda: [PROCEDURA_IDCC_TSO_v6.html#sec-legenda](PROCEDURA_IDCC_TSO_v6.html#sec-legenda)
-- Powiązane — publikacja GLSK: [PROCEDURA_IDCC_TSO_v6.html#sec-kreator](PROCEDURA_IDCC_TSO_v6.html#sec-kreator)
-
-## 🛠️ Kreator IDCF
-
-Publikacja GLSK/CBCORA/RA → Connector → MinIO → weryfikacja w CCM.
-
-- **Pełna instrukcja:** [PROCEDURA_IDCC_TSO_v6.html#sec-kreator](PROCEDURA_IDCC_TSO_v6.html#sec-kreator)
-- Powiązane — weryfikacja w CCM: [PROCEDURA_IDCC_TSO_v6.html#sec-ccm](PROCEDURA_IDCC_TSO_v6.html#sec-ccm)
-- Powiązane — GLSK: [PROCEDURA_IDCC_TSO_v6.html#sec-fid607](PROCEDURA_IDCC_TSO_v6.html#sec-fid607)
-
-## 📄 AC w ZP (FIDx-831)
-
-Ręczna obsługa Allocation Constraints, tabela NTC/ATC, wersjonowanie.
-
-- **Pełna instrukcja:** [PROCEDURA_IDCC_TSO_v6.html#sec-aczp](PROCEDURA_IDCC_TSO_v6.html#sec-aczp)
-- Powiązane — plik FID2-831: [PROCEDURA_IDCC_TSO_v6.html#sec-katalog](PROCEDURA_IDCC_TSO_v6.html#sec-katalog)
-- Powiązane — ZP: [PROCEDURA_IDCC_TSO_v6.html#sec-narzedzia](PROCEDURA_IDCC_TSO_v6.html#sec-narzedzia)
-
-## 🧭 Procedury P01–P06
-
-Reagowanie na ryzyka + procedury narzędziowe krok po kroku.
-
-- **Pełna instrukcja:** [PROCEDURA_IDCC_TSO_v6.html#sec-procedury](PROCEDURA_IDCC_TSO_v6.html#sec-procedury)
-- Powiązane — ryzyka: [PROCEDURA_IDCC_TSO_v6.html#sec-ryzyka](PROCEDURA_IDCC_TSO_v6.html#sec-ryzyka)
-- Powiązane — CCM: [PROCEDURA_IDCC_TSO_v6.html#sec-ccm](PROCEDURA_IDCC_TSO_v6.html#sec-ccm)
-
-## ⚠️ Ryzyka U01–U23
-
-Katalog ryzyk, kody ACK, ścieżka zgłoszenia: CIZ / WPO / PSE-I.
-
-- **Pełna instrukcja:** [PROCEDURA_IDCC_TSO_v6.html#sec-ryzyka](PROCEDURA_IDCC_TSO_v6.html#sec-ryzyka)
-- Powiązane — procedury: [PROCEDURA_IDCC_TSO_v6.html#sec-procedury](PROCEDURA_IDCC_TSO_v6.html#sec-procedury)
-- Powiązane — zgłoszenia: [PROCEDURA_IDCC_TSO_v6.html#sec-narzedzia](PROCEDURA_IDCC_TSO_v6.html#sec-narzedzia)
-
-## 🗄️ Buckety MinIO + mapa relacji
-
-Pełna mapa lokalizacji plików; narzędzie ↔ ryzyko ↔ procedura.
-
-- **Pełna instrukcja:** [PROCEDURA_IDCC_TSO_v6.html#sec-minio](PROCEDURA_IDCC_TSO_v6.html#sec-minio)
-- Powiązane — pliki: [PROCEDURA_IDCC_TSO_v6.html#sec-katalog](PROCEDURA_IDCC_TSO_v6.html#sec-katalog)
-- Powiązane — MinIO: [PROCEDURA_IDCC_TSO_v6.html#sec-narzedzia](PROCEDURA_IDCC_TSO_v6.html#sec-narzedzia)
+1. [Wybierz właściwy szablon maila Core ID](PROCEDURA_IDCC_TSO_v7.html#proc-mail)
+1. [Telefony i adresy: CCC / USY / kdm6](PROCEDURA_IDCC_TSO_v7.html#kontakty)
+1. [Znajdź ryzyko i skrót działania (R01–R29)](PROCEDURA_IDCC_TSO_v7.html#sec-ryzyka)
+1. [Fallbacki iteracji (b)–(d) wg BPD](PROCEDURA_IDCC_TSO_v7.html#proc-bcd)
