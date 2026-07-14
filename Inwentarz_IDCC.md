@@ -189,7 +189,7 @@
 | `czerwony` | Plik niedostarczony przed CET lub wysyłka zakończyła się błędem | CET zbliża się |
 | `czerwony !` | Plik dostarczony, ale rozmiar < minimum | Po dostarczeniu |
 | `czerwony ?` | Brak ACK / proces nie skończył się w czasie | Po wysyłce |
-| `zielony` | Plik dostarczony, ACK pozytywny (Processed) | Happy Day |
+| `zielony` | Plik dostarczony, ACK pozytywny (Processed) | Stan poprawny / nominalny |
 | `ciemnozielony 'W'` | Dostarczone ręcznie z CCM przed CET | Po C.4 |
 | `ciemnozielony 'W po CET'` | Dostarczone ręcznie z CCM po CET | Po C.5 |
 | `zielony 'R'` | Status ręczny nadany przez Dyspozytora | Po ręcznej decyzji |
@@ -211,7 +211,7 @@ Stosowany dla **IVA (FIDx-710)**. Źródło: Confluence PDF, opis dla pozycji IV
 | 4 | czarny | czarny | czarny | Dokument niedostarczony ani do CCCt ani na MinIO, minął CET. | [U03](#U03), [U08](#U08), [U16](#U16) | zgłoś + telefon CCC; [P03](#P03) Perun4V |
 | 5 | fioletowy | fioletowy | fioletowy | Dokument dostarczony do CCCt i na MinIO po CET, ACK pozytywny. | [U13](#U13) | [P06](#P06) wpis A.4 |
 | 6 | zielony R | zielony R | zielony R | Dokument IVA oznaczony ręcznie jako wysłany OK. | [U13](#U13) | [P06](#P06) |
-| 7 | zielony | zielony | zielony | **Happy Day** — Processed w CCCt, IVA na MinIO. | — | brak |
+| 7 | zielony | zielony | zielony | **Stan poprawny / nominalny** — Processed w CCCt, IVA na MinIO. | — | brak |
 | 8 | czerwony ? | (puste) | zielony | Wysyłka do CCCt trwa, ACK oczekuje. Dokument dostarczony na MinIO. | [U11](#U11) | po 5 min CCCt MV |
 | 9 | zielony | (puste) | zielony | Plik wysłany OK, oczekiwanie ACK (<3 min). | [U11](#U11) | monitoring |
 | 10 | zielony | czerwony ? | zielony | Brak ACK w żądanym czasie. Po najechaniu — czas oczekiwania. | [U11](#U11) | po 3 min CCCt MV |
@@ -259,7 +259,7 @@ Stosowany dla: **AC (FIDx-831), GLSK (FIDx-607), CBCORA (FIDx-617), ATC Based Va
 | 5 | czerwony ? | (puste) | Wysyłka trwa | [U11](#U11) | po 5 min CCCt MV |
 | 6 | czarny | czarny | Niedostarczone, minął CET | [U03](#U03), [U08](#U08) | KRYTYCZNE — zgłoś + telefon CCC |
 | 7 | zielony | czarny | Plik wysłany, brak ACK do CET | [U03](#U03), [U11](#U11) | CCCt MV → status 'R' lub [P01](#P01) |
-| 8 | zielony | zielony | **Happy Day** | — | brak |
+| 8 | zielony | zielony | **Stan poprawny / nominalny** | — | brak |
 | 9 | zielony | czerwony | ACK negatywny | [U10](#U10) | per kod ACK (20/21/30) |
 | 10 | zielony | czerwony ? | ACK timeout | [U11](#U11) | po 10 min [P01](#P01) |
 | 11 | zielony | fioletowy | ACK pozytywny po CET | [U13](#U13) | [P06](#P06) |
@@ -292,7 +292,7 @@ Stosowany dla **AGR Paczka ZIP (top-level)**: PERUN_ID2, PERUN_ID3C, PERUN_ID3 o
 | 2 | pomarańczowy | pomarańczowy | Zbliża się TET, paczka nie powstała | [U08](#U08) | sprawdź składowe |
 | 3 | czerwony | czerwony | CET zbliża się, paczka nieobsłużona | [U08](#U08) | uzupełnij składowe |
 | 4 | czarny | czarny | Niedostarczona, minął CET | [U03](#U03), [U08](#U08) | zgłoś + telefon CCC; składowe → S.13 |
-| 5 | zielony | zielony | **Happy Day** — paczka wysłana do Perun4V | [U14](#U14) (potencjalne) | brak interwencji |
+| 5 | zielony | zielony | **Stan poprawny / nominalny** — paczka wysłana do Perun4V | [U14](#U14) (potencjalne) | brak interwencji |
 | 6 | zielony | szary | Paczka na MinIO, brak transportu sFTP | [U03](#U03) | sprawdź CN2 |
 | 7 | zielony | czerwony | Paczka na MinIO, błąd sFTP | [U03](#U03) | [P05](#P05); zgłoś |
 | 8 | zielony | czarny | Paczka na MinIO, brak sFTP do CET | [U03](#U03) | zgłoś + CN2 |
@@ -338,7 +338,7 @@ Stosowany dla: **24 modele IGM (DACF_IGM_UCT), Raporty z Perun (RAP_PERUN_*), Fi
 | 2 | pomarańczowy | TET zbliża się, brak transportu | [U03](#U03) | sprawdź CN2 / sFTP |
 | 3 | czerwony | CET zbliża się, brak / błąd | [U03](#U03), [U08](#U08) | [P05](#P05) z CCCt MV |
 | 4 | czarny | Niedostarczone, minął CET | [U03](#U03), [U08](#U08), [U22](#U22) | zgłoś + telefon CCC (dla NTC: [U22](#U22)) |
-| 5 | zielony | **Happy Day** | — | brak |
+| 5 | zielony | **Stan poprawny / nominalny** | — | brak |
 | 6 | ciemnozielony W | Ręczna wysyłka | [U03](#U03) | [P06](#P06) |
 | 7 | fioletowy | Dostarczone po CET | [U13](#U13) | [P06](#P06) |
 | 8 | zielony R | Status ręczny | [U13](#U13) | [P06](#P06) |
@@ -381,6 +381,7 @@ Stosowany dla: **24 modele IGM (DACF_IGM_UCT), Raporty z Perun (RAP_PERUN_*), Fi
 
 <a id="U08"></a>**U08 — Plik niedostarczony w czasie**
 - HTML §9: R04 | BUP DA: #3 (str. 22), #28 | Stany: czarny, czerwony, pomarańczowy
+- **Kryterium:** przekroczenie F<sub>max</sub> dla czasu dostarczenia pliku (TET/CET)
 
 <a id="U09"></a>**U09 — Plik dostarczony, ale błędny (rozmiar / struktura)**
 - HTML §9: R04 (rozszerzony) | ACK kod 30 (file size mismatch); „Message has some invalid timeSeries…"
@@ -401,12 +402,15 @@ Stosowany dla: **24 modele IGM (DACF_IGM_UCT), Raporty z Perun (RAP_PERUN_*), Fi
 
 <a id="U14"></a>**U14 — Brak uruchomienia obliczeń w Perun4V**
 - HTML §9: R01 | BUP DA: #1 (str. 9)
+- **Kryterium:** proces obliczeniowy nie został uruchomiony przed startem fazy centralnej
 
 <a id="U15"></a>**U15 — ERR-I (część TS niepoliczona)**
 - HTML §9: R02 | BUP DA: #6 (str. 29), #20
+- **Kryterium:** analiza bezpieczeństwa N-1 nie powiodła się dla subsetu godzin — niektóre TS zwróciły ERR-I
 
 <a id="U16"></a>**U16 — Process failed (wszystkie TS niepoliczone)**
 - HTML §9: R03 | BUP DA: #7 (str. 39), #21
+- **Kryterium:** proces Perun4V nie zwrócił wyniku po N<sub>max</sub> próbach — wszystkie TS zwróciły Process failed
 
 ## 3.D. Grupa IV — Strumień ATC
 
@@ -424,9 +428,11 @@ Stosowany dla: **24 modele IGM (DACF_IGM_UCT), Raporty z Perun (RAP_PERUN_*), Fi
 
 <a id="U20"></a>**U20 — AAC Fallback** *([N17](#N17))*
 - HTML §9: R13 | Deadliny: 20:00 D-1 (IDCC(b)), 02:00 D (IDCC(c)), 07:00 D (IDCC(d))
+- **Kryterium:** F<sub>max</sub> dla AAC nie spełnione — fallback do NTC (FIDx-921)
 
 <a id="U21"></a>**U21 — Decoupling SDAC — konieczność MD250** *([N16](#N16))*
 - HTML §9: R14 | Plik: FID1-250 (Shadow Auction)
+- **Kryterium:** F<sub>max</sub> na granicy PL-DE przekraczalna bez Shadow Auction — konieczna wysyłka FID1-250
 
 <a id="U22"></a>**U22 — Late NTC delivery po IDA2** *([N17](#N17))*
 - HTML §9: R15 | Plik: FIDx-921
@@ -597,7 +603,7 @@ Stosowany dla: **24 modele IGM (DACF_IGM_UCT), Raporty z Perun (RAP_PERUN_*), Fi
 | czarny/czarny (po CET) | [U03](#U03), [U08](#U08) | KRYTYCZNE — zgłoś + telefon [CCC (N13)](#N13) |
 | zielony/czerwony (ACK Rejected) | [U10](#U10) | per kod ACK (20/21/30) |
 | zielony/czerwony ? (timeout) | [U11](#U11) | CCCt MV → [P01](#P01) |
-| zielony/zielony (Happy Day) | — | brak |
+| zielony/zielony (Stan poprawny / nominalny) | — | brak |
 | czerwony ! / * (size mismatch) | [U09](#U09) | [P04](#P04) / [P02](#P02) → [P01](#P01) |
 | ciemnozielony W / zielony | [U03](#U03) | [P06](#P06) wpis A.4 |
 | fioletowy / fioletowy | [U13](#U13) | [P06](#P06) |
@@ -609,16 +615,23 @@ Stosowany dla: **24 modele IGM (DACF_IGM_UCT), Raporty z Perun (RAP_PERUN_*), Fi
 <a id="todo"></a>
 # 7. TODO — do dopytania zespołu CCA / PSE Innowacje
 
-| # | Pytanie | Skierowane do | Status |
-|---|---|---|---|
-| TODO-1 | Czym dokładnie jest **R08** (HTML §9)? Hipoteza: „Brak dostępu do Perun4V" — czy potwierdzone? | Zespół CCA | otwarte | -> bra diostepu do perun i nalezy uzyc narzedzia standalone jak w DA.
-| TODO-2 | Czy **R10** istnieje? Brak opisu w HTML §9 — czy to numer archiwalny? | Zespół CCA / WPO | otwarte | - nie istnieje
-| TODO-3 | Opisy **R17, R18, R19** — wzmiankowane w kontaktach CCA („Zgłoszenie przy ryzykach R12, R16, R17, R18, R19, R20"), brak definicji w §9 | Zespół CCA | otwarte | -
-| TODO-4 | Czy istnieje dedykowany **email** zespołu CCA, czy zawsze przez PSE Innowacje? | Zespół CCA | otwarte |
-| TODO-5 | Bucket MinIO **`mam/`** — co zawiera i kiedy używany? | PSE Innowacje | otwarte | 
-| TODO-6 | Dokładna ścieżka **„Ustaw status ręcznie 'R'"** w CCM — czy zgodnie z CCM Instrukcją v2.6 (rozdz. „Zmiana statusu dokumentu na wysłany ręcznie")? | PSE Innowacje | otwarte |
-| TODO-7 | Katalog sieciowy zapisu plików **dla IDCC** — czy `…\Pliki wejściowe do ID FBA\rrrMMdd\` czy ten sam co DA? | Dyspozytor IDCC | otwarte |
-| TODO-8 | Wzorzec wysyłek automatycznych z ZP **v+1** — czy 14:20 to dla doby D+1 czy backup dla D? | Dyspozytor / ZP | otwarte |
+## Rozwiązane
+
+| # | Pytanie | Odpowiedź |
+|---|---|---|
+| TODO-1 | Czym dokładnie jest **R08** (HTML §9)? Hipoteza: "Brak dostępu do Perun4V" — czy potwierdzone? | Brak dostępu do Perun4V — użyć narzędzia standalone jak w DA. |
+| TODO-2 | Czy **R10** istnieje? Brak opisu w HTML §9 — czy to numer archiwalny? | Nie istnieje. |
+
+## Otwarte
+
+| # | Pytanie | Skierowane do |
+|---|---|---|
+| TODO-3 | Opisy **R17, R18, R19** — wzmiankowane w kontaktach CCA ("Zgłoszenie przy ryzykach R12, R16, R17, R18, R19, R20"), brak definicji w §9 | Zespół CCA |
+| TODO-4 | Czy istnieje dedykowany **email** zespołu CCA, czy zawsze przez PSE Innowacje? | Zespół CCA |
+| TODO-5 | Bucket MinIO **`mam/`** — co zawiera i kiedy używany? | PSE Innowacje |
+| TODO-6 | Dokładna ścieżka **"Ustaw status ręcznie 'R'"** w CCM — czy zgodnie z CCM Instrukcją v2.6 (rozdz. "Zmiana statusu dokumentu na wysłany ręcznie")? | PSE Innowacje |
+| TODO-7 | Katalog sieciowy zapisu plików **dla IDCC** — czy `…\Pliki wejściowe do ID FBA\rrrMMdd\` czy ten sam co DA? | Dyspozytor IDCC |
+| TODO-8 | Wzorzec wysyłek automatycznych z ZP **v+1** — czy 14:20 to dla doby D+1 czy backup dla D? | Dyspozytor / ZP |
 
 ---
 

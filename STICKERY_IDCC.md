@@ -34,7 +34,7 @@ CCM, Core CC Tool, Perun4V, MinIO, ZP, Connector, Kreatory, sFTP, wsparcie.
 
 ## 🗂️ Katalog plików FIDx
 
-126 plików: opis, ścieżka, źródło, TET/CET, profil + warianty stanów.
+78 plików: opis, ścieżka, źródło, TET/CET, profil + warianty stanów.
 
 - **Pełna instrukcja:** [PROCEDURA_IDCC_TSO_v6.html#sec-katalog](PROCEDURA_IDCC_TSO_v6.html#sec-katalog)
 - Powiązane — legenda: [PROCEDURA_IDCC_TSO_v6.html#sec-legenda](PROCEDURA_IDCC_TSO_v6.html#sec-legenda)

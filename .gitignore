@@ -1,0 +1,8 @@
+.DS_Store
+.history/
+__pycache__/
+Procedura_new/
+Procedura (1).zip
+tmp_*
+*.pyc
+.claude/worktrees/
