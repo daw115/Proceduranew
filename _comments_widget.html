@@ -1,0 +1,162 @@
+<!-- ══════════ WARSTWA KOMENTARZY RECENZENTA (offline, localStorage) ══════════ -->
+<style>
+.cw-fab{position:fixed;right:22px;bottom:22px;z-index:9800;display:flex;gap:8px;font-family:var(--sans)}
+.cw-fab button{font:600 13px var(--mono);letter-spacing:.03em;border:1px solid var(--ink);border-radius:6px;
+padding:9px 14px;cursor:pointer;background:var(--ink);color:var(--yellow);box-shadow:0 4px 12px rgba(26,34,48,.3)}
+.cw-fab button.cw-mode.on{background:var(--yellow);color:var(--ink);border-color:var(--ink)}
+.cw-fab button:hover{transform:translateY(-1px)}
+body.cw-commenting .cw-hoverable:hover{outline:2px dashed var(--warn);outline-offset:3px;cursor:copy;background:rgba(255,210,63,.12)}
+.cw-pin{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;margin-right:6px;
+background:var(--yellow);color:var(--ink);border:1px solid var(--ink);border-radius:50%;
+font:700 11px var(--mono);cursor:pointer;vertical-align:2px;box-shadow:1px 1px 0 var(--ink)}
+.cw-target-flash{animation:hl 2s ease-out 1}
+.cw-panel{position:fixed;right:0;top:0;bottom:0;width:390px;max-width:92vw;z-index:9900;background:var(--panel);
+border-left:2px solid var(--ink);box-shadow:-8px 0 30px rgba(26,34,48,.25);display:none;flex-direction:column;font-family:var(--sans)}
+.cw-panel.open{display:flex}
+.cw-head{background:var(--ink);color:#efe9da;padding:12px 16px}
+.cw-head h3{margin:0;font:700 14px var(--cond);letter-spacing:.08em;text-transform:uppercase;color:var(--yellow)}
+.cw-head small{font:11px var(--mono);color:#9db4c8}
+.cw-tools{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px;border-bottom:1px solid var(--rule)}
+.cw-tools button,.cw-tools label{font:600 11px var(--mono);border:1px solid var(--rule2);border-radius:4px;
+padding:5px 9px;cursor:pointer;background:#fff;color:var(--navy)}
+.cw-tools button:hover,.cw-tools label:hover{background:var(--accbg)}
+.cw-list{flex:1;overflow:auto;padding:12px 14px}
+.cw-item{border:1px solid var(--rule2);border-left:5px solid var(--yellow);border-radius:6px;background:#fffdf2;
+padding:9px 12px;margin-bottom:11px;font-size:13px}
+.cw-item.lost{border-left-color:var(--err)}
+.cw-item .cw-no{font:700 11px var(--mono);background:var(--ink);color:var(--yellow);border-radius:3px;padding:1px 7px;cursor:pointer}
+.cw-item .cw-sec{font:10.5px var(--mono);color:var(--mut);margin-left:6px}
+.cw-item blockquote{margin:6px 0;padding:4px 9px;border-left:3px solid var(--rule2);color:var(--mut);
+font:italic 12px var(--serif);max-height:60px;overflow:hidden}
+.cw-item .cw-txt{white-space:pre-wrap;margin:5px 0}
+.cw-item .cw-meta{display:flex;justify-content:space-between;align-items:center;font:10.5px var(--mono);color:var(--mut)}
+.cw-item .cw-meta a{color:var(--err);cursor:pointer;margin-left:10px;text-decoration:none}
+.cw-item .cw-meta a.cw-edit{color:var(--acc)}
+.cw-pop{position:absolute;z-index:9950;width:330px;background:var(--panel);border:2px solid var(--ink);border-radius:8px;
+box-shadow:0 10px 30px rgba(26,34,48,.35);padding:12px;font-family:var(--sans)}
+.cw-pop textarea{width:100%;min-height:84px;font:13px/1.5 var(--sans);border:1px solid var(--rule2);border-radius:4px;
+padding:7px;resize:vertical;box-sizing:border-box}
+.cw-pop .cw-q{font:italic 11.5px var(--serif);color:var(--mut);border-left:3px solid var(--yellow);padding:2px 8px;margin-bottom:7px;max-height:52px;overflow:hidden}
+.cw-pop .cw-row{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+.cw-pop button{font:600 12px var(--mono);border-radius:4px;padding:6px 12px;cursor:pointer;border:1px solid var(--ink)}
+.cw-pop .cw-save{background:var(--ink);color:var(--yellow)}
+.cw-pop .cw-cancel{background:#fff;color:var(--mut);border-color:var(--rule2)}
+.cw-empty{color:var(--mut);font:italic 13px var(--serif);text-align:center;margin-top:30px}
+@media print{.cw-fab,.cw-panel,.cw-pop,.cw-pin{display:none!important}}
+</style>
+<div class="cw-fab">
+ <button class="cw-mode" id="cwMode" title="Włącz/wyłącz tryb dodawania komentarzy">✎ TRYB KOMENTOWANIA</button>
+ <button id="cwToggle" title="Pokaż/ukryj panel komentarzy">💬 KOMENTARZE (<span id="cwCount">0</span>)</button>
+</div>
+<div class="cw-panel" id="cwPanel">
+ <div class="cw-head"><h3>Komentarze recenzenta</h3>
+  <small>zapis lokalny w przeglądarce · eksportuj przed przekazaniem</small></div>
+ <div class="cw-tools">
+  <button id="cwExportJson">⭳ Eksport JSON</button>
+  <label>⭱ Import JSON<input type="file" id="cwImport" accept=".json" style="display:none"></label>
+  <button id="cwExportMd">⭳ Eksport Markdown</button>
+  <button id="cwClear">✕ Wyczyść wszystkie</button>
+ </div>
+ <div class="cw-list" id="cwList"></div>
+</div>
+<script>
+(function(){
+'use strict';
+var KEY='idcc_v7_comments';
+var SEL='main p, main li, main tr, main h2, main h3, main h4, main h5, main figure, main .stick, main .fcard, main .step, main .callout, main .mailtpl, main pre';
+var comments=[]; try{comments=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){}
+function save(){localStorage.setItem(KEY,JSON.stringify(comments));render()}
+function norm(t){return (t||'').replace(/\s+/g,' ').trim()}
+function secOf(el){var s=el.closest('section[id]');if(!s)return['(poza sekcją)',''];
+ var h=s.querySelector('h2');return[h?norm(h.textContent).slice(0,60):s.id,s.id]}
+function anchorFor(el){
+ var host=el.closest('[id]')||document.body;
+ var all=host.querySelectorAll(el.tagName);var idx=Array.prototype.indexOf.call(all,el);
+ return{hostId:host.id||'',tag:el.tagName,idx:idx,snip:norm(el.textContent).slice(0,90)}}
+function resolve(a){
+ var host=a.hostId?document.getElementById(a.hostId):document.body;
+ if(host){var all=host.querySelectorAll(a.tag);var el=all[a.idx];
+  if(el&&norm(el.textContent).slice(0,90)===a.snip)return el;
+  for(var i=0;i<all.length;i++)if(norm(all[i].textContent).slice(0,90)===a.snip)return all[i];}
+ var cands=document.querySelectorAll('main '+a.tag);
+ for(var j=0;j<cands.length;j++)if(norm(cands[j].textContent).slice(0,90)===a.snip)return cands[j];
+ return null}
+var mode=false,pop=null;
+var btnMode=document.getElementById('cwMode'),btnT=document.getElementById('cwToggle'),
+    panel=document.getElementById('cwPanel'),list=document.getElementById('cwList'),cnt=document.getElementById('cwCount');
+function markHoverables(){document.querySelectorAll(SEL).forEach(function(el){el.classList.add('cw-hoverable')})}
+btnMode.onclick=function(){mode=!mode;btnMode.classList.toggle('on',mode);
+ document.body.classList.toggle('cw-commenting',mode);if(mode)markHoverables();closePop()};
+btnT.onclick=function(){panel.classList.toggle('open')};
+function closePop(){if(pop){pop.remove();pop=null}}
+document.addEventListener('click',function(ev){
+ if(!mode)return;
+ if(ev.target.closest('.cw-pop,.cw-fab,.cw-panel,.cw-pin'))return;
+ var el=ev.target.closest(SEL);if(!el)return;
+ ev.preventDefault();ev.stopPropagation();
+ var selTxt=norm(String(window.getSelection&&window.getSelection().toString()||''));
+ openPop(el,selTxt,null);},true);
+function openPop(el,quote,editing){
+ closePop();
+ pop=document.createElement('div');pop.className='cw-pop';
+ var q=quote||(editing&&editing.quote)||'';
+ pop.innerHTML=(q?'<div class="cw-q">„'+q.slice(0,180)+'"</div>':'')+
+  '<textarea placeholder="Twój komentarz…"></textarea>'+
+  '<div class="cw-row"><button class="cw-cancel">Anuluj</button><button class="cw-save">Zapisz</button></div>';
+ document.body.appendChild(pop);
+ var r=el.getBoundingClientRect();
+ pop.style.left=Math.max(10,Math.min(window.innerWidth-350,r.left+window.scrollX))+'px';
+ pop.style.top=(r.bottom+window.scrollY+8)+'px';
+ var ta=pop.querySelector('textarea');if(editing)ta.value=editing.text;ta.focus();
+ pop.querySelector('.cw-cancel').onclick=closePop;
+ pop.querySelector('.cw-save').onclick=function(){
+  var t=ta.value.trim();if(!t){closePop();return}
+  if(editing){editing.text=t;editing.ts=Date.now()}
+  else{var sec=secOf(el);
+   comments.push({id:Date.now()+''+Math.floor(Math.random()*1e4),anchor:anchorFor(el),
+    quote:q,text:t,sec:sec[0],secId:sec[1],ts:Date.now()})}
+  closePop();save()};}
+function render(){
+ document.querySelectorAll('.cw-pin').forEach(function(p){p.remove()});
+ cnt.textContent=comments.length;
+ if(!comments.length){list.innerHTML='<div class="cw-empty">Brak komentarzy.<br>Włącz „✎ tryb komentowania" i kliknij dowolny fragment.</div>';return}
+ list.innerHTML='';
+ comments.forEach(function(c,i){
+  var el=resolve(c.anchor);c._lost=!el;
+  if(el){var pin=document.createElement('span');pin.className='cw-pin';pin.textContent=i+1;
+   pin.title=c.text;pin.onclick=function(e){e.stopPropagation();panel.classList.add('open');
+    var it=document.getElementById('cwi-'+c.id);if(it)it.scrollIntoView({block:'center'})};
+   el.insertBefore(pin,el.firstChild)}
+  var d=document.createElement('div');d.className='cw-item'+(el?'':' lost');d.id='cwi-'+c.id;
+  d.innerHTML='<div><span class="cw-no">'+(i+1)+'</span><span class="cw-sec">'+(c.sec||'')+(el?'':' · NIEPRZYPIĘTY')+'</span></div>'+
+   (c.quote?'<blockquote>„'+c.quote.slice(0,160)+'"</blockquote>':'')+
+   '<div class="cw-txt"></div>'+
+   '<div class="cw-meta"><span>'+new Date(c.ts).toLocaleString('pl-PL')+'</span>'+
+   '<span><a class="cw-edit">edytuj</a><a class="cw-del">usuń</a></span></div>';
+  d.querySelector('.cw-txt').textContent=c.text;
+  d.querySelector('.cw-no').onclick=function(){var t=resolve(c.anchor);
+   if(t){t.scrollIntoView({block:'center'});t.classList.remove('cw-target-flash');void t.offsetWidth;t.classList.add('cw-target-flash')}};
+  d.querySelector('.cw-del').onclick=function(){comments=comments.filter(function(x){return x.id!==c.id});save()};
+  d.querySelector('.cw-edit').onclick=function(){var t=resolve(c.anchor);if(t)openPop(t,c.quote,c)};
+  list.appendChild(d)});}
+function dl(name,content,type){var b=new Blob([content],{type:type});var a=document.createElement('a');
+ a.href=URL.createObjectURL(b);a.download=name;a.click()}
+document.getElementById('cwExportJson').onclick=function(){
+ dl('komentarze_IDCC_v7.json',JSON.stringify(comments,null,1),'application/json')};
+document.getElementById('cwExportMd').onclick=function(){
+ var md='# Komentarze do PROCEDURA_IDCC_TSO_v7\\n\\n';
+ comments.forEach(function(c,i){md+='## ['+(i+1)+'] '+(c.sec||'')+'\\n';
+  if(c.quote)md+='> '+c.quote+'\\n\\n';
+  md+=c.text+'\\n\\n(fragment: „'+(c.anchor.snip||'')+'…" · '+new Date(c.ts).toLocaleString('pl-PL')+')\\n\\n---\\n\\n'});
+ dl('komentarze_IDCC_v7.md',md,'text/markdown')};
+document.getElementById('cwImport').onchange=function(ev){
+ var f=ev.target.files[0];if(!f)return;var r=new FileReader();
+ r.onload=function(){try{var arr=JSON.parse(r.result);
+  if(Array.isArray(arr)){var ids={};comments.forEach(function(c){ids[c.id]=1});
+   arr.forEach(function(c){if(!ids[c.id])comments.push(c)});save()}}catch(e){alert('Nieprawidłowy plik JSON')}};
+ r.readAsText(f);ev.target.value=''};
+document.getElementById('cwClear').onclick=function(){
+ if(confirm('Usunąć wszystkie komentarze ('+comments.length+')?')){comments=[];save()}};
+render();
+})();
+</script>
