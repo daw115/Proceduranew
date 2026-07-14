@@ -5,8 +5,10 @@ import re, os
 from pathlib import Path
 from fpdf import FPDF
 
-HTML = Path(__file__).parent / "PROCEDURA_IDCC_TSO_v6.html"
-OUT = Path(__file__).parent / "output/PROCEDURA_IDCC_TSO_v6.pdf"
+import sys
+_name = sys.argv[1] if len(sys.argv) > 1 else "PROCEDURA_IDCC_TSO_v6"
+HTML = Path(__file__).parent / f"{_name}.html"
+OUT = Path(__file__).parent / f"output/{_name}.pdf"
 
 def _font_set():
     """Zwraca ścieżki fontów (regular, bold, italic, bold-italic) per platforma."""

@@ -1,0 +1,88 @@
+<h3 id="happyday">Przebieg nominalny (stan poprawny) — krok po kroku</h3>
+<p>Operacyjna esencja dyżuru wg Procedury skróconej v4.1 i QuickRef (HLBP CCCt 4.2 v1).
+Warunki wstępne: Initial FB Computation zakończony (potwierdzenie CCC), otwarty pulpit
+„IDCC FB Pulpit dyspozytorski" w CCM, dostęp do skrzynki <code>kdm6@pse.pl</code>,
+aktywny login w Perun4V.</p>
+
+<h4 id="hd-6krokow">Sześć kroków iteracji IDCC(b)/(c)/(d)</h4>
+<ol>
+  <li><strong>CCM:</strong> agregaty <strong>PERUN_IDxx</strong> (FBA) i <strong>PERUN_IDxx_ATC</strong> (ATC) → zielone; kolumna sFTP/ZP wysł. → zielona.</li>
+  <li><strong>Perun4V</strong> (<code>lccv.tscnet.eu</code>): typ <strong>ID CCCt</strong>, sprawdź Business Day; user <code>sftp@pse.pl</code>. Timestampy kompletne: b=0/24/0/25, c=0/18/0/19, d=0/12/0/13 (0 Failed).</li>
+  <li><strong>CCM:</strong> IVA <strong>FIDxx-710</strong> → CCtool wysł. + CCtool zwalid. zielone; Raporty IDxx → MinIO zielony.</li>
+  <li><strong>CCM:</strong> ATC Based Validation <strong>FIDxx-928</strong> → CCtool wysł. zielony w terminie TET.</li>
+  <li><strong><code>kdm6@pse.pl</code>:</strong> raport CCA → sprawdź niepoliczone TS i wartości IVA; oceń zasadność (FBA i ATC).</li>
+  <li><em>[jeśli dotyczy]</em> <strong>IVA BACKUP</strong> → PPM → „Wyślij do CCTool" → opis → Tak; CCtool zwalid. zielony po ~30 s.</li>
+</ol>
+
+<h4 id="hd-a">IDCC(a) — monitoring FID1-928 (bez Perun4V)</h4>
+<p>W IDCC(a) nie ma paczki Perun ani IVA FBA — PSE monitoruje wyłącznie plik zwrotny
+<strong>FID1-928</strong> w CCM. Wersja v1 (~10:00 D-1) zawiera wartości zerowe (fallback);
+po SDAC narzędzie CCA sprawdza CNEC-e PL i publikowana jest wersja v2 z wynikiem walidacji ATC.</p>
+<ol>
+  <li><strong>A.1.</strong> CCM: wiersz „ATC Based Validation (FID1-928)". Po <strong>13:15 D-1</strong> wersja <strong>v2</strong> zielona (v1 = wartości zerowe).</li>
+  <li><strong>A.2.</strong> Brak v2 po <strong>14:30 D-1</strong> → sprawdź MinIO (<code>cca/ID_FBCC/out/BD</code>) → poinformuj telefonicznie CCC.</li>
+</ol>
+
+<h4 id="hd-iva-backup">IVA BACKUP — zasady</h4>
+<ul>
+  <li><strong>v1</strong> = backup na WSZYSTKIE TS; <strong>v2+</strong> = wyniki Perun uzupełnione backupem na niepoliczone TS.</li>
+  <li>Sygnał na pulpicie: <strong>zielony kafelek z pulsującą czerwoną otoczką</strong>.</li>
+  <li>Wysyłka: PPM → „Wyślij do CCTool" → opis → Tak. Wersja BACKUP musi być <strong>wyższa</strong> niż IVA z Perun (blokada dla tej samej lub niższej).</li>
+  <li><strong>ERR-I</strong> (część TS niepoliczona): czekaj na <strong>v2+</strong> — NIE wysyłaj v1!</li>
+  <li><strong>Process failed</strong> (0 TS): wyślij <strong>v1</strong>; jeśli BACKUP niedostępny (kafelek szary) — telefon do CCC natychmiast. <strong>W IDCC nie ma fallbacku 20% Fmax.</strong></li>
+</ul>
+
+<h4 id="hd-erri">ERR-I — błędy na wybranych TS</h4>
+<ol>
+  <li>Perun4V: Status → Details → [Result] → zanotuj Failed TS (pamiętaj: 01:30 Perun = godz. 2 CCCt).</li>
+  <li>Czekaj na IVA BACKUP <strong>v2+</strong> (Wersja ≥ 2 w CCM). Nie wysyłaj v1.</li>
+  <li>PPM na IVA BACKUP → „Wyślij do CCTool" → opis (niepoliczone TS) → Tak.</li>
+  <li>CCtool zwalid. zielony po ~30 s → koniec.</li>
+</ol>
+
+<h4 id="hd-pf">Process failed — wszystkie TS niepoliczone</h4>
+<ol>
+  <li>Sprawdź e-mail <code>kdm6</code> i CCM. Czy IVA BACKUP dostępna (zielona/fioletowa)?</li>
+  <li>Tak → PPM → „Wyślij do CCTool" → opis: „Process failed – v1" → Tak. CCtool zwalid. zielony.</li>
+  <li>Nie (kafelek szary) → poinformuj CCC natychmiast telefonicznie. Brak fallbacku 20% Fmax — brak dalszych działań PSE.</li>
+</ol>
+
+<h4 id="hd-b1">B1 — Brak transferu SFTP (&gt;30 min od „sFTP wysł.")</h4>
+<ol>
+  <li>CCM: LPM na agregat <strong>PERUN_IDxx</strong> → „Pobierz ZIP". Maska: <code>PSE_RRRRMMDD_IDx_v*_input_validation_IDx.zip</code>.</li>
+  <li>Perun4V: Upload ZIP → sprawdź BD i liczbę TS → „Estimate security reserve" → komunikat „Calculation started".</li>
+  <li>Po zakończeniu: F710 V (lub Status → „Download output files") → plik <strong>FIDxx-710</strong>.</li>
+  <li>CCM: LPM na IVA FIDxx-710 → wyślij; LPM na Raporty IDxx z Perun → wyślij.</li>
+  <li>Powtórz cały cykl 1–4 dla paczki ATC (<strong>PERUN_IDxx_ATC</strong>).</li>
+</ol>
+
+<h4 id="hd-b2">B2 — Za mały plik (czerwony „!")</h4>
+<ol>
+  <li>LPM na kafelek z „!" → „Informacje" → zanotuj numer pliku.</li>
+  <li>CCCt: Message Viewer → wpisz numer (665=CB, 620=CGM, 701=Vertices) → Apply → pobierz (Sender=PSE).</li>
+  <li>CCM: LPM na składową → wyślij. Po CET: „wyślij po CET" (status ciemnozielony W).</li>
+</ol>
+
+<h4 id="hd-b3">B3 — Czarny agregat (brak paczki ZIP)</h4>
+<ol>
+  <li>Rozwiń agregat w CCM → szare kafelki = brakujące składowe.</li>
+  <li>CCCt: Message Viewer → pobierz brakujące (numery: 610, 620, 632, 645, 657, 659, 665, 701).</li>
+  <li>CCM: LPM → wyślij każdą składową. Gdy wszystkie zielone → Connector tworzy ZIP → „Pobierz" → dalej wg <a href="#hd-b1">B1</a>.</li>
+</ol>
+
+<h4 id="hd-b4">B4 — Ręczny upload IVA do CCCt (awaria ECP/EDX)</h4>
+<ol>
+  <li>MinIO: bucket <code>perun/ID_FBCC/out/yyyy-mm-dd</code> → plik <strong>FIDxx-710</strong>.</li>
+  <li>CCCt: Message Viewer → „Manual Upload" → wskaż FIDxx-710 → „Upload file".</li>
+  <li>Odśwież: Message Definition „310" → Apply. Sender=PSE → status Processed ✓.</li>
+</ol>
+
+<h4 id="hd-inne">Pozostałe scenariusze awaryjne</h4>
+<table class="ref">
+  <thead><tr><th>Problem</th><th>Postępowanie</th><th>Eskalacja</th></tr></thead>
+  <tbody>
+    <tr><td>Perun4V niedostępny</td><td>IVA BACKUP v1 → CCTool. Brak BACKUP → telefon do CCC (brak 20% Fmax!)</td><td>CCC, USY</td></tr>
+    <tr><td>Wyłączenie awaryjne elementu sieci</td><td>Perun4V: Configurations → Additional NEC/outage → obliczenia → IVA w wyższej wersji</td><td>CCC</td></tr>
+    <tr><td>Kill procesu przez CCC</td><td>Nie podejmuj działań — czekaj na instrukcje CCC</td><td>CCC</td></tr>
+  </tbody>
+</table>

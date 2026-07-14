@@ -1,0 +1,82 @@
+<h3 id="harmonogram">Harmonogram HLBP (CCCt 4.2) — bramki czasowe</h3>
+<p>Fazy procesu i bramki istotne dla PSE, wyciąg z HLBP draft timings CCCt 4.2 v1. Wiersze podświetlone = fazy główne; pozostałe = bramki, w których działa lub które monitoruje PSE. Wartości operacyjne skorygowane wg instrukcji v4.1 — patrz tabela zbiorcza i ramka korekt.</p>
+<h4 id="hlbp-zbiorcza">Tabela zbiorcza (operacyjna, wg Procedury skróconej v4.1)</h4>
+<table class="ref">
+  <thead><tr><th>Parametr</th><th>IDCC(b) D-1</th><th>IDCC(c) D</th><th>IDCC(d) D</th><th>IDCC(a) D-1</th></tr></thead>
+  <tbody>
+    <tr><td>Paczka FBA+ATC TET/CET</td><td>20:32 / 21:09</td><td>02:57 / 03:27</td><td>08:28 / 09:02</td><td>n/a</td></tr>
+    <tr><td>IVA FBA TET/CET</td><td>21:33 / 22:11</td><td>04:04 / 04:36</td><td>09:34 / 10:09</td><td>n/a</td></tr>
+    <tr><td>FIDxx-928 (ATC) TET/CET</td><td>21:33 / 22:11</td><td>04:04 / 04:36</td><td>09:34 / 10:09</td><td>13:15–14:10 / 17:16</td></tr>
+    <tr><td>Deadline XBID</td><td>21:45</td><td>04:30</td><td>09:45</td><td>15:00 (maks. 17:20)</td></tr>
+    <tr><td>IVA BACKUP v1 / v2+</td><td>~20:25 / ~20:45</td><td>~03:00 / ~03:30</td><td>~09:00 / ~09:30</td><td>n/a</td></tr>
+  </tbody>
+</table>
+<p class="note"><strong>Okno walidacji: 40 min (zawsze min. 25 min).</strong> Przesunięcie osi czasu: 01:30 w Perun4V = godzina 2 w CCCt.</p>
+<h4 id="hlbp-idcca">IDCC(a) — fazy i bramki</h4>
+<table class="ref"><thead><tr><th>Krok procesu</th><th>Dzień</th><th>Start</th><th>TET</th><th>CET</th></tr></thead><tbody>
+<tr style="background:#eef4fb;font-weight:600"><td>Distribution of Initial Data</td><td>D-1</td><td>09:25</td><td>09:30</td><td>14:10</td></tr>
+<tr><td>Open Initial TSO Data Receiving Step</td><td>D-1</td><td>09:25</td><td>09:28</td><td>10:18</td></tr>
+<tr><td>Open Individual Validation</td><td>D-1</td><td>09:25</td><td>09:28</td><td>14:08</td></tr>
+<tr><td>Open gates for AC</td><td>D-1</td><td>09:25</td><td>09:28</td><td>14:08</td></tr>
+<tr><td>Distribute High Negative NTCs</td><td>D-1</td><td>09:25</td><td>09:29</td><td>14:09</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Calculate Default DA domain</td><td>D-1</td><td>09:30</td><td>09:55</td><td>14:35</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>DACC Data Gathering</td><td>D-1</td><td>09:55</td><td>12:06</td><td>15:04</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>MCR Data Gathering</td><td>D-1</td><td>12:06</td><td>13:14</td><td>16:11</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Calculate enlarged domain</td><td>D-1</td><td>13:14</td><td>13:34</td><td>16:31</td></tr>
+<tr><td>Re-Open Individual Validation</td><td>D-1</td><td>13:39</td><td>13:40</td><td>16:37</td></tr>
+<tr><td>Distribute Final ID ATC Results</td><td>D-1</td><td>14:22</td><td>14:32</td><td>17:26</td></tr>
+<tr><td>Distribute Final Computed ID NTCs</td><td>D-1</td><td>14:22</td><td>14:33</td><td>17:27</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Calculate enlarged domain at MCP</td><td>D-1</td><td>14:34</td><td>14:45</td><td>17:39</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Wait for missing SARs</td><td>D-1</td><td>14:45</td><td>14:47</td><td>17:41</td></tr>
+</tbody></table>
+<h4 id="hlbp-idccb">IDCC(b) — fazy i bramki</h4>
+<table class="ref"><thead><tr><th>Krok procesu</th><th>Dzień</th><th>Start</th><th>TET</th><th>CET</th></tr></thead><tbody>
+<tr style="background:#eef4fb;font-weight:600"><td>TSO Data Gathering</td><td>D-8/D-1</td><td>12:00</td><td>18:00</td><td>19:51</td></tr>
+<tr><td>Open Initial TSO Data Receiving</td><td>D-8/D-1</td><td>12:00</td><td>12:05</td><td>19:30</td></tr>
+<tr><td>Open Individual Validation</td><td>D-8/D-1</td><td>12:00</td><td>12:06</td><td>19:40</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>First CGM Data Gathering</td><td>D-1</td><td>18:00</td><td>19:52</td><td>20:01</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Second CGM Data Gathering</td><td>D-1</td><td>19:52</td><td>20:07</td><td>20:15</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Third CGM Data Gathering</td><td>D-1</td><td>20:07</td><td>20:22</td><td>20:51</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>RefProg Computation</td><td>D-1</td><td>20:22</td><td>20:25</td><td>21:00</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Export CGM at AAC before Initial FB Computation</td><td>D-1</td><td>20:32</td><td>20:36</td><td>21:13</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>ID ATC Extraction</td><td>D-1</td><td>21:40</td><td>21:45</td><td>23:30</td></tr>
+<tr><td>Distribute Final FBC Results</td><td>D-1</td><td>21:40</td><td>21:45</td><td>23:30</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Nodal PTDFs calculation</td><td>D-1</td><td>21:49</td><td>21:58</td><td>23:30</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Net Positions from RefProg Computation</td><td>D-1</td><td>22:06</td><td>22:13</td><td>23:30</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Distribute Inputs for next Intraday Process</td><td>D-1/D</td><td>22:13</td><td>00:01</td><td>00:05</td></tr>
+</tbody></table>
+<h4 id="hlbp-idccc">IDCC(c) — fazy i bramki</h4>
+<table class="ref"><thead><tr><th>Krok procesu</th><th>Dzień</th><th>Start</th><th>TET</th><th>CET</th></tr></thead><tbody>
+<tr style="background:#eef4fb;font-weight:600"><td>TSO Data Gathering</td><td>D-8/D</td><td>12:00</td><td>00:55</td><td>01:10</td></tr>
+<tr><td>Open Initial TSO Data Receiving</td><td>D-8/D-1/D</td><td>12:00</td><td>12:05</td><td>00:53</td></tr>
+<tr><td>Open Individual Validation</td><td>D-8/D-1/D</td><td>12:00</td><td>12:06</td><td>01:05</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>First CGM Data Gathering</td><td>D</td><td>00:55</td><td>02:15</td><td>02:16</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Second CGM Data Gathering</td><td>D</td><td>02:15</td><td>02:45</td><td>02:48</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>RefProg Computation</td><td>D</td><td>02:45</td><td>02:48</td><td>03:18</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Export CGM at AAC before Initial FB Computation</td><td>D</td><td>02:57</td><td>02:59</td><td>03:29</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>ID ATC Extraction</td><td>D</td><td>04:12</td><td>04:17</td><td>09:11</td></tr>
+<tr><td>Distribute Final FBC Results</td><td>D</td><td>04:12</td><td>04:17</td><td>09:11</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Nodal PTDFs calculation</td><td>D</td><td>04:20</td><td>04:31</td><td>09:21</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Net Positions from RefProg Computation</td><td>D</td><td>04:50</td><td>04:57</td><td>23:30</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Distribute Inputs for next Intraday Process</td><td>D</td><td>04:57</td><td>23:31</td><td>00:00</td></tr>
+</tbody></table>
+<h4 id="hlbp-idccd">IDCC(d) — fazy i bramki</h4>
+<table class="ref"><thead><tr><th>Krok procesu</th><th>Dzień</th><th>Start</th><th>TET</th><th>CET</th></tr></thead><tbody>
+<tr style="background:#eef4fb;font-weight:600"><td>TSO Data Gathering</td><td>D-8/D</td><td>12:00</td><td>05:25</td><td>05:40</td></tr>
+<tr><td>Open Initial TSO Data Receiving</td><td>D-8/D-1/D</td><td>12:00</td><td>12:05</td><td>05:15</td></tr>
+<tr><td>Open Individual Validation</td><td>D-8/D-1/D</td><td>12:00</td><td>12:06</td><td>05:25</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>First CGM Data Gathering</td><td>D</td><td>05:25</td><td>06:45</td><td>06:46</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Second CGM Data Gathering</td><td>D</td><td>06:45</td><td>08:15</td><td>08:17</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>RefProg Computation</td><td>D</td><td>08:15</td><td>08:18</td><td>08:28</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Export CGM at AAC before Initial FB Computation</td><td>D</td><td>08:28</td><td>08:30</td><td>09:04</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>ID ATC Extraction</td><td>D</td><td>09:40</td><td>09:45</td><td>11:30</td></tr>
+<tr><td>Distribute Final FBC Results</td><td>D</td><td>09:40</td><td>09:45</td><td>11:30</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Nodal PTDFs calculation</td><td>D</td><td>09:49</td><td>09:58</td><td>11:30</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Net Positions from RefProg Computation</td><td>D</td><td>10:06</td><td>10:13</td><td>11:30</td></tr>
+<tr style="background:#eef4fb;font-weight:600"><td>Distribute Inputs for next Intraday Process</td><td>D</td><td>10:13</td><td>23:30</td><td>23:35</td></tr>
+</tbody></table>
+<h4 id="hlbp-idcce">IDCC(e) — opcje</h4><p>Arkusze „IDCCe Option A/B" opisują planowaną piątą iterację (warianty czasowe A i B) — proces nieuruchomiony operacyjnie; szczegółowe timingi w źródle HLBP.</p>
+<div class="callout"><b>Korekty względem draftu HLBP (instrukcja IDCC_bcd v4.1 official):</b>
+IDCC(b): paczka 20:32/21:09, IVA FBA CET 21:33 → <strong>22:11</strong>;
+IDCC(c): IVA TET <strong>04:04</strong>, CET 04:36; IDCC(d): IVA 09:34/10:09.
+W razie rozbieżności między draftem HLBP a wartościami operacyjnymi stosuj tabelę zbiorczą powyżej.</div>

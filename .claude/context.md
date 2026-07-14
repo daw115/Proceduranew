@@ -87,6 +87,25 @@ Procedura operacyjna obsługi punktu IDCC dla TSO (PSE) + monitorowanie CCM
   nie występuje w katalogu popup_content, stąd bez zmiany liczby kafelków).
 - STICKERY_IDCC.md przegenerowany (14 kart).
 
+## v7 — KOMPLETNA procedura (14.07 wieczór)
+- `_build_procedura_v7.py` → `PROCEDURA_IDCC_TSO_v7.html` (1,16 MB, 18 sekcji) — "wszystko
+  istotne z perspektywy TSO, skondensowane": BPD (process2_*), harmonogram HLBP CCCt 4.2
+  (frag7_harmonogram, tabela zbiorcza wg Skróconej v4.1 + 51 wierszy faz z xlsx + korekty
+  v4_1_official), przebieg nominalny + ERR-I/Process failed/B1–B4 (frag7_happyday z QuickRef
+  i Skróconej), maski IVA/numery MV/timestampy Perun/ścieżki MinIO (frag7_maski), walidacja
+  NOR v0.21 + BUP v0.32 z F109→F308 (frag7_walidacja), slice'y v5_2 (v52_slice/v52_h3block:
+  §4A–4D=#s4a–d, §5+§6 w details, 7M.1/3/7–14 z idkami ccm-*, §8=#s8, aneks=#aneks),
+  pełna baza ryzyk R01–R29 (Ryzyka_pelna_baza md→HTML) + U-kody/ACK w details, kontakty
+  operacyjne (CCC/USY/kdm6 z telefonami), katalog 78 plików/965 stanów, 19 maili, 253 figury.
+- STICKERY: sekcja 18 NA KOŃCU dokumentu — 9 grup scenariuszy, 41 krótkich kroków w punktach,
+  KAŻDY krok = hiperłącze do kotwicy w procedurze; walidacja kotwic asercją w buildzie.
+  Cover board usunięty. STICKERY_IDCC.md przegenerowany w tym samym formacie.
+- Poprawki w buildzie: gołe kody Nxx ze slice'ów → linki z nazwą narzędzia (denumber rozszerzony),
+  balans divów slice'ów (_div_balance), normalizacja Happy Day.
+- `_gen_pdf.py` sparametryzowany (argv) → output/PROCEDURA_IDCC_TSO_v7.pdf (158 KB).
+- v6 nietknięta. Agenci treściowi padli na limicie sesji — fragmenty zbudowane inline
+  (slice v5_2 zamiast przepisywania; autorskie tylko harmonogram/maski/happyday/walidacja).
+
 ## Stan
 Generator staticHints zakończony (80 kodów / 965 stanów po aktualizacji 14.07 — 32 → 29; katalog używa 71).
 Dokument v6 (HTML master, ~1,21 MB) FINALNY po QC tekstowo-wizualnym + feedback Maria Rutkowska:

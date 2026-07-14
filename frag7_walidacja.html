@@ -1,0 +1,55 @@
+<h3 id="walidacja">Walidacja domeny FBA (DA/LTA) — przebieg operacyjny</h3>
+<p>Walidacja domeny Day-Ahead i LTA w Perun4V; wynikiem jest wartość <strong>IVA</strong>
+na przeciążonych CNEC-ach (plik <strong>F310</strong>). Procedura obowiązuje codziennie.
+Źródła: FBA_TSO_NOR_03 v0.21 (tryb normalny) i FBA_TSO_BUP_03 <strong>v0.32</strong>
+z 05.01.2026 (tryb backup; zmiana przepływu <strong>F109 → F308</strong>).
+Odpowiednikiem dla iteracji śróddziennych jest walidacja IVA w procesie IDCC —
+patrz <a href="#happyday">przebieg nominalny</a>.</p>
+
+<h4 id="wal-iva">IVA — definicja i przesłanki</h4>
+<ul>
+  <li>IVA określa możliwość zmniejszenia wartości <strong>RAM</strong> na danym CNEC-u; przyjmuje wyłącznie wartości dodatnie i redukuje RAM do poziomu bezpiecznego, przy wykorzystaniu dostępnych bezkosztowych i kosztowych środków zaradczych. Redukcja musi zapewnić nieujemny RAM.</li>
+  <li>Przesłanki wprowadzenia IVA: wyjątkowe zdarzenie awaryjne lub wymuszone wyłączenie (CCM Core art. 20(5)); niewystarczające środki zaradcze; błąd w danych wejściowych CCCt zawyżający zdolności; potencjalne pokrycie przepływów mocy biernej na CNEC-ach.</li>
+  <li>Terminy dostarczenia F310: domena DA — TET 07:15, CET 08:50; domena LTA — TET 07:15, CET 08:00.</li>
+</ul>
+
+<h4 id="wal-nor">Tryb normalny (NOR) — przebieg automatyczny i nadzór</h4>
+<p>Proces jest automatyczny; dyspozytor kontroluje kolejne etapy:</p>
+<ol>
+  <li>Connector 2.0 odbiera dane z CCCt/Kreatora i przesyła do MinIO/CCA elementy paczki (w tym <strong>F320_CCA</strong> / <strong>VERTICES_MAP_CCA</strong>; dla LTA odpowiednio F320_LTA/VERTICES_MAP_LTA).</li>
+  <li>Paczka trafia na MinIO (<code>perun/DA_FBCC/in/rrrr-mm-dd</code>, nazwa <code>rrrrMMdd-Perun_DA-v*.zip</code>; LTA: <code>…-Perun_DA_LTA-v*.zip</code>) i równolegle przez sFTP do Perun4V (maska <code>PSE_RRRRMMDD_DA_v*_input_validation…</code>).</li>
+  <li>Po obliczeniach Perun4V zwraca raporty i plik IVA <strong>F310</strong> (maska <code>rrrrMMdd-F310-v*-10XPL-TSO------P-to-17XTSO-CS------W.xml</code>); Connector wysyła IVA do CCCt oraz IVA + raporty do CCA.</li>
+  <li>CCA generuje IVA Backup (DA) / <strong>RLTA</strong> (LTA) i raporty dobowe, wysyłane m.in. na <code>kdm6@pse.pl</code>.</li>
+</ol>
+<p><strong>Monitorowanie:</strong></p>
+<ul>
+  <li><strong>CCM</strong> (pulpit DACC): kafelek „Paczka ZIP_CCA na MinIO do PERUN" / „Paczka ZIP_LTA do PERUN" zielony; kolumna „sFTP/ZP wysł." potwierdza przekazanie przez Connector; następnie przekazanie IVA do CCCt i odbiór raportów z Perun.</li>
+  <li><strong>Perun4V</strong> (<code>lccv.tscnet.eu</code>, Local Login): obliczenia widoczne dla usera <code>sFTP@pse.pl</code>; sprawdź BD i status.</li>
+  <li><strong>E-mail</strong> (<code>kdm6@pse.pl</code>): raport CCA — czy wszystkie godziny policzone (raport VALIDATION_OVERVIEW, maks. IVA) oraz raporty obcięć LTA (arkusze „LTA IVA PL", „LTA IVA nonPL", „top CNEC (IVA)"; kolumny LTA-XX-YY_init / curtailment). Raport także na MinIO: <code>cca/DA_FBCC/out/&lt;BD&gt;</code>.</li>
+</ul>
+
+<h4 id="wal-bup">Tryb backup (BUP v0.32) — ręczne przygotowanie paczki i walidacji</h4>
+<p>Stosowany, gdy wystąpi zdarzenie poza normalnym przebiegiem (brak paczki na MinIO,
+awaria Connector 2.0, brak dostępu do MinIO). Kroki:</p>
+<ol>
+  <li><strong>Pobierz pliki wejściowe ręcznie z CCCt</strong>: Message Viewer → w polu Message Definition wpisz numer pliku → Apply → pobierz strzałką w dół. Lista: <strong>F110</strong> (RefProg), <strong>F112</strong> (Merged GLSK), <strong>F212</strong> (Intermediate FB Domain), <strong>F226</strong> (Real GLSK), <strong>F308</strong> (Merged / Merged Best Optimized D-2CF CGM — <em>zmiana v0.32: dawniej F109</em>), <strong>F312</strong> (Individual Filtered CB — odbiorcą musi być PSE!), <strong>F327</strong> (konfiguracja RAO), <strong>F515</strong> (MergingLog; F123 i F515 zamiennie). Dodatkowo do narzędzia stand-alone: F320, F118, F114, F110.</li>
+  <li><strong>Przygotuj F320_CCA i VERTICES_MAP_CCA</strong> narzędziem <code>fbc_lta_vertices.exe</code> (wg Ryzyka 14). Dołącz <code>yyyy_MM_dd_CORE_FB_DA_RA_PL.xlsx</code> z katalogu sieciowego <code>\\uo-data\…\FBA\Pliki wejściowe do DA FBA\rrrrMMdd\</code>.</li>
+  <li><strong>Spakuj paczkę</strong> (7-Zip → „Dodaj do archiwum…", format <strong>zip</strong>, bez hasła; np. <code>rrrrMMddPerun1.zip</code>) — skład wg Tabeli 1 BUP (11 pozycji, maski <code>YYYYmmDD-Fxxx-vX-17XTSO-CS------W-to-10V1001C--00085T.*</code>).</li>
+  <li><strong>Perun4V</strong>: wskaż rodzaj procesu → przeciągnij ZIP (data w nazwie ustawia BD) → sprawdź datę BD → uruchom obliczenia („Calculation started") → po zakończeniu status <em>Calculating</em> zmienia się na datę zakończenia.</li>
+  <li><strong>Pobierz wyniki</strong>: F310 (przycisk pobrania) oraz raporty (Status → „Download reports"); zapisz do katalogu sieciowego <code>…\rrrrMMdd\PERUN\</code>.</li>
+  <li><strong>Wgraj F310 do CCCt</strong>: Message Viewer → „Manual Upload" → wybierz plik → „Upload file" → odśwież → Message Definition „310 – Individual CB Validation" → Apply → dla sendera PSE status <strong>Processed</strong>.</li>
+  <li><strong>Alternatywnie z poziomu CCM</strong> (gdy transport działa): LPM na kafelek IVA (DA: wiersz „IVA"; LTA: wiersz „IVA LTA", zamiennie kolumna „CCCtool wysł." lub „MinIO") → „wyślij" → wybierz plik z dysku; analogicznie raporty („Raporty z Perun" / „Raporty z Perun LTA").</li>
+</ol>
+
+<h4 id="wal-bledy">Typowe błędy i reakcje</h4>
+<table class="ref">
+  <thead><tr><th>Błąd</th><th>Reakcja</th></tr></thead>
+  <tbody>
+    <tr><td>Niezgodne daty paczki ZIP i obliczenia (TSCNET)</td><td>Sprawdź BD w nazwie paczki i w oknie Perun4V; popraw datę / przygotuj paczkę ponownie.</td></tr>
+    <tr><td>Brak plików w paczce (np. F110/F112/F308)</td><td>Uzupełnij brakujące pliki z CCCt (Message Viewer) i spakuj ponownie.</td></tr>
+    <tr><td><strong>ERR-I</strong> — część TS niepoliczona</td><td>Zanotuj Failed TS (Status → Details); czekaj na IVA BACKUP v2+ — patrz <a href="#hd-erri">ERR-I</a>.</td></tr>
+    <tr><td><strong>Process failed</strong> — brak wyniku</td><td>IVA BACKUP v1 → CCCt; brak BACKUP → telefon do CCC — patrz <a href="#hd-pf">Process failed</a>.</td></tr>
+    <tr><td>F310 odrzucone mimo ACK (Rejected)</td><td>Odczytaj kod błędu w Message Viewer; sprawdź wersję pliku (musi być wyższa niż zapisana) i wyślij ponownie.</td></tr>
+    <tr><td>Brak raportu CCA / LTA_CURTAILMENT</td><td>Sprawdź MinIO <code>cca/DA_FBCC/out/&lt;BD&gt;</code>; brak → zgłoś (Ryzyko 26/29).</td></tr>
+  </tbody>
+</table>
