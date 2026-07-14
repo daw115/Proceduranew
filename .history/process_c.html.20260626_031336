@@ -1,0 +1,437 @@
+<h3 id="proc-c">IDCC(c) — przebieg procesu</h3>
+
+<p>Rysunek 2 ilustruje sekwencję czynności, które poszczególne strony zaangażowane w proces pre-couplingu IDCC(c) muszą wykonać. Ten ogólny przegląd pokazuje również wyraźnie, jakiego rodzaju informacje każdy partner musi wysłać i otrzymać.</p>
+
+<p><em>Rysunek 2: Ogólny przepływ procesu IDCC(c) (tylko pre-coupling) z orientacyjnymi czasami.</em></p>
+
+<p>Niniejszy rozdział opisuje skoordynowane przygotowanie ograniczeń sieciowych dla IDCC(c), które są dostarczane do CCCt. Czynności tej fazy obejmują:</p>
+
+<ul>
+  <li><strong>IDCF (Intraday Congestion Forecast):</strong> TSO dostarczają IGM do RCC (Coreso, TSCNET), którzy łączą IGM i tworzą wspólny model sieci (CGM). Modele CGM są ulepszane w zależności od RA podjętych podczas procesu CSA (Coordinated Security Analysis).</li>
+  <li><strong>Initial FB Computation:</strong> wykonywane w CCCt przez CCC, na podstawie danych wejściowych od TSO i RCC.</li>
+  <li><strong>Individual validation:</strong> krok wykonywany przez każdego TSO w celu walidacji wstępnych wyników FB (z możliwością ich korekty).</li>
+  <li><strong>Final FB Computation:</strong> obliczenie wykonywane w CCCt przez CCC, na podstawie zaktualizowanych plików CB oraz EC/ATC przesłanych przez TSO z obszaru Core.</li>
+</ul>
+
+<p>Poniższe podrozdziały opisują proces normalny i wskazują powiązania z procesami backup i fallback dla IDCC(c). Procesy backup są szczegółowo opisane na końcu każdego rozdziału w szarej tabeli. Bardziej szczegółowe opisy znajdują się w odpowiednich podrozdziałach IDCC(b) (rozdział 6).</p>
+
+<h4>TSO Data Gathering (zbieranie danych od TSO)</h4>
+<p>Krok pobierania wstępnych danych TSO. CCC otwiera krok odbioru wstępnych danych TSO, tworzy wstępną wersję CO Dictionary, otwiera Individual Validation, tworzy wstępną wersję Fallback Report, otwiera i włącza bramki przekazywania NTC od TSO, zamyka bramki dla DA replacement oraz dystrybuuje DA domain na potrzeby fallbacku. Właściciel: CCC; narzędzie: CCCt. Wejścia/wyjścia obejmują m.in. Merged GLSK, EC/ATC, CBs, AC, CO Dictionary, FB Domain, CGM DQC oraz RefProg i DA Domain dystrybuowane do TSO. Czasy: zgodnie z harmonogramem HLBP (patrz „2. Related documents").</p>
+
+<h5>Procesy Backup i Fallback</h5>
+<p>Gdy tylko zostanie zidentyfikowany problem z CCCt (np. blokujący normalny przebieg procesu), CCC musi zadzwonić lub wysłać e-mail do helpdesku Unicorn Core. Jeśli problem wynika z brakujących danych wejściowych, należy zastosować poniższe backupy i wykonać je przed wskazanym czasem CET.</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>Backup ID</th><th>Process Step</th><th>Description</th><th>Solution/Action</th><th>Owner</th><th>Tool</th><th>Email Template #</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ID3C_1</td>
+      <td>TSO data gathering</td>
+      <td>Brak/błąd z AAC</td>
+      <td><strong>Jeśli pliki ID3C-830 nie są dostarczone do CCCt przez XBID, operator CCC dostarcza ręcznie pliki ID3C-830 do CCCt:</strong> 1. Pobranie przez sFTP z XBID. 2. Wgranie przez GUI CCCt. 3. CCC weryfikuje pomyślne ręczne dostarczenie w GUI CCCt. 4. Poinformowanie wszystkich stron e-mailem. Ręczne dostarczenie ID3C-830 odbywa się na zasadzie best effort. Jeśli nie zostanie dostarczone, proces będzie kontynuowany z CGM RefProg jako wejściem do Initial ATC extraction. <strong>Jeśli brak AAC również przez sFTP:</strong> 1. Otwarcie zgłoszenia <strong>Major</strong> IMT w DBAG i postępowanie zgodnie z instrukcjami SPOC Incident Committee (IC). Jeśli problem nie zostanie rozwiązany do ostatniej dostawy AAC o 04:10, proces musi zostać zabity (killed).</td>
+      <td>CCC</td>
+      <td>XBID sFTP, ID_CCCt</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>ID3C_2</td>
+      <td></td>
+      <td>Brak danych wejściowych IDx: ID CCCt jest dostępny</td>
+      <td>1. Dla tego samego BD pobranie danych z instancji procesu IDx i wgranie do instancji procesu ID3C. 2. Kontakt z USY w celu zbadania problemów komunikacyjnych.</td>
+      <td>CCC</td>
+      <td>ID_CCCt</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>ID3C_3</td>
+      <td></td>
+      <td>Brak obliczonych AAC dostarczonych przez IDCC(a)</td>
+      <td>1. Uzyskanie od TSO potwierdzenia ich pomyślnego ręcznego dostarczenia AAC do XBID do terminu 02:00 D-0. Jeśli wszystkie potwierdzenia są dostępne: 2. Kontynuacja procesu IDCC(c). Jeśli brakuje co najmniej jednego potwierdzenia: 2. Wstrzymanie procesu. 3. Zabicie instancji procesu przyciskiem „Kill Button". 4. Wysłanie e-maila informującego wszystkie strony o niepowodzeniu procesu.</td>
+      <td>CCC</td>
+      <td>ID_CCCt, email</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>ID3C_4</td>
+      <td></td>
+      <td></td>
+      <td>1. Dostarczenie obliczonych AAC do XBID za pomocą lokalnego oprogramowania najpóźniej do 02:00 D-0 (konieczne, aby rozpocząć IDCC(c) później). 2. Potwierdzenie CCC o prawidłowej obecności AAC w XBID. <strong>Uwaga: Termin 02:00 D-0 zapewnia, że AAC są dostępne dla początkowej ekstrakcji ATC w IDCC(c), a tym samym dla walidacji opartej na ATC.</strong></td>
+      <td>TSO</td>
+      <td>Local Tooling, email</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Zastrzeżenie</strong> – obowiązuje zasada ogólna, że nadawca wiadomości odpowiada za poprawne dostarczenie plików. Dlatego za dostarczanie AAC z XBID do CCCt odpowiada XBID. W związku z tym w żadnym wypadku operator CCCt nie może ponosić odpowiedzialności za niedostarczenie AAC z XBID. Niemniej jednak, aby ułatwić proces IDCC(c), CCC może podjąć działania ręczne na zasadzie best effort, wspierające odbiór plików z XBID. Plik o konwencji nazewniczej „ID3C-830" jest konfigurowalny w XBID, gdzie ma konwencję nazewniczą „TAR".</p>
+
+<h4>First and Second CGM Data Gathering (pierwsze i drugie zbieranie danych CGM)</h4>
+<p>Coreso jako Merging Entity dostarcza dane wejściowe związane z modelem sieci na potrzeby obliczenia zdolności przesyłowych:</p>
+<ul>
+  <li>model sieci AAC (ID3C-751),</li>
+  <li>plik wartości X-nodes dla wirtualnych hubów powiązanych z wewnętrznymi interkonektorami (ID3C-752),</li>
+  <li>Merging Response (ID3C-615),</li>
+  <li>IDCF CGM dla 18 znaczników czasowych (timestamps) objętych przez IDCC(c), w pliku zip (ID3C-613).</li>
+</ul>
+<p>Dostarczenie pakietu mergingowego (CGM, model sieci AAC, Merging Response, wartości X-nodes) jest wykonywane dwukrotnie pod rząd w procesie IDCC(c), aby umożliwić operatorowi Merging Coreso sprawdzenie i zastosowanie niezbędnych fallbacków. Proces obejmuje First CGM Data Gathering (otwarcie bramek dla CGM Merging, wyzwolenie CGM Merging, dystrybucja danych RCC i JAO) oraz Second CGM Data Gathering (ponowne otwarcie bramek, wyzwolenie mergingu, zamknięcie bramek, dystrybucja). Właściciel: CCC; narzędzie: CCCt; counterparty: ME, TSOs, JAO. Czasy: zgodnie z harmonogramem HLBP.</p>
+
+<h5>Procesy Backup i Fallback</h5>
+<p>Gdy tylko zostanie zidentyfikowany problem z CCCt, CCC musi zadzwonić lub wysłać e-mail do helpdesku Unicorn Core. Jeśli problem wynika z brakujących danych wejściowych, należy zastosować poniższe backupy przed wskazanym czasem CET.</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>Backup ID</th><th>Process Step</th><th>Description</th><th>Solution/Action</th><th>Owner</th><th>Tool</th><th>Email Template #</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ID3C_5</td>
+      <td>First or second CGM data gathering</td>
+      <td>Brakujący, niekompletny lub niepoprawny CGM</td>
+      <td>1) Jeśli pakiet mergingowy CGM nie jest w ogóle dostarczony: 1. Merging entity informuje wszystkie strony e-mailem o automatycznym fallbacku dostarczonym przez CCCt (email template 15 missing Coreso Inputs). 2) W przypadku braku CGM dla niektórych timestampów w pakiecie mergingowym, operator CCCt poinformuje wszystkie strony za pomocą email template 17.</td>
+      <td>Coreso</td>
+      <td>CCCt, CGM merging tool of Coreso</td>
+      <td>15, 17</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>RefProg Computation (obliczenie RefProg)</h4>
+<p>Celem tego kroku jest wyprowadzenie programu referencyjnego (reference programme) z modelu sieci AAC dostarczonego w pierwszym, drugim lub trzecim kroku CGM Data Gathering. Czynności: utworzenie szablonu RefProg, split flows przed wyzwoleniem FBPCM RefProg Calculation, wyzwolenie FBPCM dla obliczenia RefProg, przetworzenie wyników, przygotowanie wewnętrznego RefProg oraz dystrybucja wyników. Właściciel: CCC; narzędzia: CCCt, FBPCM; counterparty: TSOs, JAO. Czasy: zgodnie z harmonogramem HLBP.</p>
+
+<h4>TSO data merging (łączenie danych TSO)</h4>
+<p>Celem tego etapu jest zebranie i połączenie danych wymaganych do początkowego obliczenia FB, jak pokazano na Rysunku 3. Proces otwiera bramkę dla TSO, aby dostarczyć wymagane dane wejściowe; bramka zamyka się w określonym czasie lub później (w przypadku oczekiwania na obowiązkowy odbiór danych).</p>
+<p><em>Rysunek 3: Initial TSO receiving steps</em></p>
+<p>Czynności obejmują m.in.: ponowne otwarcie bramek dla modyfikacji CGM, zamknięcie odbioru wstępnych danych TSO (GLSK, EC, CB, Individual RA Settings, Individual TOPO updates), sprawdzenie EC/ATC pod kątem dostawy VH, połączenie i dystrybucję EC, GLSK, CB, Initial RA Settings, Initial Topological Measure updates oraz Initial CGM modifications, utworzenie finalnej wersji CO Dictionary, split flows i zastosowanie Initial CGM modifications, przetworzenie wyników FBC, dystrybucję zaktualizowanego CGM (CGM, CGM DQC) oraz dystrybucję Merged AAC na potrzeby fallbacku i obliczenia początkowego. Właściciel: CCC; narzędzia: CCCt, FBPCM; counterparty: TSOs.</p>
+<p><strong>Ramy czasowe:</strong> czasy zgodnie z HLBP, patrz Sekcja 2.1.</p>
+
+<h5>Procesy Backup i Fallback</h5>
+<p>Gdy tylko zostanie zidentyfikowany problem z CCCt, CCC musi zadzwonić lub wysłać e-mail do helpdesku Unicorn Core. Jeśli problem wynika z brakujących danych wejściowych, należy zastosować poniższe backupy przed wskazanym czasem CET.</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>Backup ID</th><th>Process Step</th><th>Description</th><th>Solution/Action</th><th>Owner</th><th>Tool</th><th>Email Template #</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ID3C_6</td>
+      <td>TSO data merging</td>
+      <td>Brak obowiązkowego pliku wejściowego</td>
+      <td>1. Zadzwonienie do odpowiedzialnej strony i zażądanie pliku w target end time, do dostarczenia przed Critical End Time. 2. Poinformowanie wszystkich stron za pomocą email template.</td>
+      <td>CCC</td>
+      <td>CCCt</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>ID3C_7</td>
+      <td></td>
+      <td>Brakujący lub niepoprawny indywidualny GLSK (brak zastępstwa)</td>
+      <td>Jeśli GLSK nie może być dostarczony i/lub pomyślnie skorygowany przez TSO, jeśli zaproponuje to TSO, poproś Unicorn o zastąpienie zgodnie ze strategią zastępstwa wybraną przez TSO ==> Poinformuj wszystkie strony o zastąpionym pliku e-mailem. Jeśli GLSK nie może być dostarczony lub błąd pozostaje ==>> Blocked BD Computation => Wymuszenie bramek CCCt i kontynuacja procesu z Fallback Domain. Poinformuj wszystkie strony e-mailem.</td>
+      <td>CCC</td>
+      <td>CCCt</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>ID3C_8</td>
+      <td></td>
+      <td>Brakujący lub niepoprawny indywidualny External constraint (brak zastępstwa)</td>
+      <td>Jeśli EC nie może być dostarczony i/lub pomyślnie skorygowany przez TSO (jeśli zaproponuje to dany TSO), poproś Unicorn o zastąpienie zgodnie ze strategią zastępstwa wybraną przez TSO ==> Poinformuj wszystkie strony o zastąpionym pliku e-mailem. Jeśli EC nie może być dostarczony lub błąd pozostaje ==>> Blocked BD Computation => Wymuszenie bramek CCCt i kontynuacja procesu z Fallback Domain. Poinformuj wszystkie strony e-mailem.</td>
+      <td>CCC</td>
+      <td>CCCt</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>ID3C_9</td>
+      <td></td>
+      <td>Brakujący lub niepoprawny indywidualny plik CB</td>
+      <td>Jeśli plik CB nie może być dostarczony i/lub pomyślnie skorygowany przez TSO (jeśli zaproponuje to dany TSO), poproś Unicorn o zastąpienie zgodnie ze strategią zastępstwa wybraną przez TSO ==> Poinformuj wszystkie strony o zastąpionym pliku e-mailem. Jeśli plik CB nie może być dostarczony lub błąd pozostaje ==>> Blocked BD Computation => Wymuszenie bramek CCCt i kontynuacja procesu z Fallback Domain. Poinformuj wszystkie strony e-mailem.</td>
+      <td>CCC</td>
+      <td>CCCt</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Export CGM at AAC before Initial FB Computation (eksport CGM przy AAC przed początkowym obliczeniem FB)</h4>
+<p>Funkcjonalność SIDC ON umożliwia uwzględnienie najnowszych informacji rynkowych w obliczeniu FB dla dodatkowych granic spoza Core, zamiast już nieaktualnych prognoz. Zapewnia to, że wyniki lepiej odzwierciedlają rzeczywistą sytuację rynkową, dzięki czemu TSO mogą lepiej przygotować i alokować pozostałe zdolności przesyłowe w kolejnych rynkach. Aby przesunąć CGM do SIDC, pliki CGM od RCC są aktualizowane o najnowsze dane AAC z XBID. Czynności: dystrybucja danych wejściowych dla Export CGM i Initial FB Computation, split flows, wyzwolenie FBPCM dla CGM at AAC, przetworzenie i dystrybucja CGM at AAC (CGM at AAC Grid Model). Właściciel: CCC; narzędzia: CCCt, FBPCM. Czasy: zgodnie z harmonogramem HLBP.</p>
+
+<h4>Initial flow-based computation (początkowe obliczenie flow-based)</h4>
+<p>CCCt oblicza początkowe parametry FB, czyli PTDF i RAM dla każdego początkowego CNEC. Początkowa scalona lista CNEC jest tworzona przez połączenie indywidualnych list CNEC wszystkich TSO z obszaru Core. Następnie wykonywana jest selekcja CNEC w celu usunięcia tych CNEC, dla których maksymalny PTDF zone-to-zone dla wszystkich wymian w obrębie Core jest mniejszy niż 5%. CNEC z maksymalnym PTDF zone-to-zone równym lub większym niż 5% stanowią finalną listę CNEC. Sprawdzenie to, oraz spełnienie kryterium 5%, jest wykonywane osobno dla każdego timestampu doby handlowej. Na końcu obliczenia wyniki są zapisywane przez CCCt i wysyłane do TSO. Dedykowane wyniki, takie jak zaktualizowany plik CB, są wysyłane do CCC. Czynności: split flows przed wyzwoleniem FBPCM dla Initial FBC, wyzwolenie FBPCM dla Initial FBC, eksport vertices oraz ekstrakcja ID ATC, przetworzenie wyników Initial FBC, przygotowanie wewnętrznego RefProg po obliczeniu początkowym, dystrybucja wyników Initial FBC. Właściciel: CCC; narzędzia: CCCt, FBPCM.</p>
+
+<h5>Procesy Backup i Fallback</h5>
+<p>Gdy tylko zostanie zidentyfikowany problem z CCCt, CCC musi zadzwonić lub wysłać e-mail do helpdesku Unicorn Core. Jeśli ma to zastosowanie, wyzwól poniższe działania przed czasem Backup/fallback.</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>Backup ID</th><th>Process Step</th><th>Description</th><th>Solution/Action</th><th>Owner</th><th>Tool</th><th>Email Template #</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ID3C_10</td>
+      <td>Initial FB computation</td>
+      <td>Problem/błąd z początkowym obliczeniem FB</td>
+      <td>Jeśli obliczenie nie zostanie pomyślnie zakończone do Critical End Time, poinformuj strony za pomocą email template o niepowodzeniu dostarczenia obliczonych NTC.</td>
+      <td>CCC</td>
+      <td>Email</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>ID3C_11</td>
+      <td></td>
+      <td>Fallback zastosowany dla TS podczas początkowego obliczenia FB</td>
+      <td>1. Poinformuj wszystkie strony za pomocą email template o wynikach i timestampach, dla których zastosowano fallback. 2. Wyzwól dochodzenie przez Unicorn.</td>
+      <td>CCC</td>
+      <td>Email</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Individual Validation (walidacja indywidualna)</h4>
+<p>Czynności: ponowne otwarcie Individual Validation, zamknięcie Individual Validation (Individual CB validation, Individual ATC validation), połączenie i dystrybucja walidacji (Merged CB validation, Merged ATC validation). Właściciel: CCC; narzędzie: CCCt; counterparty: TSOs, JAO. Celem tej fazy jest to, aby każdy TSO z obszaru Core przeanalizował, czy zdolność cross-zonal mogłaby naruszyć operacyjne limity bezpieczeństwa w jego własnym obszarze regulacyjnym oraz czy tych naruszeń można uniknąć poprzez zastosowanie RA. Czasy: zgodnie z harmonogramem HLBP.</p>
+
+<h5>Procesy Backup i Fallback</h5>
+<p>Gdy tylko zostanie zidentyfikowany problem z CCCt, CCC musi zadzwonić lub wysłać e-mail do helpdesku Unicorn Core, aby rozwiązali oni problem przed Critical End Time danego kroku procesu. Czasy procesu są szczegółowo opisane w dokumencie Excel HLBP, o którym mowa w Sekcji 2.1.</p>
+
+<h4>Final FB Computation (finalne obliczenie FB)</h4>
+<p>Finalne obliczenie parametrów FB obejmuje obliczenie domeny FB na podstawie najnowszych danych wejściowych. Czynności: split flows przed wyzwoleniem FBPCM dla Final FBC, wyzwolenie FBPCM dla Final FBC, przetworzenie wyników Final FBC, dystrybucja Fallback Report po obliczeniu finalnym. Właściciel: CCC; narzędzia: CCCt, FBPCM.</p>
+<p>Obliczone parametry FB wskazują, jakie pozycje netto — przy danych Critical Branches określonych przez TSO w obszarze Core — mogą być umożliwione w handlu ID bez zagrażania bezpieczeństwu sieci. Dla finalnego obliczenia FB wyniki początkowego obliczenia FB są aktualizowane o IVA przesłane przez TSO, aby uwzględnić wynik fazy walidacji. Dodatkowo TSO mogą zaktualizować EC dla tego kroku procesu. Finalne wyniki FB są w kolejnym kroku przesunięte do najnowszego AAC.</p>
+
+<h5>Procesy Backup i Fallback</h5>
+<p>Gdy tylko zostanie zidentyfikowany problem z CCCt, CCC musi zadzwonić lub wysłać e-mail do helpdesku Unicorn Core. Jeśli ma to zastosowanie, wyzwól poniższe działania przed czasem Backup/fallback.</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>Backup ID</th><th>Process Step</th><th>Description</th><th>Solution/Action</th><th>Owner</th><th>Tool</th><th>Email Template #</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ID3C_12</td>
+      <td>Final FB computation</td>
+      <td>Problem/błąd z finalnym obliczeniem FB</td>
+      <td>Jeśli obliczenie nie zostanie pomyślnie zakończone do Critical End Time, poinformuj strony za pomocą email template o niepowodzeniu dostarczenia obliczonych NTC.</td>
+      <td>CCC</td>
+      <td>Email</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>ID3C_13</td>
+      <td></td>
+      <td>Fallback zastosowany dla TS podczas finalnego obliczenia FB</td>
+      <td>1. Poinformuj wszystkie strony za pomocą email template o wynikach i timestampach, dla których zastosowano fallback. 2. Wyzwól dochodzenie przez Unicorn.</td>
+      <td>CCC</td>
+      <td>Email</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Czasy Backup/Fallback są szczegółowo opisane w dokumencie Excel HLBP udostępnionym w Sekcji 2.1.</p>
+
+<h4>Market Coupling Inputs Gathering (zbieranie danych wejściowych Market Coupling)</h4>
+<p>Mechanizm Market Coupling dla horyzontu Intraday nie jest jeszcze w stanie obsłużyć parametrów flow-based. Aby obsłużyć wyniki obliczenia zdolności przesyłowych, należy wykonać ekstrakcję ID ATC/NTC, którą przeprowadza się na najnowszej pozycji rynkowej ID, będącej NP wynikającymi z już alokowanych zdolności (AAC). Czynności: ponowne otwarcie bramek dla AAC i AC, sprawdzenie terminowości dostawy AAC, zamknięcie MC Inputs Gathering, dystrybucja Merged AAC na potrzeby ekstrakcji ID ATC. Właściciel: CCC; narzędzie: CCCt; counterparty: XBID, TSOs.</p>
+<p>AAC są dostarczane codziennie, na poziomie Core BZB przez XBID.</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>Party</th><th>Party code</th><th>Mandatory</th><th>MessageFlow number</th><th>Description</th><th>Receiver</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>XBID</td><td>…</td><td>YES</td><td>830</td><td>Already Allocated Capacities (AAC)</td><td>Core IDCC Tool</td></tr>
+  </tbody>
+</table>
+
+<h5>Procesy Backup i Fallback</h5>
+<p>Jeśli AAC nie zostaną otrzymane na czas, ekstrakcja ID ATC nie może zostać wykonana. Dlatego CCCt sprawdza retrospektywnie, czy aktualizacja AAC została otrzymana w ciągu ostatnich 17 minut. W przypadku braku otrzymanych AAC proces czeka maksymalnie dodatkowe 5 minut. Jeśli warunek nie zostanie spełniony, proces kończy się niepowodzeniem automatycznie.</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>Backup ID</th><th>Process Step</th><th>Description</th><th>Solution/Action</th><th>Owner</th><th>Tool</th><th>Email Template #</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ID3C_14</td>
+      <td></td>
+      <td>Automatyczne niepowodzenie procesu z powodu braku aktualizacji AAC</td>
+      <td>1. Poinformuj wszystkie strony e-mailem o niepowodzeniu procesu. 2. Wyślij UMM.</td>
+      <td>CCC</td>
+      <td>Email</td>
+      <td>2, 28</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>ID ATC Extraction (ekstrakcja ID ATC)</h4>
+<p>Ostatnim krokiem przed wysłaniem wyników obliczenia zdolności przesyłowych do procesu couplingu jest ekstrakcja ID ATC (oraz powiązanego NTC, ponieważ Coupling Mechanism używa NTC i AAC w swoim procesie couplingu). ID ATC składa się z trzech kroków: po pierwsze, obliczany jest pozostały RAM po AAC; po drugie, ujemne RAM są ucinane do zera, „low PTDF" poniżej określonego progu dla CNEC o niskich RAM są ustawiane na zero, a dodatnie RAM są używane do obliczenia pozostałych dodatnich ATC dla rynku intraday. Na końcu ujemne RAM, wcześniej ucięte, są używane do obliczenia ujemnych ATC. Czynności: split flows przed wyzwoleniem FBPCM dla ID ATC, wyzwolenie FBPCM dla ID ATC, przetworzenie wyników ID ATC, dystrybucja wyników ID ATC do XBID (NTCs), dystrybucja wyników ID ATC (ATCs, NTCs) do TSO, dystrybucja merged ATC Reduction (Merged ATCs), dystrybucja wyników Final FBC (Final Domain). Właściciel: CCC; narzędzia: CCCt, FBPCM; counterparty: XBID, TSOs, JAO.</p>
+<p>Do obliczenia ID ATC dla SIDC wymagane są następujące dane wejściowe:</p>
+<ul>
+  <li>finalne parametry flow-based dla każdego MTU procesu Core ID CC przy RefProg Balance, składające się z PTDF opartych na CGM oraz RAM dla wszystkich CNEC zgodnie z Artykułem 21 ID CCM,</li>
+  <li>External Constraints, jeśli to konieczne,</li>
+  <li>model sieci AAC oraz najnowszy AAC wysłany przez XBID.</li>
+</ul>
+<p>Wyjścia to:</p>
+<ul>
+  <li>ID NTCs (ID3C-921),</li>
+  <li>ID ATCs (ID3C-922).</li>
+</ul>
+
+<h5>Procesy Backup i Fallback</h5>
+<p>Gdy tylko zostanie zidentyfikowany problem z CCCt, CCC musi zadzwonić lub wysłać e-mail do helpdesku Unicorn Core.</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>Backup ID</th><th>Process Step</th><th>Description</th><th>Solution/Action</th><th>Owner</th><th>Tool</th><th>Email Template #</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ID3C_15</td>
+      <td>ID ATC Extraction</td>
+      <td>Nieudana ekstrakcja ATC</td>
+      <td>1. Jeśli obliczenie nie zostanie pomyślnie zakończone do Critical End Time, poinformuj strony za pomocą email template o niepowodzeniu dostarczenia obliczonych NTC. 2. Wyślij UMM.</td>
+      <td>CCC</td>
+      <td>XBID, ID_CCCt</td>
+      <td>2, 28</td>
+    </tr>
+    <tr>
+      <td>ID3C_16</td>
+      <td></td>
+      <td>Brak dystrybucji NTC (ID3C-921-xx) do XBID</td>
+      <td>1. Przesłanie do XBID przez sFTP i oczekiwanie na pozytywny ACK. 2. Poinformowanie stron za pomocą email template. 3. Poproszenie USY o zbadanie problemu.</td>
+      <td>CCC</td>
+      <td>XBID, Email</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>ID3C_17</td>
+      <td></td>
+      <td>Brakujący lub negatywny ACK dla NTC (ID3C-921-xx)</td>
+      <td>1. Wgranie dotkniętych flows przez sFTP do XBID (kanał zapasowy) i sprawdzenie otrzymanych plików ACK. 2. Jeśli nadal nie otrzymano (lub otrzymano negatywny) ACK, sprawdź dotknięte granice w XBID. <strong>JEŚLI GUI XBID wskazuje prawidłowy odbiór (obliczone NTC):</strong> 3. Kontynuuj normalnie. 4. Poinformuj strony za pomocą email template. 5. Poproś USY i DBAG Helpdesk o zbadanie problemu. <strong>JEŚLI GUI XBID wskazuje BRAK prawidłowego odbioru (obliczone NTC):</strong> 3. Jeśli plik jest błędny, rozpocznij dochodzenie z USY Helpdesk w celu naprawy problemu i dostarcz przez CCCt do XBID (kanał podstawowy) lub przez sFTP do XBID (kanał zapasowy). 4. Jeśli problem jest spowodowany wiadomością ACK, prześlij pliki do XBID przez sFTP (publikacja w folderze „in") i czekaj na pozytywny ACK (dostępny w folderze „out"). 5. CCC wgrywa pozytywny ACK do CCCt. 6. Poinformuj strony za pomocą email template. 7. Poproś USY/DBAG helpdesk o zbadanie problemu.</td>
+      <td>CCC</td>
+      <td>XBID, Email</td>
+      <td>12, 7</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Zastrzeżenie</strong> – w scenariuszu normalnego dnia CCC nie będzie weryfikować prawidłowej publikacji przez GUI XBID CMM. CCC weryfikuje prawidłowe dostarczenie do XBID za pomocą interfejsu GUI CCCt. Ponadto przesyłanie plików ID3C-921-XX przez sFTP do XBID oraz transfer plików ACK z XBID do CCCt przez sFTP odbywa się na zasadzie best effort po stronie CCC. W takim przypadku, jak wspomniano w email template, TSO po obu stronach granicy ponoszą współodpowiedzialność za sprawdzenie, czy wgrano prawidłowe zdolności przesyłowe dla ich granicy. Jeśli to możliwe, TSO powinni potwierdzić wobec CCC, że zdolności na ich granicy są prawidłowe.</p>
+
+<p>Czasy Backup/Fallback są szczegółowo opisane w dokumencie Excel HLBP dostępnym w Sekcji 2.1.</p>
+
+<h4>Export CGM at the Already Allocated Capacities (eksport CGM przy już alokowanych zdolnościach)</h4>
+<p>Podczas tego kroku procesu dostarczony CGM jest aktualizowany o najnowsze wymiany handlowe z XBID. Sprowadza się to do przesunięcia dostarczonego CGM do AAC. Ponieważ początkowy połączony CGM jest dostarczany przy RefProg, CGM muszą zostać zaktualizowane ze względu na ciągły handel. Dlatego CGM zostanie przesunięty do najnowszych wymian z wykorzystaniem GLSK od TSO. Czynności: split flows przed wyzwoleniem FBPCM dla AAC export, wyzwolenie FBPCM dla AAC export, przetworzenie wyników FBC, dystrybucja CGM at AAC. Właściciel: CCC; narzędzia: CCCt, FBPCM; counterparty: TSOs.</p>
+
+<h5>Procesy Backup i Fallback</h5>
+<p>Gdy tylko zostanie zidentyfikowany problem z CCCt, CCC musi zadzwonić lub wysłać e-mail do helpdesku Unicorn Core.</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>Backup ID</th><th>Process Step</th><th>Description</th><th>Solution/Action</th><th>Owner</th><th>Tool</th><th>Email Template #</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ID3C_18</td>
+      <td>Export CGM at AACs</td>
+      <td>Problem/błąd z obliczeniem</td>
+      <td>1. Poproś USY o rozwiązanie problemu. 2. Jeśli problem nie zostanie rozwiązany do Critical End Time, poinformuj strony e-mailem.</td>
+      <td>CCC</td>
+      <td>Email</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Nodal PTDF calculation (obliczenie węzłowych PTDF)</h4>
+<p>To pod-obliczenie, podobne do obliczenia parametrów FB, rozpoczyna się po zakończeniu kroku CIA. Specjalizuje się w nowym wyborze szyny slack (slack bus selection) z węzłowym obliczeniem PTDF i wyeksportuje wartości PTDF dla określonego, wymaganego zbioru węzłów. Wyjściem tego kroku jest ID3C-935 – GLSK Nodal PTDFs. Czynności: split flows przed wyzwoleniem FBPCM dla Nodal PTDF calculation, wyzwolenie FBPCM dla Nodal PTDF calculation, przetworzenie Nodal PTDF, dystrybucja GLSK Nodal PTDFs. Właściciel: CCC; narzędzia: CCCt, FBPCM; counterparty: TSOs.</p>
+
+<h5>Procesy Backup i Fallback</h5>
+<p>Gdy tylko zostanie zidentyfikowany problem z CCCt, CCC musi zadzwonić lub wysłać e-mail do helpdesku Unicorn Core.</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>Backup ID</th><th>Process Step</th><th>Description</th><th>Solution/Action</th><th>Owner</th><th>Tool</th><th>Email Template #</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ID3C_19</td>
+      <td>Nodal PTDF calculation</td>
+      <td>Problem/błąd z obliczeniem</td>
+      <td>1. Poproś USY o rozwiązanie problemu. 2. Jeśli problem nie zostanie rozwiązany do Critical End Time, poinformuj strony e-mailem.</td>
+      <td>CCC</td>
+      <td>Email</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Translate Domain to AAC (translacja domeny do AAC)</h4>
+<p>Podczas tego kroku procesu domena FB jest tłumaczona na AAC, a wyniki są dystrybuowane przez MD-936, dla którego rozdzielczość zależy od rozdzielczości wejściowych AAC. Wymagane warunki wstępne do wykonania tego kroku: zakończenie poprzedniego kroku procesu. Wyjścia to:</p>
+<ul>
+  <li>ID3C-990 – FBPCM DQC report,</li>
+  <li>ID3C-924 – FBPCM log and cfg,</li>
+  <li>ID3C-936 – AAC FB domain.</li>
+</ul>
+<p>Czynności: split flows przed wyzwoleniem FBPCM dla Translate FB Domain to AAC, wyzwolenie FBPCM dla Translate FB Domain to AAC, przetworzenie Translate FB Domain to AAC, dystrybucja FB Domain at AAC point (AAC FB Domain), utworzenie DQC dla FBPCM Response Statuses, dystrybucja FBPCM Response Statuses Report (FBPCM DQC Report), dystrybucja plików LOG (FBPCM Log files). Właściciel: CCC; narzędzia: CCCt, FBPCM; counterparty: TSOs.</p>
+
+<h5>Procesy Backup i Fallback</h5>
+<p>Gdy tylko zostanie zidentyfikowany problem z CCCt, CCC musi zadzwonić lub wysłać e-mail do helpdesku Unicorn Core.</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>Backup ID</th><th>Process Step</th><th>Description</th><th>Solution/Action</th><th>Owner</th><th>Tool</th><th>Email Template #</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ID3C_20</td>
+      <td>Translate FB domain at AACs</td>
+      <td>Problem/błąd z obliczeniem</td>
+      <td>1. Poproś USY o rozwiązanie problemu. 2. Jeśli problem nie zostanie rozwiązany do Critical End Time, poinformuj strony e-mailem.</td>
+      <td>CCC</td>
+      <td>Email</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Net Positions from RefProg Computation (obliczenie pozycji netto z RefProg)</h4>
+<p>Podczas tego kroku procesu FBPCM tłumaczy wyniki RefProg na wektor Net Position, który ma być użyty jako punkt startowy dla obliczenia zdolności przesyłowych intraday. Czynności: split flows przed wyzwoleniem Net Position from RefProg computation, wyzwolenie Net Position Computation, przetworzenie wyników Net Position Computation, dystrybucja wyników Net Position Computation (AAC FB Domain). Właściciel: CCC; narzędzia: CCCt, FBPCM; counterparty: TSOs.</p>
+
+<h4>Distribute Inputs for next Intraday Process (dystrybucja danych wejściowych do kolejnego procesu Intraday)</h4>
+<p>Ta końcowa faza procesu zamyka proces, tworzy i dystrybuuje ostatnie raporty oraz przekazuje finalną domenę do kolejnego procesu w przypadku fallbacku. Czynności: dystrybucja danych do kolejnego procesu Intraday, dystrybucja FBPCM Response Statuses Report, dystrybucja plików LOG i raportów, Presolved FB Parameters dostosowane do nominacji LT, wyłączenie przekazywania NTC od TSO. Właściciel: CCC; narzędzia: CCCt, FBPCM.</p>
+
+<h4>General Fallbacks (ogólne fallbacki)</h4>
+
+<table class="ref">
+  <thead>
+    <tr><th>Backup ID</th><th>Process Step</th><th>Description</th><th>Solution/Action</th><th>Owner</th><th>Tool</th><th>Email Template #</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ID3C_21</td>
+      <td>Whole Process</td>
+      <td>ID CCCt jest niedostępny/wyłączony w CET któregokolwiek z kroków procesu</td>
+      <td>1. Poinformuj strony za pomocą email template o niepowodzeniu procesu. 2. Poproś USY o zbadanie problemu. 3. Wyślij UMM.</td>
+      <td>CCC</td>
+      <td>Email</td>
+      <td>2, 28</td>
+    </tr>
+    <tr>
+      <td>ID3C_22</td>
+      <td></td>
+      <td>Problem EDX/ECP między TSO a CCCt</td>
+      <td>1. Operator TSO informuje USY o problemie lub informuje CCC. 2. Operator TSO ręcznie wgrywa dane wejściowe do CCCt przez Message Viewer lub dostarcza pliki do CCC e-mailem.</td>
+      <td>TSOs</td>
+      <td>Local Tools, CCCt</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>ID3C_23</td>
+      <td></td>
+      <td>Kill (zabicie) procesu IDCC</td>
+      <td>Jeśli proces zakończył się niepowodzeniem i jest zwracany do TSO: 1. CCC prosi USY o zabicie bieżącej instancji procesu. Uwaga: Działanie minimalizujące ryzyko, że CCCt wyśle nieoczekiwane pliki do XBID i nadpisze wartości dostarczone przez TSO.</td>
+      <td>CCC</td>
+      <td>CCCt</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>

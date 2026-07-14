@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Instrukcja dla bazodanowca — baza treści popupów IDCC</title>
+<style>
+  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; max-width:1080px; margin:0 auto; padding:16px; background:#f4f5f7; color:#172B4D; line-height:1.5; }
+  .topbar { background:#1F4E78; color:#fff; padding:14px 22px; margin:-16px -16px 18px; }
+  .topbar h1 { margin:0; font-size:1.2em; } .topbar .sub{font-size:.82em;opacity:.85;margin-top:3px;}
+  .box { background:#fff; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,.08); padding:10px 18px 16px; margin:14px 0; }
+  h2 { color:#1F4E78; border-bottom:2px solid #E3F2FD; padding-bottom:6px; font-size:1.05em; }
+  h3 { font-size:.95em; color:#172B4D; margin:14px 0 4px; }
+  table { border-collapse:collapse; width:100%; font-size:.84em; margin:6px 0; }
+  th,td { border:1px solid #DFE1E6; padding:5px 8px; text-align:left; vertical-align:top; }
+  th { background:#1F4E78; color:#fff; }
+  tr:nth-child(even) td{background:#FAFBFC;}
+  code { background:#F4F5F7; padding:1px 4px; border-radius:3px; font-family:"SF Mono",Consolas,monospace; font-size:.86em; }
+  pre { background:#0b1f33; color:#e6edf3; padding:12px 14px; border-radius:6px; overflow-x:auto; font-size:.82em; line-height:1.4; }
+  pre .k{color:#79c0ff;}
+  .note { background:#EDF6FC; border-left:4px solid #1F4E78; padding:8px 12px; border-radius:0 3px 3px 0; font-size:.9em; margin:10px 0; }
+  .warn { background:#FFFAE6; border-left:4px solid #FFC107; padding:8px 12px; border-radius:0 3px 3px 0; font-size:.9em; margin:10px 0; }
+  b{color:#172B4D;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>Instrukcja dla bazodanowca — baza treści popupów IDCC</h1>
+  <div class="sub">Import danych pulpitu CCM + renderowanie identyczne jak w Confluence (Storage Format).</div>
+</div>
+
+<div class="box">
+<h2>1. Pliki źródłowe</h2>
+<table>
+<tr><th>Plik</th><th>Rekordy</th><th>Poziom</th><th>Format</th></tr>
+<tr><td><code>popup_content_IDCC.csv</code> / <code>.json</code></td><td>126</td><td>plik (1 wiersz pulpitu)</td><td>CSV: UTF-8 <b>BOM</b>, separator <code>;</code>, pola w <code>"</code> / JSON: tablica obiektów</td></tr>
+<tr><td><code>popup_states_IDCC.csv</code> / <code>.json</code></td><td>82</td><td>stan kafelków (per wariant)</td><td>jw.</td></tr>
+<tr><td><code>popup_confluence_storage.xml</code></td><td>208 bloków</td><td>gotowa treść Confluence</td><td>Confluence Storage Format (XHTML + makra)</td></tr>
+</table>
+<div class="note">Kodowanie wszystkich plików: <b>UTF-8</b> (CSV z BOM dla Excela). Separator CSV: średnik <code>;</code>. Każde pole ujęte w cudzysłów <code>"</code> (cudzysłowy wewnętrzne podwojone). Pola z HTML nie zawierają znaków nowej linii.</div>
+</div>
+
+<div class="box">
+<h2>2. Schemat tabel (DDL — PostgreSQL)</h2>
+<pre><span class="k">CREATE TABLE</span> fid_files (
+  lp                INT <span class="k">PRIMARY KEY</span>,
+  kod               VARCHAR(40),
+  obszar            VARCHAR(120),
+  iteracja          VARCHAR(12),
+  nazwa_przeplywu   VARCHAR(200),
+  typ               VARCHAR(16),
+  profil            VARCHAR(8),
+  target_end_time   VARCHAR(5),      <span class="k">-- 'HH:MM'</span>
+  critical_end_time VARCHAR(5),
+  wersja            INT,
+  opis_pliku        TEXT,
+  sciezka_pliku     TEXT,            <span class="k">-- zawiera HTML (linki)</span>
+  zrodlo            VARCHAR(120),
+  kontakt           TEXT,
+  popup_html        VARCHAR(120),
+  uwagi             TEXT,
+  confluence_storage TEXT            <span class="k">-- gotowy Storage Format</span>
+);
+
+<span class="k">CREATE TABLE</span> fid_states (
+  wariant           VARCHAR(60),
+  profil            VARCHAR(8),
+  nr                INT,
+  kategoria         CHAR(1),         <span class="k">-- A/B/C/D</span>
+  kategoria_nazwa   VARCHAR(24),
+  kafelek1_kod      VARCHAR(16),
+  kafelek1          VARCHAR(40),
+  kafelek2_kod      VARCHAR(16),
+  kafelek2          VARCHAR(40),
+  opis_stanu        TEXT,
+  procedura_html    TEXT,            <span class="k">-- HTML drzewka (linki)</span>
+  confluence_storage TEXT,
+  <span class="k">PRIMARY KEY</span> (wariant, nr)
+);</pre>
+<div class="note">MySQL: typy <code>VARCHAR</code>→jw., <code>TEXT</code>→<code>MEDIUMTEXT</code>, kolacja <code>utf8mb4_unicode_ci</code>. Oracle: <code>VARCHAR2</code>, <code>CLOB</code> dla pól HTML.</div>
+</div>
+
+<div class="box">
+<h2>3. Import</h2>
+<h3>PostgreSQL (CSV)</h3>
+<pre><span class="k">\copy</span> fid_files <span class="k">FROM</span> 'popup_content_IDCC.csv'
+  <span class="k">WITH</span> (FORMAT csv, DELIMITER ';', QUOTE '"', HEADER true, ENCODING 'UTF8');
+<span class="k">\copy</span> fid_states <span class="k">FROM</span> 'popup_states_IDCC.csv'
+  <span class="k">WITH</span> (FORMAT csv, DELIMITER ';', QUOTE '"', HEADER true, ENCODING 'UTF8');</pre>
+<h3>MySQL (CSV)</h3>
+<pre><span class="k">LOAD DATA LOCAL INFILE</span> 'popup_content_IDCC.csv' <span class="k">INTO TABLE</span> fid_files
+  CHARACTER SET utf8mb4
+  FIELDS TERMINATED BY ';' ENCLOSED BY '"'
+  LINES TERMINATED BY '\n' IGNORE 1 LINES;</pre>
+<div class="warn">CSV ma <b>BOM</b> — przy MySQL/niektórych narzędziach usuń BOM lub użyj plików <code>.json</code>. W JSON pola <code>confluence_storage</code>, <code>procedura_html</code>, <code>sciezka_pliku</code> są gotowymi stringami HTML/XML.</div>
+</div>
+
+<div class="box">
+<h2>4. Relacja plik ↔ stany</h2>
+<p>Stany są zdefiniowane <b>per wariant</b> (wspólne dla wielu plików). Plik łączy się ze stanami przez <b>typ → wariant</b>:</p>
+<table>
+<tr><th>typ pliku</th><th>wariant stanów (<code>fid_states.wariant</code>)</th><th>liczba stanów</th></tr>
+<tr><td>831</td><td>2CCT — AC (źródło ZP)</td><td>32</td></tr>
+<tr><td>607, 617</td><td>2CCT — GLSK/CBCORA (źródło Kreator)</td><td>32</td></tr>
+<tr><td>928</td><td>928 — ATC Based Validation (zwrotny)</td><td>18</td></tr>
+</table>
+<p>Tabela mapująca (zalecane):</p>
+<pre><span class="k">CREATE TABLE</span> fid_typ_wariant (typ VARCHAR(16) <span class="k">PRIMARY KEY</span>, wariant VARCHAR(60));
+<span class="k">INSERT INTO</span> fid_typ_wariant <span class="k">VALUES</span>
+ ('831','2CCT — AC (źródło ZP)'),
+ ('607','2CCT — GLSK/CBCORA (źródło Kreator)'),
+ ('617','2CCT — GLSK/CBCORA (źródło Kreator)'),
+ ('928','928 — ATC Based Validation (zwrotny)');
+
+<span class="k">-- popup pliku + jego macierz stanów:</span>
+<span class="k">SELECT</span> f.kod, f.opis_pliku, s.nr, s.kafelek1, s.kafelek2, s.opis_stanu, s.procedura_html
+<span class="k">FROM</span> fid_files f
+<span class="k">JOIN</span> fid_typ_wariant m <span class="k">ON</span> m.typ = f.typ
+<span class="k">JOIN</span> fid_states s    <span class="k">ON</span> s.wariant = m.wariant
+<span class="k">WHERE</span> f.kod = 'FID3-607'
+<span class="k">ORDER BY</span> s.nr;</pre>
+<div class="warn">Macierze stanów istnieją dla profili z popupami: <b>2CCT</b> (831/607/617) i <b>928</b>. Profile <b>3COL</b> (IVA 710), <b>MIN / 2MS / SFTP</b> nie mają jeszcze macierzy — te pliki mają na razie tylko warstwę plik-poziom (<code>fid_files</code>).</div>
+</div>
+
+<div class="box">
+<h2>5. Pola z treścią HTML</h2>
+<ul>
+<li><code>opis_pliku</code>, <code>opis_stanu</code>, <code>zrodlo</code>, <code>kontakt</code> — tekst (mogą zawierać znaki <code>&amp;</code>, polskie znaki).</li>
+<li><code>sciezka_pliku</code>, <code>procedura_html</code> — <b>HTML</b> (linki <code>&lt;a href&gt;</code>, listy, <code>&lt;code&gt;</code>). Renderować jako HTML (<b>nie</b> escapować przy wyświetlaniu).</li>
+<li><code>confluence_storage</code> — <b>Confluence Storage Format</b> (XHTML + makra). Do bezpośredniego wstawienia na stronę Confluence.</li>
+</ul>
+<div class="note">Linki w polach HTML wskazują pliki lokalne (np. <code>Inwentarz_IDCC.html#N02</code>, <code>Ryzyka_pelna_baza_IDCC.html#R05</code>). Przed publikacją podmień bazowe adresy na URL-e docelowego systemu (strony Confluence / aplikacji).</div>
+</div>
+
+<div class="box">
+<h2>6. Renderowanie identyczne jak w Confluence</h2>
+<p>Każdy rekord ma kolumnę <code>confluence_storage</code> w <b>Confluence Storage Format</b> — gotowa treść panelu, renderuje się identycznie jak w Confluence (makro <code>panel</code> + lozenże <code>status</code> dla kafelków).</p>
+<h3>Wstawienie na stronę Confluence (REST API)</h3>
+<pre><span class="k">PUT</span> /rest/api/content/{pageId}
+{
+  "version": { "number": N+1 },
+  "type": "page", "title": "...",
+  "body": { "storage": { "value": "&lt;wartość confluence_storage&gt;", "representation": "storage" } }
+}</pre>
+<p>Lub ręcznie: edytor strony → <code>Insert &gt; Markup &gt; Confluence storage</code> → wklej blok z <code>popup_confluence_storage.xml</code>.</p>
+<h3>Mapowanie kafelek → makro status (lozenża Confluence)</h3>
+<table>
+<tr><th>Kafelek</th><th>colour</th><th>title</th></tr>
+<tr><td>zielony / zielony R / ciemnozielony W / W po CET</td><td><b>Green</b></td><td>nazwa kafelka</td></tr>
+<tr><td>czerwony / czerwony ! / czerwony ?</td><td><b>Red</b></td><td>nazwa kafelka</td></tr>
+<tr><td>pomarańczowy</td><td><b>Yellow</b></td><td>pomarańczowy</td></tr>
+<tr><td>fioletowy</td><td><b>Blue</b></td><td>fioletowy</td></tr>
+<tr><td>szary / szary ? / czarny / puste</td><td><b>Grey</b></td><td>nazwa kafelka</td></tr>
+</table>
+<div class="warn">Makro <code>status</code> w Confluence ma 5 kolorów (Grey/Red/Yellow/Green/Blue) — nie ma fioletu ani czerni. Odwzorowano najbliższym kolorem + tytuł = pełna nazwa kafelka (fioletowy→Blue, czarny→Grey). Jeśli front-end ma renderować dokładne kolory kafelków, użyj <code>procedura_html</code>/własnego komponentu zamiast makra status.</div>
+</div>
+
+<div class="box">
+<h2>7. Podsumowanie kolumn</h2>
+<h3>fid_files (126)</h3>
+<p><code>lp</code> (PK) · <code>kod</code> · <code>obszar</code> · <code>iteracja</code> · <code>nazwa_przeplywu</code> · <code>typ</code> · <code>profil</code> · <code>target_end_time</code> · <code>critical_end_time</code> · <code>wersja</code> · <code>opis_pliku</code> · <code>sciezka_pliku</code> · <code>zrodlo</code> · <code>kontakt</code> · <code>popup_html</code> · <code>uwagi</code> · <code>confluence_storage</code></p>
+<h3>fid_states (82)</h3>
+<p><code>wariant</code> · <code>profil</code> · <code>nr</code> · <code>kategoria</code> · <code>kategoria_nazwa</code> · <code>kafelek1_kod</code> · <code>kafelek1</code> · <code>kafelek2_kod</code> · <code>kafelek2</code> · <code>opis_stanu</code> · <code>procedura_html</code> · <code>confluence_storage</code></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,495 @@
+<h3 id="proc-mail">Szablony maili operacyjnych (Core ID)</h3>
+<p>Gotowe wzory maili (PL: tylko podtytuł „Kiedy"; treść maili pozostaje po angielsku — to realne komunikaty operacyjne wysyłane w Core ID1/ID2). Szablony oznaczone „⚑ dotyczy granic PSE" zawierają w tabeli granice z udziałem PSE: 50Hertz-PSE, CEPS-PSE oraz SEPS-PLC.</p>
+
+<div class="mailtpl">
+  <h4>01 — Critical issue in CCCt</h4>
+  <p class="when"><b>Kiedy:</b> Gdy w narzędziu CCCt wystąpi krytyczny problem i operator musi zgłosić go do Core Helpdesk.</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator</td></tr>
+    <tr><th>To</th><td>Core ID Helpdesk</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_01] Critical issue in CCCt</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the process and the business date in the title</strong></p>
+    <p>Dear Core Helpdesk,</p>
+    <ul>
+      <li>Time (day and hour) when the problem occurred;</li>
+      <li>Process (ID1/ID2)</li>
+      <li>Business day when the problem occurred;</li>
+      <li>Description of the situation: when in the process did the problem occur (f.e during initial data gathering)? Which files were available, which settings (for example for replacement) where set during that time and what alarms / events where created?</li>
+      <li>What steps did the CSO take? For example: pushed a button once or more times, logged off to try again, etc.</li>
+      <li><strong>Print screens which explain the situation, are highly recommended, since this helps to solve the issue sooner. If possible, please provide these to the Helpdesk.</strong></li>
+    </ul>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>02 — Failed process ⚑ dotyczy granic PSE</h4>
+  <p class="when"><b>Kiedy:</b> Gdy proces CCCt zakończy się niepowodzeniem przed Critical End Time i TSO muszą dostarczyć zdolności przesyłowe lokalnymi narzędziami do XBID.</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_02] ID1/ID2 – CCCt process failed for BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <em>Update the process and the business date in the title.</em> <em>Attach the latest set of created NTCs if possible. If ID1 failed, attach the merged High Neg. NTCs created with the BT.</em></p>
+    <p>Dear all,</p>
+    <p>We would like to inform you that due to "<em>specify</em> issue (Jira ticket FCCM-XXX)" with no solution before Critical End Time, the ID1/ID2 process for BD DD.MM.YYYY has failed to provide capacities. <strong>All TSOs are requested to provide the following capacities via their local tooling to XBID if applicable:</strong></p>
+    <ul>
+      <li>Zero AACs</li>
+      <li>High Negative NTCs</li>
+      <li>Day-ahead AACs (Confirm delivery to RCC in the respective IC)</li>
+      <li>None – IDCC(a) NTCs will prevail</li>
+      <li>None – Process failed after final NTCs were delivered</li>
+      <li>None – High Negative NTCs were sent to XBID (backup tool)</li>
+    </ul>
+    <p>Following files created by the CCCt are attached:</p>
+    <ul>
+      <li>Zero AACs</li>
+      <li>High Negative NTCs (ID1/ID2-921-XX)</li>
+      <li>Merged High Negative NTCs (ID1/ID2-921)</li>
+      <li>Day-ahead AACs NTCs</li>
+      <li>None</li>
+    </ul>
+    <table class="ref">
+      <tr><th>Border</th><th>Interconnector/Border Level</th><th>Providing TSO(s) of MD250</th><th>Accepted TSO senders by XBID</th></tr>
+      <tr><td>50Hertz-PSE</td><td>Interconnector</td><td>50Hertz</td><td>50Hertz, PSE</td></tr>
+      <tr><td>DE-AT</td><td>Border</td><td>APG</td><td>Amprion, APG</td></tr>
+      <tr><td>AMP-ELIA</td><td>Interconnector</td><td>Elia</td><td>Amprion, Elia</td></tr>
+      <tr><td>DE-FR</td><td>Border</td><td>Amprion</td><td>Amprion, RTE</td></tr>
+      <tr><td>DE-NL</td><td>Border</td><td>TTN</td><td>TTG, TTN</td></tr>
+      <tr><td>CZ-DE</td><td>Border</td><td>CEPS</td><td>CEPS</td></tr>
+      <tr><td>CEPS-APG</td><td>Interconnector</td><td>APG</td><td>CEPS, APG</td></tr>
+      <tr><td>CEPS-PSE</td><td>Interconnector</td><td>PSE</td><td>CEPS, PSE</td></tr>
+      <tr><td>ELES-APG</td><td>Interconnector</td><td>APG</td><td>APG, ELES</td></tr>
+      <tr><td>ELES-HOPS</td><td>Interconnector</td><td>ELES</td><td>ELES, HOPs</td></tr>
+      <tr><td>ELIA-TTN</td><td>Interconnector</td><td>Elia</td><td>Elia, TTN</td></tr>
+      <tr><td>HOPS-MAVIR</td><td>Interconnector</td><td>HOPS</td><td>HOPS, MAVIR</td></tr>
+      <tr><td>MAVIR-APG</td><td>Interconnector</td><td>APG</td><td>APG, MAVIR</td></tr>
+      <tr><td>MAVIR-ELES</td><td>Interconnector</td><td>MAVIR</td><td>ELES, MAVIR</td></tr>
+      <tr><td>MAVIR-TEL</td><td>Interconnector</td><td>MAVIR</td><td>MAVIR, Transelectrica</td></tr>
+      <tr><td>RTE-ELIA</td><td>Interconnector</td><td>Elia</td><td>Elia, RTE</td></tr>
+      <tr><td>SEPS-CEPS</td><td>Interconnector</td><td>CEPS</td><td>CEPS, SEPS</td></tr>
+      <tr><td>SEPS-MAVIR</td><td>Interconnector</td><td>MAVIR</td><td>MAVIR, SEPS</td></tr>
+      <tr><td>SEPS-PLC</td><td>Interconnector</td><td>PSE</td><td>PSE, SEPS</td></tr>
+    </table>
+    <p>Please provide confirmation once your borders have been updated in XBID.</p>
+    <p><strong>Note: For all steps for which TSOs will have to apply an action per border, the accepted TSO senders by XBID per border are listed above. The responsibility to perform actions on a border remains a shared responsibility for the TSOs on both sides of a border if possible.</strong></p>
+    <p>We are sorry for the inconvenience. The issue is under further investigation.</p>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>03 — Replaced input data</h4>
+  <p class="when"><b>Kiedy:</b> Gdy obowiązkowy plik wejściowy brakuje blisko Critical End Time i strona odpowiedzialna zastępuje brakujące dane danymi z innej doby, aby nie zerwać BD.</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_03] ID1/ID2 – Input data replaced BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the process and the business date in the title</strong></p>
+    <p>Dear all,</p>
+    <p>We would like to inform you that the following mandatory file(s) for the ID1/ID2 process "specify the flow number and responsible party e.g. TSOX-FXXX" were missing close to Critical End Time. To not fail the BD, the responsible party has proposed to replace the missing data with data from BD XX.XX.</p>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>04 — Warning: file missing</h4>
+  <p class="when"><b>Kiedy:</b> Ostrzeżenie, że plik wejściowy brakuje przy Target End Time bez możliwości zastąpienia — przy braku dostawy obliczenia pójdą w trybie fallback.</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_04] ID1/ID2 – Warning! Missing file for BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the process and the business date in the title</strong></p>
+    <p>Dear all,</p>
+    <p>We would like to inform you that the following file(s) are missing in the ID1/ID2 process with no possibility of replacement in the CCCt at Target End Time: "specify the flow number and responsible party e.g. FXXX from XXX". In case the file(s) are not delivered on time, the computation for BD DD.MM.YYYY will be computed in fallback mode.</p>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>05 — Application of fallbacks with CCCt</h4>
+  <p class="when"><b>Kiedy:</b> Gdy któryś krok obliczeniowy CCCt zakończył się z zastosowaniem fallbacku dla wskazanych godzin doby.</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_05] ID1/ID2 – Fallback applied with CCCt BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the process and the business date in the title</strong></p>
+    <p>Dear all,</p>
+    <p>We would like to inform you that for the ID1/ID2 process the Calculate enlarged domain / Initial / Final FB Computation / ID ATC Extraction finished with the fallback ID Domain AAC / DA Domain Refprog / DA Domain AAC fallback / Zero Capacity fallback (Negative NTCs) for TSs XX:XX – XX:XX of BD XX.XX.</p>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>06 — Back-up operator appointed to operate the CCCt</h4>
+  <p class="when"><b>Kiedy:</b> Gdy z powodu niedostępności operatora CCC rolę operatora CCCt przejmuje strona zapasowa (back-up).</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_06] ID1/ID2 – Back-up operator X appointed to operate the CCCt for BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the process and the business date in the title</strong></p>
+    <p>Dear all,</p>
+    <p>We would like to inform you that due to "specify issue (e.g. unavailability of the CCC operator, inability to access CCCt)" during the Core ID1/ID2 process for BD XX.XX, back-up party X will take over the operator role of the CCCt for BD XX.XX.</p>
+    <p>This issue is under investigation.</p>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>07 — Distribution of NTCs via sFTP ⚑ dotyczy granic PSE</h4>
+  <p class="when"><b>Kiedy:</b> Gdy NTC/High Neg. NTC zostały wysłane do XBID kanałem zapasowym (sFTP) po awarii ECP i TSO mają zweryfikować ich obecność w XBID.</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_07] ID1/ID2 – Distribution of High Neg. NTCs/NTCs to XBID via secondary channel for BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the process and the business date in the title.</strong> <em>Attach all ID1/ID2-921-XX AND ID1/ID2-921 – Merged NTCs.</em></p>
+    <p>Dear all,</p>
+    <p><strong>TSOs are requested to crosscheck the provided NTCs on XBID.</strong></p>
+    <p>We would like to inform you that High Negative NTCs/NTCs to XBID were distributed via the secondary channel (sFTP). Due to the short time scale, the correct presence of NTCs in XBID cannot be guaranteed. Thus, all TSOs are kindly asked to crosscheck the provided NTCs on XBID if possible. The failed delivery via ECP (primary channel) is under investigation.</p>
+    <p>Please find attached: Individual NTCs (ID1/ID2-921-XX), Merged NTCs (ID1/ID2-921).</p>
+    <table class="ref">
+      <tr><th>Border</th><th>Interconnector/Border Level</th><th>Providing TSO(s) of MD250</th><th>Accepted TSO senders by XBID</th></tr>
+      <tr><td>50Hertz-PSE</td><td>Interconnector</td><td>50Hertz</td><td>50Hertz, PSE</td></tr>
+      <tr><td>DE-AT</td><td>Border</td><td>APG</td><td>Amprion, APG</td></tr>
+      <tr><td>AMP-ELIA</td><td>Interconnector</td><td>Elia</td><td>Amprion, Elia</td></tr>
+      <tr><td>DE-FR</td><td>Border</td><td>Amprion</td><td>Amprion, RTE</td></tr>
+      <tr><td>DE-NL</td><td>Border</td><td>TTN</td><td>TTG, TTN</td></tr>
+      <tr><td>CZ-DE</td><td>Border</td><td>CEPS</td><td>CEPS</td></tr>
+      <tr><td>CEPS-APG</td><td>Interconnector</td><td>APG</td><td>CEPS, APG</td></tr>
+      <tr><td>CEPS-PSE</td><td>Interconnector</td><td>PSE</td><td>CEPS, PSE</td></tr>
+      <tr><td>ELES-APG</td><td>Interconnector</td><td>APG</td><td>APG, ELES</td></tr>
+      <tr><td>ELES-HOPS</td><td>Interconnector</td><td>ELES</td><td>ELES, HOPs</td></tr>
+      <tr><td>ELIA-TTN</td><td>Interconnector</td><td>Elia</td><td>Elia, TTN</td></tr>
+      <tr><td>HOPS-MAVIR</td><td>Interconnector</td><td>HOPS</td><td>HOPS, MAVIR</td></tr>
+      <tr><td>MAVIR-APG</td><td>Interconnector</td><td>APG</td><td>APG, MAVIR</td></tr>
+      <tr><td>MAVIR-ELES</td><td>Interconnector</td><td>MAVIR</td><td>ELES, MAVIR</td></tr>
+      <tr><td>MAVIR-TEL</td><td>Interconnector</td><td>MAVIR</td><td>MAVIR, Transelectrica</td></tr>
+      <tr><td>RTE-ELIA</td><td>Interconnector</td><td>Elia</td><td>Elia, RTE</td></tr>
+      <tr><td>SEPS-CEPS</td><td>Interconnector</td><td>CEPS</td><td>CEPS, SEPS</td></tr>
+      <tr><td>SEPS-MAVIR</td><td>Interconnector</td><td>MAVIR</td><td>MAVIR, SEPS</td></tr>
+      <tr><td>SEPS-PLC</td><td>Interconnector</td><td>PSE</td><td>PSE, SEPS</td></tr>
+    </table>
+    <p>Please provide confirmation once your borders have been updated in XBID.</p>
+    <p><strong>Note: For all steps for which TSOs will have to apply an action per border, the accepted TSO senders by XBID per border are listed above. The responsibility to perform actions on a border remains a shared responsibility for the TSOs on both sides of a border if possible.</strong></p>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>08 — Distribution of AACs via sFTP</h4>
+  <p class="when"><b>Kiedy:</b> Informacja, że Zero AACs/AACs wysłano do XBID kanałem zapasowym (sFTP) po awarii ECP — bez wymaganych działań ze strony TSO.</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_08] ID1 – Distribution of Zero AACs/AACs to XBID via secondary channel for BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the business date in the title</strong></p>
+    <p>Dear all,</p>
+    <p><strong>Please note, this is an informative message. No actions are required from your side.</strong></p>
+    <p>We would like to inform you that Zero AACs/AACs were distributed from the CCCt to XBID via the secondary channel (sFTP). The failed delivery via ECP (primary channel) is under investigation.</p>
+    <p>Please find attached: Individual AACs (ID1-373-XX, ID1-383-XX).</p>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>09 — Manual creation of DACC inputs via backup tools</h4>
+  <p class="when"><b>Kiedy:</b> Gdy z powodu niedostępności narzędzia CORE DA CC pliki wejściowe IDCC tworzone są ręcznie w narzędziach zapasowych (CORE BT / JAO SEC tool).</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_09] ID1 – Manual creation of DACC inputs via backup tools for BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the business date in the title</strong></p>
+    <p>Dear all,</p>
+    <p><strong>Please note, this is an informative message. No actions are required from your side.</strong></p>
+    <p>We would like to inform you that due to the unavailability of the CORE DA CC tool the following inputs for the IDCC process were manually created via the backup tools (CORE BT/JAO SEC tool) and uploaded to the CORE IDCC tool:</p>
+    <p>CORE backup tool:</p>
+    <ul>
+      <li>ID1 – 624 – Merged LTNom</li>
+      <li>ID1 – 625 – Fallback ATCs for SA</li>
+      <li>ID1 – 626 – Fallback NTCs for SA</li>
+      <li>ID1 – 629 – Merged LTA</li>
+    </ul>
+    <p>JAO SEC tool:</p>
+    <ul>
+      <li>ID1 – 646 – SAR DQC</li>
+      <li>ID1 – 647 – RD ID ATC</li>
+      <li>ID1 – 648 – Merged AC</li>
+      <li>ID1 – 649 – RD for AAC</li>
+    </ul>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>10 — Missing AAC ACK ⚑ dotyczy granic PSE</h4>
+  <p class="when"><b>Kiedy:</b> Gdy brakuje potwierdzenia (ACK) AAC z XBID — poprawność odbioru sprawdzono w XBID GUI, a ACK podano ręcznie; TSO mają zweryfikować AAC na swoich granicach.</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_10] ID1 – Missing AAC Acknowledgment from XBID for BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the business date in the title</strong></p>
+    <p>Dear all,</p>
+    <p><strong>All TSOs are kindly asked to crosscheck the provided AACs on their borders in XBID. In case you find anything unexpected, please give us a call immediately.</strong></p>
+    <p>Due to missing acknowledgments from XBID, we verified that the XBID GUI is indicating the correct receiving of the latest AAC files. Thus, the ACK was provided manually to the CCCt. The ID1 process continued with the <em>Initial ID ATC Extraction</em>.</p>
+    <p><strong>Note:</strong> The ACK of AACs is necessary to ensure that AACs and NTCs are provided in the correct order to XBID.</p>
+    <table class="ref">
+      <tr><th>Border</th><th>Interconnector/Border Level</th><th>Providing TSO(s) of MD250</th><th>Accepted TSO senders by XBID</th></tr>
+      <tr><td>50Hertz-PSE</td><td>Interconnector</td><td>50Hertz</td><td>50Hertz, PSE</td></tr>
+      <tr><td>DE-AT</td><td>Border</td><td>APG</td><td>Amprion, APG</td></tr>
+      <tr><td>AMP-ELIA</td><td>Interconnector</td><td>Elia</td><td>Amprion, Elia</td></tr>
+      <tr><td>DE-FR</td><td>Border</td><td>Amprion</td><td>Amprion, RTE</td></tr>
+      <tr><td>DE-NL</td><td>Border</td><td>TTN</td><td>TTG, TTN</td></tr>
+      <tr><td>CZ-DE</td><td>Border</td><td>CEPS</td><td>CEPS</td></tr>
+      <tr><td>CEPS-APG</td><td>Interconnector</td><td>APG</td><td>CEPS, APG</td></tr>
+      <tr><td>CEPS-PSE</td><td>Interconnector</td><td>PSE</td><td>CEPS, PSE</td></tr>
+      <tr><td>ELES-APG</td><td>Interconnector</td><td>APG</td><td>APG, ELES</td></tr>
+      <tr><td>ELES-HOPS</td><td>Interconnector</td><td>ELES</td><td>ELES, HOPs</td></tr>
+      <tr><td>ELIA-TTN</td><td>Interconnector</td><td>Elia</td><td>Elia, TTN</td></tr>
+      <tr><td>HOPS-MAVIR</td><td>Interconnector</td><td>HOPS</td><td>HOPS, MAVIR</td></tr>
+      <tr><td>MAVIR-APG</td><td>Interconnector</td><td>APG</td><td>APG, MAVIR</td></tr>
+      <tr><td>MAVIR-ELES</td><td>Interconnector</td><td>MAVIR</td><td>ELES, MAVIR</td></tr>
+      <tr><td>MAVIR-TEL</td><td>Interconnector</td><td>MAVIR</td><td>MAVIR, Transelectrica</td></tr>
+      <tr><td>RTE-ELIA</td><td>Interconnector</td><td>Elia</td><td>Elia, RTE</td></tr>
+      <tr><td>SEPS-CEPS</td><td>Interconnector</td><td>CEPS</td><td>CEPS, SEPS</td></tr>
+      <tr><td>SEPS-MAVIR</td><td>Interconnector</td><td>MAVIR</td><td>MAVIR, SEPS</td></tr>
+      <tr><td>SEPS-PLC</td><td>Interconnector</td><td>PSE</td><td>PSE, SEPS</td></tr>
+    </table>
+    <p>Please provide confirmation once your borders have been updated in XBID.</p>
+    <p><strong>Note: For all steps for which TSOs will have to apply an action per border, the accepted TSO senders by XBID per border are listed above. The responsibility to perform actions on a border remains a shared responsibility for the TSOs on both sides of a border if possible.</strong></p>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>11 — Delayed process</h4>
+  <p class="when"><b>Kiedy:</b> Informacja o opóźnieniu bieżącego kroku procesu IDCC i wpływie na kolejny krok — bez wymaganych działań ze strony TSO.</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_11] ID1/ID2 – Current IDCC process delayed for BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the process and the business date in the title</strong></p>
+    <p>Dear all,</p>
+    <p><strong>Please note, this is an informative message. No actions are required from your side.</strong></p>
+    <p>We would like to inform you that due to delay on "describe step delayed" due to "specify cause of delay", the following step "indicate the next step which is impacted" will be delayed (If you know, indicate time when process is planned to continue). Thanks in advance for your understanding.</p>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>12 — Manual ACK of Zero AACs and/or NTCs ⚑ dotyczy granic PSE</h4>
+  <p class="when"><b>Kiedy:</b> Gdy wystąpiły problemy z potwierdzeniem (ACK) 0AAC/High Neg. NTC/NTC — poprawne przekazanie do XBID sprawdzono ręcznie w GUI; TSO mają zweryfikować zdolności na swoich granicach.</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_12] ID1 – Manual ACK of Zero AACs and/or NTCs for BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the business date in the title</strong></p>
+    <p>Dear all,</p>
+    <p><strong>All TSOs are kindly asked to crosscheck the provided capacities on their borders in XBID. In case you find anything unexpected, please give us a call immediately.</strong></p>
+    <p>We would like to inform you that we faced issues with the acknowledgment of 0AACs/High Negative NTCs/NTCs. The correct provisioning to XBID was manually checked (XBID GUI) and confirmed.</p>
+    <table class="ref">
+      <tr><th>Border</th><th>Interconnector/Border Level</th><th>Providing TSO(s) of MD250</th><th>Accepted TSO senders by XBID</th></tr>
+      <tr><td>50Hertz-PSE</td><td>Interconnector</td><td>50Hertz</td><td>50Hertz, PSE</td></tr>
+      <tr><td>DE-AT</td><td>Border</td><td>APG</td><td>Amprion, APG</td></tr>
+      <tr><td>AMP-ELIA</td><td>Interconnector</td><td>Elia</td><td>Amprion, Elia</td></tr>
+      <tr><td>DE-FR</td><td>Border</td><td>Amprion</td><td>Amprion, RTE</td></tr>
+      <tr><td>DE-NL</td><td>Border</td><td>TTN</td><td>TTG, TTN</td></tr>
+      <tr><td>CZ-DE</td><td>Border</td><td>CEPS</td><td>CEPS</td></tr>
+      <tr><td>CEPS-APG</td><td>Interconnector</td><td>APG</td><td>CEPS, APG</td></tr>
+      <tr><td>CEPS-PSE</td><td>Interconnector</td><td>PSE</td><td>CEPS, PSE</td></tr>
+      <tr><td>ELES-APG</td><td>Interconnector</td><td>APG</td><td>APG, ELES</td></tr>
+      <tr><td>ELES-HOPS</td><td>Interconnector</td><td>ELES</td><td>ELES, HOPs</td></tr>
+      <tr><td>ELIA-TTN</td><td>Interconnector</td><td>Elia</td><td>Elia, TTN</td></tr>
+      <tr><td>HOPS-MAVIR</td><td>Interconnector</td><td>HOPS</td><td>HOPS, MAVIR</td></tr>
+      <tr><td>MAVIR-APG</td><td>Interconnector</td><td>APG</td><td>APG, MAVIR</td></tr>
+      <tr><td>MAVIR-ELES</td><td>Interconnector</td><td>MAVIR</td><td>ELES, MAVIR</td></tr>
+      <tr><td>MAVIR-TEL</td><td>Interconnector</td><td>MAVIR</td><td>MAVIR, Transelectrica</td></tr>
+      <tr><td>RTE-ELIA</td><td>Interconnector</td><td>Elia</td><td>Elia, RTE</td></tr>
+      <tr><td>SEPS-CEPS</td><td>Interconnector</td><td>CEPS</td><td>CEPS, SEPS</td></tr>
+      <tr><td>SEPS-MAVIR</td><td>Interconnector</td><td>MAVIR</td><td>MAVIR, SEPS</td></tr>
+      <tr><td>SEPS-PLC</td><td>Interconnector</td><td>PSE</td><td>PSE, SEPS</td></tr>
+    </table>
+    <p>Please provide confirmation once your borders have been updated in XBID.</p>
+    <p><strong>Note: For all steps for which TSOs will have to apply an action per border, the accepted TSO senders by XBID per border are listed above. The responsibility to perform actions on a border remains a shared responsibility for the TSOs on both sides of a border if possible.</strong></p>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>13 — Manual provisioning of AACs to CCCt</h4>
+  <p class="when"><b>Kiedy:</b> Gdy z powodu problemów łączności XBID–CCCt AAC (TAR) dostarczane są ręcznie do CCCt kanałem zapasowym (sFTP); ryzyko awarii ID2, jeśli problem nie ustąpi.</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_13] ID2 – Manual delivery of AACs from XBID to CCCt for BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the business date in the title</strong></p>
+    <p>Dear all,</p>
+    <p><strong>Please note, this is an informative message. No actions are required from your side.</strong></p>
+    <p>Due to issues with the connection between XBID and the CCCt, AACs (TAR) were manually provided to the CCCt by the means of the secondary channel (sFTP). The issue is under investigation by Unicorn and DBAG.</p>
+    <p><strong>Note: In this situation AACs are not regularly updated anymore. If the issue cannot be solved until the MC Inputs Gathering phase, this will lead to a failure of the ID2 process!</strong></p>
+    <p>Best regards,<br>Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>14 — Manual provisioning of SEC tool inputs</h4>
+  <p class="when"><b>Kiedy:</b> Informacja od JAO, że pliki MCR zostały utworzone narzędziem SEC Tool i wgrane do procesu CORE IDCC.</p>
+  <table class="ref">
+    <tr><th>From</th><td>JAO Operator</td></tr>
+    <tr><th>To</th><td>CCC, Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_14] ID1 – Manual delivery of MCR inputs via SEC Tool for BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the business date in the title</strong></p>
+    <p>Dear all,</p>
+    <p><strong>Please note, this is an informative message. No actions are required from your side.</strong></p>
+    <p>JAO successfully created the following files with the SEC Tool and uploaded them to the CORE IDCC process:</p>
+    <ul>
+      <li>ID1 – 646 – SAR DQC</li>
+      <li>ID1 – 647 – RD ID ATC</li>
+      <li>ID1 – 648 – Merged AC</li>
+      <li>ID1 – 649 – RD for AAC</li>
+    </ul>
+    <p>Best regards,<br>JAO Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>16 — Incorrect CGM</h4>
+  <p class="when"><b>Kiedy:</b> Gdy połączony DACF Coreso/TSCNET nie został wytworzony i zamiast niego użyto indywidualnego DACF (Coreso lub TSCNET).</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator (Coreso only)</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_16] ID2 – Combined DACF not available for ID2 process for BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the business date in the title</strong></p>
+    <p>Dear all,</p>
+    <p><strong>Please note, this is an informative message. No actions are required from your side.</strong></p>
+    <p>The production of the combined Coreso/TSCNET DACF was not successfully completed. Therefore, the individual DACF of Coreso/TSCNET (delete one) has been used instead.</p>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>17 — Missing CGM</h4>
+  <p class="when"><b>Kiedy:</b> Gdy połączony DACF nie powstał i nie dało się go zastąpić ani DACF Coreso, ani TSCNET — narzędzie CC zastosowało automatyczny fallback (DA Domain AAC).</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator (Coreso only)</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_16] ID2 – DACF not available for ID2 process for BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the business date in the title</strong></p>
+    <p>Dear all,</p>
+    <p><strong>Please note, this is an informative message. No actions are required from your side.</strong></p>
+    <p>The production of the combined DACF was not successfully completed and it was not possible to substitute either the Coreso or TSCNET DACF in its place. Therefore, the following automatic fallback has been applied by the Core CC tool: DA Domain AAC Fallback.</p>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>18 — Missing or incorrect AAC grid model</h4>
+  <p class="when"><b>Kiedy:</b> Gdy nie udało się dostarczyć modelu sieci AAC do procesu IDCC(b) — narzędzie CC zastosowało automatyczny fallback (DA Domain AAC).</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator (Coreso only)</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_18] ID2 – Missing or incorrect AAC grid model used in ID2 process for BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the business date in the title</strong></p>
+    <p>Dear all,</p>
+    <p><strong>Please note, this is an informative message. No actions are required from your side.</strong></p>
+    <p>It was not possible to provide an AAC grid model to the IDCC(b) process. The following automatic fallback has been applied by the Core CC tool: DA Domain AAC Fallback.</p>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>19 — Missing individual inputs due to unavailability of DA CCCt</h4>
+  <p class="when"><b>Kiedy:</b> Gdy z powodu niedostępności narzędzia CORE DA brakuje indywidualnych plików wejściowych IDCC — TSO proszeni o ręczne dostarczenie ich do ID CCCt.</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator (Coreso only)</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_19] ID2 – Missing inputs due to unavailability of DA CCCt for BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the business date in the title</strong></p>
+    <p>Dear all,</p>
+    <p><strong>TSOs are kindly requested to provide missing files manually to the ID CCCt.</strong></p>
+    <p>Due to the unavailability of the CORE DA tool, the following inputs for the IDCC process are missing:</p>
+    <ul>
+      <li>ID2-606 (317 in DA) - GLSK Pre-Merge Factors</li>
+      <li>ID2-607 (103 in DA) - Individual Generation and Load Shift Key (GLSK)</li>
+      <li>ID2-608 (107 in DA) - Individual External Constraints (EC)</li>
+      <li>ID2-609 (510 in DA) - ECs/ATCs for virtual hubs</li>
+      <li>ID2-617 (224 in DA) - Individual Critical Branches (CB)</li>
+      <li>ID2-637 (106 in DA) - Individual Initial RA Settings</li>
+    </ul>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>
+
+<div class="mailtpl">
+  <h4>20 — SDAC De-coupling – request for provision of MD-250 files ⚑ dotyczy granic PSE</h4>
+  <p class="when"><b>Kiedy:</b> Gdy w wyniku (częściowego) decouplingu SDAC TSO są proszeni o dostarczenie plików MD-250 do CCCt dla rozłączonych granic w terminach 15:43 / 17:24.</p>
+  <table class="ref">
+    <tr><th>From</th><td>CCC Operator</td></tr>
+    <tr><th>To</th><td>Operational List</td></tr>
+    <tr><th>Subject</th><td>[CORE_ID_20] ID1 – SDAC De-coupling – request for provision of MD-250 files for BD XX.XX</td></tr>
+  </table>
+  <div class="mailbody">
+    <p><em>Dear Operator, please complete the template below by following the indications in red and modifying the bold red characters.</em> <strong>Update the business date in the title</strong></p>
+    <p>Dear all,</p>
+    <p><strong>Due to (partial) de-coupling, TSOs are kindly requested to provide MD-250 files to CCCt for borders which have been de-coupled by 15:43/17:24.</strong></p>
+    <p>Affected borders: <em>List borders or add a screenshot from the CCCt.</em></p>
+    <p>Note: For information, the first deadline of 15:43 will allow the CCCt to calculate NTCs for the provided borders. If MD250 is not provided by 15:43, the ultimate deadline for submission of MD250 is 17:24 which will allow AACs to be provided by CCCt to XBID. High Negative NTCs would remain in this case. If MD250 files are not submitted by 17:24 for a given border, it is the TSOs' responsibility to upload AACs for the missing border(s) directly to XBID. If AACs are missing for any Core border at 20:00, this will result in the failure of the IDCC(b)/ID2 process.</p>
+    <table class="ref">
+      <tr><th>Border</th><th>Interconnector/Border Level</th><th>Providing TSO(s) of MD250</th><th>Accepted TSO senders by XBID</th></tr>
+      <tr><td>50Hertz-PSE</td><td>Interconnector</td><td>50Hertz</td><td>50Hertz, PSE</td></tr>
+      <tr><td>DE-AT</td><td>Border</td><td>APG</td><td>Amprion, APG</td></tr>
+      <tr><td>AMP-ELIA</td><td>Interconnector</td><td>Elia</td><td>Amprion, Elia</td></tr>
+      <tr><td>DE-FR</td><td>Border</td><td>Amprion</td><td>Amprion, RTE</td></tr>
+      <tr><td>DE-NL</td><td>Border</td><td>TTN</td><td>TTG, TTN</td></tr>
+      <tr><td>CZ-DE</td><td>Border</td><td>CEPS</td><td>CEPS</td></tr>
+      <tr><td>CEPS-APG</td><td>Interconnector</td><td>APG</td><td>CEPS, APG</td></tr>
+      <tr><td>CEPS-PSE</td><td>Interconnector</td><td>PSE</td><td>CEPS, PSE</td></tr>
+      <tr><td>ELES-APG</td><td>Interconnector</td><td>APG</td><td>APG, ELES</td></tr>
+      <tr><td>ELES-HOPS</td><td>Interconnector</td><td>ELES</td><td>ELES, HOPs</td></tr>
+      <tr><td>ELIA-TTN</td><td>Interconnector</td><td>Elia</td><td>Elia, TTN</td></tr>
+      <tr><td>HOPS-MAVIR</td><td>Interconnector</td><td>HOPS</td><td>HOPS, MAVIR</td></tr>
+      <tr><td>MAVIR-APG</td><td>Interconnector</td><td>APG</td><td>APG, MAVIR</td></tr>
+      <tr><td>MAVIR-ELES</td><td>Interconnector</td><td>MAVIR</td><td>ELES, MAVIR</td></tr>
+      <tr><td>MAVIR-TEL</td><td>Interconnector</td><td>MAVIR</td><td>MAVIR, Transelectrica</td></tr>
+      <tr><td>RTE-ELIA</td><td>Interconnector</td><td>Elia</td><td>Elia, RTE</td></tr>
+      <tr><td>SEPS-CEPS</td><td>Interconnector</td><td>CEPS</td><td>CEPS, SEPS</td></tr>
+      <tr><td>SEPS-MAVIR</td><td>Interconnector</td><td>MAVIR</td><td>MAVIR, SEPS</td></tr>
+      <tr><td>SEPS-PLC</td><td>Interconnector</td><td>PSE</td><td>PSE, SEPS</td></tr>
+    </table>
+    <p>Best regards,<br>CCC Operator signature</p>
+  </div>
+</div>

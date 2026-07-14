@@ -1,0 +1,2783 @@
+[
+ {
+  "file": "screens/bup/image1.jpeg",
+  "screen": "miniatura/ikona",
+  "shows": "Nieczytelna miniatura z napisem 'Edit' - prawdopodobnie przycisk edycji wyciety jako osobny plik.",
+  "maps_to": "nieokreslone",
+  "text_visible": "Edit",
+  "quality": "cropped",
+  "caption": "Nieczytelna miniaturka przycisku 'Edit'"
+ },
+ {
+  "file": "screens/bup/image2.png",
+  "screen": "diagram procesu FBA",
+  "shows": "Schemat kolejnych etapow procesu FBA z wyroznionym krokiem FBA_TSO_BUP_03 Walidacja domeny (Wyznaczenie IVA) w sciezce backup.",
+  "maps_to": "kontekst procedury - umiejscowienie kroku BUP_03 w calym procesie FBA",
+  "text_visible": "Kolejne etapy procesu FBA; FBA_TSO_NOR_01..06; FBA_TSO_BUP_01..04; FBA_TSO_FAL_01; FBA_JOINT_FAL_02; Walidacja domeny FBA (Wyznaczenie IVA)",
+  "quality": "clear",
+  "caption": "Mapa etapów procesu FBA - zaznaczony krok BUP_03 walidacja domeny"
+ },
+ {
+  "file": "screens/bup/image3.png",
+  "screen": "diagram pojeciowy CNEC/RAM",
+  "shows": "Schemat skladowych zdolnosci przesylowej elementu sieci (CNEC): F0,CORE, FRM, RAM, Fmax i korekta IVA wzgledem poziomu bezpiecznego.",
+  "maps_to": "objasnienie pojec IVA/RAM/Fmax uzywanych w walidacji domeny",
+  "text_visible": "IVA - Individual Validation Adjustment; Fmax; F0,CORE; FRM; RAM; Poziom bezpieczny dla systemu; CNEC",
+  "quality": "clear",
+  "caption": "Diagram składowych CNEC - co to jest IVA, RAM, FRM, Fmax"
+ },
+ {
+  "file": "screens/bup/image4.png",
+  "screen": "Pulpit dyspozytorski - tabela przeplywow (CCM)",
+  "shows": "Tabela statusow przeplywow FBA z zaznaczonym (czerwone kolko) statusem sFTP/ZP dla paczki PERUN_DA_CCA.",
+  "maps_to": "krok walidacji domeny FBA - monitorowanie statusu przeplywow (Individual Validation)",
+  "text_visible": "Nazwa Obszaru; Nazwa przeplywu; Kod; Target/Critical End Time; CCCtool wysl./zwalid.; MinIO; sFTP/ZP wysl.; Individual Validation - walidacja domeny FBA; IVA F310; PERUN_DA_CCA",
+  "quality": "clear",
+  "caption": "Tabela przepływów FBA - status sFTP paczki PERUN_DA_CCA podświetlony"
+ },
+ {
+  "file": "screens/bup/image5.png",
+  "screen": "Pulpit dyspozytorski - tabela przeplywow (CCM)",
+  "shows": "Ta sama tabela przeplywow z zaznaczonym statusem MinIO dla paczki PERUN_DA_CCA.",
+  "maps_to": "krok walidacji domeny FBA - monitorowanie statusu MinIO przeplywu PERUN_DA_CCA",
+  "text_visible": "Individual Validation - walidacja domeny FBA; Paczka ZIP_CCA do Perun PERUN_DA_CCA; MinIO; IVA F310",
+  "quality": "clear",
+  "caption": "Tabela przepływów FBA - status MinIO paczki PERUN_DA_CCA zaznaczony"
+ },
+ {
+  "file": "screens/bup/image6.png",
+  "screen": "Pulpit dyspozytorski - tabela przeplywow (CCM)",
+  "shows": "Tabela przeplywow z zaznaczonym statusem MinIO dla paczki PERUN_DA_LTA (walidacja domeny LTA).",
+  "maps_to": "krok walidacji domeny LTA - monitorowanie statusu MinIO paczki PERUN_DA_LTA",
+  "text_visible": "Walidacja domeny LTA; Paczka ZIP_LTA do Perun PERUN_DA_LTA; IVA LTA F310_LTA",
+  "quality": "clear",
+  "caption": "Tabela przepływów FBA - status MinIO paczki PERUN_DA_LTA zaznaczony"
+ },
+ {
+  "file": "screens/bup/image7.png",
+  "screen": "Pulpit dyspozytorski - menu kontekstowe",
+  "shows": "Rozwiniete menu kontekstowe (status reczny / informacje / pobierz / wyslij) dla paczki PERUN_DA_CCA, opcja 'pobierz' podswietlona.",
+  "maps_to": "czynnosc: pobranie paczki PERUN_DA_CCA z pulpitu dyspozytorskiego",
+  "text_visible": "status reczny; informacje; pobierz; wyslij; PERUN_DA_CCA; IVA F310",
+  "quality": "clear",
+  "caption": "Menu kontekstowe paczki PERUN_DA_CCA - opcja 'pobierz'"
+ },
+ {
+  "file": "screens/bup/image8.png",
+  "screen": "Pulpit dyspozytorski - menu kontekstowe",
+  "shows": "Rozwiniete menu kontekstowe z opcja 'pobierz' podswietlona dla paczki PERUN_DA_LTA (domena LTA).",
+  "maps_to": "czynnosc: pobranie paczki PERUN_DA_LTA z pulpitu dyspozytorskiego",
+  "text_visible": "status reczny; informacje; pobierz; wyslij; PERUN_DA_LTA",
+  "quality": "clear",
+  "caption": "Menu kontekstowe paczki PERUN_DA_LTA - opcja 'pobierz'"
+ },
+ {
+  "file": "screens/bup/image9.png",
+  "screen": "TSCNET Study/Validation mode - formularz",
+  "shows": "Naglowek narzedzia walidacyjnego TSCNET: wybor daty/TSO/priorytetu/procesu (rozwinieta lista DA CCV / ID CCV), pola uploadu i przyciski akcji.",
+  "maps_to": "narzedzie zewnetrzne TSCNET Validation - konfiguracja walidacji (wybor procesu DA CCV)",
+  "text_visible": "Study/Validation mode; Select timestamp date 2023-11-14; Select TSO PSE; Select priority Low; DA CCV / ID CCV; Upload file for F427 conversion; Upload zip with TSO data for validation; Perform security assessment; Estimate security reserve",
+  "quality": "clear",
+  "caption": "TSCNET Validation - wybór procesu DA CCV i parametrów walidacji"
+ },
+ {
+  "file": "screens/bup/image10.png",
+  "screen": "TSCNET - pole uploadu",
+  "shows": "Wyciety fragment: pole 'Upload zip with TSO data for validation' (drag and drop).",
+  "maps_to": "narzedzie TSCNET - wgranie paczki ZIP z danymi TSO do walidacji",
+  "text_visible": "Upload zip with TSO data for validation; Drag and drop file here or click to select",
+  "quality": "cropped",
+  "caption": "Pole wgrywania paczki ZIP z danymi TSO (TSCNET)"
+ },
+ {
+  "file": "screens/bup/image11.png",
+  "screen": "TSCNET - pole daty",
+  "shows": "Wyciety fragment pola 'Select timestamp date' z data 2022-03-07.",
+  "maps_to": "narzedzie TSCNET - wybor daty timestamp do walidacji",
+  "text_visible": "Select timestamp date; 2022-03-07",
+  "quality": "cropped",
+  "caption": "Pole wyboru daty walidacji (TSCNET)"
+ },
+ {
+  "file": "screens/bup/image12.png",
+  "screen": "TSCNET - przycisk",
+  "shows": "Wyciety zielony przycisk 'Estimate security reserve'.",
+  "maps_to": "narzedzie TSCNET - uruchomienie szacowania rezerwy bezpieczenstwa (IVA)",
+  "text_visible": "Estimate security reserve",
+  "quality": "cropped",
+  "caption": "Przycisk 'Estimate security reserve' (TSCNET)"
+ },
+ {
+  "file": "screens/bup/image13.png",
+  "screen": "TSCNET - komunikat",
+  "shows": "Wyciety zielony komunikat potwierdzajacy 'Calculation started'.",
+  "maps_to": "narzedzie TSCNET - potwierdzenie startu obliczen walidacji",
+  "text_visible": "Calculation started",
+  "quality": "cropped",
+  "caption": "Komunikat 'Calculation started' (TSCNET)"
+ },
+ {
+  "file": "screens/bup/image14.png",
+  "screen": "TSCNET - lista oblicze (List Files)",
+  "shows": "Wiersz listy oblicze: nr 8636, data, user rafal.wojtasik@pse.pl, akcja Estimate security reserve, status liczenia 0/0/24/24.",
+  "maps_to": "narzedzie TSCNET - monitorowanie postepu obliczenia walidacji (w toku)",
+  "text_visible": "No 8636; rafal.wojtasik@pse.pl; Estimate security reserve; Calculating...; 0/0/24/24; Status Properties Stop",
+  "quality": "clear",
+  "caption": "Lista obliczeń TSCNET - zadanie 8636 w trakcie liczenia"
+ },
+ {
+  "file": "screens/bup/image15.png",
+  "screen": "TSCNET - lista oblicze (zakonczone)",
+  "shows": "Ten sam wiersz 8636 po zakonczeniu: 0/25/0/25, dostepne pobranie wynikow F310 i F427.",
+  "maps_to": "narzedzie TSCNET - zakonczone obliczenie, pobranie wynikow F310/F427",
+  "text_visible": "8636; Finished 2023-10-03 13:11:06; DA; 0/25/0/25; F310 V 1 Download; F427 V 1 Download",
+  "quality": "clear",
+  "caption": "Lista obliczeń TSCNET - zadanie 8636 zakończone, wyniki F310/F427"
+ },
+ {
+  "file": "screens/bup/image16.png",
+  "screen": "TSCNET - przycisk pobrania",
+  "shows": "Wyciety fragment 'F310 V 1 Download' z podkresleniem linku pobrania.",
+  "maps_to": "narzedzie TSCNET - pobranie pliku wynikowego F310",
+  "text_visible": "F310 V 1 Download",
+  "quality": "cropped",
+  "caption": "Link pobrania wyniku F310 (TSCNET)"
+ },
+ {
+  "file": "screens/bup/image17.png",
+  "screen": "TSCNET - wiersz listy oblicze",
+  "shows": "Wiersz obliczenia nr 1935, user pawel.rodo@pse.pl, akcja Estimate security reserve, linki Download F310/F427, Delete.",
+  "maps_to": "narzedzie TSCNET - pobranie wynikow F310/F427 dla wczesniejszego obliczenia",
+  "text_visible": "1935; pawel.rodo@pse.pl; 2022-03-07; Estimate security reserve; F310 V 1 Download; F427 V 1 Download; Delete",
+  "quality": "clear",
+  "caption": "Wiersz listy obliczeń TSCNET (1935) z linkami pobrania F310/F427"
+ },
+ {
+  "file": "screens/bup/image18.png",
+  "screen": "TSCNET - szczegoly oblicze (subtaski)",
+  "shows": "Tabela podzadan: 'Security reserve estimation' 0/24/0/24 i 'Reports creation' 0/1/0/1, oba ukonczone, linki do pobrania plikow.",
+  "maps_to": "narzedzie TSCNET - podglad ukonczenia szacowania rezerwy i generacji raportow",
+  "text_visible": "Security reserve estimation 2022-06-07 0/24/0/24; Reports creation 0/1/0/1; Completed?; Download input/output files; Download reports",
+  "quality": "clear",
+  "caption": "TSCNET - podzadania: szacowanie rezerwy i tworzenie raportów (ukończone)"
+ },
+ {
+  "file": "screens/bup/image19.png",
+  "screen": "Pulpit dyspozytorski - menu kontekstowe (wyslij)",
+  "shows": "Tabela przeplywow (puste statusy) z menu kontekstowym przy wierszu IVA BACKUP F310, opcja 'wyslij' podswietlona.",
+  "maps_to": "czynnosc: wyslanie pliku IVA BACKUP (F310) z pulpitu dyspozytorskiego",
+  "text_visible": "Individual Validation - walidacja domeny FBA; IVA F310; IVA BACKUP F310; status reczny; wyslij",
+  "quality": "clear",
+  "caption": "Menu kontekstowe IVA BACKUP F310 - opcja 'wyślij'"
+ },
+ {
+  "file": "screens/bup/image20.png",
+  "screen": "Okno systemowe + dialog 'Wyslij F310'",
+  "shows": "Okno Windows 'Otwieranie' (folder Pobrane z plikami Validation_Reports / F310) nalozone na dialog 'Wyslij F310' z polem przeciagniecia pliku.",
+  "maps_to": "czynnosc: wybor pliku F310 z dysku do wyslania w pulpicie dyspozytorskim",
+  "text_visible": "Otwieranie; Pobrane; 20250724_..._Validation_Reports; 20250724-F310-v1-10XPL-TSO...; Wyslij F310; Wybierz plik z dysku lub przeciagnij tutaj; Wyslij/Anuluj",
+  "quality": "clear",
+  "caption": "Wybór pliku F310 z folderu Pobrane do wysłania (dialog Wyślij F310)"
+ },
+ {
+  "file": "screens/bup/image21.png",
+  "screen": "Pulpit dyspozytorski DACC FB z SFTP + dialog 'Wyslij F310'",
+  "shows": "Pelny widok pulpitu (Business Day 2025-08-04) z otwartym dialogiem 'Wyslij F310' z zaladowanym plikiem 20250724-F310...xml gotowym do wyslania.",
+  "maps_to": "czynnosc: wyslanie wybranego pliku F310 w pulpicie dyspozytorskim DACC FB",
+  "text_visible": "DACC FB z SFTP Pulpit dyspozytorski; Business Day 2025-08-04; Tryb wolny (5 min); Wyslij F310; 20250724-F310-v1-10XPL-TSO...W.xml; Wyslij/Anuluj",
+  "quality": "clear",
+  "caption": "Pulpit DACC FB - plik F310 załadowany do wysłania"
+ },
+ {
+  "file": "screens/bup/image22.png",
+  "screen": "Pulpit dyspozytorski DACC FB + dialog 'Wyslij F310' (potwierdzenie)",
+  "shows": "Dialog 'Wyslij F310' (Business Day 2025-08-03) z komunikatem 'Plik wyslany' i przyciskiem Zamknij.",
+  "maps_to": "czynnosc: potwierdzenie udanego wyslania pliku F310",
+  "text_visible": "DACC FB z SFTP Pulpit dyspozytorski; 2025-08-03; Wyslij F310; 20250803-F310-v2-10XPL...; Plik wyslany; Zamknij",
+  "quality": "clear",
+  "caption": "Potwierdzenie 'Plik wysłany' dla F310 (pulpit DACC FB)"
+ },
+ {
+  "file": "screens/bup/image23.png",
+  "screen": "Pulpit dyspozytorski DACC FB - tooltip statusu",
+  "shows": "Tabela przeplywow (Business Day 2025-02-14) z tooltipem na wierszu IVA F310: 'F310-SFTP_PERUN-EDX_KAFKA_CCCTOOL wersja 1 [wyslany z CCM]', ikona statusu W.",
+  "maps_to": "krok walidacji - weryfikacja statusu wyslania IVA F310 (kanaly SFTP/PERUN/EDX/Kafka/CCCTool)",
+  "text_visible": "DACC FB z SFTP Pulpit dyspozytorski; 2025-02-14; Paczka ZIP_CCA do Perun na SFTP PERUN_DA_CCA; AGR_PERUN_DA_CCA; IVA F310 wersja 1; F310-SFTP_PERUN-EDX_KAFKA_CCCTOOL [wyslany z CCM]",
+  "quality": "clear",
+  "caption": "Pulpit DACC FB - tooltip statusu wysyłki IVA F310 (kanały dystrybucji)"
+ },
+ {
+  "file": "screens/bup/image24.png",
+  "screen": "Diagram przeplywu danych (architektura)",
+  "shows": "Schemat blokowy przeplywu paczek FB_CCA/LTA i IVA miedzy systemami: CCCTool, CN2, Minio/CCA, Minio/Perun, Perun4V, Dysk sieciowy, CCM, ZP/SYSPLAN/KDM - z numerowanymi krokami 1-11.",
+  "maps_to": "kontekst architektoniczny walidacji domeny - przeplyw danych miedzy systemami PSE",
+  "text_visible": "Perun4V; Dysk sieciowy; CCM; CCCTool; CN2; Minio/Perun; Minio/CCA; ZP, SYSPLAN, KDM; Pkt 1-11; Vertices_map_LTA/CCA; F320_CCA/LTA; IVA z domeny DA; Raporty",
+  "quality": "clear",
+  "caption": "Diagram architektury przepływu danych walidacji (CN2, Minio, CCM, Perun)"
+ },
+ {
+  "file": "screens/bup/image25.png",
+  "screen": "Core CC Tool - Process Detail (dashboard)",
+  "shows": "Glowny pulpit Core CC Tool dla D-9 05.05.2022: pasek postepu procesu (Distribute Inputs / Validation of Market Coupling Results running / Export CGM), godziny 1-24, ATC Status, Delivery Status (NEMO 192-GFC, 398-MCR blad).",
+  "maps_to": "narzedzie Core CC Tool - przeglad statusu procesu IDCC/walidacji",
+  "text_visible": "Core CC Tool; Process Detail; Message Viewer; View Results; D-9 05.05.2022; Distribute Inputs for Intraday Process; Validation of Market Coupling Results Running; Export CGM; ATC Status; Delivery Status; NEMO 192-GFC; NEMO 398-MCR",
+  "quality": "clear",
+  "caption": "Core CC Tool - dashboard procesu D-9 (Validation of Market Coupling Results)"
+ },
+ {
+  "file": "screens/bup/image26.png",
+  "screen": "Core CC Tool - Message Viewer (lista)",
+  "shows": "Lista komunikatow w Message Viewer (D-9 05.05.2022): filtry (Message Definition, Status, Sender, Receiver), 423 wynikow, pozycje 102-FBPCM log files i 437-Merged Critical Branches for IDCC.",
+  "maps_to": "narzedzie Core CC Tool - przegladanie/pobieranie komunikatow procesu",
+  "text_visible": "Message Viewer; Manual Upload; Download Selected/all filtered; Process Instance D-9 05.05.2022; Message Definition; 1-20 of 423 results; CORE->TSOs 102-FBPCM log files; CORE->CORE_IDCC_TOOL 437-Merged Critical Branches for IDCC",
+  "quality": "clear",
+  "caption": "Core CC Tool Message Viewer - lista komunikatów (102, 437)"
+ },
+ {
+  "file": "screens/bup/image27.png",
+  "screen": "Core CC Tool - Message Viewer (pozycja 312)",
+  "shows": "Wyciety pojedynczy wiersz komunikatu: OUT, Sent, '312 - Individual Filtered Critical Branches (CB)', CORE->PSE, 03.05.2022.",
+  "maps_to": "narzedzie Core CC Tool - komunikat 312 (Individual Filtered Critical Branches) wejscie do walidacji",
+  "text_visible": "OUT; Sent; 312 - Individual Filtered Critical Branches (CB); CORE->PSE; Timestamp 03.05.2022 21:27:44; Version 1",
+  "quality": "clear",
+  "caption": "Message Viewer - komunikat 312 Individual Filtered Critical Branches"
+ },
+ {
+  "file": "screens/bup/image28.png",
+  "screen": "przycisk/ikona uploadu",
+  "shows": "Wyciety mikro-fragment z ikona chmury i napisem 'XML / Zip'.",
+  "maps_to": "narzedzie - pole wgrywania pliku XML/Zip (Manual Upload)",
+  "text_visible": "XML / Zip",
+  "quality": "cropped",
+  "caption": "Ikona pola uploadu XML/Zip"
+ },
+ {
+  "file": "screens/bup/image29.png",
+  "screen": "Core CC Tool - Manual file upload",
+  "shows": "Message Viewer (D-9 11.05.2022) z otwartym dialogiem 'Manual file upload': pole XML/Zip z zaladowanym 20220501-F310...xml (828 B) i przyciskiem Upload file.",
+  "maps_to": "narzedzie Core CC Tool - reczne wgranie pliku F310 (walidacja) do procesu",
+  "text_visible": "Core CC Tool; Message Viewer; D-9 11.05.2022; Manual Upload; Manual file upload; XML / Zip; 20220501-F310-v1-10XPL-TSO...W.xml (828 B); Upload file; Cancel",
+  "quality": "clear",
+  "caption": "Core CC Tool - ręczne wgrywanie pliku F310 (Manual file upload)"
+ },
+ {
+  "file": "screens/bup/image30.png",
+  "screen": "Core CC Tool - Message Viewer (filtr 310)",
+  "shows": "Lista filtrowana po Message Definition '310 - Individual CB validation': wiersz IN, Processed, PSE->CORE, 04.01.2024, ACK Accepted.",
+  "maps_to": "narzedzie Core CC Tool - potwierdzenie przyjecia komunikatu 310 Individual CB validation (IVA)",
+  "text_visible": "Message Definition 310 - Individual CB validation; Apply; 1-20 of 20 results; IN Processed 310 - Individual CB validation; PSE->CORE; 03.01.2024 01:27:02; ACK Accepted; Version 1",
+  "quality": "clear",
+  "caption": "Message Viewer - komunikat 310 Individual CB validation (Processed/Accepted)"
+ },
+ {
+  "file": "screens/bup/image31.png",
+  "screen": "status/ikona",
+  "shows": "Wyciety mikro-fragment: zielony znacznik i napis 'Processed'.",
+  "maps_to": "narzedzie Core CC Tool - status komunikatu 'Processed'",
+  "text_visible": "Processed",
+  "quality": "cropped",
+  "caption": "Status 'Processed' (Message Viewer)"
+ },
+ {
+  "file": "screens/bup/image32.png",
+  "screen": "Pulpit dyspozytorski - rozwinieta paczka AGR_PERUN_DA",
+  "shows": "Rozwinieta paczka 'Paczka ZIP do Perun' (AGR_PERUN_DA) z lista skladowych plikow: F109, F110, F112, F212, F226, F312, F320, F515, X427, VERTICES_MAP ze statusami.",
+  "maps_to": "krok walidacji - zawartosc paczki ZIP do Perun (pliki domeny FBA)",
+  "text_visible": "Paczka ZIP do Perun AGR_PERUN_DA; Merged D-2CF Common Grid Model F109; Reference Program (RefProg) F110; Merged Generation and Load Shift Keys F112; Intermediate FB Domain F212; Real Generation and Load Shift Keys F226; Individual Filtered Critical Branches F312; Vertices of Intermediate FB Domain F320; MergingLog F515; Individual RA Potential (XLSX) X427; Vertices Map",
+  "quality": "clear",
+  "caption": "Rozwinięta paczka AGR_PERUN_DA - lista plików składowych (F109-X427)"
+ },
+ {
+  "file": "screens/bup/image33.png",
+  "screen": "1. Pulpit dyspozytorski Day-Ahead + menu kontekstowe",
+  "shows": "Pulpit Day-Ahead (Business Day 2024-01-16) z rozwinieta paczka AGR_PERUN_DA i menu kontekstowym (status reczny/informacje/pobierz/wyslij) na wierszu, opcja 'wyslij' zaznaczona.",
+  "maps_to": "czynnosc: wyslanie pliku skladowego paczki z pulpitu Day-Ahead",
+  "text_visible": "1. Pulpit dyspozytorski Day-Ahead; 2024-01-16; Paczka ZIP do Perun AGR_PERUN_DA; F109/F110/F112/F212/F226/F312/F320/F515/X427; status reczny; informacje; pobierz; wyslij",
+  "quality": "clear",
+  "caption": "Pulpit Day-Ahead - menu kontekstowe 'wyślij' na pliku paczki"
+ },
+ {
+  "file": "screens/bup/image34.png",
+  "screen": "CCM (przegladarka) - dialog 'Wyslij F333'",
+  "shows": "Pelny zrzut przegladarki z aplikacja CCM v1.8.2 Pulpit dyspozytorski Day-Ahead (2023-12-15) i dialogiem 'Wyslij F333' z polem przeciagniecia pliku.",
+  "maps_to": "czynnosc: wyslanie pliku F333 w aplikacji CCM (pulpit Day-Ahead)",
+  "text_visible": "CCM; Srodowisko programistyczne; v1.8.2 Pulpit dyspozytorski Day-Ahead; 2023-12-15; ccs-ccm-dev.inno.pse.pl; Wyslij F333; Wybierz plik z dysku lub przeciagnij tutaj; Anuluj/Wyslij; RA_GUROBI_Final; MinRare Reduction; Vertices Map",
+  "quality": "clear",
+  "caption": "CCM v1.8.2 - dialog wysylania pliku F333 (pulpit Day-Ahead)"
+ },
+ {
+  "file": "screens/bup/image35.png",
+  "screen": "CCM - dialog 'Wyslij F515' + okno plikow",
+  "shows": "Pulpit CCM Day-Ahead (2023-12-18) z dialogiem 'Wyslij F515' i otwartym oknem Windows z lista plikow 20231217-F112/F226/F320 do wyboru.",
+  "maps_to": "czynnosc: wybor i wyslanie pliku F515 z paczki w CCM",
+  "text_visible": "CCM v1.8.2 Pulpit dyspozytorski Day-Ahead; 2023-12-18; Wyslij F515; Wybierz plik...; Kopiuj; AGREGAT; 20231217-F110/F112/F226/F320-v1-17XTSO...; Anuluj/Wyslij",
+  "quality": "clear",
+  "caption": "CCM - wysylanie F515, wybór pliku z eksploratora"
+ },
+ {
+  "file": "screens/bup/image36.png",
+  "screen": "Okno plikow Windows + dialog 'Wyslij'",
+  "shows": "Okno 'Otwieranie' Windows z lista plikow paczki (zip AGREGAT, F109..F515 XML, RA_PLI) i polem 'Nazwa pliku', nalozone na dialog wysylania.",
+  "maps_to": "czynnosc: wybor pliku skladowego paczki z dysku do wyslania",
+  "text_visible": "Otwieranie; 20231110_CORE_FB_DA_AA_PL1 zip; 20231217-F109-v2-17XTSO...zip; F110/F112/F212/F226/F312/F315-...W-to...xml; Nazwa pliku; Otworz/Anuluj; Wyslij",
+  "quality": "clear",
+  "caption": "Eksplorator plików - wybór pliku paczki (F109-F315) do wysłania"
+ },
+ {
+  "file": "screens/bup/image37.png",
+  "screen": "Dialog 'Wyslij F109'",
+  "shows": "Pojedynczy dialog 'Wyslij F109' z zaladowanym plikiem 20231217-F109-v2-17XTSO...zip gotowym do wyslania.",
+  "maps_to": "czynnosc: wyslanie pliku F109 (Merged D-2CF Common Grid Model)",
+  "text_visible": "Wyslij F109; Wybierz plik z dysku lub przeciagnij tutaj; 20231217-F109-v2-17XTSO-CS...W-to-10V1001C-00085T.zip; Anuluj/Wyslij",
+  "quality": "clear",
+  "caption": "Dialog 'Wyślij F109' z załadowanym plikiem zip"
+ },
+ {
+  "file": "screens/bup/image38.png",
+  "screen": "przycisk",
+  "shows": "Wyciety czerwony przycisk 'Wyslij'.",
+  "maps_to": "czynnosc: zatwierdzenie wyslania pliku",
+  "text_visible": "Wyslij",
+  "quality": "cropped",
+  "caption": "Przycisk 'Wyślij'"
+ },
+ {
+  "file": "screens/bup/image39.png",
+  "screen": "komunikat",
+  "shows": "Wyciety zielony komunikat 'Plik wyslany'.",
+  "maps_to": "czynnosc: potwierdzenie udanego wyslania pliku",
+  "text_visible": "Plik wyslany",
+  "quality": "cropped",
+  "caption": "Komunikat 'Plik wysłany'"
+ },
+ {
+  "file": "screens/bup/image40.png",
+  "screen": "Pulpit dyspozytorski - menu IVA BACKUP",
+  "shows": "Fragment tabeli przeplywow z podswietlonym wierszem 'IVA BACKUP' F310 i menu kontekstowym z opcja 'backup' (oraz status reczny/informacje).",
+  "maps_to": "czynnosc: uruchomienie procedury BACKUP dla IVA (krok BUP_03)",
+  "text_visible": "2nd TSO receiving; Individual RA Potential F427; Paczka ZIP do Perun AGR_PERUN_DA; IVA F310; IVA BACKUP F310; backup; status reczny; informacje",
+  "quality": "clear",
+  "caption": "Menu IVA BACKUP - opcja 'backup' (ścieżka backup BUP_03)"
+ },
+ {
+  "file": "screens/bup/image41.png",
+  "screen": "Core CC Tool - View Results (filtr godzin)",
+  "shows": "Ekran View Results (D-9 05.05.2022) z rozwinietym wyborem godzin 1-24 (Check All), filtry Computation=Intermediate FB Computation, TSO Origin PL; 43200 wynikow, kolumny CRA/Presolved/CNEC/Fmax/FRM/Fref/RAM.",
+  "maps_to": "narzedzie Core CC Tool - przegladanie wynikow obliczen domeny (View Results)",
+  "text_visible": "View Results; D-9 05.05.2022; Hour 1-24; Computation Intermediate FB Co...; TSO Origin PL; Branch Name; Presolved; CNEC; RAM Range infinite; 1-12 of 43200 results; CRA Name; Fmax 1386; FRM 139; Fref 314; RAM 933",
+  "quality": "clear",
+  "caption": "Core CC Tool View Results - filtr godzin i wyniki domeny FB"
+ },
+ {
+  "file": "screens/bup/image42.png",
+  "screen": "menu kontekstowe edycji",
+  "shows": "Wyciete male menu z opcjami 'Edit Cells' / 'Edit Bulk' przy przycisku Edit.",
+  "maps_to": "narzedzie Core CC Tool - wybor trybu edycji wynikow (komorki/zbiorczo)",
+  "text_visible": "Edit Cells; Edit Bulk; Edit",
+  "quality": "cropped",
+  "caption": "Menu edycji wyników: Edit Cells / Edit Bulk"
+ },
+ {
+  "file": "screens/bup/image43.jpeg",
+  "screen": "miniatura/ikona",
+  "shows": "Nieczytelna miniaturka z napisem 'Edit'.",
+  "maps_to": "nieokreslone",
+  "text_visible": "Edit",
+  "quality": "cropped",
+  "caption": "Nieczytelna miniaturka 'Edit' (duplikat image1)"
+ },
+ {
+  "file": "screens/bup/image44.jpeg",
+  "screen": "Core CC Tool - View Results (Current CB Values)",
+  "shows": "Ekran View Results (D-9 06.01.2022) z wynikami: kolumny IVA, Max PTDF, Max PTDF border (PL>SK), sekcja Current CB Values (CNEC/IVA/CVA z Justification).",
+  "maps_to": "narzedzie Core CC Tool - przeglad/edycja wartosci CB (IVA, PTDF) w walidacji",
+  "text_visible": "View Results; D-9 06.01.2022; Hour 1,3,6,11-12,15,19-20,22,24; Intermediate FB Computation V_1; TSO Origin PL; Presolved TSO & Region; 1-12 of 68 results; IVA; Max PTDF 0.28972; PL>SK; Current CB Values; CNEC/IVA/CVA Justification",
+  "quality": "clear",
+  "caption": "Core CC Tool View Results - wartości CB (IVA, Max PTDF PL>SK)"
+ },
+ {
+  "file": "screens/bup/image45.png",
+  "screen": "Core CC Tool - Bulk edit (dialog)",
+  "shows": "Dialog 'Bulk edit': opcje Change Branches to CNECs i Apply IVA to CNECs ze schematem IVA (MinRAM%_Core zeroBalance), TSO Fallback=true, wartosc 20%, justyfikacja 'Individual Validation Tool failed. Applying bulk reductions.'",
+  "maps_to": "czynnosc: zbiorcze zastosowanie redukcji IVA gdy narzedzie walidacji zawiodlo (sciezka backup)",
+  "text_visible": "Bulk edit; Change Branches to CNECs; CNEC Value true; Apply IVA to CNECs; IVA Scheme; MinRAM%_Core zeroBalance; RAM%_Fmax; Absolute v.; TSO Fallback true; Value 20%; Individual Validation Tool failed. Applying bulk reductions.; Remove all/Cancel/Apply",
+  "quality": "clear",
+  "caption": "Core CC Tool Bulk edit - zbiorcza redukcja IVA 20% (fallback gdy walidacja zawiodła)"
+ },
+ {
+  "file": "screens/bup/image46.png",
+  "screen": "komunikat bledu",
+  "shows": "Wyciety pomaranczowy komunikat bledu 'Zip file's timestamps and selected calculation date do not match'.",
+  "maps_to": "narzedzie TSCNET - blad: niezgodnosc dat w paczce ZIP i wybranej dacie obliczenia",
+  "text_visible": "Zip file's timestamps and selected calculation date do not match",
+  "quality": "cropped",
+  "caption": "Błąd TSCNET: niezgodne daty paczki ZIP i obliczenia"
+ },
+ {
+  "file": "screens/bup/image47.png",
+  "screen": "TSCNET Study/Validation mode - blad dat",
+  "shows": "Naglowek TSCNET (user Pawel Rodo) z pomaranczowym komunikatem o niezgodnosci dat, data 2022-05-03.",
+  "maps_to": "narzedzie TSCNET - obsluga bledu niezgodnosci dat przy wgrywaniu paczki",
+  "text_visible": "TSCNET Services; Pawel Rodo; Study/Validation mode; Zip file's timestamps and selected calculation date do not match; 2022-05-03; PSE; Low; Upload file for F427 conversion; Upload zip with TSO data for validation",
+  "quality": "clear",
+  "caption": "TSCNET - błąd niezgodności dat paczki ZIP (data 2022-05-03)"
+ },
+ {
+  "file": "screens/bup/image48.png",
+  "screen": "komunikat bledu",
+  "shows": "Wyciety pomaranczowy komunikat 'Missing F100, F109, or F308 file in the zip, please try again'.",
+  "maps_to": "narzedzie TSCNET - blad: brak plikow F100/F109/F308 w paczce ZIP",
+  "text_visible": "Missing F100, F109, or F308 file in the zip, please try again",
+  "quality": "cropped",
+  "caption": "Błąd TSCNET: brak plików F100/F109/F308 w paczce"
+ },
+ {
+  "file": "screens/bup/image49.png",
+  "screen": "TSCNET Study/Validation mode - blad brakujacych plikow",
+  "shows": "Naglowek TSCNET (Pawel Rodo) z komunikatem o brakujacych plikach F100/F109/F308, data 2022-05-06.",
+  "maps_to": "narzedzie TSCNET - obsluga bledu brakujacych plikow w paczce ZIP",
+  "text_visible": "TSCNET Services; Pawel Rodo; Study/Validation mode; Missing F100, F109, or F308 file in the zip, please try again; 2022-05-06; PSE; Low",
+  "quality": "clear",
+  "caption": "TSCNET - błąd brakujących plików F100/F109/F308 (2022-05-06)"
+ },
+ {
+  "file": "screens/bup/image50.png",
+  "screen": "TSCNET - lista oblicze (blad ERR-I)",
+  "shows": "Wiersz obliczenia zakonczonego bledem: Finished 2024-05-14 11:03:43 ERR-I, DA, Estimate security reserve, 24/1/0/25 (24 failed), filtry Business Process DA&ID.",
+  "maps_to": "narzedzie TSCNET - obliczenie zakonczone bledem (24 timestampy failed)",
+  "text_visible": "Business Process DA & ID; Apply/Reset filters; Finished 2024-05-14 11:03:43 ERR-I; DA; Estimate security reserve; 24/1/0/25; Status Properties",
+  "quality": "clear",
+  "caption": "TSCNET - obliczenie zakończone błędem ERR-I (24 z 25 timestampów failed)"
+ },
+ {
+  "file": "screens/bup/image52.png",
+  "screen": "Perun – Calculation status",
+  "shows": "Status obliczeń Security reserve estimation (1 failed / 23 success / 24 total) i Reports creation w narzędziu Perun.",
+  "maps_to": "Estymacja rezerwy bezpieczeństwa (F310) w Perun – kontrola statusu timestampów",
+  "text_visible": "Calculation status; Security reserve estimation; Reports creation; Timestamps (Failed/Success/Running/Total); 1/23/0/24; Completed?; Download input/output/partial files",
+  "quality": "clear",
+  "caption": "Perun: status obliczeńń estymacji rezerwy – 1 godzina nieudana z 24, plus tworzenie raportów."
+ },
+ {
+  "file": "screens/bup/image53.png",
+  "screen": "Perun – Calculation status (lista zadań perun4v)",
+  "shows": "Lista zadań obliczeniowych perun4v per timestamp z wynikami Failed/Success i linkami do konsoli i pobrania wyników.",
+  "maps_to": "Estymacja rezerwy (F310) w Perun – szczegóły per timestamp, diagnoza nieudanego zadania",
+  "text_visible": "Calculation status; perun4v_20220507_0000..0300; Done; Running; Priority Low; Started; Finished; Result Failed/Success; Console | Download results",
+  "quality": "clear",
+  "caption": "Perun: lista zadań per godzina – jedna godzina Failed, reszta Success, dostęp do konsoli."
+ },
+ {
+  "file": "screens/bup/image54.png",
+  "screen": "CC Tool (Core DA) – okno Change Process",
+  "shows": "Wybór instancji procesu DA1 w aplikacji CC Tool przez okno Change Process z kafelkami dat.",
+  "maps_to": "Logowanie do CC Tool / wybór doby handlowej procesu DA przed walidacją domeny",
+  "text_visible": "Core DA; CC Tool; Process Detail; Message Viewer; View Results; Change Process; State All; 1-12 of 19 results; DA1 04.10.2023; Process DA1; Started/Ended; Load more; Converter; User PSE",
+  "quality": "clear",
+  "caption": "CC Tool: wybór instancji procesu DA1 dla wybranej doby (04.10.2023)."
+ },
+ {
+  "file": "screens/bup/image55.png",
+  "screen": "CC Tool (Core DA) – Process Detail nagłówek",
+  "shows": "Górna część widoku Process Detail dla DA1 z paskiem kroków procesu (Initial TSO Receiving, Initial ME Receiving) i statusem godzin.",
+  "maps_to": "Monitorowanie postępu procesu DA w CC Tool (etapy receiving, status ATC)",
+  "text_visible": "Core DA; CC Tool; Process Detail; Message Viewer; View Results; Study Computation; DA1 - 30.03.2019; Initial TSO Receiving Finished in time; Initial ME Receiving Running; Second TSO...; ATC Status; gateway/usy-fbcore-guig01",
+  "quality": "clear",
+  "caption": "CC Tool: nagłówek Process Detail DA1 – etapy odbioru danych i status godzinowy."
+ },
+ {
+  "file": "screens/bup/image56.png",
+  "screen": "CC Tool – kafelek instancji z ostrzeżeniem fallback",
+  "shows": "Kafelek instancji procesu z dymkiem ostrzegawczym 'Process Instance contains fallback candidate'.",
+  "maps_to": "Wykrycie kandydata fallback w procesie DA – sygnał uruchomienia procedury backup",
+  "text_visible": "12.09.2019; Alias Custom name; Started 12.09.2019 11:45; Ended -; Process Instance contains fallback candidate.",
+  "quality": "clear",
+  "caption": "CC Tool: instancja oznaczona ostrzeżeniem o kandydacie fallback (przesłanka backup)."
+ },
+ {
+  "file": "screens/bup/image57.png",
+  "screen": "Pulpit dyspozytorski DA – tabela przepływów (tooltip backup)",
+  "shows": "Tabela przepływów DA z obszarami walidacji FBA i LTA; przy IVA BACKUP otwarte menu kontekstowe (backup / status ręczny / informacje).",
+  "maps_to": "Pulpit DA – ręczne wywołanie IVA BACKUP (F310) w walidacji domeny FBA",
+  "text_visible": "Nazwa Obszaru/przepływu; Kod; Target/Critical End Time; Wersja; CCCtool wysł./zwalid.; MinIO; sFTP/ZP wysł.; NPF F230; 24 modele IGM D2CF_IGM_UCT; GLSK F103; CBCORA F224; AC(D-2) F118; Individual RA Potential F427; IVA F310; IVA BACKUP F310; RAP_PERUN_DA; F320_LTA; PERUN_DA_LTA; RLTA; backup; status ręczny; informacje",
+  "quality": "clear",
+  "caption": "Pulpit DA: menu kontekstowe na wierszu IVA BACKUP – opcja backup walidacji domeny FBA."
+ },
+ {
+  "file": "screens/bup/image58.png",
+  "screen": "Diagram przepływu danych backup (CCCTool–CN2–Perun–CCM)",
+  "shows": "Schemat blokowy wymiany danych w trybie backup między CCCTool, CN2, SFTP, Perun4V, Minio/CCA i CCM z ponumerowanymi krokami 1-12.",
+  "maps_to": "Architektura procedury IVA Backup – przepływ paczek FB_CCA/LTA, IVA, raportów",
+  "text_visible": "Perun4V; SFTP; CCCTool; CN2; Minio/Perun; Minio/CCA; CCCtool; CCM; ZP,SYSPLAN,KDM; Pkt 1-12; Paczka FB_CCA; Paczka LTA; IVA Raporty; Vertices_map_LTA/_cca, 320_lta i F320_cca; IVA_Backup; RLTA Curtailment",
+  "quality": "clear",
+  "caption": "Diagram architektury przepływu danych w procedurze IVA Backup (kroki 1–12)."
+ },
+ {
+  "file": "screens/bup/image59.png",
+  "screen": "Pulpit dyspozytorski DA – dialog potwierdzenia wysyłki IVA Backup",
+  "shows": "Modal 'Czy na pewno chcesz wysłać IVA Backup?' z polem opisu i przyciskami Nie/Tak na tle tabeli przepływów DA.",
+  "maps_to": "Pulpit DA – potwierdzenie ręcznej wysyłki dokumentu IVA BACKUP (F310)",
+  "text_visible": "Pulpit dyspozytorski Day-Ahead; Business Day 2022-12-30; Czy na pewno chcesz wysłać IVA Backup ?; Opis (opcjonalnie); Nie; Tak; Pliki do Plans -> Gurobi; Model CGM v1 F109; 2nd TSO receiving; Individual Validation; IVA BACKUP F310",
+  "quality": "clear",
+  "caption": "Pulpit DA: okno potwierdzenia wysłania dokumentu IVA Backup."
+ },
+ {
+  "file": "screens/bup/image62.png",
+  "screen": "Pulpit dyspozytorski DA – pełna tabela przepływów",
+  "shows": "Kompletna tabela przepływów DA z obszarami Kreator, Initial TSO receiving, 2nd TSO receiving, Individual Validation FBA i Walidacja domeny LTA wraz ze statusami w kolumnach.",
+  "maps_to": "Pulpit DA – przegląd statusu wszystkich przepływów walidacji domeny (FBA i LTA)",
+  "text_visible": "NPF F230; 24 modele IGM D2CF_IGM_UCT; GLSK F103; CBCORA F224; AC(D-2) F118; Individual RA Potential F427; Vertices of Intermediate FB Domain z CCA F320_CCA; Paczka ZIP_CCA do Perun PERUN_DA_CCA; IVA F310; IVA BACKUP F310; RAP_PERUN_DA; F320_LTA; PERUN_DA_LTA; F310_LTA; RLTA",
+  "quality": "clear",
+  "caption": "Pulpit DA: pełna tabela przepływów walidacji domeny FBA i LTA ze statusami kolumnowymi."
+ },
+ {
+  "file": "screens/bup/image63.png",
+  "screen": "Pulpit dyspozytorski DA – komunikat błędu wersji backup",
+  "shows": "Fragment tabeli Individual Validation z czerwonym toastem 'Wysyłka backup nie jest możliwa - wersja dokumentu musi być wyższa od docelowej wersji'.",
+  "maps_to": "Pulpit DA – walidacja wersji przy wysyłce IVA BACKUP (wymóg wyższej wersji)",
+  "text_visible": "Individual Validation; Paczka ZIP do Perun AGR_PERUN; IVA F310; Merged Long Term Allocation F114; Initial FB Domain F210; Intermediate FB Domain F212; Vertices of Intermediate FB Domain F320; IVA BACKUP F310; RNTC; Overloaded Corners of Inter.; Wysyłka backup nie jest możliwa - wersja dokumentu musi być wyższa od docelowej wersji",
+  "quality": "clear",
+  "caption": "Pulpit DA: błąd – backup wymaga wersji dokumentu wyższej niż docelowa."
+ },
+ {
+  "file": "screens/bup/image64.png",
+  "screen": "MinIO (cca) – przeglądarka obiektów katalogu DA_FBCC/out",
+  "shows": "Lista plików wyjściowych CCA w buckecie MinIO (cca/DA_FBCC/out/20240515) z zaznaczonym F310-v2, panelem akcji Download/Share/Delete.",
+  "maps_to": "MinIO/CCA – pobranie wyników backup (F310-v2, RLTA, F320_LTA) z katalogu out",
+  "text_visible": "cca; Created 2022-04-29; PRIVATE 251.5 GiB - 33350 Objects; cca/DA_FBCC/out/20240515; Refresh; Upload; VERTICES_MAP-v1-CCA-to-PERUN; RNTC; RLTA-v1-CCA-to-ZP; LF_derog_v1; IVCC-v1; F333; F320_LTA-v1-CCA-to-PERUN; F310-v2-10XPL-TSO...W; Download; Share; Preview; Delete",
+  "quality": "clear",
+  "caption": "MinIO/CCA: katalog wyjściowy backup z plikami F310-v2, RLTA, F320_LTA do pobrania."
+ },
+ {
+  "file": "screens/bup/image65.png",
+  "screen": "Narzędzie walidacji – okno Bulk edit (IVA scheme)",
+  "shows": "Okno Bulk edit do masowej zmiany gałęzi na CNEC i zastosowania schematu IVA (MinRAM%_Core zeroBalance, TSO Fallback true, redukcja 20%).",
+  "maps_to": "IVA Backup – masowe nadanie redukcji po awarii Individual Validation Tool",
+  "text_visible": "Bulk edit; Change Branches to CNECs; CNEC Value true; Justification; Apply IVA to CNECs; IVA Scheme; MinRAM%_Core zeroBalance; RAM%_Fmax; Absolute v.; TSO Fallback true; Value 20%; Individual Validation Tool failed. Applying bulk reductions.; Remove all; Cancel; Apply",
+  "quality": "clear",
+  "caption": "Narzędzie walidacji: Bulk edit – zbiorcza redukcja 20% po awarii Individual Validation Tool."
+ },
+ {
+  "file": "screens/bup/image66.png",
+  "screen": "Perun – Study/Validation mode (logi obliczeń, Process failed)",
+  "shows": "Ekran Study/Validation mode w Perun z listą obliczeń estymacji rezerwy; jedno zadanie oznaczone 'Process failed'.",
+  "maps_to": "Perun – uruchomienie estymacji rezerwy/F427 i diagnoza nieudanego obliczenia",
+  "text_visible": "Study/Validation mode; Select timestamp date 2022-05-09; Select TSO PSE; Select priority Low; Upload file for F427 conversion; Upload zip with TSO data for validation; Calculation Logs; Trace; Configurations; List Files; F427 conversion; Perform security assessment; Estimate security reserve; Process failed; Estimate security reserve",
+  "quality": "clear",
+  "caption": "Perun Study/Validation: logi obliczeńń, jedno zadanie estymacji rezerwy zakończone błędem."
+ },
+ {
+  "file": "screens/bup/image67.png",
+  "screen": "Komunikat błędu pobierania (przycisk/toast)",
+  "shows": "Pojedynczy pomarańczowy przycisk/komunikat 'Unable to download file, please try again'.",
+  "maps_to": "Perun – błąd pobierania pliku wyniku (powtórzenie próby)",
+  "text_visible": "Unable to download file, please try again",
+  "quality": "cropped",
+  "caption": "Perun: komunikat o nieudanym pobraniu pliku – wycinek samego przycisku."
+ },
+ {
+  "file": "screens/bup/image68.png",
+  "screen": "Perun – Study/Validation mode z toastem błędu pobierania",
+  "shows": "Ten sam ekran Study/Validation mode z widocznym u góry komunikatem 'Unable to download file, please try again' nad listą obliczeń.",
+  "maps_to": "Perun – błąd pobierania wyniku estymacji rezerwy w kontekście pełnego ekranu",
+  "text_visible": "Study/Validation mode; Unable to download file, please try again; 2022-05-09; PSE; F427 conversion; Perform security assessment; Estimate security reserve; Calculation Logs; No 2939/2938/2937; Calculating; Stop; Download F427 V",
+  "quality": "clear",
+  "caption": "Perun Study/Validation: pełny ekran z komunikatem błędu pobierania pliku."
+ },
+ {
+  "file": "screens/bup/image69.png",
+  "screen": "Perun – wiersz listy obliczeń (Status podświetlony)",
+  "shows": "Pojedynczy wiersz listy obliczeń DA (Estimate security reserve, 0/4/0/4) z podświetlonym linkiem 'Status'.",
+  "maps_to": "Perun – wejście w Status obliczenia estymacji rezerwy (Business Process DA)",
+  "text_visible": "No 7944; Calculation date 2025-01-08; User sFTP@pse.pl; Started 2025-02-11 12:05:29; Finished 12:13:40; Business Process DA; Action Estimate security reserve; Timestamps 0/4/0/4; Status; Properties; F310 V 1; Download; F427 V; Apply/Reset filters",
+  "quality": "clear",
+  "caption": "Perun: wiersz obliczenia estymacji rezerwy DA z akcją Status (sFTP, 4 timestampy)."
+ },
+ {
+  "file": "screens/bup/image70.png",
+  "screen": "Perun – Calculation status (sukces 24/24)",
+  "shows": "Ekran Calculation status z udaną estymacją rezerwy (0/24/0/24, Completed) i tworzeniem raportów, link Download output files podświetlony.",
+  "maps_to": "Perun – zakończona estymacja rezerwy backup, pobranie plików wyjściowych",
+  "text_visible": "Calculation status; Back to list of calculations; Security reserve estimation 2025-08-04 03:29:26; 0/24/0/24; Reports creation 03:44:11; 0/1/0/1; Completed?; Details | Download input files | Download output files | Download reports",
+  "quality": "clear",
+  "caption": "Perun: estymacja rezerwy zakończona pomyślnie (24/24), pobieranie plików wyjściowych."
+ },
+ {
+  "file": "screens/bup/image71.png",
+  "screen": "Perun – Configurations (CC Validation Region, Additional NEC or outage)",
+  "shows": "Zakładka Configurations w Perun z ustawieniami RAO i sekcją 'Additional NEC or outage' (wybór trybu, kraju, linii, poziomu napięcia).",
+  "maps_to": "Perun – konfiguracja obliczeń backup: dodatkowe NEC / wyłączenia przed estymacją",
+  "text_visible": "Calculation Logs; Trace; Configurations; List Files; Modules Selection; Merging Config; CC Validation Region; NP Shift; Vertices; Reports; Basic Settings; Sensitivity threshold 5; Loop flow threshold 0.1; Remedial Action Optimization; Redispatching; Manual PSTs; Manual TopoRAs; Redispatching Compensation Deficit; MAX_RCD_UP/DOWN; Additional NEC or outage; Select mode Add additional outage; Country; Lines/transformers; Voltage level; Please select country",
+  "quality": "clear",
+  "caption": "Perun Configurations: sekcja dodatkowych NEC/wyłączeń i parametry RAO dla obliczeńń backup."
+ },
+ {
+  "file": "screens/bup/image72.png",
+  "screen": "Perun – Additional outage: tabela elementów sieci",
+  "shows": "Formularz dodawania wyłączenia: kraj Poland, linie 380 kV, tabela elementów (Node1/Node2/Order/Element name) i wybór timestampów + przycisk Add outage.",
+  "maps_to": "Perun – definiowanie dodatkowego wyłączenia linii 380 kV dla wybranych godzin",
+  "text_visible": "Country Poland; Lines/transformers Lines; Voltage level 380 kV; Timestamp 00:30; Node1/Node2; Order; Element name; ZBEE1411 ZBEEG114 K_BEE14G; ZBYC3411; ZCRN4411 ZMIK4411 H001; ZPOL4411 H801; checkboxy 00:30..23:30; Select all; Add outage",
+  "quality": "clear",
+  "caption": "Perun: formularz dodatkowego wyłączenia – elementy sieci 380 kV i wybór godzin."
+ },
+ {
+  "file": "screens/bup/image73.png",
+  "screen": "Ikona zamknięcia (przycisk X)",
+  "shows": "Pojedynczy mały przycisk zamknięcia okna (X) bez kontekstu.",
+  "maps_to": "nieokreślone",
+  "text_visible": "x",
+  "quality": "cropped",
+  "caption": "Wycinek samego przycisku zamknięcia (X) – brak kontekstu ekranu."
+ },
+ {
+  "file": "screens/bup/image74.png",
+  "screen": "Perun – Saved additional outages (modal)",
+  "shows": "Okno 'Saved additional outages' z zapisanym wyłączeniem H001 (From ZCRN4411, To ZMIK4411, lista timestampów).",
+  "maps_to": "Perun – podgląd zapisanego dodatkowego wyłączenia przed obliczeniem",
+  "text_visible": "Saved additional outages; H001; From ZCRN4411; To ZMIK4411; Order 1; Element name H001; Timestamps 00:30 01:30 ... 19:30; Redispatching; ERROR FIX; Additional NEC or outage; Country Poland; Lines; 380 kV; View saved additional outages",
+  "quality": "clear",
+  "caption": "Perun: podgląd zapisanego dodatkowego wyłączenia H001 dla wielu godzin."
+ },
+ {
+  "file": "screens/bup/image75.png",
+  "screen": "Perun – wiersz obliczenia (link Download podświetlony)",
+  "shows": "Wycinek wiersza listy obliczeń DA (Estimate security reserve, 0/4/0/4) z podświetlonym pustym polem wersji i linkiem Download F310.",
+  "maps_to": "Perun – pobranie wyniku F310 estymacji rezerwy",
+  "text_visible": "Business Process DA; Action Estimate security reserve; Timestamps 0/4/0/4; Status | Properties | F310 V | Download | F427 V 1; Download",
+  "quality": "cropped",
+  "caption": "Perun: wycinek wiersza obliczenia z akcją Download F310."
+ },
+ {
+  "file": "screens/bup/image76.png",
+  "screen": "Pulpit dyspozytorski DA – tabela przepływów (menu pobierz/wyślij)",
+  "shows": "Tabela przepływów DA (FBA i LTA) z otwartym menu kontekstowym na wierszu IVA BACKUP: status ręczny / informacje / pobierz / wyślij.",
+  "maps_to": "Pulpit DA – akcje na IVA BACKUP (pobranie/wysyłka) w walidacji domeny FBA",
+  "text_visible": "Nazwa Obszaru/przepływu; Kod; NPF F230; 24 modele IGM; GLSK F103; CBCORA F224; AC(D-2) F118; Individual RA Potential F427; Vertices of Intermediate FB Domain z CCA F320_CCA; PERUN_DA_CCA; IVA F310; IVA BACKUP F310; RAP_PERUN_DA; F320_LTA; PERUN_DA_LTA; RLTA; status ręczny; informacje; pobierz; wyślij",
+  "quality": "clear",
+  "caption": "Pulpit DA: menu kontekstowe IVA BACKUP z opcjami pobierz/wyślij."
+ },
+ {
+  "file": "screens/bup/image77.png",
+  "screen": "E-mail powiadomienia FB Core Team – brak plików IVA",
+  "shows": "Treść maila informującego, że dla doby 2024-03-21 nie znaleziono plików IVA F310, F310_LTA i raportów RAP_PERUN_DA w katalogu cca/DA_FBCC/in.",
+  "maps_to": "Powiadomienie o braku plików wejściowych IVA – przesłanka uruchomienia backup",
+  "text_visible": "Szanowni Państwo, Dla doby handlowej 2024-03-21 nie znaleziono następujących plików: IVA F310 w katalogu cca/DA_FBCC/in/2024-03-21; IVA F310_LTA; Raporty z Perun RAP_PERUN_DA; RAP_PERUN_DA_LTA; Z poważaniem, FB Core Team",
+  "quality": "clear",
+  "caption": "E-mail FB Core Team: brak plików IVA (F310/F310_LTA/raporty) dla doby 2024-03-21."
+ },
+ {
+  "file": "screens/bup/image78.png",
+  "screen": "Message Viewer – komunikat IN PSE→CORE Rejected",
+  "shows": "Pozycja w przeglądarce komunikatów: kierunek IN PSE→CORE, status Rejected, dokument '310 - Individual CB validation', ACK Accepted, wersja 1.",
+  "maps_to": "CC Tool Message Viewer – odrzucenie komunikatu IVA (F310) przez Core",
+  "text_visible": "IN; 09.05.2022; Rejected; 310 - Individual CB validation; PSE -> CORE; Timestamp 08.05.2022 01:25:49; ACK Status Accepted; Version 1",
+  "quality": "clear",
+  "caption": "Message Viewer: komunikat IVA 310 (PSE→CORE) odrzucony mimo ACK Accepted."
+ },
+ {
+  "file": "screens/bup/image79.png",
+  "screen": "Perun – lista obliczeń (wersja F310 = 2 podświetlona)",
+  "shows": "Wycinek listy obliczeń DA (Estimate security reserve, 0/25/0/25) z podświetloną wersją F310 '2'.",
+  "maps_to": "Perun – wybór wersji 2 dokumentu F310 do pobrania (backup)",
+  "text_visible": "Business Process DA & ID; Started; Action Estimate security reserve; Timestamps 0/25/0/25; Status | Properties | F310 V 2 | Download | F427 V 1; Download; Load calculation parameters; F427 conversion; Perform security assessment; Estimate security reserve",
+  "quality": "clear",
+  "caption": "Perun: lista obliczeńń z wybraną wersją 2 dokumentu F310."
+ },
+ {
+  "file": "screens/bup/image80.png",
+  "screen": "Nazwa pliku F310 v1 (wycinek)",
+  "shows": "Wycinek nazwy pliku '20220511-F310-v1-10XPL-TSO...P-to-17XTSO-CS...W' z podświetlonym v1.",
+  "maps_to": "Identyfikacja wersji v1 pliku F310 wysyłanego do Core",
+  "text_visible": "20220511-F310-v1-10XPL-TSO------P-to-17XTSO-CS------W",
+  "quality": "cropped",
+  "caption": "Wycinek nazwy pliku F310 w wersji v1."
+ },
+ {
+  "file": "screens/bup/image81.png",
+  "screen": "Nazwa pliku F310 v2 (wycinek)",
+  "shows": "Wycinek nazwy pliku '20220511-F310-v2-10XPL-TSO...P-to-17XTSO-CS...W' z podświetlonym v2.",
+  "maps_to": "Identyfikacja wersji v2 pliku F310 (wersja wyższa wymagana przy backup)",
+  "text_visible": "20220511-F310-v2-10XPL-TSO------P-to-17XTSO-CS------W",
+  "quality": "cropped",
+  "caption": "Wycinek nazwy pliku F310 w wersji v2 (porównanie wersji)."
+ },
+ {
+  "file": "screens/bup/image82.png",
+  "screen": "Plik XML F310 – DocumentVersion v=1",
+  "shows": "Nagłówek dokumentu XML FlowBasedConstraintUpdateDocument z DocumentVersion v='1' (zaznaczone).",
+  "maps_to": "Weryfikacja numeru wersji w treści dokumentu F310 (v1)",
+  "text_visible": "FlowBasedConstraintUpdateDocument; DocumentIdentification v=10XPL-TSO------P-20220511-F310-v1; DocumentVersion v=1; DocumentType v=B07; ProcessType v=A01; SenderIdentification 10XPL-TSO------P; SenderRole v=A04",
+  "quality": "clear",
+  "caption": "XML F310: DocumentVersion = 1 w treści dokumentu Flow-Based."
+ },
+ {
+  "file": "screens/bup/image83.png",
+  "screen": "Plik XML F310 – DocumentVersion v=2",
+  "shows": "Nagłówek dokumentu XML F310 z DocumentVersion v='2' oraz ReceiverIdentification 17XTSO-CS.",
+  "maps_to": "Weryfikacja podwyższonego numeru wersji w dokumencie F310 (v2) dla backup",
+  "text_visible": "FlowBasedConstraintUpdateDocument; DocumentIdentification 10XPL-TSO------P-20220511-F310-v1; DocumentVersion v=2; DocumentType B07; ProcessType A01; SenderIdentification 10XPL-TSO------P; SenderRole A04; ReceiverIdentification 17XTSO-CS; ReceiverRole A36",
+  "quality": "clear",
+  "caption": "XML F310: DocumentVersion = 2 – wersja podwyższona do wysyłki backup."
+ },
+ {
+  "file": "screens/bup/image84.png",
+  "screen": "Eksplorator Windows – folder F320_backup",
+  "shows": "Okno Eksploratora z zawartością folderu F320_backup: pliki F114/F330 XML i ZIP, skrót fbc_lta_vertices oraz log.",
+  "maps_to": "Lokalne narzędzie backup F320 (fbc_lta_vertices) – pliki wejściowe/wyjściowe",
+  "text_visible": "F320_backup; bell.wav; Raporty DOPT - skrót; Obrona i Odbudowa; archiwum; 20230827-F114-v2-17XTSO-CS...W-to-10V1001C--00085T.xml; 20230827-F330-v1-17XTSO-CS...W-to-10V1001C--00085T.zip; fbc_lta_vertices (skrót); fbc_lta_vertices.log; Elementy: 5",
+  "quality": "clear",
+  "caption": "Eksplorator: folder F320_backup z plikami narzędzia fbc_lta_vertices."
+ },
+ {
+  "file": "screens/bup/image85.png",
+  "screen": "Konsola fbc_lta_vertices – generowanie F320_CCA (sukces)",
+  "shows": "Okno konsoli zapasowej aplikacji CCA generującej wierzchołki domeny FB/LTA – znaleziono F110/F320/F118, utworzono F320_CCA ZIP.",
+  "maps_to": "Narzędzie backup CCA – generowanie wierzchołków F320_CCA do Perun",
+  "text_visible": "L:\\FBA_wydzial\\CCA\\f320_cca_lta...fbc_lta_vertices.exe; Uruchamianie zapasowej aplikacji CCA do generowania wierzchołków domeny FB i LTA - wersja 1.8.1; F320_LTA Niepełny zbiór - brak plików F330; F320_CCA Znaleziono pliki F110,F320,F118; Filtrowanie wierzchołków F320 przez ograniczenia AC z F118; Utworzony plik F320_CCA ZIP: 20230115-F320_CCA-v1-CCA-to-PERUN.zip; Zakończono",
+  "quality": "clear",
+  "caption": "Konsola backup CCA: pomyślne wygenerowanie F320_CCA z plików F110/F320/F118."
+ },
+ {
+  "file": "screens/bup/image86.png",
+  "screen": "Eksplorator – wyniki F320_CCA (lista plików)",
+  "shows": "Lista wynikowa: 20230115-F320_CCA-v1-CCA-to-PERUN.zip, VERTICES_MAP_CCA csv, fbc_lta_vertices.exe i log.",
+  "maps_to": "Narzędzie backup CCA – pliki wyjściowe F320_CCA i mapowanie wierzchołków",
+  "text_visible": "20230115-F320_CCA-v1-CCA-to-PERUN.zip; 20230115-VERTICES_MAP_CCA-v1-CCA-to-PERUN.csv; fbc_lta_vertices.exe; fbc_lta_vertices.log",
+  "quality": "clear",
+  "caption": "Eksplorator: pliki wyjściowe backup CCA dla domeny FBA (F320_CCA + mapa wierzchołków)."
+ },
+ {
+  "file": "screens/bup/image87.png",
+  "screen": "Pulpit dyspozytorski DA – Paczka ZIP_CCA na MINIO (FBA, rozwinięta)",
+  "shows": "Tabela przepływów DA z rozwiniętą pozycją 'Paczka ZIP_CCA na MINIO Perun' (PERUN_DA_CCA) i listą plików składowych (F109/F110/F112/F212/F226/F312/F320_CCA/F515/F327/X427/VERTICES_MAP_CCA); tooltip status ręczny/wyślij.",
+  "maps_to": "Pulpit DA – kompozycja paczki ZIP_CCA do Perun w walidacji domeny FBA (backup)",
+  "text_visible": "F320_CCA; Paczka ZIP_CCA na MINIO Perun PERUN_DA_CCA; Merged D-2CF Common Grid Model F109; Reference Program (RefProg) F110; Merged Generation and Load Shift Keys F112; Intermediate FB Domain F212; Real Generation and Load Shift Keys F226; Individual Filtered Critical Branches F312; Vertices of Intermediate FB Domain z CCA F320_CCA; MergingLog F515; Configuration for RAO F327; Individual RA Potential (XLSX) X427; Vertices Map_CCA VERTICES_MAP_CCA; IVA F310; IVA BACKUP F310; status ręczny; wyślij",
+  "quality": "clear",
+  "caption": "Pulpit DA: rozwinięta paczka ZIP_CCA do Perun (pliki składowe domeny FBA)."
+ },
+ {
+  "file": "screens/bup/image88.png",
+  "screen": "Konsola fbc_lta_vertices – generowanie F320_LTA (brak F320)",
+  "shows": "Okno konsoli backup CCA: dla F320_LTA znaleziono F330/F110/F114 i utworzono F320_LTA ZIP, ale F320_CCA niepełny (brak F320).",
+  "maps_to": "Narzędzie backup CCA – generowanie wierzchołków F320_LTA do Perun",
+  "text_visible": "Uruchamianie zapasowej aplikacji CCA...wersja 1.8.1; F320_LTA Znaleziono pliki dla daty 20230115: F330,F110,F114; Utworzony plik F320_LTA ZIP: 20230115-F320_LTA-v1-CCA-to-PERUN.zip; F320_CCA Niepełny zbiór - brak plików F320; Zakończono",
+  "quality": "clear",
+  "caption": "Konsola backup CCA: wygenerowano F320_LTA, ale brak danych do F320_CCA."
+ },
+ {
+  "file": "screens/bup/image89.png",
+  "screen": "Eksplorator – wyniki F320_LTA (lista plików)",
+  "shows": "Lista wynikowa: 20230115-F320_LTA-v1-CCA-to-PERUN.zip, VERTICES_MAP_LTA csv, fbc_lta_vertices.exe i log.",
+  "maps_to": "Narzędzie backup CCA – pliki wyjściowe F320_LTA i mapowanie wierzchołków LTA",
+  "text_visible": "20230115-F320_LTA-v1-CCA-to-PERUN.zip; 20230115-VERTICES_MAP_LTA-v1-CCA-to-PERUN.csv; fbc_lta_vertices.exe; fbc_lta_vertices.log",
+  "quality": "clear",
+  "caption": "Eksplorator: pliki wyjściowe backup CCA dla domeny LTA (F320_LTA + mapa wierzchołków)."
+ },
+ {
+  "file": "screens/bup/image90.png",
+  "screen": "Pulpit dyspozytorski DA – Paczka ZIP_LTA do Perun (rozwinięta)",
+  "shows": "Tabela przepływów DA, obszar Walidacja domeny LTA z rozwiniętą 'Paczka ZIP_LTA do Perun' (PERUN_DA_LTA) i plikami składowymi; tooltip status ręczny/wyślij.",
+  "maps_to": "Pulpit DA – kompozycja paczki ZIP_LTA do Perun w walidacji domeny LTA (backup)",
+  "text_visible": "Vertices of Inter. FB Domain F320_LTA; Paczka ZIP_LTA do Perun PERUN_DA_LTA; Merged D-2CF Common Grid Model F109; Reference Program F110; Merged Generation and Load Shift Keys F112; Intermediate FB Domain F212; Real Generation and Load Shift Keys F226; Individual Filtered Critical Branches F312; Configuration for RAO F327; MergingLog F515; Individual RA Potential (XLSX) X427; Vertices Map_LTA VERTICES_MAP_LTA; IVA LTA F310_LTA; Raporty z Perun LTA RAP_PERUN_DA_LTA; RLTA; status ręczny; wyślij",
+  "quality": "clear",
+  "caption": "Pulpit DA: rozwinięta paczka ZIP_LTA do Perun (pliki składowe domeny LTA)."
+ },
+ {
+  "file": "screens/bup/image91.png",
+  "screen": "Pulpit dyspozytorski DA – Paczka ZIP_CCA na MINIO (duplikat image87)",
+  "shows": "Tabela przepływów DA z rozwiniętą paczką ZIP_CCA na MINIO Perun i listą plików – ujęcie niemal identyczne jak image87, bez tooltipu menu.",
+  "maps_to": "Pulpit DA – kompozycja paczki ZIP_CCA do Perun (domena FBA)",
+  "text_visible": "F320_CCA; Paczka ZIP_CCA na MINIO Perun PERUN_DA_CCA; F109; F110; F112; F212; F226; F312; F320_CCA; F515; F327; X427; VERTICES_MAP_CCA; IVA F310; IVA BACKUP F310",
+  "quality": "duplicate",
+  "caption": "Pulpit DA: rozwinięta paczka ZIP_CCA do Perun – duplikat ujęcia image87 (bez menu)."
+ },
+ {
+  "file": "screens/bup/image92.png",
+  "screen": "E-mail CCS CCA Gin – raport lta_curtailment",
+  "shows": "Wiadomość e-mail z załącznikami 20220222-RLTA-v1-CCA-to-ZP.xlsx i .xml przesyłająca raport 'lta_curtailment' za 2022-02-22.",
+  "maps_to": "Otrzymanie raportu RLTA (lta_curtailment) z CCA dla redukcji LTA",
+  "text_visible": "wt. 10.05.2022 10:49; CCS CCA Gin; [CCA] 'lta_curtailment' za 2022-02-22; Do Krzysztoszek Rafał; Ludwiczak Łukasz; 20220222-RLTA-v1-CCA-to-ZP.xlsx 9 KB; 20220222-RLTA-v1-CCA-to-ZP.xml 19 KB; Szanowni Państwo, W załączniku przesyłamy raport 'lta_curtailment' za 2022-02-22; FB Core Team",
+  "quality": "clear",
+  "caption": "E-mail: raport lta_curtailment (RLTA) z CCA z załącznikami xlsx/xml."
+ },
+ {
+  "file": "screens/bup/image93.png",
+  "screen": "Aplikacja ZP – Redukcja alokacji długoterminowych (brak RLTA)",
+  "shows": "Ekran ZP 'Redukcja alokacji długoterminowych' (Środowisko Testowe), tryb Red. sieciowa z błędem 'Brak dokumentu RLTA (LTA bis) z CCA'; pusta tabela DE.",
+  "maps_to": "Aplikacja ZP – redukcja sieciowa LTA, sygnalizacja braku dokumentu RLTA",
+  "text_visible": "ZP; Środowisko Testowe; Łukasz Mikołajczyk; Redukcja alokacji długoterminowych; Doba handlowa 2025-08-01; Red. sieciowa; Red. bilansowa; Współczynniki red.; Importuj plik; Red. sieciowa: Brak dokumentu RLTA (LTA bis) z CCA; Kod; Kier. EXP; LTA; Redukcja siec.; Redukcja bil.; LTA po red.; Współczynnik red.; Lista wyłączeń; Alokacje LT; Komunikaty UMM i WWW",
+  "quality": "clear",
+  "caption": "ZP: ekran redukcji alokacji LT z błędem braku dokumentu RLTA (LTA bis) z CCA."
+ },
+ {
+  "file": "screens/bup/image94.png",
+  "screen": "Aplikacja ZP – Import pliku (Dokument: LTA bis, puste)",
+  "shows": "Ekran ZP (Środowisko Produkcyjne) z otwartym panelem 'Import pliku': Kod pliku 'Dokument: LTA bis', pole Plik puste, przycisk Wybierz plik.",
+  "maps_to": "Aplikacja ZP – ręczny import dokumentu LTA bis (RLTA) dla redukcji",
+  "text_visible": "ZP; Środowisko Produkcyjne; Redukcja alokacji długoterminowych; Doba handlowa 2025-08-02; Red. sieciowa; Import pliku; Kod pliku Dokument: LTA bis; Plik; Wybierz plik; Importuj plik; Anuluj; Lista wyłączeń; Alokacje LT",
+  "quality": "clear",
+  "caption": "ZP: panel importu dokumentu LTA bis – przed wyborem pliku."
+ },
+ {
+  "file": "screens/bup/image95.png",
+  "screen": "Eksplorator Windows – wybór pliku RLTA do importu",
+  "shows": "Okno 'Otwieranie' w katalogu wejściowym DA FBA / PERUN / LTA z zaznaczonym 20250801-RLTA-v1-CCA-to-ZP.xml.",
+  "maps_to": "Aplikacja ZP – wskazanie pliku RLTA (LTA bis) z dysku do importu",
+  "text_visible": "Otwieranie; 5_DYSP > FBA > Pliki wejściowe do DA FBA > 20250801 > PERUN > LTA; 20250801_18657_Validation_Reports.zip; 20250801-F310-v1-10XPL-TSO...P-to-17XTSO-CS...W.xml; 20250801-RLTA-v1-CCA-to-ZP.xml; Nazwa pliku; Otwórz; Anuluj",
+  "quality": "clear",
+  "caption": "Eksplorator: wybór pliku 20250801-RLTA-v1-CCA-to-ZP.xml do importu w ZP."
+ },
+ {
+  "file": "screens/bup/image96.png",
+  "screen": "Aplikacja ZP – Import pliku (LTA bis wybrany)",
+  "shows": "Ekran ZP z panelem Import pliku, w polu Plik wskazany 20250801-RLTA-v1-CCA-to-ZP.xml, aktywny przycisk Importuj plik.",
+  "maps_to": "Aplikacja ZP – zatwierdzenie importu dokumentu LTA bis (RLTA)",
+  "text_visible": "ZP; Środowisko Produkcyjne; Redukcja alokacji długoterminowych; Doba handlowa 2025-08-02; Import pliku; Kod pliku Dokument: LTA bis; Plik 20250801-RLTA-v1-CCA-to-ZP.xml; Wybierz plik; Importuj plik; Anuluj",
+  "quality": "clear",
+  "caption": "ZP: panel importu z wybranym plikiem LTA bis gotowym do zaimportowania."
+ },
+ {
+  "file": "screens/bup/image97.png",
+  "screen": "Aplikacja ZP – Redukcja alokacji LT z danymi (po imporcie)",
+  "shows": "Ekran ZP, tryb Red. sieciowa aktywny, tabela DE wypełniona wartościami godzinowymi (LTA, Redukcja siec./bil., LTA po red., Współczynnik red.) dla 24 godzin.",
+  "maps_to": "Aplikacja ZP – wynik redukcji sieciowej LTA po wczytaniu dokumentu RLTA",
+  "text_visible": "ZP; Środowisko Produkcyjne; Redukcja alokacji długoterminowych; Doba handlowa 2025-08-01; Red. sieciowa; Red. bilansowa; Współczynniki red.; Importuj plik; Kod; Kier. EXP; LTA 2..; Redukcja siec. 0; godziny 01-24; Wersja aplikacji 1.3.0.2",
+  "quality": "clear",
+  "caption": "ZP: tabela redukcji alokacji LT wypełniona danymi godzinowymi po imporcie RLTA."
+ },
+ {
+  "file": "screens/bup/image98.png",
+  "screen": "Pulpit dyspozytorski DA – tabela przepływów z błędami MinIO (menu wyślij)",
+  "shows": "Tabela przepływów DA z czerwonymi statusami błędu (!) przy F320_CCA i paczce PERUN_DA_CCA; otwarte menu kontekstowe z podświetloną opcją 'wyślij'.",
+  "maps_to": "Pulpit DA – ponowna wysyłka paczki CCA do Perun po błędzie MinIO (backup)",
+  "text_visible": "NPF F230; 24 modele IGM; GLSK F103; CBCORA F224; AC(D-2) F118; Individual RA Potential F427; Vertices of Intermediate FB Domain z CCA F320_CCA; Paczka ZIP_CCA do Perun PERUN_DA_CCA; Merged D-2CF Common Grid Model F109; RefProg F110; F112; Intermediate FB Domain F212; F226; F312; F320_CCA; Configuration for RAO F327; status ręczny; informacje; pobierz; wyślij",
+  "quality": "clear",
+  "caption": "Pulpit DA: błędy MinIO na paczce CCA i menu kontekstowe z opcją wyślij (ponowna wysyłka)."
+ },
+ {
+  "file": "screens/bup/image99.png",
+  "screen": "Pulpit dyspozytorski DA – nagłówek z trybami odświeżania (menu wyślij)",
+  "shows": "Górna część Pulpitu DA z wyborem trybu odświeżania (ULTRASZYBKI/SZYBKI/WOLNY) i rozwiniętą paczką ZIP do Perun (AGR_PERUN_DA); menu kontekstowe z opcją wyślij.",
+  "maps_to": "Pulpit DA – wysyłka paczki ZIP do Perun w trybie WOLNY (odświeżanie co 5 min)",
+  "text_visible": "1. Pulpit dyspozytorski Day-Ahead; Business Day 2024-01-16; Tryb ULTRASZYBKI (co 10s); Tryb SZYBKI (co 30s); Tryb WOLNY (co 5 min); Odświeżenie za...; Logowanie; Paczka ZIP do Perun AGR_PERUN_DA; F109; F110; F112; F212; F226; F312; F320; MergingLog F515; Individual RA Potential (XLSX) X427; status ręczny; informacje; pobierz; wyślij",
+  "quality": "clear",
+  "caption": "Pulpit DA: nagłówek z trybami odświeżania i menu wysyłki paczki ZIP do Perun."
+ },
+ {
+  "file": "screens/bup/image100.png",
+  "screen": "E-mail powiadomienia FB Core Team – brak pliku F212",
+  "shows": "Krótki mail informujący, że dla doby 2024-03-26 nie znaleziono pliku F212 w katalogu cca/DA_FBCC/in.",
+  "maps_to": "Powiadomienie o braku pliku wejściowego F212 – przesłanka działań backup",
+  "text_visible": "Szanowni Państwo, Dla doby handlowej 2024-03-26 nie znaleziono następujących plików: F212 w katalogu cca/DA_FBCC/in/2024-03-26; Z poważaniem, FB Core Team",
+  "quality": "clear",
+  "caption": "E-mail FB Core Team: brak pliku F212 dla doby 2024-03-26."
+ },
+ {
+  "file": "screens/ccm/ccm-000.png",
+  "screen": "Logowanie do CCM",
+  "shows": "Okno przeglądarki z adresem ccm.spsm.pse.pl i monitem logowania (nazwa użytkownika, hasło).",
+  "maps_to": "logowanie / dostęp do pulpitu CCM",
+  "text_visible": "ccm.spsm.pse.pl/#, Zaloguj się, Nazwa użytkownika, Hasło, Anuluj",
+  "quality": "clear",
+  "caption": "Logowanie do aplikacji CCM pod adresem ccm.spsm.pse.pl."
+ },
+ {
+  "file": "screens/ccm/ccm-001.png",
+  "screen": "Lista pulpitów",
+  "shows": "Ekran 'Lista pulpitów' z dwoma pulpitami: DACC FB (od 2024-11-11) i IDCC do 3C z ATC i SFTP (od 2025-06-11).",
+  "maps_to": "wybór pulpitu dyspozytorskiego",
+  "text_visible": "Lista pulpitów, DACC FB Pulpit dyspozytorski, IDCC (do 3C) z ATC i SFTP Pulpit dyspozytorski, Data obowiązywania od",
+  "quality": "clear",
+  "caption": "Lista dostępnych pulpitów dyspozytorskich w CCM — wybór pulpitu DACC FB lub IDCC."
+ },
+ {
+  "file": "screens/ccm/ccm-002.png",
+  "screen": "Ikona podglądu (oko)",
+  "shows": "Pojedyncza ikona oka służąca do otwarcia pulpitu z listy.",
+  "maps_to": "przycisk otwarcia pulpitu",
+  "text_visible": "(brak tekstu)",
+  "quality": "cropped",
+  "caption": "Ikona 'oko' — otwiera wybrany pulpit dyspozytorski."
+ },
+ {
+  "file": "screens/ccm/ccm-003.png",
+  "screen": "Lista pulpitów (zaznaczone ikony oka)",
+  "shows": "Ta sama lista pulpitów z czerwonym podświetleniem ikon oka otwierających pulpity.",
+  "maps_to": "wybór/otwarcie pulpitu",
+  "text_visible": "Lista pulpitów, DACC FB Pulpit dyspozytorski, IDCC (do 3C) z ATC i SFTP Pulpit dyspozytorski",
+  "quality": "clear",
+  "caption": "Otwarcie pulpitu przez kliknięcie ikony 'oko' przy wybranej pozycji listy."
+ },
+ {
+  "file": "screens/ccm/ccm-004.png",
+  "screen": "Pulpit IDCC — pełny widok kafelków",
+  "shows": "Pełny pulpit IDCC z sekcjami IDCC(a/b/c), IDA3 i listą plików FIDx (kody, Target/Critical End Time, kolumny CCtool wysł./zwalid., MinIO, sFTP/ZP).",
+  "maps_to": "główny widok procesu IDCC — wszystkie kroki/pliki FIDx",
+  "text_visible": "IDCC Pulpit dyspozytorski, FID1-928, FID2-607, FID2-617, PERUN_ID2, FID2-710, FID2-831, FID2-921, FID3C-..., Target/Critical End Time, CCtool wysł.",
+  "quality": "clear",
+  "caption": "Główny pulpit IDCC — pełna lista plików FIDx procesu z czasami granicznymi i kolumnami statusów wysyłki/walidacji."
+ },
+ {
+  "file": "screens/ccm/ccm-005.png",
+  "screen": "Nagłówek pulpitu + wybór doby",
+  "shows": "Tytuł 'IDCC FB Pulpit dyspozytorski' z polem Business Day (2025-06-04) i zaznaczonymi strzałkami zmiany doby.",
+  "maps_to": "wybór doby handlowej (Business Day)",
+  "text_visible": "IDCC FB Pulpit dyspozytorski, Business Day, 2025-06-04",
+  "quality": "clear",
+  "caption": "Nagłówek pulpitu z polem doby handlowej (Business Day) i strzałkami zmiany dnia."
+ },
+ {
+  "file": "screens/ccm/ccm-006.png",
+  "screen": "Strzałka 'następna doba' (zielona)",
+  "shows": "Pojedyncza zielona strzałka w prawo do przejścia na kolejną dobę.",
+  "maps_to": "nawigacja doby — następny dzień",
+  "text_visible": "(brak tekstu)",
+  "quality": "cropped",
+  "caption": "Strzałka przejścia do następnej doby handlowej."
+ },
+ {
+  "file": "screens/ccm/ccm-007.png",
+  "screen": "Strzałka 'poprzednia doba' (zielona)",
+  "shows": "Pojedyncza zielona strzałka w lewo do przejścia na poprzednią dobę.",
+  "maps_to": "nawigacja doby — poprzedni dzień",
+  "text_visible": "(brak tekstu)",
+  "quality": "cropped",
+  "caption": "Strzałka przejścia do poprzedniej doby handlowej."
+ },
+ {
+  "file": "screens/ccm/ccm-008.png",
+  "screen": "Strzałka 'następna doba' (czerwona/aktywna)",
+  "shows": "Pojedyncza czerwona strzałka w prawo (stan wyróżniony) do zmiany doby.",
+  "maps_to": "nawigacja doby — następny dzień",
+  "text_visible": "(brak tekstu)",
+  "quality": "cropped",
+  "caption": "Strzałka zmiany doby (stan wyróżniony) — przejście do następnego dnia."
+ },
+ {
+  "file": "screens/ccm/ccm-009.png",
+  "screen": "Strzałka 'poprzednia doba' (czerwona/aktywna)",
+  "shows": "Pojedyncza czerwona strzałka w lewo (stan wyróżniony) do zmiany doby.",
+  "maps_to": "nawigacja doby — poprzedni dzień",
+  "text_visible": "(brak tekstu)",
+  "quality": "cropped",
+  "caption": "Strzałka zmiany doby (stan wyróżniony) — przejście do poprzedniego dnia."
+ },
+ {
+  "file": "screens/ccm/ccm-010.png",
+  "screen": "Ikona kalendarza (wybór doby)",
+  "shows": "Ikona kalendarza obok pola Business Day otwierająca wybór daty.",
+  "maps_to": "wybór doby handlowej — otwarcie kalendarza",
+  "text_visible": "(brak tekstu)",
+  "quality": "cropped",
+  "caption": "Ikona kalendarza — otwiera wybór doby handlowej."
+ },
+ {
+  "file": "screens/ccm/ccm-011.png",
+  "screen": "Kalendarz wyboru doby",
+  "shows": "Rozwinięty kalendarz (Wrzesień 2025) z wybraną datą 9 i polem Business Day 2025-09-09.",
+  "maps_to": "wybór doby handlowej z kalendarza",
+  "text_visible": "Business Day, 2025-09-09, Wrzesień 2025, Pon Wto Śro Czw Pią Sob Nie",
+  "quality": "clear",
+  "caption": "Wybór doby handlowej z kalendarza (przykład: 9 września 2025)."
+ },
+ {
+  "file": "screens/ccm/ccm-012.png",
+  "screen": "Tryby odświeżania",
+  "shows": "Przełącznik trybu odświeżania: ultraszybki (10 s), szybki (30 s), wolny (5 min) z licznikiem do odświeżenia.",
+  "maps_to": "ustawienia odświeżania pulpitu",
+  "text_visible": "Tryb ultraszybki (10 s), Tryb szybki (30 s), Tryb wolny (5 min), Odświeżenie za 4 min 40 s",
+  "quality": "clear",
+  "caption": "Wybór trybu automatycznego odświeżania pulpitu (10 s / 30 s / 5 min)."
+ },
+ {
+  "file": "screens/ccm/ccm-013.png",
+  "screen": "Przycisk 'Odśwież'",
+  "shows": "Niebieski przycisk 'Odśwież' do ręcznego odświeżenia widoku.",
+  "maps_to": "ręczne odświeżenie pulpitu",
+  "text_visible": "Odśwież",
+  "quality": "cropped",
+  "caption": "Przycisk ręcznego odświeżenia pulpitu."
+ },
+ {
+  "file": "screens/ccm/ccm-014.png",
+  "screen": "Licznik odświeżania",
+  "shows": "Niebieski wskaźnik 'Odświeżenie za 2 min 49 s'.",
+  "maps_to": "ustawienia odświeżania — licznik",
+  "text_visible": "Odświeżenie za 2 min 49 s",
+  "quality": "cropped",
+  "caption": "Licznik czasu do najbliższego automatycznego odświeżenia."
+ },
+ {
+  "file": "screens/ccm/ccm-015.png",
+  "screen": "Pulpit IDCC z 3 zakładkami przeglądarki",
+  "shows": "Pulpit 'IDCC (do 3C) z ATC i SFTP' z trzema otwartymi kartami (Lista pulpitów, IDCC, DACC FB), Business Day 2025-07-02 i kafelkami statusów (m.in. FID1-831 czerwony, FID1-921 sFTP czerwony).",
+  "maps_to": "główny widok pulpitu IDCC z ATC/SFTP",
+  "text_visible": "IDCC (do 3C) z ATC i SFTP Pulpit dyspozytorski, FID1-831, FID1-921, FID1-250, PERUN_ID2, DACF_IGM_UCT, CCCtool wysł./zwalid., sFTP/ZP wysł.",
+  "quality": "clear",
+  "caption": "Pulpit 'IDCC (do 3C) z ATC i SFTP' z trzema kartami przeglądarki i kafelkami statusów plików FIDx."
+ },
+ {
+  "file": "screens/ccm/ccm-016.png",
+  "screen": "Przycisk 'Legenda'",
+  "shows": "Przycisk 'Legenda' rozwijający opis kolorów kafelków.",
+  "maps_to": "legenda statusów — przycisk",
+  "text_visible": "Legenda",
+  "quality": "cropped",
+  "caption": "Przycisk 'Legenda' — rozwija opis kolorów statusów."
+ },
+ {
+  "file": "screens/ccm/ccm-017.png",
+  "screen": "Legenda kolorów statusów",
+  "shows": "Pełna legenda kolorów kafelków: zielony=prawidłowo obsłużony, R=wysłany ręcznie, W=wysłany po CET, fioletowy=dostarczony po CET, czerwony=brak dokumentu/błąd, '!'=nieprawidłowy rozmiar, '?'=brak ACK/proces, szary=oczekuje/niedostarczony.",
+  "maps_to": "legenda statusów (kompletna)",
+  "text_visible": "dokument prawidłowo obsłużony, R dokument wysłany ręcznie, W wysłany po CET, dostarczony po CET, dokument niedostarczony, zbliża się Target/Critical End Time, niepoprawny rozmiar pliku, proces w trakcie wykonywania, oczekujący na obsługę",
+  "quality": "clear",
+  "caption": "Legenda kolorów statusów plików w CCM — pełny opis znaczenia każdego koloru i oznaczenia (R, W, !, ?)."
+ },
+ {
+  "file": "screens/ccm/ccm-018.png",
+  "screen": "Kafelek statusu — biały (pusty)",
+  "shows": "Pojedynczy biały/jasny kafelek statusu (oczekujący na obsługę).",
+  "maps_to": "status: oczekujący na obsługę",
+  "text_visible": "(brak tekstu)",
+  "quality": "cropped",
+  "caption": "Kafelek statusu 'oczekujący na obsługę' (biały)."
+ },
+ {
+  "file": "screens/ccm/ccm-019.png",
+  "screen": "Kafelek statusu — czerwony z żółtym",
+  "shows": "Czerwono-żółty kafelek statusu (zbliża się Target End Time / brak dokumentu).",
+  "maps_to": "status: zbliża się Target End Time — brak dokumentu",
+  "text_visible": "(brak tekstu)",
+  "quality": "cropped",
+  "caption": "Kafelek statusu 'zbliża się Target End Time — brak dokumentu' (czerwono-żółty)."
+ },
+ {
+  "file": "screens/ccm/ccm-020.png",
+  "screen": "Tooltip kafelka — okno czasowe TET/CET",
+  "shows": "Czerwono-żółty kafelek z dymkiem '30 minut przed TET do 30 minut przed CET - dokumentu nie ma'.",
+  "maps_to": "status: brak dokumentu w oknie TET–CET",
+  "text_visible": "30 minut przed TET do 30 minut przed CET - dokumentu nie ma",
+  "quality": "clear",
+  "caption": "Dymek kafelka: brak dokumentu w oknie od 30 min przed TET do 30 min przed CET."
+ },
+ {
+  "file": "screens/ccm/ccm-021.png",
+  "screen": "Kafelek statusu — czerwony",
+  "shows": "Pojedynczy czerwony kafelek statusu (brak dokumentu / błąd).",
+  "maps_to": "status: brak dokumentu / błąd",
+  "text_visible": "(brak tekstu)",
+  "quality": "cropped",
+  "caption": "Kafelek statusu 'brak dokumentu / błąd' (czerwony)."
+ },
+ {
+  "file": "screens/ccm/ccm-022.png",
+  "screen": "Tooltip kafelka — 'Błąd procesu'",
+  "shows": "Czerwony kafelek z dymkiem 'Błąd procesu'.",
+  "maps_to": "status: błąd procesu",
+  "text_visible": "Błąd procesu",
+  "quality": "clear",
+  "caption": "Dymek kafelka 'Błąd procesu' (czerwony)."
+ },
+ {
+  "file": "screens/ccm/ccm-023.png",
+  "screen": "Tooltip kafelka — brama nieotwarta",
+  "shows": "Czerwony kafelek z dymkiem 'Gate for provided message definition is not opened.'",
+  "maps_to": "status błędu: brama dla definicji komunikatu nieotwarta",
+  "text_visible": "Gate for provided message definition is not opened.",
+  "quality": "clear",
+  "caption": "Dymek błędu kafelka: brama dla podanej definicji komunikatu nie jest otwarta."
+ },
+ {
+  "file": "screens/ccm/ccm-024.png",
+  "screen": "Tooltip kafelka — wersja nie wyższa",
+  "shows": "Czerwony kafelek z dymkiem 'Provided version is not higher than already stored data.'",
+  "maps_to": "status błędu: wersja nie wyższa od zapisanej",
+  "text_visible": "Provided version is not higher than already stored data.",
+  "quality": "clear",
+  "caption": "Dymek błędu kafelka: dostarczona wersja nie jest wyższa od już zapisanej."
+ },
+ {
+  "file": "screens/ccm/ccm-025.png",
+  "screen": "Kafelek statusu — zielony",
+  "shows": "Pojedynczy zielony kafelek statusu (dokument prawidłowo obsłużony).",
+  "maps_to": "status: dokument prawidłowo obsłużony",
+  "text_visible": "(brak tekstu)",
+  "quality": "cropped",
+  "caption": "Kafelek statusu 'dokument prawidłowo obsłużony' (zielony)."
+ },
+ {
+  "file": "screens/ccm/ccm-026.png",
+  "screen": "Tooltip kafelka — wersja pliku",
+  "shows": "Zielony kafelek z dymkiem 'FID1-250-SQLNET_PCM-EDX_KAFKA_CCCTOOL wersja 5'.",
+  "maps_to": "popup info: identyfikacja pliku/wersji FID1-250",
+  "text_visible": "FID1-250-SQLNET_PCM-EDX_KAFKA_CCCTOOL wersja 5",
+  "quality": "clear",
+  "caption": "Dymek kafelka z nazwą i wersją pliku (FID1-250, wersja 5)."
+ },
+ {
+  "file": "screens/ccm/ccm-027.png",
+  "screen": "Tooltip kafelka — ujemna wartość ograniczenia (FID1-831)",
+  "shows": "Wiersz FID1-831 z dwoma zielonymi kafelkami i dymkiem 'Delivered constraint value is negative.'",
+  "maps_to": "popup info FID1-831: ujemna wartość ograniczenia",
+  "text_visible": "FID1-831, 13:50, 14:45, Delivered constraint value is negative.",
+  "quality": "clear",
+  "caption": "Dymek kafelka (FID1-831): dostarczona wartość ograniczenia jest ujemna."
+ },
+ {
+  "file": "screens/ccm/ccm-028.png",
+  "screen": "Tooltip kafelka — ujemna wartość ograniczenia (FID2-831)",
+  "shows": "Wiersze FID2-710/FID2-831 z zielonymi kafelkami i dymkiem 'Delivered constraint value is negative.'",
+  "maps_to": "popup info FID2-831: ujemna wartość ograniczenia",
+  "text_visible": "FID2-710, FID2-831, 21:45, 21:55, Delivered constraint value is negative.",
+  "quality": "clear",
+  "caption": "Dymek kafelka (FID2-831): dostarczona wartość ograniczenia jest ujemna."
+ },
+ {
+  "file": "screens/ccm/ccm-029.png",
+  "screen": "Tooltip kafelka — brama nieotwarta (FID1-831, wersja 2)",
+  "shows": "Wiersz FID1-831 (wersja 2) z zielonymi kafelkami i dymkiem 'Gate for provided message definition is not opened.'",
+  "maps_to": "popup info FID1-831: brama nieotwarta",
+  "text_visible": "FID1-831, 13:50, 17:45, Wersja 2, Gate for provided message definition is not opened.",
+  "quality": "clear",
+  "caption": "Dymek kafelka (FID1-831 wersja 2): brama dla definicji komunikatu nie jest otwarta."
+ },
+ {
+  "file": "screens/ccm/ccm-030.png",
+  "screen": "Tooltip kafelka — brama nieotwarta (FID1-921/FID1-250)",
+  "shows": "Wiersze FID1-921 i FID1-250 z zielonymi kafelkami i dymkiem 'Gate for provided message definition is not opened.'",
+  "maps_to": "popup info FID1-921/FID1-250: brama nieotwarta",
+  "text_visible": "FID1-921, FID1-250, 14:45, 14:55, 17:32, 17:58, Gate for provided message definition is not opened.",
+  "quality": "clear",
+  "caption": "Dymek kafelka (FID1-921/FID1-250): brama dla definicji komunikatu nie jest otwarta."
+ },
+ {
+  "file": "screens/ccm/ccm-031.png",
+  "screen": "Tooltip kafelka — nieprawidłowe timeSeries (FID1-831)",
+  "shows": "Wiersz FID1-831 z dymkiem 'Message has some invalid timeSeries that does not meet primary MTU rules for this message definition.'",
+  "maps_to": "popup info FID1-831: niepoprawne timeSeries (reguły MTU)",
+  "text_visible": "FID1-831, 13:50, 14:45, Message has some invalid timeSeries that does not meet primary MTU rules for this message definition.",
+  "quality": "clear",
+  "caption": "Dymek kafelka (FID1-831): komunikat zawiera nieprawidłowe szeregi czasowe niezgodne z regułami MTU."
+ },
+ {
+  "file": "screens/ccm/ccm-032.png",
+  "screen": "Tooltip kafelka — nieprawidłowe timeSeries (FID2-831)",
+  "shows": "Wiersze FID2-710/FID2-831 z dymkiem 'Message has some invalid timeSeries that does not meet primary MTU rules for this message definition.'",
+  "maps_to": "popup info FID2-831: niepoprawne timeSeries (reguły MTU)",
+  "text_visible": "FID2-710, FID2-831, 21:30, 21:45, Message has some invalid timeSeries that does not meet primary MTU rules...",
+  "quality": "clear",
+  "caption": "Dymek kafelka (FID2-831): komunikat zawiera nieprawidłowe szeregi czasowe niezgodne z regułami MTU."
+ },
+ {
+  "file": "screens/ccm/ccm-033.png",
+  "screen": "Tooltip kafelka — 'Message fully accepted'",
+  "shows": "Wiersze DACF_IGM_UCT, FID2-607, FID2-617 z zielonymi kafelkami i dymkiem 'Message fully accepted'.",
+  "maps_to": "popup info: komunikat w pełni zaakceptowany (FID2-607/617)",
+  "text_visible": "DACF_IGM_UCT, FID2-607, FID2-617, 18:00, 20:19, Message fully accepted",
+  "quality": "clear",
+  "caption": "Dymek kafelka: komunikat w pełni zaakceptowany (FID2-607/FID2-617)."
+ },
+ {
+  "file": "screens/ccm/ccm-034.png",
+  "screen": "Kafelek statusu — zielony (wariant jaśniejszy)",
+  "shows": "Pojedynczy zielony kafelek statusu (prawidłowo obsłużony, jaśniejszy odcień).",
+  "maps_to": "status: dokument prawidłowo obsłużony",
+  "text_visible": "(brak tekstu)",
+  "quality": "duplicate",
+  "caption": "Kafelek statusu 'dokument prawidłowo obsłużony' (zielony)."
+ },
+ {
+  "file": "screens/ccm/ccm-035.png",
+  "screen": "Kafelek statusu — 'R' (wysłany ręcznie)",
+  "shows": "Zielony kafelek z białą literą 'R'.",
+  "maps_to": "status: dokument wysłany ręcznie",
+  "text_visible": "R",
+  "quality": "cropped",
+  "caption": "Kafelek statusu 'R' — dokument/składowa agregatu wysłana ręcznie."
+ },
+ {
+  "file": "screens/ccm/ccm-036.png",
+  "screen": "Kafelek statusu — 'W' (wysłany po CET)",
+  "shows": "Zielony kafelek z białą literą 'W'.",
+  "maps_to": "status: dokument wysłany po CET",
+  "text_visible": "W",
+  "quality": "cropped",
+  "caption": "Kafelek statusu 'W' — dokument/składowa agregatu wysłana po CET."
+ },
+ {
+  "file": "screens/ccm/ccm-037.png",
+  "screen": "Kafelek statusu — 'W' (wysłany po CET)",
+  "shows": "Zielony kafelek z białą literą 'W' (wariant).",
+  "maps_to": "status: dokument wysłany po CET",
+  "text_visible": "W",
+  "quality": "duplicate",
+  "caption": "Kafelek statusu 'W' — dokument/składowa agregatu wysłana po CET."
+ },
+ {
+  "file": "screens/ccm/ccm-038.png",
+  "screen": "Kafelek statusu — fioletowy",
+  "shows": "Pojedynczy fioletowy kafelek statusu (dostarczony po CET).",
+  "maps_to": "status: dokument dostarczony po CET",
+  "text_visible": "(brak tekstu)",
+  "quality": "cropped",
+  "caption": "Kafelek statusu 'dostarczony po CET' (fioletowy)."
+ },
+ {
+  "file": "screens/ccm/ccm-039.png",
+  "screen": "Tooltip kafelka — dostarczony po CET (FID2-620)",
+  "shows": "Fioletowy kafelek z dymkiem 'FID2-620-EDX_KAFKA_CCCTOOL-MINIO_PERUN wersja 4 [dostarczony po CET]'.",
+  "maps_to": "popup info FID2-620: dostarczony po CET",
+  "text_visible": "FID2-620-EDX_KAFKA_CCCTOOL-MINIO_PERUN wersja 4 [dostarczony po CET]",
+  "quality": "clear",
+  "caption": "Dymek kafelka (FID2-620, wersja 4): plik dostarczony po CET."
+ },
+ {
+  "file": "screens/ccm/ccm-040.png",
+  "screen": "Kafelek statusu — szary",
+  "shows": "Pojedynczy szary kafelek statusu (dokument niedostarczony).",
+  "maps_to": "status: dokument niedostarczony",
+  "text_visible": "(brak tekstu)",
+  "quality": "cropped",
+  "caption": "Kafelek statusu 'dokument niedostarczony' (szary)."
+ },
+ {
+  "file": "screens/ccm/ccm-041.png",
+  "screen": "Tooltip kafelka — niedostarczony (D-1)",
+  "shows": "Szary kafelek z dymkiem 'Dokument niedostarczony (D-1)'.",
+  "maps_to": "status: dokument niedostarczony (D-1)",
+  "text_visible": "Dokument niedostarczony (D-1)",
+  "quality": "clear",
+  "caption": "Dymek kafelka 'Dokument niedostarczony (D-1)' (szary)."
+ },
+ {
+  "file": "screens/ccm/ccm-042.png",
+  "screen": "Ikona błędu — czerwony wykrzyknik",
+  "shows": "Czerwone kółko z wykrzyknikiem (niepoprawny rozmiar pliku).",
+  "maps_to": "status: niepoprawny rozmiar pliku",
+  "text_visible": "!",
+  "quality": "cropped",
+  "caption": "Oznaczenie '!' — niepoprawny rozmiar pliku."
+ },
+ {
+  "file": "screens/ccm/ccm-043.png",
+  "screen": "Popup info — za mały rozmiar pliku (FID2-665)",
+  "shows": "Okno 'Informacje FID2-665 — Za mały rozmiar pliku!' z rozmiarem 49.858 KB vs min 50.000 KB, lokalizacją MinIO i datą dostarczenia po CET.",
+  "maps_to": "popup info FID2-665: za mały rozmiar pliku",
+  "text_visible": "Informacje FID2-665, Za mały rozmiar pliku!, Rozmiar pliku 49.858 [KB], Oczekiwany min 50.000 [KB], MinIO/perun/ID_FBCC/in/2025-06-24, 2025-06-24 16:06 po CET, Zamknij",
+  "quality": "clear",
+  "caption": "Popup informacyjny FID2-665: plik za mały (49.858 KB przy wymaganych 50.000 KB), dostarczony po CET."
+ },
+ {
+  "file": "screens/ccm/ccm-044.png",
+  "screen": "Ikona statusu — czerwony znak zapytania",
+  "shows": "Czerwone kółko ze znakiem zapytania (proces nieskończony / brak ACK).",
+  "maps_to": "status: brak ACK / proces nieskończony",
+  "text_visible": "?",
+  "quality": "cropped",
+  "caption": "Oznaczenie '?' — proces nieskończony / brak potwierdzenia ACK."
+ },
+ {
+  "file": "screens/ccm/ccm-045.png",
+  "screen": "Tooltip kafelka — oczekiwanie na ACK",
+  "shows": "Czerwony kafelek '?' z dymkiem 'Oczekiwanie na ACK - minęło 5 min.'",
+  "maps_to": "status: oczekiwanie na ACK (przekroczone 5 min)",
+  "text_visible": "Oczekiwanie na ACK - minęło 5 min.",
+  "quality": "clear",
+  "caption": "Dymek kafelka: oczekiwanie na potwierdzenie ACK — minęło 5 minut."
+ },
+ {
+  "file": "screens/ccm/ccm-046.png",
+  "screen": "Kafelek statusu — szary znak zapytania",
+  "shows": "Szary kafelek ze znakiem zapytania (proces w trakcie / oczekuje).",
+  "maps_to": "status: proces w trakcie wykonywania",
+  "text_visible": "?",
+  "quality": "cropped",
+  "caption": "Kafelek statusu '?' (szary) — proces w trakcie wykonywania."
+ },
+ {
+  "file": "screens/ccm/ccm-047.png",
+  "screen": "Wiersz FID2-607 — statusy zielone",
+  "shows": "Wiersz GLSK / FID2-607 (20:00, 20:17, wersja 1) z dwoma zielonymi kafelkami (wysłany i zwalidowany).",
+  "maps_to": "IDCC(b) Dane wejściowe — GLSK FID2-607 obsłużony",
+  "text_visible": "GLSK, FID2-607, 20:00, 20:17, 1",
+  "quality": "clear",
+  "caption": "Wiersz GLSK (FID2-607): plik prawidłowo wysłany i zwalidowany (kafelki zielone)."
+ },
+ {
+  "file": "screens/ccm/ccm-048.png",
+  "screen": "Wiersz FID2-617 — walidacja z błędem (?)",
+  "shows": "Wiersz CBCORA / FID2-617 (20:00, 20:17, wersja 1) z zielonym kafelkiem wysyłki i czerwonym '?' walidacji.",
+  "maps_to": "IDCC(b) Dane wejściowe — CBCORA FID2-617 brak ACK/walidacji",
+  "text_visible": "CBCORA, FID2-617, 20:00, 20:17, 1",
+  "quality": "clear",
+  "caption": "Wiersz CBCORA (FID2-617): plik wysłany, lecz walidacja bez potwierdzenia (czerwone '?')."
+ },
+ {
+  "file": "screens/ccm/ccm-049.png",
+  "screen": "Wiersz 24 modele IGM — status czerwony",
+  "shows": "Wiersz '24 modele IGM' / DACF_IGM_UCT (20:00, 20:17) z czerwonym kafelkiem w kolumnie sFTP/ZP (brak dokumentu).",
+  "maps_to": "IDCC(b) Dane wejściowe — DACF_IGM_UCT brak dokumentu",
+  "text_visible": "24 modele IGM, DACF_IGM_UCT, 20:00, 20:17",
+  "quality": "clear",
+  "caption": "Wiersz '24 modele IGM' (DACF_IGM_UCT): brak dokumentu w kolumnie sFTP/ZP (kafelek czerwony)."
+ },
+ {
+  "file": "screens/ccm/ccm-050.png",
+  "screen": "wiersz tabeli FIDx",
+  "shows": "Wiersz IVA_ATC (FID2-710_ATC) z kolumnami Target/Critical End Time 20:40/21:05 i ciemnoszarym kafelkiem statusu (nie wysłano).",
+  "maps_to": "FID2-710_ATC / IVA ATC",
+  "text_visible": "IVA_ATC, FID2-710_ATC, 20:40, 21:05, aplikacji KreatorDACF_CGMES",
+  "quality": "cropped",
+  "caption": "Wiersz IVA_ATC (FID2-710_ATC) ze statusem szarym"
+ },
+ {
+  "file": "screens/ccm/ccm-051.png",
+  "screen": "nagłówek tabeli + wiersz FIDx",
+  "shows": "Nagłówek kolumn (Nazwa przepływu, Kod, Target/Critical End Time, Wersja, CCCtool wysł., zwalid.) nad wierszem MD 250 (FID1-250) z zielonym kafelkiem R (wysłano ręcznie).",
+  "maps_to": "FID1-250 / MD 250",
+  "text_visible": "Nazwa przepływu, Kod, Target End Time, Critical End Time, Wersja, CCCtool wysł., CCCtool zwalid., MD 250, FID1-250, 17:24, 17:58, 1",
+  "quality": "clear",
+  "caption": "Nagłówek tabeli i wiersz MD 250 ze statusem R (ręczny)"
+ },
+ {
+  "file": "screens/ccm/ccm-052.png",
+  "screen": "wiersz FIDx ze statusem błędu",
+  "shows": "Wiersz GLSK (FID2-607) z dwoma czerwono-pomarańczowymi kafelkami statusu sygnalizującymi problem/błąd.",
+  "maps_to": "FID2-607 / GLSK",
+  "text_visible": "GLSK, FID2-607, 20:00, 20:17",
+  "quality": "cropped",
+  "caption": "Wiersz GLSK (FID2-607) z czerwonymi kafelkami błędu"
+ },
+ {
+  "file": "screens/ccm/ccm-053.png",
+  "screen": "wiersz FIDx ze statusem W",
+  "shows": "Wiersz Real Generation and Load Shift Keys (GLSK) FID2-657 z zielonym kafelkiem W (zwalidowano/zapisano).",
+  "maps_to": "FID2-657 / GLSK",
+  "text_visible": "Real Generation and Load Shift Keys (GLSK), FID2-657, 20:40, 21:05, 1",
+  "quality": "cropped",
+  "caption": "Wiersz GLSK (FID2-657) ze statusem W"
+ },
+ {
+  "file": "screens/ccm/ccm-054.png",
+  "screen": "wiersz FIDx ze statusem W",
+  "shows": "Wiersz CGM Data Quality Check (FID2-659) z zielonym kafelkiem W.",
+  "maps_to": "FID2-659 / CGM Data Quality Check",
+  "text_visible": "CGM Data Quality Check, FID2-659, 16:40, 17:05, 1",
+  "quality": "cropped",
+  "caption": "Wiersz CGM Data Quality Check (FID2-659) ze statusem W"
+ },
+ {
+  "file": "screens/ccm/ccm-055.png",
+  "screen": "wiersz FIDx ze statusem fioletowym",
+  "shows": "Wiersz Merged DACF/IDCF Common Grid Model (CGM) FID2-620 z fioletowym kafelkiem statusu.",
+  "maps_to": "FID2-620 / Merged CGM",
+  "text_visible": "Merged DACF/IDCF Common Grid Model (CGM), FID2-620, 20:40, 21:05, 4",
+  "quality": "cropped",
+  "caption": "Wiersz Merged CGM (FID2-620) ze statusem fioletowym"
+ },
+ {
+  "file": "screens/ccm/ccm-056.png",
+  "screen": "wiersz FIDx z dwoma statusami",
+  "shows": "Wiersz AC (FID1-831) z zielonym kafelkiem W i fioletowym kafelkiem statusu w kolejnych kolumnach.",
+  "maps_to": "FID1-831 / AC",
+  "text_visible": "AC, FID1-831, 13:50, 14:45, 1",
+  "quality": "cropped",
+  "caption": "Wiersz AC (FID1-831) ze statusami W i fioletowym"
+ },
+ {
+  "file": "screens/ccm/ccm-057.png",
+  "screen": "menu kontekstowe PPM",
+  "shows": "Rozwinięte menu prawego przycisku na kafelku FID3-620 z opcjami: status ręczny, informacje, pobierz, wyślij.",
+  "maps_to": "menu PPM na FID3-620 (CGM) - akcje status ręczny/informacje/pobierz/wyślij",
+  "text_visible": "Merged DACF/IDCF Common Grid Model (CGM), FID3-620, FID3-632, FID3-645, status ręczny, informacje, pobierz, wyślij",
+  "quality": "clear",
+  "caption": "Menu kontekstowe PPM: status ręczny, informacje, pobierz, wyślij"
+ },
+ {
+  "file": "screens/ccm/ccm-058.png",
+  "screen": "popup zmiany statusu na Ręczny",
+  "shows": "Okno potwierdzenia zmiany statusu na Ręczny z opcją Nowa wersja zaznaczoną (radio), polem Wersja, Opisem i przyciskami Nie/Tak.",
+  "maps_to": "czynność: ustawienie statusu ręcznego R - wariant Nowa wersja",
+  "text_visible": "Czy na pewno chcesz zmienić status na Ręczny?, Wersja, 2, Nowa wersja, Tylko zmiana statusu, Opis (opcjonalnie), Nie, Tak",
+  "quality": "clear",
+  "caption": "Popup statusu ręcznego - wariant Nowa wersja"
+ },
+ {
+  "file": "screens/ccm/ccm-059.png",
+  "screen": "pulpit pełny widok IDCC(d)",
+  "shows": "Pełny widok tabeli IDCC(d) Individual Validation z listą FID3 (645,657,659, FID2-665, 701, XID_RA, IVA FID3-710, Backup, Raporty Perun) i zielonym toastem Wysłano prośbę o zmianę statusu.",
+  "maps_to": "obszar IDCC(d) Individual Validation - lista przepływów FID3",
+  "text_visible": "IDCC(d) - Individual Validation, Initial FB Domain FID3-645, GLSK FID3-657 R, CGM Data Quality Check FID3-659, Individual Filtered Critical Branches FID2-665, Vertices FID3-701, XID_RA, IVA FID3-710, IVA Backup, Raporty ID3 z Perun RAP_PERUN_ID3, Wysłano prośbę o zmianę statusu",
+  "quality": "clear",
+  "caption": "Pulpit IDCC(d) Individual Validation z potwierdzeniem zmiany statusu"
+ },
+ {
+  "file": "screens/ccm/ccm-060.png",
+  "screen": "tooltip wysłania ręcznego",
+  "shows": "Dymek/tooltip nad kafelkiem FID3-620 z opisem kanałów wysyłki ręcznej: EDX_KAFKA_CCCTOOL-MINIO-PERUN wersja 4.",
+  "maps_to": "FID3-620 / status wysłany ręcznie - kanały dystrybucji",
+  "text_visible": "FID3-610, FID3-620, 08:30, 09:05, 4, Wysłany ręcznie FID3-620-EDX_KAFKA_CCCTOOL-MINIO-PERUN wersja 4",
+  "quality": "clear",
+  "caption": "Tooltip: plik wysłany ręcznie kanałami EDX/KAFKA/CCCTOOL/MINIO/PERUN"
+ },
+ {
+  "file": "screens/ccm/ccm-061.png",
+  "screen": "popup zmiany statusu na Ręczny",
+  "shows": "Okno potwierdzenia zmiany statusu na Ręczny z zaznaczoną opcją Tylko zmiana statusu (Wersja 1 wyszarzona).",
+  "maps_to": "czynność: status ręczny R - wariant Tylko zmiana statusu",
+  "text_visible": "Czy na pewno chcesz zmienić status na Ręczny?, Wersja, 1, Nowa wersja, Tylko zmiana statusu, Opis (opcjonalnie), Nie, Tak",
+  "quality": "clear",
+  "caption": "Popup statusu ręcznego - wariant Tylko zmiana statusu"
+ },
+ {
+  "file": "screens/ccm/ccm-062.png",
+  "screen": "pulpit pełny widok obszary DA/LTA",
+  "shows": "Pełny widok tabeli z obszarami 2nd TSO receiving, Individual Validation walidacja domeny FBA, Walidacja domeny LTA, NEMO Receiving, Extraction of Intraday ATCs, z kodami F-... i toastem Wysłano prośbę o zmianę statusu.",
+  "maps_to": "obszary walidacji domen FBA/LTA i ekstrakcji ATC (kody F1xx/F3xx)",
+  "text_visible": "CBCORA F224, AC (D-2) F118, Individual RA Potential F427, Vertices Intermediate FB Domain z CCA F320_CCA, IVA F310, IVA BACKUP, RAP_PERUN_DA, F320_LTA, F310_LTA, RLTA, Intraday NTCs F321, LTA_PSE, (Final) Merged Long Term Allocation F114, Wysłano prośbę o zmianę statusu",
+  "quality": "clear",
+  "caption": "Pulpit z obszarami walidacji domen FBA/LTA i ekstrakcji ATC"
+ },
+ {
+  "file": "screens/ccm/ccm-063.png",
+  "screen": "menu kontekstowe PPM (status ręczny ustawiony)",
+  "shows": "Tooltip wysłania ręcznego nad FID3-620 oraz menu PPM z opcjami przywróć status i wyślij (gdy status jest już ręczny).",
+  "maps_to": "menu PPM na FID3-620 - akcje przywróć status / wyślij",
+  "text_visible": "Merged Generation and Load Shift Keys (GLSK) FID3-610, Merged CGM FID3-620, Reference Program FID3-632, Wysłany ręcznie FID3-620-EDX_KAFKA_CCCTOOL-MINIO-PERUN wersja 4, przywróć status, wyślij",
+  "quality": "clear",
+  "caption": "Menu PPM: przywróć status, wyślij (status ręczny aktywny)"
+ },
+ {
+  "file": "screens/ccm/ccm-064.png",
+  "screen": "popup przywrócenia statusu",
+  "shows": "Okno potwierdzenia przywrócenia poprzedniego statusu z polem Opis i przyciskami Nie/Tak.",
+  "maps_to": "czynność: przywróć poprzedni status (cofnięcie statusu ręcznego)",
+  "text_visible": "Czy na pewno chcesz przywrócić poprzedni status?, Opis (opcjonalnie), Nie, Tak",
+  "quality": "clear",
+  "caption": "Popup przywrócenia poprzedniego statusu"
+ },
+ {
+  "file": "screens/ccm/ccm-065.png",
+  "screen": "pulpit pełny widok IDCC(d) z wyborem doby",
+  "shows": "Pełny pulpit IDCC(d) Individual Validation, wybór Business Day 2026-03-26 ze strzałkami, kafelki R przy FID3-657 i FID3-659, ikona ładowania przy FID3-620, toast Wysłano prośbę o przywrócenie statusu.",
+  "maps_to": "obszar IDCC(d) - wybór doby + statusy FID3",
+  "text_visible": "2026-03-26, Wymagana akcja Uzytkownika, Test powiadomień, IDCC(d) - Individual Validation, FID3-620 wersja 4, FID3-632, FID3-645, FID3-657 R, FID3-659 R, FID2-665, FID3-701, XID_RA, IVA FID3-710, Wysłano prośbę o przywrócenie statusu",
+  "quality": "clear",
+  "caption": "Pulpit IDCC(d) z wyborem doby i potwierdzeniem przywrócenia statusu"
+ },
+ {
+  "file": "screens/ccm/ccm-066.png",
+  "screen": "grupa AGR Paczka ZIP ID2 - statusy mieszane (zielone/czerwone)",
+  "shows": "Rozwinięta grupa AGR Paczka ZIP ID2 (PERUN_ID2) z listą FID2-610..701 i XID_RA; nagłówek czerwony wykrzyknik, FID2-620 czerwony wykrzyknik, reszta zielone kafelki.",
+  "maps_to": "grupa PERUN_ID2 (AGR Paczka ZIP) - statusy walidacji FID2",
+  "text_visible": "AGR Paczka ZIP ID2, PERUN_ID2, FID2-610, FID2-620, FID2-632, FID2-645 Virgin RefProg Bal, FID2-657, FID2-659, FID2-665, FID2-701, XID_RA, 20:40, 21:05, 1",
+  "quality": "clear",
+  "caption": "Grupa AGR Paczka ZIP ID2 - błąd na nagłówku i FID2-620"
+ },
+ {
+  "file": "screens/ccm/ccm-067.png",
+  "screen": "grupa AGR Paczka ZIP ID2 - statusy czerwone",
+  "shows": "Ta sama grupa PERUN_ID2; nagłówek i FID2-645 z czerwonymi (pełnymi) kafelkami błędu, pozostałe zielone.",
+  "maps_to": "grupa PERUN_ID2 - błąd na nagłówku i FID2-645",
+  "text_visible": "AGR Paczka ZIP ID2, PERUN_ID2, FID2-610...FID2-701, XID_RA, 20:40, 21:05, 1",
+  "quality": "clear",
+  "caption": "Grupa AGR Paczka ZIP ID2 - czerwony błąd na nagłówku i FID2-645"
+ },
+ {
+  "file": "screens/ccm/ccm-068.png",
+  "screen": "grupa AGR Paczka ZIP ID2 - statusy szare/oczekujące",
+  "shows": "Ta sama grupa PERUN_ID2; większość kafelków ciemnoszara (oczekuje), zielone tylko przy FID2-620, FID2-645, FID2-701 (z numerem wersji 1).",
+  "maps_to": "grupa PERUN_ID2 - stan oczekujący z częściowo dostarczonymi plikami",
+  "text_visible": "AGR Paczka ZIP ID2, PERUN_ID2, FID2-610...FID2-701, XID_RA, 20:40, 21:05",
+  "quality": "clear",
+  "caption": "Grupa AGR Paczka ZIP ID2 - statusy szare (oczekiwanie)"
+ },
+ {
+  "file": "screens/ccm/ccm-069.png",
+  "screen": "grupa AGR Paczka ZIP ID2 - statusy W",
+  "shows": "Ta sama grupa PERUN_ID2; nagłówek z zielonymi kafelkami, wszystkie pozycje FID2 z zielonymi kafelkami W (zwalidowane).",
+  "maps_to": "grupa PERUN_ID2 - komplet plików ze statusem W",
+  "text_visible": "AGR Paczka ZIP ID2, PERUN_ID2, FID2-610...FID2-701, XID_RA, 20:40, 21:05, 1",
+  "quality": "clear",
+  "caption": "Grupa AGR Paczka ZIP ID2 - wszystkie pliki ze statusem W"
+ },
+ {
+  "file": "screens/ccm/ccm-070.png",
+  "screen": "grupa Paczka ZIP do Perun - statusy fioletowe/W",
+  "shows": "Rozwinięta grupa Paczka ZIP do Perun (PERUN_ID2, wersja 3) z fioletowymi kafelkami w nagłówku i zielonymi W przy wszystkich FID2.",
+  "maps_to": "grupa PERUN_ID2 (Paczka ZIP do Perun) - nagłówek fioletowy, pozycje W",
+  "text_visible": "Paczka ZIP do Perun, PERUN_ID2, FID2-610...FID2-701, XID_RA, 20:40, 21:05, 3, 1",
+  "quality": "clear",
+  "caption": "Grupa Paczka ZIP do Perun - nagłówek fioletowy, pozycje W"
+ },
+ {
+  "file": "screens/ccm/ccm-071.png",
+  "screen": "grupa Paczka ZIP do Perun - statusy zielone/W",
+  "shows": "Ta sama grupa Paczka ZIP do Perun; nagłówek z zielonymi kafelkami, wszystkie FID2 ze statusem W.",
+  "maps_to": "grupa PERUN_ID2 (Paczka ZIP do Perun) - komplet dostarczony",
+  "text_visible": "Paczka ZIP do Perun, PERUN_ID2, FID2-610...FID2-701, XID_RA, 20:40, 21:05, 3, 1",
+  "quality": "clear",
+  "caption": "Grupa Paczka ZIP do Perun - nagłówek zielony, pozycje W"
+ },
+ {
+  "file": "screens/ccm/ccm-072.png",
+  "screen": "powiadomienie systemowe Chrome (CCM Informacja)",
+  "shows": "Powiadomienie pulpitowe Chrome z banerem CCM Informacja: FID3-710 (IVA) KONIECZNA weryfikacja statusu dokumentu, przycisk Zamknij.",
+  "maps_to": "powiadomienie: konieczna weryfikacja statusu FID3-710 (IVA)",
+  "text_visible": "CCM Informacja, Google Chrome, FID3-710 (IVA), KONIECZNA weryfikacja statusu dokument, ccs-ccm-dev.inno.pse.pl, Zamknij",
+  "quality": "clear",
+  "caption": "Powiadomienie Chrome: konieczna weryfikacja statusu FID3-710 (IVA)"
+ },
+ {
+  "file": "screens/ccm/ccm-073.png",
+  "screen": "nagłówek pulpitu + tryby odświeżania",
+  "shows": "Górny pasek pulpitu IDCC: tytuł, Business Day 2026-01-09, tryby odświeżania (ultraszybki 10s/szybki 30s/wolny 5min), Odświeżenie za 3min51s, Legenda, Pomoc, komunikat Nie zezwolono na wyświetlanie powiadomień; zwinięte grupy IDCC(a)-(c).",
+  "maps_to": "nagłówek pulpitu / sterowanie odświeżaniem i wyborem doby",
+  "text_visible": "IDCC Pulpit dyspozytorski, Business Day 2026-01-09, Tryb ultraszybki (10 s), Tryb szybki (30 s), Tryb wolny (5 min), Odświeżenie za 3 min 51 s, Legenda, Pomoc, Nie zezwolono na wyświetlanie powiadomień, IDCC(a), IDCC(b), IDCC(c)",
+  "quality": "clear",
+  "caption": "Nagłówek pulpitu IDCC z trybami odświeżania i ostrzeżeniem o powiadomieniach"
+ },
+ {
+  "file": "screens/ccm/ccm-074.png",
+  "screen": "ikona kłódki/zabezpieczeń",
+  "shows": "Mała niebieska ikonka (kłódka/zabezpieczenia witryny).",
+  "maps_to": "nieokreślone",
+  "text_visible": "(brak)",
+  "quality": "cropped",
+  "caption": "Ikonka kłódki (zabezpieczenia)"
+ },
+ {
+  "file": "screens/ccm/ccm-075.png",
+  "screen": "ustawienie powiadomień przeglądarki",
+  "shows": "Wiersz ustawień Powiadomienia z rozwijaną opcją Dozwolone (dzwoneczek).",
+  "maps_to": "ustawienie przeglądarki: powiadomienia Dozwolone",
+  "text_visible": "Powiadomienia, Dozwolone",
+  "quality": "clear",
+  "caption": "Ustawienie powiadomień: Dozwolone"
+ },
+ {
+  "file": "screens/ccm/ccm-076.png",
+  "screen": "panel uprawnień witryny (Edge)",
+  "shows": "Panel informacji o witrynie ccm.spsm-sr.pse.pl z uprawnieniami; Powiadomienia ustawione z Blokuj na Dozwolone (zaznaczone na czerwono).",
+  "maps_to": "konfiguracja przeglądarki: zezwolenie na powiadomienia dla CCM",
+  "text_visible": "ccm.spsm-sr.pse.pl, https://ccm.spsm.pse.pl/#/dashboard/19, Połączenie jest bezpieczne, Uprawnienia dla tej witryny, Lokalizacja, Powiadomienia, Blokuj, Dozwolone, Pytaj (domyślnie), Edytowanie pliku, Pliki cookie",
+  "quality": "clear",
+  "caption": "Panel uprawnień witryny: zmiana powiadomień na Dozwolone"
+ },
+ {
+  "file": "screens/ccm/ccm-077.png",
+  "screen": "ikona przełączników (suwaki)",
+  "shows": "Mała ikonka dwóch suwaków/przełączników.",
+  "maps_to": "nieokreślone",
+  "text_visible": "(brak)",
+  "quality": "cropped",
+  "caption": "Ikonka przełączników (suwaki)"
+ },
+ {
+  "file": "screens/ccm/ccm-078.png",
+  "screen": "ustawienie powiadomień - włączone (toggle)",
+  "shows": "Wiersz Powiadomienia z włączonym niebieskim przełącznikiem (dzwoneczek).",
+  "maps_to": "ustawienie przeglądarki: powiadomienia włączone (toggle)",
+  "text_visible": "Powiadomienia",
+  "quality": "clear",
+  "caption": "Powiadomienia włączone (przełącznik)"
+ },
+ {
+  "file": "screens/ccm/ccm-079.png",
+  "screen": "panel uprawnień witryny (Chrome) - powiadomienia wyłączone",
+  "shows": "Panel informacji o witrynie ccm.spsm-sr.pse.pl: Powiadomienia wyłączone (szary toggle), Pobieranie automatyczne włączone, przycisk Zresetuj uprawnienia.",
+  "maps_to": "konfiguracja przeglądarki: powiadomienia wyłączone dla CCM",
+  "text_visible": "ccm.spsm.pse.pl/#/dashboard/19, Wyświetl informacje o witrynie, ccm.spsm-sr.pse.pl, Połączenie jest bezpieczne, Powiadomienia, Pobieranie automatyczne, Zresetuj uprawnienia, Pliki cookie i dane witryn, Ustawienia witryn",
+  "quality": "clear",
+  "caption": "Panel uprawnień Chrome: powiadomienia wyłączone"
+ },
+ {
+  "file": "screens/ccm/ccm-080.png",
+  "screen": "przycisk Test powiadomień",
+  "shows": "Niebieski przycisk Test powiadomień (wycinek).",
+  "maps_to": "czynność: test powiadomień",
+  "text_visible": "Test powiadomień",
+  "quality": "cropped",
+  "caption": "Przycisk Test powiadomień"
+ },
+ {
+  "file": "screens/ccm/ccm-081.png",
+  "screen": "nagłówek pulpitu z podświetlonym Test powiadomień",
+  "shows": "Górny pasek pulpitu IDCC (Business Day 2026-01-09, tryby odświeżania, Legenda, Pomoc) z czerwoną ramką wokół przycisku Test powiadomień.",
+  "maps_to": "nagłówek pulpitu - lokalizacja przycisku Test powiadomień",
+  "text_visible": "IDCC Pulpit dyspozytorski, Business Day 2026-01-09, Tryb ultraszybki/szybki/wolny, Odświeżenie za 4 min 43 s, Legenda, Pomoc, Test powiadomień",
+  "quality": "clear",
+  "caption": "Nagłówek pulpitu z zaznaczonym przyciskiem Test powiadomień"
+ },
+ {
+  "file": "screens/ccm/ccm-082.png",
+  "screen": "pulpit + powiadomienie testowe Chrome",
+  "shows": "Pulpit IDCC (zwinięte grupy IDCC(a-d), IDA3) z powiadomieniem Chrome CCM Informacja: Test powiadomień - Powiadomienia poprawnie skonfigurowane w systemie.",
+  "maps_to": "weryfikacja: test powiadomień zakończony pomyślnie",
+  "text_visible": "IDCC Pulpit dyspozytorski, Business Day 2026-01-09, IDCC(a), IDCC(b), IDCC(c), IDA3, IDCC(d), CCM Informacja, Test powiadomień, Powiadomienia poprawnie skonfigurowane w systemie, ccm.spsm-sr.pse.pl, Zamknij",
+  "quality": "clear",
+  "caption": "Pulpit z powiadomieniem: powiadomienia poprawnie skonfigurowane"
+ },
+ {
+  "file": "screens/ccm/ccm-083.png",
+  "screen": "ikona ustawień (koło zębate)",
+  "shows": "Niebieska ikona koła zębatego (ustawienia).",
+  "maps_to": "nieokreślone (ikona ustawień pulpitu)",
+  "text_visible": "(brak)",
+  "quality": "cropped",
+  "caption": "Ikona ustawień (koło zębate)"
+ },
+ {
+  "file": "screens/ccm/ccm-084.png",
+  "screen": "ikony zoom (-/+)",
+  "shows": "Dwie okrągłe ikony minus i plus (powiększanie/pomniejszanie).",
+  "maps_to": "nieokreślone",
+  "text_visible": "(brak)",
+  "quality": "cropped",
+  "caption": "Ikony zoom minus/plus"
+ },
+ {
+  "file": "screens/ccm/ccm-085.png",
+  "screen": "ikony statusu zielony/czerwony",
+  "shows": "Dwie ikony: zielony okrąg z fajką (OK) i czerwony okrąg z krzyżykiem (błąd).",
+  "maps_to": "legenda kolorów - status OK / błąd",
+  "text_visible": "(brak)",
+  "quality": "clear",
+  "caption": "Ikony statusu: OK (zielony) i błąd (czerwony)"
+ },
+ {
+  "file": "screens/ccm/ccm-086.png",
+  "screen": "nagłówek tabeli (wycinek)",
+  "shows": "Wycinek nagłówka tabeli: Nazwa Obszaru, Nazwa przepływu, Kod, Target/Critical End Time, Wersja.",
+  "maps_to": "nagłówek tabeli pulpitu",
+  "text_visible": "Nazwa Obszaru, Nazwa przepływu, Kod, Target End Time, Critical End Time, Wersja",
+  "quality": "cropped",
+  "caption": "Wycinek nagłówka tabeli pulpitu"
+ },
+ {
+  "file": "screens/ccm/ccm-087.png",
+  "screen": "nagłówek tabeli z uchwytem zmiany szerokości kolumny",
+  "shows": "Wycinek nagłówka (Nazwa Obszaru / Nazwa przepływu) z zielonym uchwytem i kursorem zmiany szerokości kolumny.",
+  "maps_to": "czynność: zmiana szerokości kolumny",
+  "text_visible": "Nazwa Obszaru, Nazwa przepływu, NPE, Dane wejściowe Kreator",
+  "quality": "cropped",
+  "caption": "Zmiana szerokości kolumny w nagłówku tabeli"
+ },
+ {
+  "file": "screens/ccm/ccm-088.png",
+  "screen": "ikona statusu OK",
+  "shows": "Zielony okrąg z fajką (status OK/zwalidowano).",
+  "maps_to": "legenda - status OK",
+  "text_visible": "(brak)",
+  "quality": "cropped",
+  "caption": "Ikona statusu OK (zielony)"
+ },
+ {
+  "file": "screens/ccm/ccm-089.png",
+  "screen": "przycisk Pomoc",
+  "shows": "Niebieski przycisk Pomoc (wycinek).",
+  "maps_to": "przycisk Pomoc pulpitu",
+  "text_visible": "Pomoc",
+  "quality": "cropped",
+  "caption": "Przycisk Pomoc"
+ },
+ {
+  "file": "screens/ccm/ccm-090.png",
+  "screen": "PDF instrukcji użytkownika (przeglądarka)",
+  "shows": "Otwarty w Chrome dokument PDF Instrukcja Użytkownika Dyspozytora ID z metryką dokumentu i historią wersji 1.0-1.4.",
+  "maps_to": "dokumentacja: Instrukcja Użytkownika obsługującego proces ID (CCM)",
+  "text_visible": "[IDCC FB CCM] Zadania użytkownika, CCM_Instrukcja_Uzytkownika_Dyspozytora_ID.pdf, Podręcznik użytkownika Capacity Calculation Monitoring 1.0.7.2(2), Metryka dokumentu, PSE Innowacje, 27.01.2023 1.0, 22.02.2023 1.1, 28.04.2023 1.2, 29.05.2023 1.3, 29.12.2023 1.4",
+  "quality": "clear",
+  "caption": "PDF: Instrukcja Użytkownika obsługującego proces ID"
+ },
+ {
+  "file": "screens/ccm/ccm-091.png",
+  "screen": "menu kontekstowe PPM (skrót - informacje)",
+  "shows": "Wiersze IVA_ATC (FID2-710_ATC) i Individual ATC Validation (FID2-928); menu PPM z opcjami status ręczny i informacje (informacje w czerwonej ramce).",
+  "maps_to": "menu PPM na FID2-928 - opcja informacje",
+  "text_visible": "aplikacji KreatorDACF_CGMES, XID_RA, IVA_ATC, FID2-710_ATC, Individual ATC Validation, FID2-928, 21:33, 21:40, status ręczny, informacje",
+  "quality": "clear",
+  "caption": "Menu PPM z podświetloną opcją informacje (FID2-928)"
+ },
+ {
+  "file": "screens/ccm/ccm-092.png",
+  "screen": "popup Informacje o pliku (OK)",
+  "shows": "Okno Informacje FID2-610: rozmiar pliku 77.845 KB, min 10.000 KB, lokalizacja MinIO/perun/ID_FBCC/in/2025-06-24, data dostarczenia po CET (na czerwono).",
+  "maps_to": "popup informacje pliku FID2-610 - dostarczony po CET",
+  "text_visible": "Informacje FID2-610, Rozmiar pliku 77.845 [KB], Oczekiwany min rozmiar pliku 10.000 [KB], Lokalizacja MinIO/perun/ID_FBCC/in/2025-06-24, Data dostarczenia 2025-06-24 16:06 po CET, Zamknij",
+  "quality": "clear",
+  "caption": "Popup Informacje FID2-610 - plik dostarczony po CET"
+ },
+ {
+  "file": "screens/ccm/ccm-093.png",
+  "screen": "popup Informacje o pliku (błąd rozmiaru)",
+  "shows": "Okno Informacje FID2-665: Za mały rozmiar pliku! - 49.858 KB przy wymaganych min 50.000 KB, lokalizacja MinIO, data po CET.",
+  "maps_to": "popup informacje pliku FID2-665 - błąd za mały rozmiar",
+  "text_visible": "Informacje FID2-665, Za mały rozmiar pliku!, Rozmiar pliku 49.858 [KB], Oczekiwany min rozmiar pliku 50.000 [KB], Lokalizacja MinIO/perun/ID_FBCC/in/2025-06-24, Data dostarczenia 2025-06-24 16:06 po CET, Zamknij",
+  "quality": "clear",
+  "caption": "Popup Informacje FID2-665 - błąd: za mały rozmiar pliku"
+ },
+ {
+  "file": "screens/ccm/ccm-094.png",
+  "screen": "popup Informacje o pliku (rozmiar w bajtach)",
+  "shows": "Okno Informacje FID2-710: rozmiar 667.000 B przy min 512.000 B, data dostarczenia 2025-06-24 17:40 (bez adnotacji po CET).",
+  "maps_to": "popup informacje pliku FID2-710 (IVA)",
+  "text_visible": "Informacje FID2-710, Rozmiar pliku 667.000 [B], Oczekiwany min rozmiar pliku 512.000 [B], Data dostarczenia 2025-06-24 17:40, Zamknij",
+  "quality": "clear",
+  "caption": "Popup Informacje FID2-710 - rozmiar w bajtach"
+ },
+ {
+  "file": "screens/ccm/ccm-095.png",
+  "screen": "ikona rozwijania grupy (strzałka w dół)",
+  "shows": "Niebieska strzałka w dół (rozwiń grupę).",
+  "maps_to": "legenda/sterowanie - rozwinięcie grupy",
+  "text_visible": "(brak)",
+  "quality": "cropped",
+  "caption": "Ikona rozwijania grupy (strzałka w dół)"
+ },
+ {
+  "file": "screens/ccm/ccm-096.png",
+  "screen": "ikona zwijania grupy (strzałka w górę)",
+  "shows": "Niebieska strzałka w górę (zwiń grupę).",
+  "maps_to": "legenda/sterowanie - zwinięcie grupy",
+  "text_visible": "(brak)",
+  "quality": "cropped",
+  "caption": "Ikona zwijania grupy (strzałka w górę)"
+ },
+ {
+  "file": "screens/ccm/ccm-097.png",
+  "screen": "pulpit IDCC do 3C z ATC i SFTP (miniatura)",
+  "shows": "Zmniejszony zrzut pulpitu IDCC (do 3C) z ATC i SFTP - pełna tabela z obszarami IDCC(a)-(d) i wieloma wierszami; mała rozdzielczość/nieczytelne detale.",
+  "maps_to": "pulpit IDCC (do 3C) z ATC i SFTP - widok pełny",
+  "text_visible": "IDCC (do 3C) z ATC i SFTP Pulpit dyspozytorski, 2025-07-02, IDCC(a/b/c), Allocation Constraints, AC, MD250, Shadow Auction, Vertices, NTC, F207, F310",
+  "quality": "blurred",
+  "caption": "Miniatura pulpitu IDCC (do 3C) z ATC i SFTP (nieczytelna)"
+ },
+ {
+  "file": "screens/ccm/ccm-098.png",
+  "screen": "nagłówek pulpitu IDCC (do 3C) z ATC i SFTP",
+  "shows": "Górny pasek innego pulpitu: tytuł IDCC (do 3C) z ATC i SFTP, Business Day 2025-07-02 (czerwone strzałki), tryby odświeżania, Legenda, Pomoc, zwinięte grupy IDCC(a-c), IDA3.",
+  "maps_to": "nagłówek pulpitu IDCC (do 3C) z ATC i SFTP",
+  "text_visible": "IDCC (do 3C) z ATC i SFTP Pulpit dyspozytorski, Business Day 2025-07-02, Tryb ultraszybki/szybki/wolny, Odświeżenie za 4 min 55 s, Legenda, Pomoc, IDCC(a), IDCC(b), IDCC(c), IDA3",
+  "quality": "clear",
+  "caption": "Nagłówek pulpitu IDCC (do 3C) z ATC i SFTP"
+ },
+ {
+  "file": "screens/ccm/ccm-099.png",
+  "screen": "ikona rozwijania grupy (strzałka w dół, duża)",
+  "shows": "Niebieska strzałka w dół (rozwiń grupę) - większy wariant.",
+  "maps_to": "legenda/sterowanie - rozwinięcie grupy",
+  "text_visible": "(brak)",
+  "quality": "cropped",
+  "caption": "Ikona rozwijania grupy (strzałka w dół)"
+ },
+ {
+  "file": "screens/ccm/ccm-100.png",
+  "screen": "ikona/strzałka",
+  "shows": "Niebieska strzałka w górę (collapse) do zwijania gałęzi paczki ZIP w drzewie statusów.",
+  "maps_to": "nieokreślone",
+  "text_visible": "brak",
+  "quality": "cropped",
+  "caption": "Ikona zwijania (strzałka w górę)"
+ },
+ {
+  "file": "screens/ccm/ccm-101.png",
+  "screen": "ikona/strzałka",
+  "shows": "Niebieska strzałka w dół (expand) do rozwijania gałęzi paczki ZIP w drzewie statusów.",
+  "maps_to": "nieokreślone",
+  "text_visible": "brak",
+  "quality": "cropped",
+  "caption": "Ikona rozwijania (strzałka w dół)"
+ },
+ {
+  "file": "screens/ccm/ccm-102.png",
+  "screen": "wiersz tabeli FIDx",
+  "shows": "Wiersz Paczka ZIP do Perun (PERUN_ID2) zwinięty, ze statusem fioletowym i czerwonym; obok IVA/IVA Backup FID2-710.",
+  "maps_to": "IDCC(b) Individual Validation, paczka PERUN_ID2",
+  "text_visible": "CBCORA, FID2-617, Paczka ZIP do Perun, PERUN_ID2, IVA, IVA Backup, FID2-710, 20:40, 21:05, IDCC(b) - Individual Validation",
+  "quality": "clear",
+  "caption": "Wiersz paczki ZIP do Perun w walidacji IVA"
+ },
+ {
+  "file": "screens/ccm/ccm-103.png",
+  "screen": "ikona/strzałka",
+  "shows": "Niebieska strzałka w górę (collapse) - duplikat ikony zwijania.",
+  "maps_to": "nieokreślone",
+  "text_visible": "brak",
+  "quality": "duplicate",
+  "caption": "Ikona zwijania (duplikat ccm-100)"
+ },
+ {
+  "file": "screens/ccm/ccm-104.png",
+  "screen": "drzewo plików FIDx rozwinięte",
+  "shows": "Rozwinięta gałąź Paczka ZIP_ATC ID2 do Perun (PERUN_ID2_ATC) z listą plików FID2-610/620/632/645/657/659 oznaczonych ikoną Word (W).",
+  "maps_to": "IDCC(b) Walidacja domeny ATC, paczka PERUN_ID2_ATC",
+  "text_visible": "IVA Backup, FID2-710, Paczka ZIP_ATC ID2 do Perun, PERUN_ID2_ATC, Merged Generation and Load Shift Keys (GLSK) FID2-610, Merged DACF/IDCF Common Grid Model (CGM) FID2-620, Reference Program (RefProg) FID2-632, Initial FB Domain (Virgin RefProg Bal) FID2-645, Real Generation and Load Shift Keys (GLSK) FID2-657, CGM Data Quality Check, IDCC(b) - Walidacja domeny ATC",
+  "quality": "clear",
+  "caption": "Rozwinięta lista plików paczki ATC ID2"
+ },
+ {
+  "file": "screens/ccm/ccm-105.png",
+  "screen": "ikona kłódki",
+  "shows": "Niebieska otwarta kłódka - tryb odblokowany (edycja/akcje dozwolone).",
+  "maps_to": "nieokreślone",
+  "text_visible": "brak",
+  "quality": "cropped",
+  "caption": "Ikona kłódki otwartej (odblokowane)"
+ },
+ {
+  "file": "screens/ccm/ccm-106.png",
+  "screen": "pasek narzędzi odświeżania",
+  "shows": "Górny pasek: wybór trybu odświeżania (ultraszybki 10s / szybki 30s / wolny 5min), licznik odświeżenia, Legenda, Pomoc i kłódka.",
+  "maps_to": "Odświeżanie pulpitu / wybór trybu",
+  "text_visible": "Tryb ultraszybki (10 s), Tryb szybki (30 s), Tryb wolny (5 min), Odświeżenie za 4 min 30 s, Legenda, Pomoc",
+  "quality": "clear",
+  "caption": "Pasek wyboru trybu odświeżania"
+ },
+ {
+  "file": "screens/ccm/ccm-107.png",
+  "screen": "ikona kłódki",
+  "shows": "Niebieska otwarta kłódka - duplikat ikony odblokowanej.",
+  "maps_to": "nieokreślone",
+  "text_visible": "brak",
+  "quality": "duplicate",
+  "caption": "Ikona kłódki otwartej (duplikat ccm-105)"
+ },
+ {
+  "file": "screens/ccm/ccm-108.png",
+  "screen": "ikona kłódki",
+  "shows": "Czerwona zamknięta kłódka - tryb zablokowany (akcje niedostępne).",
+  "maps_to": "nieokreślone",
+  "text_visible": "brak",
+  "quality": "cropped",
+  "caption": "Ikona kłódki zamkniętej (zablokowane)"
+ },
+ {
+  "file": "screens/ccm/ccm-109.png",
+  "screen": "menu PPM na pliku",
+  "shows": "Rozwinięte menu kontekstowe (status ręczny / informacje / pobierz / wyślij) na pliku FID2-657 w paczce AGR_PERUN_ID2, z zaznaczoną opcją wyślij.",
+  "maps_to": "Czynność: wyślij plik FID2-657",
+  "text_visible": "Paczka ZIP do Perun, AGR_PERUN_ID2, CGM Data Quality Check FID2-659, Reference Program (RefProg) FID2-632, Real Generation and Load Shift Keys (GLSK) FID2-657, Vertices of Initial FB Domain FID2-701, Individual Filtered Critical Branches (CB) FID2-665, Merged DACF/IDCF Common Grid Model (CGM) FID2-620, status ręczny, informacje, pobierz, wyślij",
+  "quality": "clear",
+  "caption": "Menu PPM - wyślij plik FID2-657"
+ },
+ {
+  "file": "screens/ccm/ccm-110.png",
+  "screen": "popup Wyślij plik",
+  "shows": "Okno Wyślij FID2-657 z pustym polem przeciągnij/wybierz plik, w tle drzewo paczki PERUN_ID2.",
+  "maps_to": "Czynność: wyślij plik FID2-657 (okno wgrywania)",
+  "text_visible": "Nazwa przepływu, Kod, Target End Time, Critical End Time, Wersja, CCCtool wysł., CCCtool zwalid., MinIO, sFTP/ZP wysł., Wyślij FID2-657, Wybierz plik z dysku lub przeciągnij tutaj, Anuluj, Wyślij, XID_RA",
+  "quality": "clear",
+  "caption": "Okno wysyłania pliku FID2-657 (puste)"
+ },
+ {
+  "file": "screens/ccm/ccm-111.png",
+  "screen": "okno wyboru pliku (Edge)",
+  "shows": "Popup Wyślij FID2-657 nad listą plików w eksploratorze Edge - wybór pliku XML do wgrania.",
+  "maps_to": "Czynność: wybór pliku z dysku do wysyłki FID2-657",
+  "text_visible": "IDCC b z walidacją domeny ATC (v.1.0), 2024-05-15, 20240515-CORE_FB, 20240515-FID2-610/620/632/645/657/659/665/701, Wyślij FID2-657, Elementy: 9, Przenieś",
+  "quality": "clear",
+  "caption": "Wybór pliku XML z eksploratora (Edge)"
+ },
+ {
+  "file": "screens/ccm/ccm-112.png",
+  "screen": "okno wyboru pliku (Windows)",
+  "shows": "Systemowe okno Otwórz nad popupem Wyślij FID2-657 - wskazanie pliku FID2-657 .xml w folderze dokumentów PERUN_ID2.",
+  "maps_to": "Czynność: wybór pliku z dysku do wysyłki FID2-657",
+  "text_visible": "CONNECTOR 2, CCM, PSE, Lista pulpitów, IDCC b z walidacją d..., Shadow Auction MD 250, Allocation Constraint AC, 24 modele IGM, GLSK, CBCORA, 20240515-FID2-657...xml, Wyślij FID2-657, Otwórz, Anuluj",
+  "quality": "clear",
+  "caption": "Systemowe okno Otwórz - wskazanie pliku"
+ },
+ {
+  "file": "screens/ccm/ccm-113.png",
+  "screen": "popup Wyślij plik z wybranym plikiem",
+  "shows": "Okno Wyślij FID2-657 z załadowaną nazwą pliku gotowego do wysłania (przed kliknięciem Wyślij).",
+  "maps_to": "Czynność: wyślij plik FID2-657 (plik wybrany)",
+  "text_visible": "Wyślij FID2-657, Wybierz plik z dysku lub przeciągnij tutaj, 20240515-FID2-657-v1-10V1001C--00264T-to-10V1001C--00085T.xml, Anuluj, Wyślij",
+  "quality": "clear",
+  "caption": "Okno wysyłania z wybranym plikiem FID2-657"
+ },
+ {
+  "file": "screens/ccm/ccm-114.png",
+  "screen": "przycisk",
+  "shows": "Niebieski przycisk Wyślij (zbliżenie).",
+  "maps_to": "nieokreślone",
+  "text_visible": "Wyślij",
+  "quality": "cropped",
+  "caption": "Przycisk Wyślij"
+ },
+ {
+  "file": "screens/ccm/ccm-115.png",
+  "screen": "popup wysyłki w toku",
+  "shows": "Okno Wyślij FID2-657 z paskiem postępu (3%) i komunikatem Wysyłanie pliku.",
+  "maps_to": "Czynność: wyślij plik FID2-657 (trwa wysyłka)",
+  "text_visible": "Wyślij FID2-657, 3%, Wysyłanie pliku, 20250702-FID2-657...xml, Anuluj, Wyślij",
+  "quality": "clear",
+  "caption": "Trwa wysyłanie pliku FID2-657 (3%)"
+ },
+ {
+  "file": "screens/ccm/ccm-116.png",
+  "screen": "popup wysyłki zakończonej",
+  "shows": "Okno Wyślij FID2-657 z zielonym komunikatem Plik wysłany i przyciskiem Zamknij.",
+  "maps_to": "Czynność: wyślij plik FID2-657 (wysłano)",
+  "text_visible": "Wyślij FID2-657, 20250702-FID2-657-v1-10V1001C--00264T-to-10V1001C--00085T.xml, Plik wysłany, Zamknij",
+  "quality": "clear",
+  "caption": "Plik FID2-657 wysłany pomyślnie"
+ },
+ {
+  "file": "screens/ccm/ccm-117.png",
+  "screen": "ikona statusu (Word)",
+  "shows": "Zielona ikona pliku Word (W) - status oznaczający dostępny dokument/raport.",
+  "maps_to": "nieokreślone (legenda kolorów)",
+  "text_visible": "W",
+  "quality": "cropped",
+  "caption": "Ikona statusu - dokument Word"
+ },
+ {
+  "file": "screens/ccm/ccm-118.png",
+  "screen": "wiersz tabeli po wysyłce",
+  "shows": "Gałąź AGR_PERUN_ID2 rozwinięta; podświetlone: kolumna Wersja (1) i status Word (W) dla FID2-657 po wysłaniu.",
+  "maps_to": "IDCC(b), paczka AGR_PERUN_ID2 - wersja i status pliku FID2-657",
+  "text_visible": "Paczka ZIP do Perun, AGR_PERUN_ID2, CGM Data Quality Check FID2-659, Reference Program (RefProg) FID2-632, Real Generation and Load Shift Keys (GLSK) FID2-657, Vertices of Initial FB Domain FID2-701, Individual Filtered Critical Branches (CB) FID2-665, Merged DACF/IDCF Common Grid Model (CGM) FID2-620",
+  "quality": "clear",
+  "caption": "Wiersz FID2-657 z wersją 1 po wysyłce"
+ },
+ {
+  "file": "screens/ccm/ccm-119.png",
+  "screen": "menu PPM - opcja",
+  "shows": "Fragment menu kontekstowego z podświetloną opcją wyślij po CET.",
+  "maps_to": "Czynność: wyślij po CET",
+  "text_visible": "wyślij po CET",
+  "quality": "cropped",
+  "caption": "Opcja menu - wyślij po CET"
+ },
+ {
+  "file": "screens/ccm/ccm-120.png",
+  "screen": "menu PPM rozwinięte",
+  "shows": "Menu kontekstowe pliku z opcjami informacje / pobierz / wyślij po CET (zaznaczona), obok ikona Word.",
+  "maps_to": "Czynność: wyślij po CET",
+  "text_visible": "informacje, pobierz, wyślij po CET",
+  "quality": "clear",
+  "caption": "Menu PPM - wyślij po CET"
+ },
+ {
+  "file": "screens/ccm/ccm-121.png",
+  "screen": "popup Wyślij po CET",
+  "shows": "Okno Wyślij FID1-250 po CET z pustym polem wgrywania pliku (CET na czerwono).",
+  "maps_to": "Czynność: wyślij po CET plik FID1-250",
+  "text_visible": "Wyślij FID1-250 po CET, Wybierz plik z dysku lub przeciągnij tutaj, Anuluj, Wyślij, IDCC(b)",
+  "quality": "clear",
+  "caption": "Okno wysyłki po CET - FID1-250 (puste)"
+ },
+ {
+  "file": "screens/ccm/ccm-122.png",
+  "screen": "wiersz tabeli FIDx",
+  "shows": "Gałąź AGR_PERUN_ID2 (target 20:40, critical 21:20); podświetlone: Wersja (1) i status Word dla CGM Data Quality Check FID2-659.",
+  "maps_to": "IDCC(b), paczka AGR_PERUN_ID2 - FID2-659",
+  "text_visible": "Paczka ZIP do Perun, AGR_PERUN_ID2, CGM Data Quality Check FID2-659, Reference Program (RefProg) FID2-632, Real Generation and Load Shift Keys (GLSK) FID2-657, 16:40, 17:05",
+  "quality": "clear",
+  "caption": "Wiersz FID2-659 z wersją i statusem"
+ },
+ {
+  "file": "screens/ccm/ccm-123.png",
+  "screen": "popup Wyślij po CET - błąd nazwy",
+  "shows": "Okno Wyślij FID1-250 po CET z błędem: nazwa pliku zawiera FID1-831 zamiast FID1-250 (Niepoprawna nazwa pliku, kod błędu 39).",
+  "maps_to": "Walidacja nazwy pliku przy wysyłce po CET",
+  "text_visible": "Wyślij FID1-250 po CET, 20250604-FID1-831-v1-10XPL-TSO------P-to-10V1001C--00264T.XML, Niepoprawna nazwa pliku - (kod błędu: 39), Anuluj, Wyślij, IDCC(a)",
+  "quality": "clear",
+  "caption": "Błąd nazwy pliku (kod 39) - zła nazwa FID"
+ },
+ {
+  "file": "screens/ccm/ccm-124.png",
+  "screen": "pulpit + popup błąd nazwy",
+  "shows": "Pełny pulpit IDCC (do 3C) z ATC i SFTP, doba 2025-07-01; popup Wyślij FID1-250 po CET z błędem niepoprawnej daty w nazwie (kod błędu 40).",
+  "maps_to": "Walidacja nazwy pliku (data) przy wysyłce po CET",
+  "text_visible": "IDCC (do 3C) z ATC i SFTP Pulpit dyspozytorski, Business Day 2025-07-01, Nazwa Obszaru, Nazwa przepływu, Kod, Target End Time, Critical End Time, Wersja, CCCtool wysł., CCCtool zwalid., MinIO, sFTP/ZP wysł., Wyślij FID1-250 po CET, 20250401-FID1-250-v3-10XPL-TSO...XML, Niepoprawna nazwa pliku - (kod błędu: 40)",
+  "quality": "clear",
+  "caption": "Błąd nazwy pliku (kod 40) - zła data"
+ },
+ {
+  "file": "screens/ccm/ccm-125.png",
+  "screen": "popup wysyłki zakończonej",
+  "shows": "Okno Wyślij FID2-710_ATC z komunikatem Plik wysłany (plik IVA ATC, v2).",
+  "maps_to": "Czynność: wyślij plik FID2-710_ATC (wysłano)",
+  "text_visible": "Wyślij FID2-710_ATC, 20250808-FID2-710-v2-10XPL-TSO------P-to-10V1001C--00264T.xml, Plik wysłany, Zamknij",
+  "quality": "clear",
+  "caption": "Plik FID2-710_ATC wysłany"
+ },
+ {
+  "file": "screens/ccm/ccm-126.png",
+  "screen": "popup wysyłki zakończonej",
+  "shows": "Okno Wyślij FID3C-710_ATC z komunikatem Plik wysłany (IVA ATC dla ID3C).",
+  "maps_to": "Czynność: wyślij plik FID3C-710_ATC (wysłano)",
+  "text_visible": "Wyślij FID3C-710_ATC, 20250808-FID3C-710-v2-10XPL-TSO------P-to-10V1001C--00264T.xml, Plik wysłany, Zamknij",
+  "quality": "clear",
+  "caption": "Plik FID3C-710_ATC wysłany"
+ },
+ {
+  "file": "screens/ccm/ccm-127.png",
+  "screen": "popup wysyłki zakończonej",
+  "shows": "Okno Wyślij RAP_PERUN_ID2 z komunikatem Plik wysłany - wgranie raportów walidacyjnych (zip).",
+  "maps_to": "Czynność: wyślij raport RAP_PERUN_ID2 (wysłano)",
+  "text_visible": "Wyślij RAP_PERUN_ID2, 20250809_7788_Validation_Reports.zip, Plik wysłany, Zamknij",
+  "quality": "clear",
+  "caption": "Raport RAP_PERUN_ID2 wysłany"
+ },
+ {
+  "file": "screens/ccm/ccm-128.png",
+  "screen": "popup wysyłki zakończonej",
+  "shows": "Okno Wyślij RAP_PERUN_ID2_ATC z komunikatem Plik wysłany - raporty walidacyjne ATC.",
+  "maps_to": "Czynność: wyślij raport RAP_PERUN_ID2_ATC (wysłano)",
+  "text_visible": "Wyślij RAP_PERUN_ID2_ATC, 20250809_7788_Validation_Reports.zip, Plik wysłany, Zamknij",
+  "quality": "clear",
+  "caption": "Raport RAP_PERUN_ID2_ATC wysłany"
+ },
+ {
+  "file": "screens/ccm/ccm-129.png",
+  "screen": "popup wysyłki zakończonej",
+  "shows": "Okno Wyślij RAP_PERUN_ID3C z komunikatem Plik wysłany - raporty walidacyjne ID3C.",
+  "maps_to": "Czynność: wyślij raport RAP_PERUN_ID3C (wysłano)",
+  "text_visible": "Wyślij RAP_PERUN_ID3C, 20250809_7788_Validation_Reports.zip, Plik wysłany, Zamknij",
+  "quality": "clear",
+  "caption": "Raport RAP_PERUN_ID3C wysłany"
+ },
+ {
+  "file": "screens/ccm/ccm-130.png",
+  "screen": "popup wysyłki zakończonej",
+  "shows": "Okno Wyślij RAP_PERUN_ID3C_ATC z komunikatem Plik wysłany - raporty walidacyjne ID3C ATC.",
+  "maps_to": "Czynność: wyślij raport RAP_PERUN_ID3C_ATC (wysłano)",
+  "text_visible": "Wyślij RAP_PERUN_ID3C_ATC, 20250809_7788_Validation_Reports.zip, Plik wysłany, Zamknij",
+  "quality": "clear",
+  "caption": "Raport RAP_PERUN_ID3C_ATC wysłany"
+ },
+ {
+  "file": "screens/ccm/ccm-131.png",
+  "screen": "menu PPM - pobierz",
+  "shows": "Gałąź AGR_PERUN_ID2 rozwinięta (wszystkie statusy zielone); menu kontekstowe z podświetloną opcją pobierz na FID2-701.",
+  "maps_to": "Czynność: pobierz plik",
+  "text_visible": "Paczka ZIP do Perun, AGR_PERUN_ID2, CGM Data Quality Check FID2-659, Reference Program (RefProg) FID2-632, Real Generation and Load Shift Keys (GLSK) FID2-657, Vertices of Initial FB Domain FID2-701, Individual Filtered Critical Branches (CB) FID2-665, Merged DACF/IDCF Common Grid Model (CGM) FID2-620, Initial FB Domain (Virgin RefProg Bal) FID2-645, status ręczny, informacje, pobierz, wyślij",
+  "quality": "clear",
+  "caption": "Menu PPM - pobierz plik FID2-701"
+ },
+ {
+  "file": "screens/ccm/ccm-132.png",
+  "screen": "menu PPM na paczce ZIP",
+  "shows": "Menu kontekstowe na wierszu Paczka ZIP do Perun / IVA (FID2-710) z opcjami status ręczny / informacje / pobierz.",
+  "maps_to": "Czynność: pobierz paczkę/plik IVA",
+  "text_visible": "Paczka ZIP do Perun, AGR_PERUN_ID2, IVA, FID2-710, Paczka ZIP_ATC do Perun, AGR_PERUN_ID2_ATC, status ręczny, informacje, pobierz",
+  "quality": "clear",
+  "caption": "Menu PPM na paczce ZIP/IVA"
+ },
+ {
+  "file": "screens/ccm/ccm-133.png",
+  "screen": "ustawienia przeglądarki (Chrome)",
+  "shows": "Chrome chrome://settings/downloads - lokalizacja pobierania C:\\Users\\ca537\\Downloads, opcje pytania o miejsce zapisu.",
+  "maps_to": "Konfiguracja pobierania w przeglądarce (kontekst pobierz)",
+  "text_visible": "Ustawienia, Pobrane pliki, Lokalizacja C:\\Users\\ca537\\Downloads, Zmień, Pytaj przed pobraniem gdzie zapisać każdy plik, Pokaż pobrane pliki po zakończeniu pobierania",
+  "quality": "clear",
+  "caption": "Ustawienia pobierania w Chrome"
+ },
+ {
+  "file": "screens/ccm/ccm-134.png",
+  "screen": "ustawienia przeglądarki (Firefox)",
+  "shows": "Firefox about:preferences - sekcja Pliki i aplikacje, folder Pobierania.",
+  "maps_to": "Konfiguracja pobierania w przeglądarce (kontekst pobierz)",
+  "text_visible": "Firefox about:preferences, Ogólne, Uruchamianie, Wyszukiwanie, Prywatność i bezpieczeństwo, Pliki i aplikacje, Pobieranie, Pobierane pliki zapisuj do: Pobrane, Przeglądaj, Pytaj gdzie zapisać każdy plik",
+  "quality": "clear",
+  "caption": "Ustawienia pobierania w Firefox"
+ },
+ {
+  "file": "screens/ccm/ccm-135.png",
+  "screen": "pulpit - pobieranie w toku",
+  "shows": "Pulpit IDCC (do 3C) z ATK i SFTP, doba 2025-06-24; pasek informuje o pobieraniu pliku 8.738 MB; statusy MinIO mieszane (Word/błąd).",
+  "maps_to": "IDCC(b) Individual Validation - pobieranie pliku",
+  "text_visible": "IDCC (do 3C) z ATC i SFTP Pulpit dyspozytorski, Business Day 2025-06-24, Pobieranie pliku 8.738 [MB], Grid Model (CGM) FID2-620, Reference Program (RefProg) FID2-632, Initial FB Domain (Virgin RefProg Bal) FID2-645, Real Generation and Load Shift Keys (GLSK) FID2-657, CGM Data Quality Check FID2-659, Individual Filtered Critical Branches (CB) FID2-665, Vertices of Initial FB Domain FID2-701, Plik ze środkami zaradczymi z aplikacji KreatorDACF_CGMES XID_RA",
+  "quality": "clear",
+  "caption": "Pulpit podczas pobierania pliku (8.7 MB)"
+ },
+ {
+  "file": "screens/ccm/ccm-136.png",
+  "screen": "pulpit - powiadomienie pobrania",
+  "shows": "Pulpit z dymkiem Najnowsza historia pobierania (FID2-645 ...zip, 50.6 MB) i paskiem Plik pobrany.",
+  "maps_to": "IDCC(b) Individual Validation - zakończone pobranie",
+  "text_visible": "IDCC (do 3C) z ATC i SFTP Pulpit dyspozytorski, Business Day 2025-06-24, Plik pobrany 20250624-FID2-645-v1-10V1001C--00264T-to-10V1001C--00085T (2).zip, 50.6 MB, Najnowsza historia pobierania, Pełna historia pobierania",
+  "quality": "clear",
+  "caption": "Powiadomienie o pobraniu pliku FID2-645"
+ },
+ {
+  "file": "screens/ccm/ccm-137.png",
+  "screen": "ikona/legenda statusu",
+  "shows": "Czerwona ikona z napisem zły rozmiar pliku - element legendy kolorów statusów.",
+  "maps_to": "Legenda kolorów - zły rozmiar pliku",
+  "text_visible": "zły rozmiar pliku",
+  "quality": "clear",
+  "caption": "Legenda - status zły rozmiar pliku"
+ },
+ {
+  "file": "screens/ccm/ccm-138.png",
+  "screen": "pulpit + menu PPM",
+  "shows": "Pulpit IDCC (do 3C), doba 2025-06-24; menu kontekstowe na FID2-665 z opcjami Informacje / pobierz / wyślij po CET; widoczny status błędu (czerwony) dla CB.",
+  "maps_to": "IDCC(b) - menu PPM na FID2-665",
+  "text_visible": "IDCC (do 3C) z ATC i SFTP Pulpit dyspozytorski, Business Day 2025-06-24, RefProg, Real Generation and Load Shift Keys (GLSK) FID2-657, CGM Data Quality Check FID2-659, Individual Filtered Critical Branches (CB) FID2-665, Vertices of Initial FB Domain FID2-701, Plik ze środkami zaradczymi z aplikacji KreatorDACF_CGMES XID_RA, IVA FID2-710, Informacje, pobierz, wyślij po CET",
+  "quality": "clear",
+  "caption": "Menu PPM na FID2-665 (status błędu)"
+ },
+ {
+  "file": "screens/ccm/ccm-139.png",
+  "screen": "popup informacje - błąd rozmiaru",
+  "shows": "Okno Informacje FID2-645: Za mały rozmiar pliku! z porównaniem rozmiaru pliku i oczekiwanego minimum oraz lokalizacją w MinIO.",
+  "maps_to": "Walidacja rozmiaru pliku FID2-645 (informacje)",
+  "text_visible": "Informacje FID2-645, Za mały rozmiar pliku!, Rozmiar pliku 7.608 [MB], Oczekiwany min rozmiar pliku 34.180 [MB], Lokalizacja pliku MinIO/perun/ID_FBCC/in/2025-06-03, Zamknij",
+  "quality": "clear",
+  "caption": "Informacja o zbyt małym rozmiarze pliku FID2-645"
+ },
+ {
+  "file": "screens/ccm/ccm-140.png",
+  "screen": "wiersz tabeli FIDx",
+  "shows": "Wiersz CBCORA (FID2-617) ze statusem zielonym (OK) i czerwonym znakiem zapytania (oczekiwanie/brak ACK).",
+  "maps_to": "Dane wejściowe Initial TSO receiving - CBCORA",
+  "text_visible": "CBCORA, FID2-617, 20:00, 20:17, 2",
+  "quality": "clear",
+  "caption": "Wiersz CBCORA ze statusem oczekiwania (?)"
+ },
+ {
+  "file": "screens/ccm/ccm-141.png",
+  "screen": "wiersz + tooltip statusu",
+  "shows": "Sekcja Dane wejściowe Initial TSO receiving; tooltip na czerwonym ? przy CBCORA: Oczekiwanie na ACK w wersji 2 - minęło 2 min.",
+  "maps_to": "Status oczekiwania na ACK - CBCORA FID2-617",
+  "text_visible": "Dane wejściowe Initial TSO receiving, 24 modele IGM DACF_IGM_UCT 20:00 20:17, GLSK FID2-607, CBCORA FID2-617, Oczekiwanie na ACK w wersji 2 - minęło 2 min.",
+  "quality": "clear",
+  "caption": "Tooltip - oczekiwanie na ACK (CBCORA)"
+ },
+ {
+  "file": "screens/ccm/ccm-142.png",
+  "screen": "ikona statusu",
+  "shows": "Zielona ikona statusu OK (zbliżenie kafelka).",
+  "maps_to": "Legenda kolorów - status OK",
+  "text_visible": "brak",
+  "quality": "cropped",
+  "caption": "Ikona statusu OK (zielona)"
+ },
+ {
+  "file": "screens/ccm/ccm-143.png",
+  "screen": "wiersz + tooltipy kanałów",
+  "shows": "Sekcja ID3C: IVA i IVA Backup (FID3C-710) z trzema kanałami statusu i tooltipami nazw kanałów (SFTP_PERUN-EDX_KAFKA_CCCTOOL, SFTP_PERUN-MINIO_CCA, MINIO_CCA-EDX_KAFKA_CCCTOOL).",
+  "maps_to": "IDCC(c)/ID3C - kanały wysyłki IVA FID3C-710",
+  "text_visible": "CBCORA FID3C-617, AGR Paczka ZIP ID3C do Perun PERUN_ID3C, IVA FID3C-710, IVA Backup FID3C-710, 00:00, 00:55, 03:30, 03:50, FID3C-710-SFTP_PERUN-EDX_KAFKA_CCCTOOL wersja 1, FID3C-710-SFTP_PERUN-MINIO_CCA wersja 1, FID3C-710-MINIO_CCA-EDX_KAFKA_CCCTOOL wersja 2",
+  "quality": "clear",
+  "caption": "Kanały statusu IVA/IVA Backup ID3C"
+ },
+ {
+  "file": "screens/ccm/ccm-144.png",
+  "screen": "menu PPM - Wyślij do CCTool",
+  "shows": "Sekcja ID3C; menu kontekstowe na statusie IVA Backup z opcją Wyślij do CCTool (zaznaczona) oraz status ręczny / informacje / pobierz / wyślij.",
+  "maps_to": "Czynność: wyślij do CCTool (IVA Backup FID3C-710)",
+  "text_visible": "AGR Paczka ZIP ID3C do Perun PERUN_ID3C, IVA FID3C-710, IVA Backup FID3C-710, Raporty ID3C z Perun RAP_PERUN_ID3C, Vertices of Initial FB Domain/CB Validation file ATC FID3C-701_ATC, AGR Paczka ZIP_ATC ID3C do Perun PERUN_ID3C_ATC, FID3C-710-MINIO_CCA-EDX_KAFKA_CCCTOOL wersja 2, Wyślij do CCTool, status ręczny, informacje, pobierz, wyślij",
+  "quality": "clear",
+  "caption": "Menu PPM - Wyślij do CCTool (IVA Backup)"
+ },
+ {
+  "file": "screens/ccm/ccm-145.png",
+  "screen": "popup potwierdzenia",
+  "shows": "Okno potwierdzenia: Czy na pewno chcesz wysłać IVA Backup do CCTool? z polem Opis (opcjonalnie) i przyciskami Nie/Tak.",
+  "maps_to": "Czynność: potwierdzenie wysyłki IVA Backup do CCTool",
+  "text_visible": "Czy na pewno chcesz wysłać IVA Backup do CCTool?, Opis (opcjonalnie), Nie, Tak",
+  "quality": "clear",
+  "caption": "Potwierdzenie wysyłki IVA Backup do CCTool"
+ },
+ {
+  "file": "screens/ccm/ccm-146.png",
+  "screen": "przycisk",
+  "shows": "Niebieski przycisk Tak (zbliżenie) z okna potwierdzenia.",
+  "maps_to": "nieokreślone",
+  "text_visible": "Tak",
+  "quality": "cropped",
+  "caption": "Przycisk Tak (potwierdzenie)"
+ },
+ {
+  "file": "screens/ccm/ccm-147.png",
+  "screen": "toast potwierdzenia",
+  "shows": "Zielony komunikat potwierdzający Wysłano prośbę po akcji wysyłki do CCTool.",
+  "maps_to": "Potwierdzenie: wysłano prośbę",
+  "text_visible": "Wysłano prośbę",
+  "quality": "clear",
+  "caption": "Toast - Wysłano prośbę"
+ },
+ {
+  "file": "screens/ccm/ccm-148.png",
+  "screen": "wiersz + tooltipy kanałów (po wysyłce)",
+  "shows": "Sekcja ID3C po wysyłce: IVA z trzema zielonymi kanałami i IVA Backup z jednym kanałem, tooltipy nazw kanałów wersja 1/2.",
+  "maps_to": "IDCC(c)/ID3C - statusy kanałów po wysyłce IVA",
+  "text_visible": "AGR Paczka ZIP ID3C do Perun PERUN_ID3C, IVA FID3C-710, IVA Backup FID3C-710, Raporty ID3C z Perun RAP_PERUN_ID3C, 00:00, 03:30, 03:50, FID3C-710-SFTP_PERUN-EDX_KAFKA_CCCTOOL wersja 2, FID3C-710-SFTP_PERUN-MINIO_CCA wersja 1, FID3C-710-MINIO_CCA-EDX_KAFKA_CCCTOOL wersja 2",
+  "quality": "clear",
+  "caption": "Statusy kanałów IVA po wysyłce (ID3C)"
+ },
+ {
+  "file": "screens/ccm/ccm-149.png",
+  "screen": "pulpit + komunikat błędu wersji",
+  "shows": "Pełny pulpit IDCC (do 3C), doba 2025-08-08; zaznaczone kolumny CCCtool wysł./zwalid. dla IVA/IVA Backup FID2-710; czerwony toast: Wysyłka backup nie jest możliwa - wersja dokumentu musi być wyższa od docelowej wersji.",
+  "maps_to": "IDCC(b)/ID2 - blokada wysyłki backup (wersja)",
+  "text_visible": "IDCC (do 3C) z ATC i SFTP - Pulpit dyspozytorski, Business Day 2025-08-08, CBCORA FID2-617, AGR Paczka ZIP ID2 PERUN_ID2, IVA/IVA Backup FID2-710, Raporty ID2 z Perun RAP_PERUN_ID2, AGR Paczka ZIP_ATC ID2 do Perun PERUN_ID2_ATC, IVA_ATC FID2-710_ATC, AC FID2-831, Final Intraday NTC FID2-921, Wysyłka backup nie jest możliwa - wersja dokumentu musi być wyższa od docelowej wersji, v5.0.1.2.0e7feLPNE",
+  "quality": "clear",
+  "caption": "Pulpit - blokada wysyłki backup (zła wersja)"
+ },
+ {
+  "file": "screens_fid607/state_01.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Dwa zielone kafelki bez oznaczeń literowych.",
+  "maps_to": "SUCCESS zielony (oba sl024 OK, stan bazowy poprawny)",
+  "text_visible": "(brak)",
+  "quality": "clear",
+  "caption": "Stan bazowy - oba kafelki zielone, plik GLSK poprawny."
+ },
+ {
+  "file": "screens_fid607/state_02.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy zielony pusty, prawy zielony z literą B.",
+  "maps_to": "SUCCESS zielony + znacznik B (np. obliczony/wgrany)",
+  "text_visible": "B",
+  "quality": "clear",
+  "caption": "Zielony kafelek z oznaczeniem B - sukces ze znacznikiem stanu."
+ },
+ {
+  "file": "screens_fid607/state_03.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Dwa fioletowe kafelki bez oznaczeń.",
+  "maps_to": "IN PROGRESS fioletowy (przetwarzanie/obliczanie w toku)",
+  "text_visible": "(brak)",
+  "quality": "clear",
+  "caption": "Oba kafelki fioletowe - przetwarzanie w toku."
+ },
+ {
+  "file": "screens_fid607/state_04.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Oba kafelki zielone z literą B.",
+  "maps_to": "SUCCESS zielony + znacznik B (oba)",
+  "text_visible": "B B",
+  "quality": "clear",
+  "caption": "Oba zielone kafelki ze znacznikiem B - sukces."
+ },
+ {
+  "file": "screens_fid607/state_05.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy ciemnozielony z literą W, prawy jasnozielony pusty.",
+  "maps_to": "SUCCESS aktywny (W = wysłany/wykonany) + SUCCESS zielony",
+  "text_visible": "W",
+  "quality": "clear",
+  "caption": "Ciemnozielony kafelek W (wysłany) obok jasnozielonego."
+ },
+ {
+  "file": "screens_fid607/state_06.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy ciemnozielony z literą W, prawy biały/pusty.",
+  "maps_to": "SUCCESS aktywny W (wysłany) + brak statusu (biały)",
+  "text_visible": "W",
+  "quality": "clear",
+  "caption": "Kafelek W (wysłany) obok pustego - brak statusu po prawej."
+ },
+ {
+  "file": "screens_fid607/state_07.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy ciemnozielony z W, prawy czerwony ze znakiem ?.",
+  "maps_to": "SUCCESS W (lewy) + FAILURE/oczekiwanie czerwony ? (prawy)",
+  "text_visible": "W  ?",
+  "quality": "clear",
+  "caption": "Wysłany (W) po lewej, czerwony ze znakiem zapytania po prawej - problem/oczekiwanie."
+ },
+ {
+  "file": "screens_fid607/state_08.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy ciemnozielony z W, prawy pełny czerwony.",
+  "maps_to": "SUCCESS W (lewy) + FAILURE czerwony (prawy)",
+  "text_visible": "W",
+  "quality": "clear",
+  "caption": "Wysłany (W) po lewej, błąd czerwony po prawej."
+ },
+ {
+  "file": "screens_fid607/state_09.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy ciemnozielony z W, prawy fioletowy.",
+  "maps_to": "SUCCESS W (lewy) + IN PROGRESS fioletowy (prawy)",
+  "text_visible": "W",
+  "quality": "clear",
+  "caption": "Wysłany (W) po lewej, przetwarzanie (fioletowy) po prawej."
+ },
+ {
+  "file": "screens_fid607/state_10.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy ciemnozielony z W, prawy granatowy.",
+  "maps_to": "SUCCESS W (lewy) + PENDING/zakolejkowany granatowy (prawy)",
+  "text_visible": "W",
+  "quality": "clear",
+  "caption": "Wysłany (W) po lewej, oczekujący w kolejce (granatowy) po prawej."
+ },
+ {
+  "file": "screens_fid607/state_11.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy ciemnozielony z W, prawy jasnozielony z B.",
+  "maps_to": "SUCCESS W (lewy) + SUCCESS zielony B (prawy)",
+  "text_visible": "W  B",
+  "quality": "clear",
+  "caption": "Wysłany (W) po lewej, zielony ze znacznikiem B po prawej."
+ },
+ {
+  "file": "screens_fid607/state_12.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy ciemnozielony z W*, prawy biały/pusty.",
+  "maps_to": "SUCCESS aktywny zmodyfikowany W* (lewy) + brak statusu biały (prawy)",
+  "text_visible": "W*",
+  "quality": "clear",
+  "caption": "Wysłany i zmodyfikowany (W*) po lewej, pusty po prawej."
+ },
+ {
+  "file": "screens_fid607/state_13.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy ciemnozielony z W*, prawy czerwony ze znakiem ?.",
+  "maps_to": "SUCCESS W* (lewy) + FAILURE/oczekiwanie czerwony ? (prawy)",
+  "text_visible": "W*  ?",
+  "quality": "clear",
+  "caption": "Zmodyfikowany wysłany (W*) po lewej, czerwony ze znakiem zapytania po prawej."
+ },
+ {
+  "file": "screens_fid607/state_14.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy ciemnozielony z W*, prawy pełny czerwony.",
+  "maps_to": "SUCCESS W* (lewy) + FAILURE czerwony (prawy)",
+  "text_visible": "W*",
+  "quality": "clear",
+  "caption": "Zmodyfikowany wysłany (W*) po lewej, błąd czerwony po prawej."
+ },
+ {
+  "file": "screens_fid607/state_15.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy ciemnozielony z W*, prawy fioletowy.",
+  "maps_to": "SUCCESS W* (lewy) + IN PROGRESS fioletowy (prawy)",
+  "text_visible": "W*",
+  "quality": "clear",
+  "caption": "Zmodyfikowany wysłany (W*) po lewej, przetwarzanie (fioletowy) po prawej."
+ },
+ {
+  "file": "screens_fid607/state_16.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy ciemnozielony z W*, prawy granatowy.",
+  "maps_to": "SUCCESS W* (lewy) + PENDING/zakolejkowany granatowy (prawy)",
+  "text_visible": "W*",
+  "quality": "clear",
+  "caption": "Zmodyfikowany wysłany (W*) po lewej, oczekujący (granatowy) po prawej."
+ },
+ {
+  "file": "screens_fid607/state_17.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy jasnozielony z B, prawy biały/pusty.",
+  "maps_to": "SUCCESS zielony B (lewy) + brak statusu biały (prawy)",
+  "text_visible": "B",
+  "quality": "clear",
+  "caption": "Zielony ze znacznikiem B po lewej, pusty po prawej."
+ },
+ {
+  "file": "screens_fid607/state_18.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy jasnozielony z B, prawy czerwony ze znakiem ?.",
+  "maps_to": "SUCCESS zielony B (lewy) + FAILURE/oczekiwanie czerwony ? (prawy)",
+  "text_visible": "B  ?",
+  "quality": "clear",
+  "caption": "Zielony B po lewej, czerwony ze znakiem zapytania po prawej."
+ },
+ {
+  "file": "screens_fid607/state_19.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy jasnozielony z B, prawy granatowy.",
+  "maps_to": "SUCCESS zielony B (lewy) + PENDING/zakolejkowany granatowy (prawy)",
+  "text_visible": "B",
+  "quality": "clear",
+  "caption": "Zielony B po lewej, oczekujący (granatowy) po prawej."
+ },
+ {
+  "file": "screens_fid607/state_20.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy czerwony ze znakiem !, prawy jasnozielony z B.",
+  "maps_to": "FAILURE/alert czerwony ! (lewy) + SUCCESS zielony B (prawy)",
+  "text_visible": "!  B",
+  "quality": "clear",
+  "caption": "Błąd/alert (czerwony !) po lewej, zielony B po prawej."
+ },
+ {
+  "file": "screens_fid607/state_21.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Dwa szare/wyłączone kafelki bez oznaczeń.",
+  "maps_to": "DISABLED/nieaktywny szary (brak danych, kafelek wyłączony)",
+  "text_visible": "(brak)",
+  "quality": "clear",
+  "caption": "Oba kafelki szare - stan nieaktywny/wyłączony."
+ },
+ {
+  "file": "screens_fid607/state_22.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Dwa pełne czerwone kafelki bez oznaczeń.",
+  "maps_to": "FAILURE czerwony (oba - błąd po obu stronach)",
+  "text_visible": "(brak)",
+  "quality": "clear",
+  "caption": "Oba kafelki czerwone - błąd/awaria po obu stronach."
+ },
+ {
+  "file": "screens_fid607/state_23.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy czerwony ze znakiem !, prawy czerwony ze znakiem ?.",
+  "maps_to": "FAILURE czerwony ! (lewy) + FAILURE/oczekiwanie czerwony ? (prawy)",
+  "text_visible": "!  ?",
+  "quality": "clear",
+  "caption": "Czerwony alert (!) po lewej, czerwony ze znakiem zapytania po prawej."
+ },
+ {
+  "file": "screens_fid607/state_24.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy czerwony ze znakiem !, prawy pełny czerwony.",
+  "maps_to": "FAILURE czerwony ! (lewy) + FAILURE czerwony (prawy)",
+  "text_visible": "!",
+  "quality": "clear",
+  "caption": "Czerwony alert (!) po lewej, błąd czerwony po prawej."
+ },
+ {
+  "file": "screens_fid607/state_25.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy czerwony ze znakiem !, prawy fioletowy.",
+  "maps_to": "FAILURE czerwony ! (lewy) + IN PROGRESS fioletowy (prawy)",
+  "text_visible": "!",
+  "quality": "clear",
+  "caption": "Czerwony alert (!) po lewej, przetwarzanie (fioletowy) po prawej."
+ },
+ {
+  "file": "screens_fid607/state_26.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy jasnozielony pusty, prawy pełny czerwony.",
+  "maps_to": "SUCCESS zielony (lewy) + FAILURE czerwony (prawy)",
+  "text_visible": "(brak)",
+  "quality": "clear",
+  "caption": "Zielony po lewej, błąd czerwony po prawej."
+ },
+ {
+  "file": "screens_fid607/state_27.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy jasnozielony pusty, prawy czerwony ze znakiem ?.",
+  "maps_to": "SUCCESS zielony (lewy) + FAILURE/oczekiwanie czerwony ? (prawy)",
+  "text_visible": "?",
+  "quality": "clear",
+  "caption": "Zielony po lewej, czerwony ze znakiem zapytania po prawej."
+ },
+ {
+  "file": "screens_fid607/state_28.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy jasnozielony pusty, prawy granatowy.",
+  "maps_to": "SUCCESS zielony (lewy) + PENDING/zakolejkowany granatowy (prawy)",
+  "text_visible": "(brak)",
+  "quality": "clear",
+  "caption": "Zielony po lewej, oczekujący (granatowy) po prawej."
+ },
+ {
+  "file": "screens_fid607/state_29.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy czerwony ze znakiem !, prawy granatowy.",
+  "maps_to": "FAILURE czerwony ! (lewy) + PENDING/zakolejkowany granatowy (prawy)",
+  "text_visible": "!",
+  "quality": "clear",
+  "caption": "Czerwony alert (!) po lewej, oczekujący (granatowy) po prawej."
+ },
+ {
+  "file": "screens_fid607/state_30.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy fioletowy, prawy pełny czerwony.",
+  "maps_to": "IN PROGRESS fioletowy (lewy) + FAILURE czerwony (prawy)",
+  "text_visible": "(brak)",
+  "quality": "clear",
+  "caption": "Przetwarzanie (fioletowy) po lewej, błąd czerwony po prawej."
+ },
+ {
+  "file": "screens_fid607/state_31.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Lewy fioletowy, prawy granatowy.",
+  "maps_to": "IN PROGRESS fioletowy (lewy) + PENDING/zakolejkowany granatowy (prawy)",
+  "text_visible": "(brak)",
+  "quality": "clear",
+  "caption": "Przetwarzanie (fioletowy) po lewej, oczekujący (granatowy) po prawej."
+ },
+ {
+  "file": "screens_fid607/state_32.png",
+  "screen": "kafelek GLSK - status",
+  "shows": "Dwa granatowe kafelki bez oznaczeń.",
+  "maps_to": "PENDING/zakolejkowany granatowy (oba - oczekiwanie po obu stronach)",
+  "text_visible": "(brak)",
+  "quality": "clear",
+  "caption": "Oba kafelki granatowe - oczekiwanie/zakolejkowanie po obu stronach."
+ },
+ {
+  "file": "screens_kreatoridcf/00_monitor_normal.jpg",
+  "screen": "Monitor — lista zadań Kreatora",
+  "shows": "Okno Monitor z listą cyklicznych zadań IDCF/FID3C i ich statusami (OK/BŁĄD), gdzie zadanie 13:13 FID3C_v3 jest OK (GLSK 24/24 i CBCORA 24/24 wysłane), a 13:12 FID3C_v2 ma BŁĄD (GLSK/CBCORA NIE wysłany).",
+  "maps_to": "Monitorowanie wykonania i statusu publikacji zadań RA w Kreatorze",
+  "text_visible": "Monitor; Lista zadań; Data/Godzina/Nazwa/Status/Opis; FID3C_v3 OK; FID3C_v2 BŁĄD; IDCF; GLSK 24/24 wysłany; CBCORA 24/24; Ustawienia; Zamknij",
+  "quality": "clear",
+  "caption": "Monitor Kreatora — statusy zadań FID3C/IDCF; widoczny sukces (OK) i błąd publikacji GLSK/CBCORA"
+ },
+ {
+  "file": "screens_kreatoridcf/03_wybrane_pliki_gsk.png",
+  "screen": "Wybrane pliki — GLSK (.uct)",
+  "shows": "Okno wyboru plików GLSK z listą plików .uct per kwadrans (z katalogu KreatorIDCF_CGMES_ST/parametry/IDCF), zaznaczonych checkboxami z opcją Wszystko i przyciskiem OK.",
+  "maps_to": "Wybór/dołączenie plików GLSK do publikacji RA w Kreatorze",
+  "text_visible": "Wybrane pliki; Katalog; Wersja modeli: najnowsza; wybrana: 0; lista ...IDCF\\20241202_...PL0.uct; Wszystko; OK; Anuluj",
+  "quality": "clear",
+  "caption": "Wybór plików GLSK (.uct) do publikacji w Kreatorze IDCF"
+ },
+ {
+  "file": "screens_kreatoridcf/06_wybrane_pliki_cbcora.png",
+  "screen": "Wybrane pliki — CBCORA (.epc)",
+  "shows": "Analogiczne okno wyboru plików, ale dla CBCORA — lista plików .epc per kwadrans z katalogu parametry, zaznaczonych checkboxami, z opcją Wszystko i OK.",
+  "maps_to": "Wybór/dołączenie plików CBCORA do publikacji RA w Kreatorze",
+  "text_visible": "Wybrane pliki; Katalog; Wersja modeli: najnowsza; wybrana: 0; lista ...20241202_...PL0.epc; Wszystko; OK; Anuluj",
+  "quality": "clear",
+  "caption": "Wybór plików CBCORA (.epc) do publikacji w Kreatorze IDCF"
+ },
+ {
+  "file": "screens_kreatoridcf/11_ccm_weryfikacja.png",
+  "screen": "IDCC FB Pulpit dyspozytorski (CCM) — weryfikacja",
+  "shows": "Pulpit dyspozytorski IDCC FB pokazujący przepływy procesu z kodami (FID2/FID3C), Target/Critical End Time i statusami narzędzi (CCCtool, MinIO, sFTP/ZP); zaznaczono wiersz IDCC(c) GLSK FID3C-607 i CBCORA FID3C-617 (zielone) oraz widoczny wiersz XID_RA Plik ze środkami zaradczymi z aplikacji KreatorDACF_CGMES.",
+  "maps_to": "Weryfikacja w CCM, że pliki RA/GLSK/CBCORA dotarły i zostały zwalidowane",
+  "text_visible": "[Testy PSE] IDCC FB Pulpit dyspozytorski; Tryb WOLNY (co 5 min); CBCORA FID2-617; AC FID2-831; GLSK FID3C-607; CBCORA FID3C-617; Plik ze środkami zaradczymi z aplikacji KreatorDACF_CGMES XID_RA; CCCtool wysł./zwalid.",
+  "quality": "clear",
+  "caption": "Pulpit IDCC FB (CCM) — weryfikacja wysłania i walidacji GLSK/CBCORA/RA dla FID3C"
+ },
+ {
+  "file": "screens_kreatoridcf/log_publikacji.png",
+  "screen": "KreatorIDCF_CGMES — zakładka LOG",
+  "shows": "Zakładka LOG po publikacji przez Connector 2.0: log przesyłania plików GLSK, CBCORA, RA_XML i RA_XLSX na MinIO (aliasy Kreator/Kreator2) z statusem OK i komunikatem Publikacja zakończona.",
+  "maps_to": "Potwierdzenie zakończenia publikacji RA (log wynikowy) w Kreatorze",
+  "text_visible": "KreatorIDCF_CGMES; LOG; Publikacja poprzez Connector 2.0; Przesłanie plików na MinIO; Typ/Adres/Plik/Status; GLSK/CBCORA/RA_XML/RA_XLSX OK; Publikacja zakończona; Otwórz log/Wyczyść log/Zapisz log; TEST; Zamknij",
+  "quality": "clear",
+  "caption": "Log publikacji Kreatora — GLSK/CBCORA/RA wysłane na MinIO ze statusem OK"
+ },
+ {
+  "file": "screens_kreatoridcf/okno_postep.png",
+  "screen": "Czekaj... — okno postępu publikacji",
+  "shows": "Modalne okno postępu pokazujące trwające przesyłanie plików na MinIO (bucket: kreator), sprawdzanie aliasu serwera PSE, pakowanie pliku FID3C-607 do archiwum ZIP, z przyciskiem Przerwij.",
+  "maps_to": "Etap przesyłania/pakowania plików w trakcie publikacji RA",
+  "text_visible": "Czekaj...; Przesłanie plików na MinIO (bucket: kreator); Sprawdzenie poprawności aliasu serwera PSE; 20250326-FID3C-607-...W.xml; Pakowanie do ZIP'a; Archiwum utworzone; Przerwij",
+  "quality": "clear",
+  "caption": "Okno postępu publikacji — przesyłanie i pakowanie plików na MinIO"
+ },
+ {
+  "file": "screens_kreatoridcf/okno_publikacji.png",
+  "screen": "Pliki do publikacji — wybór wersji",
+  "shows": "Okno Pliki do publikacji z datą i tabelą plików CBCORA/GLSK/RA_XML/RA_XLSX FID3D, ich wersjami, znacznikami Kreator/Kreator2 i uwagą Plik już opublikowany!; sekcja Wersja plików (Cbcora/GLSK/RA = Ostatni).",
+  "maps_to": "Wybór wersji plików i zatwierdzenie zestawu do publikacji RA",
+  "text_visible": "Pliki do publikacji; Data 2021/02/11; Wszystko/nic; Wersja plików Cbcora/GLSK/RA Ostatni; Typ/Plik/Wersja/Kreator/Kreator2/Uwagi; CBCORA/GLSK/RA_XML/RA_XLSX FID3D; Plik już opublikowany!; OK; Anuluj",
+  "quality": "clear",
+  "caption": "Okno wyboru plików i wersji do publikacji RA (CBCORA/GLSK/RA)"
+ },
+ {
+  "file": "screens_kreatoridcf/panel.png",
+  "screen": "Kreator — zakładka IDCF(2), panel publikacji",
+  "shows": "Fragment zakładki IDCF(2) z panelem FID3D zawierającym przyciski GLSK, CBCORA, RA (z polami wersji v.) oraz przycisk Publikuj Connector uruchamiający publikację.",
+  "maps_to": "Główny panel uruchomienia publikacji RA (GLSK/CBCORA/RA) w Kreatorze",
+  "text_visible": "IDCF; IDCF(2); Model; Dane dodatkowe; LOG; FID3D; GLSK; CBCORA; RA; v.; Publikuj Connector",
+  "quality": "cropped",
+  "caption": "Panel publikacji Kreatora (IDCF2) — przyciski GLSK/CBCORA/RA i Publikuj Connector"
+ },
+ {
+  "file": "screens/ac_zp/image1.png",
+  "screen": "ZP — Dokument AC FID2-831 (widok tabeli)",
+  "shows": "Widok dokumentu AC (Allocation Constraints) FID2-831 w aplikacji ZP z wartościami NTC godzinowymi dla kierunków EXP (800) i IMP (700), wersją 2, statusem Zatwierdzony oraz ostrzeżeniem weryfikacji ACS o niezgodności interwału czasowego.",
+  "maps_to": "Ręczna obsługa/przegląd dokumentu AC (FIDx-831) w ZP",
+  "text_visible": "ZP; Środowisko Testowe; Dokument AC FID2-831; Data handlowa; Wersja 2; Zatwierdzony; Zadanie automatyczne; Pobierz XML; Modyfikuj; Weryfikacja dokumentu; AC ...running process instance; EXP NTC 800; IMP NTC 700; Wyszukaj filtry",
+  "quality": "clear",
+  "caption": "Dokument AC FID2-831 w ZP — tabela NTC (EXP 800 / IMP 700), wersja zatwierdzona"
+ },
+ {
+  "file": "screens/ac_zp/image2.png",
+  "screen": "ZP — Bilansowe ograniczenia alokacji w hor. intraday",
+  "shows": "Widok Bilansowe ograniczenia alokacji w horyzoncie intraday w ZP z tabelą per kierunek/kod (ATC PBM, ATC BPKD, AAC/CJ3, AAC/3, ATC) i godzinowymi wartościami; panel Dokumenty z kierunkami PSE>50Hz / PSE>CO i znacznikami AAC1.0/NTC oraz przyciskiem Odśwież.",
+  "maps_to": "Ręczna obsługa AC w ZP — przegląd bilansowych ograniczeń alokacji i powiązanych dokumentów",
+  "text_visible": "ZP; Środowisko Testowe; Bilansowe ograniczenie alokacji w hor. intraday; Data handlowa; Nowa wersja; Dokumenty; AAC/NTC; PSE>50Hz; PSE>CO; Zawiera Zadanie automatyczne; Wyszukaj filtry; ATC PBM/ATC BPKD/AAC/CJ3/AAC/3/ATC",
+  "quality": "clear",
+  "caption": "ZP — bilansowe ograniczenia alokacji (intraday): tabela ATC/AAC i panel dokumentów"
+ },
+ {
+  "file": "screens/ac_zp/image3.png",
+  "screen": "ZP — Transport towarów: wielkości łańcucha (widok ogólny)",
+  "shows": "Szeroki, pomniejszony zrzut interfejsu ZP z rozbudowaną tabelą liczbową godzinową (Transport towarów / wielkości łańcucha) i górnym paskiem przycisków oraz lewym menu nawigacyjnym; tekst nieczytelny z powodu zmniejszenia.",
+  "maps_to": "Ręczna obsługa AC w ZP — pełny widok arkusza danych godzinowych",
+  "text_visible": "ZP; Transport towarów; wielkości łańcucha (górny nagłówek, reszta nieczytelna)",
+  "quality": "blurred",
+  "caption": "ZP — pełny widok arkusza godzinowego (mocno pomniejszony, mało czytelny)"
+ },
+ {
+  "file": "screens/nor/image1.png",
+  "screen": "Diagram etapów procesu FBA",
+  "shows": "Oś czasu kolejnych kroków procesu FBA z wyróżnionym (czerwona ramka) krokiem FBA_TSO_NOR_03 Walidacja domeny FBA (Wyznaczenie IVA).",
+  "maps_to": "Umiejscowienie procedury FBA_TSO_NOR_03 w całym procesie FBA",
+  "text_visible": "Kolejne etapy procesu FBA; FBA_TSO_NOR_01..06; FBA_TSO_BUP_01..04; FBA_TSO_FAL_01/02; Walidacja domeny FBA (Wyznaczenie IVA); Incident Management",
+  "quality": "clear",
+  "caption": "Mapa etapów procesu FBA z zaznaczonym krokiem walidacji domeny (NOR_03)"
+ },
+ {
+  "file": "screens/nor/image2.png",
+  "screen": "Schemat pojęć CNEC / IVA",
+  "shows": "Diagram słupkowy parametrów elementu CNEC (F0,CORE, FRM, RAM, Fmax) z legendą i strzałką IVA do poziomu bezpiecznego dla systemu.",
+  "maps_to": "Definicja IVA (Individual Validation Adjustment) i parametrów RAM/Fmax/FRM — podstawa walidacji",
+  "text_visible": "IVA; Poziom bezpieczny dla systemu; RAM; Fmax; FRM; F0,CORE; CNEC; legenda definicji IVA/Fmax/F0,CORE/FRM/RAM",
+  "quality": "clear",
+  "caption": "Definicja IVA i parametrów elementu CNEC (RAM, Fmax, FRM, F0,CORE)"
+ },
+ {
+  "file": "screens/nor/image3.png",
+  "screen": "Schemat blokowy walidacji domeny DA",
+  "shows": "Diagram decyzyjny kroku Individual validation dla domeny DA z bramkami TAK/NIE prowadzącymi do ryzyk i procedury BUP_03.",
+  "maps_to": "Główny przebieg walidacji domeny DA (sFTP, Perun4V, obliczenia, plik F310 do ccctoola)",
+  "text_visible": "Rozpoczęto krok Individual validation; sFTP działa; Uruchomiono i zalogowano do platformy Perun4V; Uruchomiono obliczenia; Sukcesem zakończono obliczenia dla wszystkich godzin; Prawidłowo wysłano wynikowy plik F310 do ccctoola; Zakończono proces walidacji domeny DA; Przejdź do procedury FBA_TSO_BUP_03; Ryzyko 1-14",
+  "quality": "clear",
+  "caption": "Schemat decyzyjny walidacji domeny DA z punktami kontrolnymi i ryzykami"
+ },
+ {
+  "file": "screens/nor/image4.png",
+  "screen": "Schemat blokowy walidacji domeny LTA",
+  "shows": "Diagram decyzyjny kroku Individual validation dla domeny LTA z bramkami TAK/NIE, gałęzią IVA=0 oraz raportem CCA o redukcji LTA.",
+  "maps_to": "Przebieg walidacji domeny LTA (sFTP, Perun4V, obliczenia, F310 do MinIO, IVA=0, raport o redukcji LTA)",
+  "text_visible": "Rozpoczęto krok Individual validation; sFTP działa; Perun4V; Uruchomiono obliczenia; Wgranie pliku F310 i raportów do MinIO (bucket perun); IVA dla domeny LTA wynosi 0; Otrzymanie raportu z CCA informującej o redukcji LTA; Zakończono proces walidacji domeny LTA; Ryzyko 10/15/17/22-29",
+  "quality": "clear",
+  "caption": "Schemat decyzyjny walidacji domeny LTA z gałęzią redukcji LTA"
+ },
+ {
+  "file": "screens/nor/image5.png",
+  "screen": "Diagram przepływu danych (architektura systemów)",
+  "shows": "Schemat wymiany plików między CCCTool, CN2, MinIO/Perun, MinIO/CCA, SFTP i Perun4V z ponumerowanymi krokami 1-11.",
+  "maps_to": "Architektura przepływu danych w walidacji domeny FBA (paczki LTA/FB_CCA, IVA, raporty)",
+  "text_visible": "Perun4V; SFTP; CCCTool; CN2; Minio/Perun; Minio/CCA; ZP,SYSPLAN,KDM; Pkt 1-11; Paczka FB_CCA/LTA; IVA; Raporty; Vertices_map_LTA; F320_CCA; F320_LTA",
+  "quality": "clear",
+  "caption": "Diagram przepływu danych między systemami (CN2, Perun, MinIO, SFTP) — kroki 1-11"
+ },
+ {
+  "file": "screens/nor/image6.png",
+  "screen": "Aplikacja CCM — Lista pulpitów",
+  "shows": "Ekran przeglądarki aplikacji CCM (ccm.spsm.pse.pl) z listą pulpitów dyspozytorskich; wyróżniony 'DACC FB Pulpit dyspozytorski'.",
+  "maps_to": "Wejście do pulpitu dyspozytorskiego CCM na potrzeby monitorowania walidacji",
+  "text_visible": "CCM; Środowisko produkcyjne; PSE; Lista pulpitów; DACC FB Pulpit dyspozytorski 2024-03-01; IDCC FB Pulpit dyspozytorski 2024-04-02",
+  "quality": "clear",
+  "caption": "Lista pulpitów w aplikacji CCM z wyborem pulpitu DACC FB"
+ },
+ {
+  "file": "screens/nor/image7.png",
+  "screen": "CCM — tabela statusów przepływów (Paczka ZIP_CCA)",
+  "shows": "Tabela monitoringu przepływów danych FBA z kolumnami statusów; wyróżniony wiersz 'Paczka ZIP_CCA do Perun' (PERUN_DA_CCA).",
+  "maps_to": "Punkt kontrolny: wysłanie paczki ZIP_CCA do Perun (sFTP/MinIO)",
+  "text_visible": "Nazwa Obszaru/przepływu; Kod; Target/Critical End Time; Wersja; CCCtool wysł./zwalid.; MinIO; sFTP/ZP wysł.; Individual Validation - walidacja domeny FBA; Paczka ZIP_CCA do Perun PERUN_DA_CCA 07:15 08:50; IVA F310; Raporty z Perun",
+  "quality": "clear",
+  "caption": "Tabela statusów przepływów FBA — wiersz Paczka ZIP_CCA do Perun"
+ },
+ {
+  "file": "screens/nor/image8.png",
+  "screen": "CCM — tabela statusów przepływów (IVA / Raporty z Perun)",
+  "shows": "Ta sama tabela monitoringu z wyróżnionymi wierszami 'IVA' (F310) oraz 'Raporty z Perun' (RAP_PERUN_DA).",
+  "maps_to": "Punkt kontrolny: wytworzenie pliku IVA (F310) i raportów z Perun dla domeny DA",
+  "text_visible": "IVA F310 07:15 08:50; Raporty z Perun RAP_PERUN_DA 07:15 08:50; CCCtool wysł./zwalid.; MinIO; Individual Validation - walidacja domeny FBA",
+  "quality": "clear",
+  "caption": "Tabela statusów FBA — wiersze IVA (F310) i Raporty z Perun"
+ },
+ {
+  "file": "screens/nor/image9.png",
+  "screen": "LCCV — ekran logowania (akceptacja polityki)",
+  "shows": "Ekran startowy logowania do platformy LCCV (TSCNET) z polem akceptacji polityki i przyciskami Login / Local Login.",
+  "maps_to": "Logowanie do narzędzia LCCV (weryfikacja domeny po stronie CCC/TSCNET)",
+  "text_visible": "LCCV; Read and accept the TSCNET Policy to be able to login; Information according to Art. 13 GDPR here; Login; Local Login",
+  "quality": "clear",
+  "caption": "Ekran startowy logowania do platformy LCCV (TSCNET)"
+ },
+ {
+  "file": "screens/nor/image10.png",
+  "screen": "LCCV — formularz logowania (Local Login)",
+  "shows": "Formularz logowania lokalnego LCCV z polami Username i Password oraz przyciskami Login / Back.",
+  "maps_to": "Logowanie lokalne (Local Login) do platformy LCCV",
+  "text_visible": "LCCV; Username; Password; Forgot password?; secure connection; Read and accept the TSCNET Policy; Art. 13 GDPR here; Login; Back",
+  "quality": "clear",
+  "caption": "Formularz logowania lokalnego LCCV (Username/Password)"
+ },
+ {
+  "file": "screens/nor/image11.png",
+  "screen": "Perun4V / LCCV — Calculation Logs",
+  "shows": "Ekran logów obliczeń z filtrami i wierszem zakończonego obliczenia DA (Estimate security reserve) ze statusem 0/25 Failed, 25 Success.",
+  "maps_to": "Punkt kontrolny: uruchomienie i sukces obliczeń (Estimate security reserve) dla wszystkich godzin",
+  "text_visible": "Calculation Logs; Configurations; Save/Load calculation parameters; F427 conversion; Estimate security reserve; Business Process; Status; No 7826; 2025-01-17; sFTP@pse.pl; DA; 0/25/0/25; F310 V; F427 V; Download",
+  "quality": "clear",
+  "caption": "Logi obliczeń (Calculation Logs) — zakończone obliczenie DA Estimate security reserve 25/25"
+ },
+ {
+  "file": "screens/nor/image12.png",
+  "screen": "E-mail [CCA] F310 — raport VALIDATION_OVERVIEW (DA/FB)",
+  "shows": "Wiadomość e-mail od FB Core Team z załącznikiem raportu zbiorczego validation_overview dla domeny FB, informacja o maksymalnej IVA = 0.00.",
+  "maps_to": "Otrzymanie raportu zbiorczego VALIDATION_OVERVIEW potwierdzającego wynik walidacji FB (IVA=0)",
+  "text_visible": "CCS CCA Gin; [CCA][Core DACC] F310 za 2025-01-29; 20250129_validation_overview_FB_PERUN.xlsx; raport zbiorczy VALIDATION_OVERVIEW dla walidacji domeny FB w PERUN4V; Maksymalna IVA z PERUN4V tego dnia wyniosła 0.00; FB Core Team",
+  "quality": "clear",
+  "caption": "E-mail z raportem VALIDATION_OVERVIEW dla domeny FB (maks. IVA = 0.00)"
+ },
+ {
+  "file": "screens/nor/image13.png",
+  "screen": "Diagram przepływu danych (wariant)",
+  "shows": "Niemal identyczny diagram przepływu danych jak image5 (kroki 1-11) z drobnymi różnicami w opisach (Pkt 9 IVA z domeny FB_CCA).",
+  "maps_to": "Architektura przepływu danych w walidacji domeny FBA (wariant opisowy)",
+  "text_visible": "Perun4V; SFTP; CCCTool; CN2; Minio/Perun; Minio/CCA; ZP,SYSPLAN,KDM; Pkt 1-11; Paczka FB_CCA/LTA; IVA z domeny FB_CCA; Vertices_map_LTA; F320_CCA; F320_LTA",
+  "quality": "duplicate",
+  "caption": "Wariant diagramu przepływu danych (zbliżony do image5, inne podpisy Pkt 9)"
+ },
+ {
+  "file": "screens/nor/image14.png",
+  "screen": "CCM — tabela statusów przepływów (sekcja LTA)",
+  "shows": "Fragment tabeli monitoringu przepływów ograniczony do sekcji 'Walidacja domeny LTA' (Vertices, Paczka ZIP_LTA, IVA LTA, Raporty, RLTA).",
+  "maps_to": "Punkty kontrolne walidacji domeny LTA w pulpicie CCM",
+  "text_visible": "Raporty z Perun RAP_PERUN_DA; Walidacja domeny LTA; Vertices of Inter. FB Domain F320_LTA; Paczka ZIP_LTA do Perun PERUN_DA_LTA; IVA LTA F310_LTA; Raporty z Perun LTA RAP_PERUN_DA_LTA; Raport PSE z CCA o RLTA (XML) RLTA",
+  "quality": "clear",
+  "caption": "Tabela statusów FBA — sekcja Walidacja domeny LTA"
+ },
+ {
+  "file": "screens/nor/image15.png",
+  "screen": "CCM — tabela statusów LTA (Paczka ZIP_LTA / IVA LTA)",
+  "shows": "Ten sam fragment sekcji LTA co image14, z wyróżnionymi (czerwona ramka) wierszami 'Paczka ZIP_LTA do Perun' i 'IVA LTA'.",
+  "maps_to": "Punkt kontrolny: wysłanie paczki ZIP_LTA do Perun i wytworzenie IVA LTA (F310_LTA)",
+  "text_visible": "Walidacja domeny LTA; Paczka ZIP_LTA do Perun PERUN_DA_LTA 07:15 08:00; IVA LTA F310_LTA 07:15 08:00; Raporty z Perun LTA; Raport PSE z CCA o RLTA (XML) RLTA",
+  "quality": "clear",
+  "caption": "Tabela statusów LTA — wyróżnione wiersze Paczka ZIP_LTA i IVA LTA"
+ },
+ {
+  "file": "screens/nor/image16.png",
+  "screen": "Plik Excel — LTA curtailment (init/curt) wszystkie zera",
+  "shows": "Arkusz z kolumnami LTA-XX-PL_init i _curt dla 24 godzin, wszystkie wartości zerowe (brak redukcji LTA).",
+  "maps_to": "Wynikowy plik redukcji LTA (lta_curtailment) — przypadek braku redukcji (same zera)",
+  "text_visible": "hour 1-24; LTA-CZ-PL_init/_curt; LTA-DE-PL; LTA-PL-CZ; LTA-PL-DE; LTA-PL-SK; LTA-SK-PL; wartości 0",
+  "quality": "clear",
+  "caption": "Arkusz lta_curtailment bez redukcji — wszystkie wartości zerowe"
+ },
+ {
+  "file": "screens/nor/image17.png",
+  "screen": "Plik Excel — LTA curtailment z redukcjami (kolorowane)",
+  "shows": "Arkusz LTA init/curt dla 24 godzin z wyróżnionymi (żółto/czerwono) godzinami i wartościami, gdzie wystąpiła redukcja LTA oraz RDP.",
+  "maps_to": "Wynikowy plik redukcji LTA z faktycznymi redukcjami (curtailment > 0) i wartościami RDP",
+  "text_visible": "hour 1-24; LTA-DE-AT_init/_curt; LTA-AT-SK; LTA-CZ-SK; SK RDP+/RDP-; LTA-AT-HU; AT RDP+; HU RDP+; LTA-DE-CZ; DE RDP+; wartości liczbowe, komórki czerwone/żółte",
+  "quality": "clear",
+  "caption": "Arkusz lta_curtailment z faktycznymi redukcjami LTA i wartościami RDP"
+ },
+ {
+  "file": "screens/nor/image18.png",
+  "screen": "Plik Excel — przeciążenia CNEC (overload/Fmax/F0)",
+  "shows": "Arkusz z wierszami godzinowymi dla elementu [PL-PL] Polaniec-Klikowa pod kontyngencją N-1 Polaniec-Tarnow, kolumny OVERLOAD, F_MAX, F_0.",
+  "maps_to": "Raport przeciążeń elementów sieci (CNEC/CNE) będący podstawą wyznaczenia IVA",
+  "text_visible": "HOUR; CB_NAME [PL-PL] Polaniec - Klikowa [DIR]; CO_NAME N-1 Polaniec - Tarnow; OVERLOAD; F_MAX 487; F_0 (356/320/327/332/315/351)",
+  "quality": "clear",
+  "caption": "Arkusz przeciążeń CNEC (Polaniec-Klikowa) — OVERLOAD, F_MAX, F_0 per godzina"
+ },
+ {
+  "file": "screens/nor/image19.png",
+  "screen": "E-mail [CCA] lta_curtailment — raport redukcji LTA",
+  "shows": "Wiadomość e-mail od FB Core Team z załącznikami raportu 'lta_curtailment' (xlsx + xml) CCA-to-ZP za dany dzień.",
+  "maps_to": "Otrzymanie raportu z CCA informującego o redukcji LTA (gałąź RLTA w schemacie LTA)",
+  "text_visible": "CCS CCA Gin; [CCA] 'lta_curtailment' za 2022-04-13; 20220413-RLTA-v1-CCA-to-ZP.xlsx; 20220413-RLTA-v1-CCA-to-ZP.xml; raport 'lta_curtailment' za 2022-04-13; FB Core Team",
+  "quality": "clear",
+  "caption": "E-mail z raportem lta_curtailment (RLTA) z CCA o redukcji LTA"
+ }
+]

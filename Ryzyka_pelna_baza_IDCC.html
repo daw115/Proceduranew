@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Pełna baza ryzyk IDCC — Master Reference (HTML + screeny)</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; max-width: 1100px; margin: 0 auto; padding: 24px; line-height: 1.5; color: #222; background: #fafafa; }
+  h1 { color: #1F4E78; border-bottom: 3px solid #1F4E78; padding-bottom: 8px; }
+  h2 { color: #1F4E78; border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-top: 32px; }
+  h3 { color: #2E75B6; margin-top: 24px; }
+  h4 { color: #555; margin-top: 18px; }
+  .risk { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 24px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .risk-meta { background: #F2F7FC; padding: 12px 16px; border-left: 4px solid #1F4E78; margin: 12px 0; font-size: 0.95em; }
+  .risk-meta strong { color: #1F4E78; }
+  .impact { background: #FFF4E5; padding: 10px 14px; border-left: 4px solid #E67E22; margin: 12px 0; }
+  .shortcut { background: #E8F5E9; padding: 12px 16px; border-left: 4px solid #2E7D32; margin: 16px 0; font-family: "SF Mono", Consolas, monospace; font-size: 0.92em; }
+  .shortcut::before { content: "➤ Skrót strzałkami: "; font-weight: bold; color: #2E7D32; font-family: -apple-system, sans-serif; }
+  .critical { background: #FDECEA; padding: 10px 14px; border-left: 4px solid #D32F2F; margin: 12px 0; }
+  .screen { display: block; max-width: 100%; margin: 12px auto; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); background: white; }
+  .screen-caption { text-align: center; font-style: italic; color: #666; font-size: 0.88em; margin: 4px 0 16px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; background: white; }
+  th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background: #1F4E78; color: white; }
+  tr:nth-child(even) { background: #f8f8f8; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-family: "SF Mono", Consolas, monospace; font-size: 0.9em; }
+  .toc { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 16px 24px; margin: 24px 0; }
+  .toc ol { columns: 2; column-gap: 24px; }
+  .toc a { text-decoration: none; color: #2E75B6; }
+  .toc a:hover { text-decoration: underline; }
+  .back-to-top { position: fixed; bottom: 20px; right: 20px; background: #1F4E78; color: white; padding: 8px 12px; border-radius: 50%; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+  .back-to-top:hover { background: #2E75B6; }
+  .group-header { background: linear-gradient(90deg, #1F4E78 0%, #2E75B6 100%); color: white; padding: 12px 20px; border-radius: 6px; margin: 32px 0 16px 0; }
+  .group-header h2 { color: white; border: none; margin: 0; }
+  ul.steps { padding-left: 24px; }
+  ul.steps li { margin-bottom: 8px; }
+  .ack-code { display: inline-block; background: #1F4E78; color: white; padding: 2px 8px; border-radius: 3px; font-weight: bold; font-family: monospace; }
+  .tag { display: inline-block; background: #e0e0e0; padding: 2px 8px; border-radius: 3px; font-size: 0.85em; margin-right: 4px; }
+  .tag.html { background: #FFE0B2; }
+  .tag.bup { background: #C5E1A5; }
+  .tag.nor { background: #B3E5FC; }
+  .tag.ccm { background: #F8BBD0; }
+  .tag.confluence { background: #D1C4E9; }
+</style>
+</head>
+<body id="top">
+
+<h1>Pełna baza ryzyk IDCC — Master Reference (HTML + screeny)</h1>
+<div style="background:#FFF8E1;border-left:4px solid #FB8C00;padding:10px 14px;margin:12px 0;font-weight:600;">⚠ Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje). Procedury podają tylko działania operacyjne — nie powtarzają odbiorców zgłoszenia.</div>
+
+<div class="risk-meta">
+<strong>Cel:</strong> Kompletna dokumentacja 29 ryzyk procesu IDCC z osadzonymi screenami z dokumentów źródłowych. Wersja markdown (bez screenów): <a href="Ryzyka_pelna_baza_IDCC.md">Ryzyka_pelna_baza_IDCC.md</a>.<br>
+<strong>Źródła:</strong>
+<span class="tag html">HTML procedura IDCC §9</span>
+<span class="tag bup">FBA_TSO_BUP_03 v0.31 (BUP DA)</span>
+<span class="tag nor">FBA_TSO_NOR_03 v0.21 (NOR DA)</span>
+<span class="tag ccm">CCM Instrukcja Dyspozytora v2.6</span>
+<span class="tag confluence">Confluence IVA/IVA Backup</span><br>
+<strong>Pominięte:</strong> LTA-specific z BUP DA (#15-24, #29) — IDCC nie ma LTA.<br>
+<strong>Screeny:</strong> w katalogu <code>screens/</code> — z dokumentów BUP DA, NOR DA, CCM Instrukcja, AC manuall ZP. Numeracja obrazów odpowiada kolejności wstawienia w DOCX (może wymagać korekty mapowania na nr Rysunku).
+</div>
+
+<h2>Spis treści</h2>
+<div class="toc">
+<ol>
+  <li><strong>Grupa I — CCM</strong></li>
+  <li><a href="#R01">R01 — Brak dostępu do CCM</a></li>
+  <li><a href="#R02">R02 — Błędna paczka do Perun4V</a></li>
+  <li><strong>Grupa II — Core CC Tool</strong></li>
+  <li><a href="#R03">R03 — Brak dostępu do Core CC Tool</a></li>
+  <li><a href="#R04">R04 — Brak dostarczonego pliku do CCCt</a></li>
+  <li><a href="#R05">R05 — Plik odrzucony (ACK negatywny)</a></li>
+  <li><a href="#R06">R06 — Brak ACK / timeout</a></li>
+  <li><a href="#R07">R07 — Niezakończenie walidacji ATC w czasie</a></li>
+  <li><strong>Grupa III — Perun4V</strong></li>
+  <li><a href="#R08">R08 — Brak sFTP / brak uruchomienia FBA</a></li>
+  <li><a href="#R09">R09 — ERR-I (część TS niepoliczona)</a></li>
+  <li><a href="#R10">R10 — Process failed</a></li>
+  <li><a href="#R11">R11 — Brak dostępu do Perun4V</a></li>
+  <li><a href="#R12">R12 — Brak wyników z sFTP</a></li>
+  <li><a href="#R13">R13 — Brak pobrania F310</a></li>
+  <li><a href="#R14">R14 — Wyłączenie awaryjne</a></li>
+  <li><strong>Grupa IV — MinIO</strong></li>
+  <li><a href="#R15">R15 — Brak dostępu do MinIO</a></li>
+  <li><a href="#R16">R16 — Brak paczki na MinIO</a></li>
+  <li><a href="#R17">R17 — Brak MinIO dla raportu CCA</a></li>
+  <li><strong>Grupa V — Connector 2.0</strong></li>
+  <li><a href="#R18">R18 — Awaria Connector 2.0</a></li>
+  <li><a href="#R19">R19 — CN2 nie kopiuje do bucketów CCA</a></li>
+  <li><strong>Grupa VI — Aplikacje wewnętrzne</strong></li>
+  <li><a href="#R20">R20 — Brak dostępu do ZP / brak wersji</a></li>
+  <li><a href="#R21">R21 — Brak generowania w Kreatorze</a></li>
+  <li><a href="#R22">R22 — Brak F320_CCA / Vertices_MAP_CCA</a></li>
+  <li><a href="#R23">R23 — Brak raportu CCA</a></li>
+  <li><a href="#R24">R24 — Niezgodność IVA / IVA BACKUP</a></li>
+  <li><strong>Grupa VII — Pomocnicze</strong></li>
+  <li><a href="#R25">R25 — Brak dostępu do kdm6</a></li>
+  <li><a href="#R26">R26 — Brak działania sFTP</a></li>
+  <li><strong>Grupa VIII — Zgłoszenie zewnętrzna</strong></li>
+  <li><a href="#R27">R27 — Decoupling SDAC (MD250)</a></li>
+  <li><a href="#R28">R28 — AAC Fallback</a></li>
+  <li><a href="#R29">R29 — Late NTC delivery</a></li>
+</ol>
+</div>
+
+<!-- ============ GRUPA I — CCM ============ -->
+<div class="group-header"><h2>Grupa I — Narzędzia dyspozytorskie (CCM)</h2></div>
+
+<div class="risk" id="R01">
+<h3>R01 — Brak dostępu do CCM</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> CCM (N01) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R06</span> <span class="tag bup">BUP DA §Ryzyko 27 (str. 69)</span> |
+<strong>U-kod:</strong> U01
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> brak monitoringu kafelków; brak ręcznej wysyłki przez PPM → Wyślij; brak funkcji „Informacje" o pliku; utrata wglądu w fazę procesu.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Diagnoza dostępności:</strong> sprawdź czy https://ccm.spsm.pse.pl ładuje się; spróbuj w innej przeglądarce / VPN.
+  <img src="screens/ccm/ccm-000.png" class="screen" alt="CCM okno logowania">
+  <div class="screen-caption">📷 CCM Instrukcja v2.6 — Okno logowania do aplikacji</div>
+</li>
+<li><strong>Zgłoś</strong> (CIZ, WPO, PSE-I).</li>
+<li><strong>Tymczasowa praca bez CCM:</strong>
+  <ul>
+    <li>Core CC Tool Message Viewer → statusy plików</li>
+    <li>MinIO GUI (https://minio-gui.pse.pl) → bezpośredni podgląd bucketów</li>
+    <li>Perun4V → dla wyników FBA</li>
+    <li>kdm6@pse.pl → raporty CCA</li>
+  </ul>
+</li>
+<li><strong>Ręczna wysyłka plików</strong> (gdy brak CCM): GUI CCCt Manual Upload bezpośrednio z dysku.
+  <img src="screens/bup/image20.png" class="screen" alt="Core CC Tool Manual Upload">
+  <div class="screen-caption">📷 BUP DA — Core CC Tool Manual Upload (str. 47)</div>
+</li>
+<li>Po przywróceniu CCM: wpis w karcie A.4.</li>
+</ol>
+
+<div class="shortcut">CCM niedostępne → sprawdź VPN/przeglądarkę → zgłoś → tymczasowo: CCCt MV / MinIO / Perun4V / kdm6 → wysyłka przez P01 → P06</div>
+</div>
+
+<div class="risk" id="R02">
+<h3>R02 — Błędna paczka do Perun4V (weryfikacja CCM)</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> CCM (N01), Perun4V (N03) |
+<strong>Źródło:</strong> <span class="tag bup">BUP DA §Ryzyko 28 (str. 69)</span> |
+<strong>U-kod:</strong> U08, U09
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> paczka ZIP (PERUN_IDx) niekompletna → niemożliwa konstrukcja paczki do Perun4V → brak obliczeń FBA.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Rozwiń agregat PERUN_IDx</strong> w CCM (kliknięcie ▼); zidentyfikuj problematyczną składową — kolor czerwony !, czarny lub czerwony.</li>
+<li><strong>Sprawdzenie szczegółów:</strong> LPM na ikonę statusu → wybierz „Informacje" → odczytaj rozmiar i lokalizację MinIO.
+  <img src="screens/ccm/ccm-024.png" class="screen" alt="CCM Informacje o pliku">
+  <div class="screen-caption">📷 CCM Instrukcja v2.6, Rys. 11 — Monitorowanie wielkości plików (s. 15)</div>
+</li>
+<li><strong>Pobranie poprawnego pliku z CCCt Message Viewer</strong>:
+  <ul>
+    <li>CCCt → MV → filtr po FID składowej (np. FID2-610 dla Merged GLSK)</li>
+    <li>⚠ <strong>Uwaga:</strong> FIDx-610 (Merged GLSK z CCCt) ≠ FIDx-607 (raw GLSK od PSE)</li>
+  </ul>
+  <img src="screens/bup/image11.png" class="screen" alt="CCCt okno główne">
+  <div class="screen-caption">📷 BUP DA Rys. 11 — Core CC Tool, okno główne (s. 17)</div>
+  <img src="screens/bup/image12.png" class="screen" alt="CCCt Message Viewer">
+  <div class="screen-caption">📷 BUP DA Rys. 12 — Message Viewer (s. 17)</div>
+</li>
+<li><strong>Wysyłka przez CCM:</strong> PPM na wierszu składowej → „Wyślij" → wskaż pobrany plik.
+  <img src="screens/bup/image19.png" class="screen" alt="CCM Rozwijane menu opcja Wyślij">
+  <div class="screen-caption">📷 BUP DA Rys. 19 — CCM, rozwijane menu opcja Wyślij (s. 24)</div>
+</li>
+<li>Po wysłaniu: składowa → zielony 'R'; agregat PERUN_IDx → zielony 'W'.</li>
+</ol>
+
+<div class="shortcut">CCM rozwiń agregat → zidentyfikuj składową (czerwony!/czarny) → LPM Informacje → CCCt MV pobierz → CCM PPM Wyślij → zielony W</div>
+</div>
+
+<!-- ============ GRUPA II — Core CC Tool ============ -->
+<div class="group-header"><h2>Grupa II — Core CC Tool (CCCt)</h2></div>
+
+<div class="risk" id="R03">
+<h3>R03 — Brak dostępu do Core CC Tool</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> Core CC Tool (N02) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R07</span> <span class="tag bup">BUP DA §Ryzyko 11 (str. 47)</span> |
+<strong>U-kod:</strong> U02
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> brak weryfikacji ACK, brak Manual Upload, brak publikacji AC do PuTo, brak monitoringu wyników centralnych CCCt.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Diagnoza:</strong> sprawdź czy strona CCCt ładuje się; spróbuj ponownie zalogować.
+  <img src="screens/bup/image11.png" class="screen" alt="CCCt okno główne">
+  <div class="screen-caption">📷 BUP DA Rys. 11 — Core CC Tool, okno główne (s. 17)</div>
+</li>
+<li><strong>Tymczasowa praca bez CCCt:</strong>
+  <ul>
+    <li>Monitoruj statusy w CCM (kafelki)</li>
+    <li>Monitoruj kdm6@pse.pl dla raportów zwrotnych</li>
+  </ul>
+</li>
+<li><strong>Telefon do CCC:</strong> operator@tscnet.eu + telefon.</li>
+<li><strong>Alternatywny kanał</strong> (tylko po uzgodnieniu z CCC): ECP/EDX bezpośrednio dla CB/GLSK/EC.</li>
+<li><strong>Zgłoś</strong> (CIZ, WPO, PSE-I).</li>
+</ol>
+
+<div class="shortcut">CCCt niedostępne → monitoruj w CCM/kdm6 → telefon CCC → alternatywny kanał (ECP/EDX) po uzgodnieniu → zgłoś</div>
+</div>
+
+<div class="risk" id="R04">
+<h3>R04 — Brak dostarczonego pliku do CCCt</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> Core CC Tool (N02) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R04+R09</span> <span class="tag bup">BUP DA §Ryzyko 12 (str. 48)</span> |
+<strong>U-kod:</strong> U08, U11
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> plik nie pojawił się w CCCt — proces nie kontynuuje, brak publikacji do PuTo/XBID.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Sprawdzenie w CCCt Message Viewer:</strong>
+  <ul>
+    <li>CCCt → selektor procesu obok niebieskiego pola → wybierz <code>ID1</code> / <code>ID2</code> / <code>ID3C</code> / <code>ID3</code></li>
+    <li>Wybierz Business Day → Message Viewer</li>
+    <li>W polu Message Definition wpisz np. <code>FID1-831</code> → Apply</li>
+  </ul>
+  <img src="screens/bup/image12.png" class="screen" alt="CCCt Message Viewer">
+  <div class="screen-caption">📷 BUP DA Rys. 12 — Message Viewer (s. 17)</div>
+  <img src="screens/bup/image13.png" class="screen" alt="CCCt szczegóły pobieranego pliku">
+  <div class="screen-caption">📷 BUP DA Rys. 13 — szczegóły pobieranego pliku (s. 18)</div>
+</li>
+<li><strong>Analiza wyniku:</strong>
+  <table>
+    <tr><th>Status</th><th>Działanie</th></tr>
+    <tr><td><code>Processed</code></td><td>CCM nie odświeżył; ustaw status ręcznie 'R' w CCM</td></tr>
+    <tr><td><code>Rejected</code></td><td>Odczytaj kod ACK → R05</td></tr>
+    <tr><td>Brak wpisu</td><td>Plik faktycznie nie dotarł → R18 (CN2)</td></tr>
+  </table>
+</li>
+<li><strong>Pobranie ze źródła:</strong>
+  <ul>
+    <li>AC (FIDx-831): P02 — z ZP</li>
+    <li>IVA: P04 — z MinIO</li>
+    <li>Składowe: P05 — CCCt MV (inna iteracja jeśli możliwe)</li>
+  </ul>
+</li>
+<li><strong>Manual Upload:</strong> CCCt → przycisk „Manual Upload" → wskaż plik → Upload file.
+  <img src="screens/bup/image20.png" class="screen" alt="CCCt Manual Upload">
+  <div class="screen-caption">📷 BUP DA Rys. 15 — Core CC Tool manual file upload (s. 20)</div>
+</li>
+<li>Zweryfikuj status <code>Processed</code> → P06 wpis A.4.</li>
+</ol>
+
+<div class="shortcut">CCCt MV → selektor procesu ID1...ID3 → Message Definition FID → Apply → brak wpisu = R15/R18 → P02/P04 → P01 → Processed → P06</div>
+</div>
+
+<div class="risk" id="R05">
+<h3>R05 — Plik odrzucony przez CCCt (ACK negatywny)</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> Core CC Tool (N02) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R05</span> <span class="tag bup">BUP DA §Ryzyko 13 (str. 49)</span> |
+<strong>U-kod:</strong> U10, U12
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> plik dotarł do CCCt, ale ACK negatywny — proces zatrzymany; konieczne ponowienie z poprawionym plikiem / wyższą wersją.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Odczyt kodu ACK w CCM:</strong> najedź na czerwony status w kolumnie „CCTool zwalid." → odczytaj komunikat.
+  <img src="screens/ccm/ccm-039.png" class="screen" alt="CCM komunikat ACK">
+  <div class="screen-caption">📷 CCM Instrukcja v2.6 — Komunikat ACK po najechaniu na status (s. 13)</div>
+</li>
+<li><strong>Weryfikacja w CCCt Message Viewer:</strong> CCCt → ID# process → MV → filtr po FID → wybierz wpis → szczegóły rejekcji.</li>
+<li><strong>Reakcja per kod ACK:</strong>
+  <table>
+    <tr><th>Kod</th><th>Komunikat</th><th>Działanie</th></tr>
+    <tr><td><span class="ack-code">20</span></td><td>Gate for provided message definition is not opened</td><td>Bramka zamknięta — sprawdź TET/CET; CCCt proces <code>IDx-AC-FORWARDING</code>; admin CCCt (zgłoś)</td></tr>
+    <tr><td><span class="ack-code">21</span></td><td>Provided version is not higher than already stored data</td><td><strong>duplicatedVersion</strong> — podbij wersję; P02/P04 → P01 z v+1</td></tr>
+    <tr><td><span class="ack-code">22</span></td><td><s>Delivered constraint value is negative</s></td><td>❌ Nieaktualne (CCCt akceptuje wartości ujemne)</td></tr>
+    <tr><td><span class="ack-code">30</span></td><td>File size mismatch</td><td>P04 MinIO / P02 ZP → weryfikacja zawartości → P01</td></tr>
+    <tr><td><span class="ack-code">40</span></td><td>Backup version lower</td><td>NIE wysyłać backupu</td></tr>
+    <tr><td><span class="ack-code">41</span></td><td>Backup not available</td><td>→ R23</td></tr>
+    <tr><td><span class="ack-code">42</span></td><td>Backup validation failed</td><td>Sprawdź raport CCA → zgłoś</td></tr>
+  </table>
+</li>
+<li>Po poprawie i ponownej wysyłce → zweryfikuj <code>Processed</code> → P06.</li>
+</ol>
+
+<div class="shortcut">Najedź na czerwony status → odczytaj kod ACK → reakcja per kod (20: admin CCCt (zgłoś); 21: v+1 + P01; 30: P04/P02 → P01) → Processed → P06</div>
+</div>
+
+<div class="risk" id="R06">
+<h3>R06 — Brak ACK / timeout</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> Core CC Tool (N02) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R05 (zawężenie)</span> <span class="tag bup">BUP DA §Ryzyko 12 (str. 48)</span> |
+<strong>U-kod:</strong> U11
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> plik wysłany do CCCt (CCTool wyśl. zielony), ale ACK nie napłynął w czasie (>2-3 min). Ryzyko duplikatu (kod 21).</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li>Najedź na status <code>czerwony ?</code> → odczytaj czas oczekiwania.
+  <img src="screens/ccm/ccm-035.png" class="screen" alt="CCM brak ACK status">
+  <div class="screen-caption">📷 CCM Instrukcja v2.6 — Brak ACK (czerwony ?), s. 12</div>
+</li>
+<li><strong>Czekaj 5 min</strong> — przeciążenie / opóźnienie transportu może być normalne.</li>
+<li><strong>Po 5 min — CCCt Message Viewer:</strong>
+  <table>
+    <tr><th>Status w CCCt</th><th>Działanie</th></tr>
+    <tr><td><code>Processed</code></td><td>CCM się nie odświeżył; ustaw status ręcznie 'R' w CCM; zgłoś</td></tr>
+    <tr><td><code>Rejected</code></td><td>→ R05</td></tr>
+    <tr><td>Brak wpisu</td><td>→ R18 (Connector 2.0)</td></tr>
+  </table>
+</li>
+<li><strong>Brak wpisu &gt;10 min:</strong> zgłoś; ponowna wysyłka z podbiciem wersji → P01 z v+1.</li>
+<li>⚠ <strong>NIE wysyłać ponownie bez weryfikacji</strong> — kod 21 duplicatedVersion.</li>
+</ol>
+
+<div class="shortcut">Najedź na '?' → odczytaj czas → czekaj 5 min → CCCt MV (Processed=R w CCM; Rejected=R05; brak=R18) → &gt;10 min: zgłoś + P01 v+1</div>
+</div>
+
+<div class="risk" id="R07">
+<h3>R07 — Niezakończenie walidacji ATC w czasie</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> Core CC Tool — proces walidacji ATC |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R11, §5.4</span> |
+<strong>U-kod:</strong> U17 |
+<strong>Dotyczy:</strong> FIDx-928
+</div>
+<div class="critical"><strong>Wpływ na IDCC:</strong> brak lokalnego fallbacku (HTML §5.4). Po CET dyspozytor nie wykonuje dalszych czynności.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>PRZED CET — uzupełnienie składowych paczki ATC:</strong>
+  <ul>
+    <li>CCM → rozwiń agregat PERUN_IDx_ATC</li>
+    <li>Zidentyfikuj brakujące/błędne składowe (czarny/czerwony/czerwony !)</li>
+    <li>P05 — pobierz z CCCt MV → wyślij przez CCM</li>
+  </ul>
+</li>
+<li><strong>Monitoring walidacji ATC:</strong> CCM kafelek FIDx-928; CCCt → ID# process → MV → filtr <code>FID1-928</code>.</li>
+<li><strong>PO CET:</strong> <span style="color:#D32F2F;font-weight:bold">⛔ STOP — żadnych działań ręcznych.</span><br>
+  HTML §5.4 cyt.: <em>„Brak wyniku ATC w czasie → dyspozytor nie wykonuje dalszych czynności. Brak lokalnego fallbacku."</em></li>
+<li><strong>Zgłoszenie natychmiast:</strong> zgłoś + telefon CCC; P06.</li>
+</ol>
+
+<div class="shortcut"><strong>Przed CET:</strong> uzupełnij składowe PERUN_IDx_ATC → P05 → CCM Wyślij → monitoruj FIDx-928. <strong>Po CET:</strong> ⛔ STOP — zgłoś + telefon CCC; P06</div>
+</div>
+
+<!-- ============ GRUPA III — Perun4V ============ -->
+<div class="group-header"><h2>Grupa III — Perun4V</h2></div>
+
+<div class="risk" id="R08">
+<h3>R08 — Brak działania sFTP / brak uruchomienia FBA</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> Perun4V (N03), sFTP (N12) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R01</span> <span class="tag bup">BUP DA §Ryzyko 1 (str. 9-16)</span> |
+<strong>U-kod:</strong> U03, U14
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> paczka PERUN_IDx wysłana z CCM (sFTP/ZP zielony), ale Perun4V nie rozpoczął obliczeń. Brak wyniku IVA.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Diagnoza w Perun4V GUI:</strong> https://lccv.tscnet.eu → Local Login.
+  <img src="screens/nor/image7.png" class="screen" alt="Perun4V logowanie">
+  <div class="screen-caption">📷 NOR DA Rys. 7-8 — okna logowania Perun4V</div>
+  <img src="screens/nor/image9.png" class="screen" alt="Perun4V główne okno">
+  <div class="screen-caption">📷 NOR DA Rys. 9 — Główne okno Perun4V</div>
+</li>
+<li><strong>Analiza komunikatów błędu:</strong>
+  <table>
+    <tr><th>Komunikat</th><th>Działanie</th></tr>
+    <tr><td>Błędny BD</td><td>Sekcja „Select timestamp date" → ustaw poprawny BD → ponów</td></tr>
+    <tr><td>Brak pliku w paczce</td><td>Sprawdź zawartość ZIP; uzupełnij składową (R02, P05); przepakuj</td></tr>
+    <tr><td>Błędny plik w paczce</td><td>Pobierz wszystkie pliki z CCCt MV → przepakuj (R16)</td></tr>
+  </table>
+  <img src="screens/bup/image28.png" class="screen" alt="Perun4V brak pliku">
+  <div class="screen-caption">📷 BUP DA Rys. 28/29 — Perun4V brak pliku</div>
+  <img src="screens/bup/image30.png" class="screen" alt="Perun4V błąd przeliczania">
+  <div class="screen-caption">📷 BUP DA Rys. 30 — błąd przeliczania danych wejściowych na 24h</div>
+</li>
+<li><strong>Ręczne uruchomienie obliczeń</strong> (P03): pobierz paczkę z MinIO <code>perun/ID_FBCC/in/yyyy-mm-dd/</code> → przeciągnij na pole w Perun4V (lub LPM → wybierz z dysku).</li>
+<li><strong>Po obliczeniach — pobierz F310/IVA:</strong> Perun4V → download.</li>
+<li><strong>Wysyłka:</strong> CCM PPM → Wyślij; lub P01 Manual Upload.</li>
+<li>Jeśli nadal nie rusza → oczekuj IVA BACKUP od CCA (R10).</li>
+</ol>
+
+<div class="shortcut">Perun4V GUI → komunikat błędu → [Błędny BD: poprawny BD] / [Brak pliku: R02+P05] / [Błędny plik: R16] → P03 → pobierz F310 → CCM Wyślij / P01</div>
+</div>
+
+<div class="risk" id="R09">
+<h3>R09 — ERR-I (część TS niepoliczona)</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> Perun4V (N03) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R02</span> <span class="tag bup">BUP DA §Ryzyko 6 (str. 29-38)</span> |
+<strong>U-kod:</strong> U15
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> publikacja wyższej wersji IVA = wyniki Perun4V + dane CCA dla brakujących TS.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Identyfikacja w Perun4V GUI:</strong> status z dopiskiem <code>ERR-I</code>; kolumna <code>Timestamps (Failed/Success/Running/Total)</code>.
+  <img src="screens/bup/image31.png" class="screen" alt="Perun4V ERR-I">
+  <div class="screen-caption">📷 BUP DA Rys. 31 — Perun4V ERR-I (s. 29)</div>
+  <small>⚠ Uwaga: 25 Timestamps = 24 godziny + 1 raporty</small>
+</li>
+<li><strong>Szczegóły per godzina:</strong> <code>Status → Details</code> → kolumna <code>[Result]</code>.
+  <img src="screens/bup/image32.png" class="screen" alt="Perun4V niepoliczona godzina">
+  <div class="screen-caption">📷 BUP DA Rys. 32 — Perun4V niepoliczona godzina (s. 30)</div>
+</li>
+<li><strong>Weryfikacja w CCCt:</strong> czy zastosowano DFP (Default Flow Parameters) lub Spanning hours dla problematycznych godzin (Process Detail → klik w datę BD).</li>
+<li><strong>Email:</strong> sprawdź kdm6@pse.pl — CCC wysyła informację o DFP/Spanning.</li>
+<li><strong>Monitoring IVA BACKUP:</strong> kafelek powinien pokazać wyższą wersję (Backup &gt; IVA z Perun4V). Stan <code>red_pulse</code> → Scenariusz 4 HTML §8.8.</li>
+<li><strong>Brak publikacji Backup w czasie:</strong> zgłoś + telefon CCC.</li>
+<li>⚠ <strong>Zakaz</strong> stosowania fallbacku 20% Fmax z DA.</li>
+</ol>
+
+<div class="shortcut">Perun4V ERR-I → Status → Details → niepoliczone godziny → sprawdź DFP/Spanning w CCCt → kdm6 → monitoruj IVA Backup (wyższa wersja) → brak = zgłoś + telefon CCC</div>
+</div>
+
+<div class="risk" id="R10">
+<h3>R10 — Process failed (wszystkie TS niepoliczone)</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> Perun4V (N03) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R03</span> <span class="tag bup">BUP DA §Ryzyko 7 (str. 39)</span> |
+<strong>U-kod:</strong> U16
+</div>
+<div class="critical"><strong>Wpływ na IDCC:</strong> publikowana IVA BACKUP v1 jako wynik wyłącznie z CCA. Brak wartości IVA z obliczeń Perun4V.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Identyfikacja w Perun4V GUI:</strong> status <code>Process failed</code>; wszystkie godziny w <code>Failed</code>.</li>
+<li><strong>Oczekiwanie na IVA BACKUP v1:</strong> CCA wygeneruje Backup automatycznie. Kafelek IVA Backup → zielony lub <code>red_pulse</code> (Scenariusz 4).</li>
+<li><strong>Brak publikacji Backup w czasie:</strong> zgłoś + telefon CCC.</li>
+<li>⚠ <strong>Zakaz</strong> stosowania fallbacku 20% Fmax z DA (HTML §7).</li>
+<li>P06 — pełny opis zdarzenia.</li>
+</ol>
+
+<div class="shortcut">Perun4V Process failed → oczekuj IVA Backup v1 z CCA → brak = zgłoś + telefon CCC; ⛔ zakaz fallbacku 20% Fmax; P06</div>
+</div>
+
+<div class="risk" id="R11">
+<h3>R11 — Brak dostępu do Perun4V</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> Perun4V (N03) |
+<strong>Źródło:</strong> <span class="tag bup">BUP DA §Ryzyko 4 (str. 26)</span> |
+<strong>U-kod:</strong> U05
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> brak monitoringu stanu obliczeń (Successful/ERR-I/Process failed); brak P03 (ręczne uruchomienie).</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Diagnoza:</strong> sprawdź https://lccv.tscnet.eu w innej przeglądarce; sieć / TSCNET status.</li>
+<li><strong>Tymczasowy monitoring:</strong>
+  <ul>
+    <li>CCM — statusy IVA / Raporty z Perun (kafelki MinIO)</li>
+    <li>kdm6@pse.pl — raporty Perun4V po obliczeniach</li>
+  </ul>
+</li>
+<li><strong>Zgłoszenie telefoniczna:</strong> TSCNET — operator@tscnet.eu + telefon.</li>
+<li><strong>Zgłoś</strong> (CIZ, WPO, PSE-I).</li>
+</ol>
+
+<div class="shortcut">Perun4V niedostępny → tymczasowo CCM + kdm6 → telefon TSCNET → zgłoś</div>
+</div>
+
+<div class="risk" id="R12">
+<h3>R12 — Brak wyników IVA i raportów z sFTP</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> Perun4V (N03), sFTP (N12) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R01 (pośrednio)</span> <span class="tag bup">BUP DA §Ryzyko 5 (str. 28)</span> |
+<strong>U-kod:</strong> U03, U14
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> Perun4V wykonał obliczenia, ale wyniki (IVA + raporty) nie trafiły przez sFTP do Connector 2.0. Brak IVA w CCM/CCCt mimo obliczonego procesu.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Weryfikacja w Perun4V:</strong> obliczenia zakończone (<code>Successful</code> / <code>ERR-I</code>).</li>
+<li><strong>Pobranie F310 ręcznie z Perun4V GUI:</strong> w liście obliczeń → klik na zakończone → download F310/IVA.</li>
+<li><strong>Wysyłka:</strong> CCM PPM → Wyślij; lub P01 Manual Upload.</li>
+<li><strong>Sprawdzenie raportów:</strong> czy raporty są na MinIO <code>perun/ID_FBCC/out/yyyy-mm-dd/</code>.</li>
+<li><strong>Zgłoś</strong> (CIZ, WPO, PSE-I).</li>
+</ol>
+
+<div class="shortcut">Perun4V Successful, brak IVA w CCM → pobierz F310 ręcznie z Perun4V → CCM Wyślij / P01 → zgłoś</div>
+</div>
+
+<div class="risk" id="R13">
+<h3>R13 — Brak możliwości pobrania F310 z Perun4V</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> Perun4V (N03) |
+<strong>Źródło:</strong> <span class="tag bup">BUP DA §Ryzyko 8 (str. 39)</span> |
+<strong>U-kod:</strong> U05, U14
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> obliczenia zakończone, ale download nie działa — brak ręcznego dostarczenia wyniku.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li>Sprawdź dostęp do Perun4V (R11).</li>
+<li><strong>Alternatywne pobranie F310 z MinIO:</strong> wyniki Perun4V są kopiowane na MinIO <code>perun/ID_FBCC/out/yyyy-mm-dd/</code>.
+  <img src="screens/bup/image16.png" class="screen" alt="MinIO bucket perun/out">
+  <div class="screen-caption">📷 BUP DA — MinIO GUI z bucketami</div>
+</li>
+<li><strong>Wysyłka:</strong> P01 Manual Upload.</li>
+<li><strong>Zgłoś</strong> (CIZ, WPO, PSE-I).</li>
+</ol>
+
+<div class="shortcut">Perun4V brak download F310 → MinIO perun/ID_FBCC/out/ → pobierz → P01 → zgłoś</div>
+</div>
+
+<div class="risk" id="R14">
+<h3>R14 — Dodanie wyłączenia awaryjnego w Perun4V</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> Perun4V (N03) |
+<strong>Źródło:</strong> <span class="tag bup">BUP DA §Ryzyko 9 (str. 44)</span> |
+<strong>U-kod:</strong> —
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> scenariusz specyficzny dla wyłączeń awaryjnych; rzadkie w IDCC.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Decyzja operacyjna</strong> — wykonywana wyłącznie po zgłoszeniu.</li>
+<li><strong>Perun4V GUI → Outage management:</strong> procedura dodawania wyłączenia awaryjnego.
+  <img src="screens/bup/image36.png" class="screen" alt="Perun4V Outage management">
+  <div class="screen-caption">📷 BUP DA — Perun4V wyłączenie awaryjne (s. 44)</div>
+</li>
+<li><strong>Po dodaniu wyłączenia:</strong> P03 — ponowne uruchomienie obliczeń.</li>
+</ol>
+
+<div class="shortcut">Decyzja operacyjna → zgłoś → Perun4V GUI → Outage management → P03</div>
+</div>
+
+<!-- ============ GRUPA IV — MinIO ============ -->
+<div class="group-header"><h2>Grupa IV — MinIO</h2></div>
+
+<div class="risk" id="R15">
+<h3>R15 — Brak dostępu do MinIO / Awaria Connector 2.0 dotykająca MinIO</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> MinIO (N04) |
+<strong>Źródło:</strong> <span class="tag bup">BUP DA §Ryzyko 2 (str. 17)</span> |
+<strong>U-kod:</strong> U04
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> brak pobierania backupowej kopii pliku; brak P04; raporty CCA niedostępne.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Diagnoza:</strong> https://minio-gui.pse.pl; funkcja „Pobierz" w CCM (LPM na kolumnie MinIO).</li>
+<li><strong>Alternatywne źródła plików:</strong>
+  <table>
+    <tr><th>Plik</th><th>Alternatywne źródło</th></tr>
+    <tr><td>AC (FIDx-831)</td><td>P02 — ZP</td></tr>
+    <tr><td>IVA / wyniki Perun4V</td><td>Perun4V GUI bezpośrednio</td></tr>
+    <tr><td>Raporty CCA</td><td>kdm6@pse.pl (R25)</td></tr>
+    <tr><td>Składowe paczek</td><td>P05 — CCCt MV</td></tr>
+  </table>
+</li>
+<li><strong>Zgłoś</strong> (CIZ, WPO, PSE-I).</li>
+</ol>
+
+<div class="shortcut">MinIO niedostępne → alternatywne źródła per plik (AC: P02 / IVA: Perun4V GUI / Raporty: kdm6 / Składowe: P05) → zgłoś</div>
+</div>
+
+<div class="risk" id="R16">
+<h3>R16 — Brak paczki plików na MinIO</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> MinIO (N04) |
+<strong>Źródło:</strong> <span class="tag bup">BUP DA §Ryzyko 3 (str. 22-25)</span> |
+<strong>U-kod:</strong> U08
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> mimo dostarczenia składowych do CCM, paczka ZIP nie pojawia się w MinIO. Perun4V nie otrzyma paczki → brak obliczeń.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Sprawdzenie MinIO:</strong> bucket <code>perun/ID_FBCC/in/yyyy-mm-dd/</code> — brak paczki ZIP.</li>
+<li><strong>Diagnostyka Connector 2.0</strong> (R18).</li>
+<li><strong>Ręczne stworzenie paczki — pobranie składowych z CCCt MV:</strong>
+  <table>
+    <tr><th>Plik</th><th>FID (IDCC(b))</th></tr>
+    <tr><td>Merged D-2CF CGM</td><td>F109/F308</td></tr>
+    <tr><td>Reference Program</td><td>FID2-632</td></tr>
+    <tr><td>Merged GLSK</td><td>FID2-610</td></tr>
+    <tr><td>MergingLog</td><td>F515</td></tr>
+    <tr><td>Intermediate FB Domain (Virgin)</td><td>FID2-645</td></tr>
+    <tr><td>Real GLSK</td><td>FID2-657</td></tr>
+    <tr><td>Configuration for RAO</td><td>F327</td></tr>
+    <tr><td>Individual Filtered CB (PSE)</td><td>FID2-665</td></tr>
+  </table>
+  <img src="screens/bup/image13.png" class="screen" alt="CCCt szczegóły pobieranego pliku">
+  <div class="screen-caption">📷 BUP DA Rys. 13 — szczegóły pobieranego pliku (s. 18)</div>
+  ⚠ Przy F312/CB <strong>odbiorca = PSE</strong>
+</li>
+<li><strong>Zapisanie składowych:</strong> <code>\\uo-data\ZUO\Pion_UOD\Wydzial_DP\MODELE\5_DYSP\FBA\Pliki wejściowe do ID FBA\rrrMMdd\PERUN\</code> (❓ do weryfikacji dla IDCC).</li>
+<li><strong>Spakowanie do ZIP:</strong> zaznacz pliki → PPM → 7-Zip → Dodaj do archiwum (format <code>zip</code>, bez hasła). Przykład: <code>rrrrMMddPerun1.zip</code>.
+  <img src="screens/bup/image18.png" class="screen" alt="7-Zip Dodaj do archiwum">
+  <div class="screen-caption">📷 BUP DA — 7-Zip Dodaj do archiwum</div>
+</li>
+<li><strong>Wczytanie do Perun4V</strong> (P03).</li>
+<li>Dodatkowe pliki F320_CCA / Vertices_MAP_CCA → R22.</li>
+</ol>
+
+<div class="shortcut">MinIO brak paczki → sprawdź CN2 (R18) → pobierz składowe z CCCt MV → zapisz lokalnie → 7-Zip → zip → P03; dodatkowo R22</div>
+</div>
+
+<div class="risk" id="R17">
+<h3>R17 — Brak dostępu do MinIO dla raportu CCA</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> MinIO (N04), CCA (N09) |
+<strong>Źródło:</strong> <span class="tag bup">BUP DA §Ryzyko 25 (str. 67)</span> |
+<strong>U-kod:</strong> U04, U23
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> raport CCA w <code>cca/ID_FBCC/out/[BD]/</code> niedostępny — brak weryfikacji analizy IVA na CNECach.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li>Sprawdź R15 (czy to ogólna awaria MinIO czy tylko bucket CCA).</li>
+<li><strong>Alternatywne pobranie raportu CCA ze skrzynki kdm6@pse.pl:</strong>
+  <img src="screens/bup/image97.png" class="screen" alt="Raport CCA wiadomość mailowa">
+  <div class="screen-caption">📷 BUP DA Rys. 98 — Raport CCA wiadomość mailowa (s. 67)</div>
+</li>
+<li>Zapisanie raportu lokalnie.</li>
+<li>Zgłoś — niski priorytet (raporty mają charakter informacyjny).</li>
+</ol>
+
+<div class="shortcut">MinIO bucket CCA niedostępny → pobierz raport z kdm6@pse.pl → zapisz lokalnie → zgłoś (niski priorytet)</div>
+</div>
+
+<!-- ============ GRUPA V — Connector 2.0 ============ -->
+<div class="group-header"><h2>Grupa V — Connector 2.0</h2></div>
+
+<div class="risk" id="R18">
+<h3>R18 — Awaria Connector 2.0</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> Connector 2.0 (N05) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R09 + R16</span> <span class="tag bup">BUP DA §Ryzyko 2 (str. 17)</span> |
+<strong>U-kod:</strong> U03
+</div>
+<div class="critical"><strong>Wpływ na IDCC:</strong> wszystkie wysyłki automatyczne wstrzymane; konieczne ręczne wysyłki przez Manual Upload.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Diagnoza:</strong> HTML §8.9 — Connector 2.0; sprawdź czy procesy CN2 się zakończyły; logi błędów.</li>
+<li><strong>Identyfikacja zakresu awarii:</strong>
+  <table>
+    <tr><th>Stan plików</th><th>Diagnoza</th><th>Działanie</th></tr>
+    <tr><td>Plik w źródle, brak w CCM</td><td>Pełna awaria CN2</td><td>P02/P04 → P01</td></tr>
+    <tr><td>Plik na MinIO <code>perun/</code>, brak w <code>cca/</code></td><td>Selektywna — kopia do CCA zerwana</td><td>R19; zgłoś</td></tr>
+    <tr><td>Brak ACK po wysłaniu</td><td>CN2 zwrotny zerwany</td><td>R06 timeout</td></tr>
+  </table>
+</li>
+<li><strong>Ręczne wysyłki per plik:</strong>
+  <ul>
+    <li>AC FIDx-831: P02 — z ZP → P01</li>
+    <li>IVA FIDx-710: P04 — z MinIO → P01 lub Perun4V GUI download</li>
+    <li>Składowe paczek: P05 — z CCCt MV → CCM Wyślij</li>
+  </ul>
+</li>
+<li><strong>Zgłoś</strong> (CIZ, WPO, PSE-I).</li>
+</ol>
+
+<div class="shortcut">CN2 awaria → identyfikuj zakres (pełna/selektywna) → per plik (P02 AC / P04 IVA / P05 składowe) → P01 → zgłoś</div>
+</div>
+
+<div class="risk" id="R19">
+<h3>R19 — CN2 nie kopiuje IVA i raportów do bucketów CCA</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> Connector 2.0 (N05), CCA (N09) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R16</span> <span class="tag bup">BUP DA §Ryzyko 10 (str. 46)</span> |
+<strong>U-kod:</strong> U03, U19
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> CN2 selektywnie nie kopiuje IVA do <code>cca/</code>. CCA nie otrzymała pliku → brak IVA BACKUP, brak raportów.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Identyfikacja zakresu:</strong> MinIO <code>perun/ID_FBCC/out/yyyy-mm-dd/</code> vs <code>cca/ID_FBCC/in/yyyymmdd/</code> — jest IVA?</li>
+<li><strong>Decyzja:</strong>
+  <table>
+    <tr><th>Sytuacja</th><th>Zgłoszenie</th></tr>
+    <tr><td>Plik w <code>perun/</code>, brak w <code>cca/</code></td><td>zgłoś</td></tr>
+    <tr><td>Brak w obu</td><td>zgłoś</td></tr>
+  </table>
+</li>
+<li><strong>Tymczasowe rozwiązanie:</strong>
+  <ul>
+    <li>Pobierz IVA z <code>perun/</code> → ręcznie skopiuj/wgraj do <code>cca/</code> (❓ do weryfikacji)</li>
+    <li>Alternatywnie: wyślij IVA ręcznie przez CCM jako Backup</li>
+  </ul>
+</li>
+<li>Wpływa na IVA BACKUP i R23 — zgłoszenie pilne.</li>
+</ol>
+
+<div class="shortcut">Sprawdź MinIO perun/ vs cca/ → plik w perun/ brak w cca/ = zgłoś; brak w obu = zgłoś → tymczasowo ręczne kopiowanie (❓)</div>
+</div>
+
+<!-- ============ GRUPA VI — Aplikacje wewnętrzne ============ -->
+<div class="group-header"><h2>Grupa VI — Aplikacje wewnętrzne (ZP, Kreatory, CCA)</h2></div>
+
+<div class="risk" id="R20">
+<h3>R20 — Brak dostępu do ZP / brak wersji FIDx-831</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> ZP (N06) |
+<strong>Źródło:</strong> AC manuall ZP.docx |
+<strong>U-kod:</strong> U06
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> brak źródła pliku AC FIDx-831 — bez ZP nie można wykonać P02.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Diagnoza ZP:</strong> otwórz aplikację ZP (desktop); sprawdź czy startuje, logowanie działa.</li>
+<li><strong>Sprawdzenie wersji:</strong> ZP → Główne okno → <code>bilans AC</code> → wyszukaj FIDx-831 dla bieżącej doby.
+  <img src="screens/ac_zp/image1.png" class="screen" alt="ZP bilans AC">
+  <div class="screen-caption">📷 AC manuall ZP.docx — Główne okno ZP, bilans AC, dokumenty FIDx-831</div>
+</li>
+<li><strong>Decyzja:</strong>
+  <table>
+    <tr><th>Stan w ZP</th><th>Działanie</th></tr>
+    <tr><td>Wersja jest wygenerowana</td><td>Kliknij <code>Pobierz XML</code> → P01</td></tr>
+    <tr><td>Brak wersji</td><td>Wygeneruj: <code>bilans AC</code> → wybierz wersję → niebieski przycisk <code>Nowa wersja</code> → po wygenerowaniu Pobierz XML</td></tr>
+    <tr><td>Awaria ZP</td><td>zgłoś</td></tr>
+  </table>
+  <img src="screens/ac_zp/image2.png" class="screen" alt="ZP Pobierz XML">
+  <div class="screen-caption">📷 AC manuall ZP.docx — przycisk Pobierz XML</div>
+</li>
+<li><strong>Generowanie się nie powiodło:</strong> zgłoś; ryzyko niedostarczenia AC w terminie.</li>
+</ol>
+
+<div class="shortcut">ZP → bilans AC → wyszukaj FIDx-831 → [wersja jest: Pobierz XML → P01] / [brak: Nowa wersja → Pobierz XML] / [awaria: zgłoś]</div>
+</div>
+
+<div class="risk" id="R21">
+<h3>R21 — Brak generowania IGM/GLSK/CBCORA (Kreator)</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> KreatorDACF&2DAF_CGMES (N07) dla IDCC(b); KreatorIDCF_CGMES (N08) dla IDCC(c)/(d)/(e) |
+<strong>Źródło:</strong> IDCC(c)/(d)/(e) — <a href="Procedura_KreatorIDCF_GLSK_CBCORA.html">Procedura ręczna: Generowanie GLSK + CBCORA w KreatorIDCF (ze screenami)</a>; IDCC(b) analogia BUP DA (NOR DA §1.3) |
+<strong>U-kod:</strong> U06
+</div>
+<div class="impact"><strong>Normalnie vs backup:</strong> GLSK/CBCORA wysyłane <strong>automatycznie skryptem Monitora</strong> (np. 00:05 v2, 00:50 v3); ręczna generacja w KreatorIDCF (GSK/CBCORA → Publikuj Connector) to <strong>backup</strong>, gdy Monitor pokaże status BŁĄD.</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> brak GLSK (FIDx-607) / CBCORA (FIDx-617) → niemożliwa konstrukcja paczki PERUN_IDx → brak obliczeń FBA.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Diagnoza Kreatora:</strong> sprawdź czy aplikacja Kreator (PLANS) startuje; generowanie pliku dla bieżącej doby działa.</li>
+<li><strong>Zgłoszenie:</strong> PLANS — zespół utrzymania Kreatora (❓ kanał kontaktu).</li>
+<li><strong>Alternatywne pobranie GLSK/CBCORA:</strong>
+  <ul>
+    <li>GLSK (FIDx-607): z CCCt Message Viewer → P05</li>
+    <li>CBCORA (FIDx-617): z CCCt Message Viewer → P05</li>
+    <li>⚠ FIDx-610 (Merged GLSK z CCCt) ≠ FIDx-607 (raw GLSK od PSE)</li>
+  </ul>
+</li>
+<li><strong>Wysyłka:</strong> CCM PPM → Wyślij → P06.</li>
+</ol>
+
+<div class="shortcut">Kreator nie generuje → PLANS (kontakt) → tymczasowo pobierz GLSK/CBCORA z CCCt MV (P05) → CCM Wyślij → P06</div>
+</div>
+
+<div class="risk" id="R22">
+<h3>R22 — Brak F320_CCA / Vertices_MAP_CCA</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> CCA (N09) |
+<strong>Źródło:</strong> <span class="tag bup">BUP DA §Ryzyko 14 (str. 50)</span> |
+<strong>U-kod:</strong> U06, U08
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> brak F320_CCA (Vertices of Initial FB Domain) lub Vertices_MAP_CCA → paczka PERUN_IDx niekompletna → brak obliczeń FBA.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Diagnoza:</strong> MinIO <code>cca/ID_FBCC/in/</code> — czy CCA wygenerowała pliki F320 i Vertices_MAP.</li>
+<li><strong>Ręczne generowanie narzędziem <code>fbc_lta_vertices.exe</code>:</strong> lokalizacja: pulpit komputera dyspozytorskiego, katalog <code>F320_backup</code>.
+  <img src="screens/bup/image54.png" class="screen" alt="fbc_lta_vertices folder">
+  <div class="screen-caption">📷 BUP DA Rys. 67 — fbc_lta_vertices folder (s. 50)</div>
+</li>
+<li><strong>Pobierz z CCCt MV pliki wejściowe:</strong> F110, F114 LTA, F118 AC, F320, F330.</li>
+<li><strong>Uruchom <code>fbc_lta_vertices.exe</code>:</strong> wskaż pobrane pliki → wygeneruj F320_CCA i Vertices_MAP_CCA.</li>
+<li><strong>Dodaj wygenerowane pliki do paczki PERUN_IDx</strong> (R16 + P03).</li>
+<li><strong>Zgłoś</strong> (CIZ, WPO, PSE-I) — awaria generowania.</li>
+</ol>
+
+<div class="shortcut">MinIO cca/.../in/ brak F320/Vertices_MAP → fbc_lta_vertices.exe → pobierz pliki z CCCt MV → wygeneruj → dodaj do paczki (R16+P03) → zgłoś</div>
+</div>
+
+<div class="risk" id="R23">
+<h3>R23 — Brak dostępnego raportu CCA</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> CCA (N09) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R20</span> <span class="tag bup">BUP DA §Ryzyko 26 (str. 69)</span> |
+<strong>U-kod:</strong> U23
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> raport CCA nie został wygenerowany lub niedostępny → brak IVA BACKUP, brak analizy IVA na CNECach.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Sprawdzenie statusu CCA:</strong> CCM → wiersz IVA Backup → kafelek MinIO.</li>
+<li><strong>MinIO ręcznie:</strong> bucket <code>cca/ID_FBCC/out/[BD]/</code>.
+  <img src="screens/nor/image18.png" class="screen" alt="Otrzymanie raportu CCA">
+  <div class="screen-caption">📷 NOR DA Rys. 21 — Otrzymanie raportu CCA</div>
+</li>
+<li><strong>Sprawdzenie kdm6@pse.pl:</strong> CCA wysyła raport również mailem (R17).</li>
+<li><strong>Diagnoza przyczyny:</strong>
+  <table>
+    <tr><th>Sytuacja</th><th>Działanie</th></tr>
+    <tr><td>Plik w <code>cca/</code> istnieje ale CCM nie widzi</td><td>R19 (CN2 zwrotny)</td></tr>
+    <tr><td>Plik nie istnieje mimo poprawnego zakończenia procesu CCA</td><td>zgłoś</td></tr>
+    <tr><td>Status procesu CCA nieukończony</td><td>zgłoś</td></tr>
+  </table>
+</li>
+<li>P06 — wpis A.4.</li>
+</ol>
+
+<div class="shortcut">CCM IVA Backup brak → MinIO cca/.../out/[BD]/ → kdm6 (email) → plik w cca/ brak w CCM = R19; brak w cca/ = zgłoś → P06</div>
+</div>
+
+<div class="risk" id="R24">
+<h3>R24 — Niezgodność logiki IVA BACKUP z Perun4V</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> CCA (N09) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R12</span> |
+<strong>U-kod:</strong> U19
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> wersja IVA BACKUP (CCA) i wersja IVA (FIDx-710, Perun4V) nie zgadzają się. Prawidłowo: Backup &gt; IVA. Stan kafelka: <code>red_pulse</code>.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Porównanie wersji w CCM:</strong> wiersz IVA — wersja; wiersz IVA Backup — wersja. Prawidłowo: Backup &gt; IVA.</li>
+<li><strong>Weryfikacja w Perun4V:</strong> status obliczeń; wersja FIDx-710.</li>
+<li><strong>Weryfikacja w MinIO:</strong> <code>cca/ID_FBCC/out/BD/</code> → raport CCA z wersją Backup.</li>
+<li><strong>Stan <code>red_pulse</code></strong> (zielony z pulsującą czerwoną obwódką): Scenariusz 4 HTML §8.8 — nowa wersja IVA Backup wymaga monitoringu. ⚠ <strong>NIE uruchamiać ręcznej wysyłki IVA BACKUP</strong> w standardowym modelu IDCC (HTML §5.3).</li>
+<li><strong>Niezgodność wersji:</strong> zgłoś + telefon CCC — niezwłocznie. ❌ <strong>Nie zastępować automatyki ręcznym menu</strong> (HTML §9 R12).</li>
+</ol>
+
+<div class="shortcut">Porównaj wersje: CCM IVA vs IVA Backup, Perun4V FIDx-710, MinIO cca/ raport → red_pulse = Scenariusz 4 monitoring → niezgodność = zgłoś + telefon CCC niezwłocznie; ⛔ nie zastępować automatyki</div>
+</div>
+
+<!-- ============ GRUPA VII — Pomocnicze ============ -->
+<div class="group-header"><h2>Grupa VII — Pomocnicze (kdm6, sFTP)</h2></div>
+
+<div class="risk" id="R25">
+<h3>R25 — Brak dostępu do poczty kdm6</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> kdm6@pse.pl (N11) |
+<strong>Źródło:</strong> <span class="tag bup">BUP DA §Ryzyko 25 (str. 67) pośrednio</span> |
+<strong>U-kod:</strong> U07
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> brak weryfikacji raportów CCA (IVA na CNECach), brak informacji o policzonych godzinach w Perun4V.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Diagnoza:</strong> Outlook nie ładuje skrzynki kdm6; brak nowych wiadomości.</li>
+<li><strong>Alternatywne źródła:</strong>
+  <ul>
+    <li>Raporty CCA → MinIO <code>cca/ID_FBCC/out/[BD]/</code> (R17)</li>
+    <li>Raporty Perun4V → Perun4V GUI bezpośrednio</li>
+  </ul>
+</li>
+<li><strong>Zgłoś</strong> (CIZ, WPO, PSE-I).</li>
+</ol>
+
+<div class="shortcut">kdm6 niedostępne → raporty z MinIO cca/.../out/[BD]/ lub Perun4V GUI → zgłoś</div>
+</div>
+
+<div class="risk" id="R26">
+<h3>R26 — Brak działania sFTP (uniwersalne)</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> sFTP@pse.pl (N12) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R01 (pośrednio)</span> <span class="tag bup">BUP DA §Ryzyko 1 (str. 9)</span> |
+<strong>U-kod:</strong> U03
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> brak transportu paczek ZIP z MinIO do Perun4V; lub brak wyników IVA z powrotem.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Diagnoza:</strong> patrz R08 (sFTP jest częścią ścieżki CN2 → MinIO → Perun4V).</li>
+<li><strong>Ręczne wczytanie paczki do Perun4V:</strong> P03 — ręczne uruchomienie obliczeń.</li>
+<li><strong>Zgłoś</strong> (CIZ, WPO, PSE-I).</li>
+</ol>
+
+<div class="shortcut">sFTP brak działania → patrz R08 → P03 ręczne uruchomienie Perun4V → zgłoś</div>
+</div>
+
+<!-- ============ GRUPA VIII — Zgłoszenie zewnętrzna ============ -->
+<div class="group-header"><h2>Grupa VIII — Zgłoszenie zewnętrzna (ECP/EDX, XBID)</h2></div>
+
+<div class="risk" id="R27">
+<h3>R27 — Decoupling SDAC — konieczność MD250</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> ECP/EDX (N16) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R14</span> |
+<strong>U-kod:</strong> U21 |
+<strong>Dotyczy:</strong> FID1-250 (MD250 Shadow Auction Results)
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> w przypadku Decoupling SDAC IDCC(a) wymaga dostarczenia MD250.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Identyfikacja:</strong> komunikat o Decoupling SDAC (od CCC/SDAC); kafelek FID1-250 wymaga aktywnego monitoringu.</li>
+<li><strong>Dostarczenie MD250:</strong> plik Shadow Auction Results → CCCt przez ECP/EDX.
+  <table>
+    <tr><th>Deadline</th><th>Czas</th></tr>
+    <tr><td>Deadline 1</td><td>TET MCR (~15:43)</td></tr>
+    <tr><td>Deadline 2</td><td>~17:24</td></tr>
+  </table>
+</li>
+<li><strong>Potwierdzenie do CCC</strong> mailowo.</li>
+<li><strong>Zgłoszenie przy opóźnieniu:</strong> zgłoś + telefon CCC.</li>
+</ol>
+
+<div class="shortcut">Decoupling SDAC → MD250 do CCCt przez ECP/EDX (Deadline 1: 15:43; Deadline 2: 17:24) → potwierdzenie mailem CCC → opóźnienie = zgłoś + telefon CCC</div>
+</div>
+
+<div class="risk" id="R28">
+<h3>R28 — AAC Fallback (IDCC(a) nie dostarczył AACs)</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> XBID (N17) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R13</span> |
+<strong>U-kod:</strong> U20
+</div>
+<div class="impact"><strong>Wpływ na IDCC:</strong> kolejne iteracje IDCC(b)/(c)/(d) wstrzymane (brak AAC dla XBID).</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Identyfikacja:</strong> IDCC(a) nie wygenerował AACs (ID1-373-XX) na czas.</li>
+<li><strong>Dostarczenie computed AACs do XBID</strong> przez narzędzie lokalne (❓ nazwa do weryfikacji).</li>
+<li><strong>Deadliny per iteracja:</strong>
+  <table>
+    <tr><th>Iteracja</th><th>Deadline AAC</th></tr>
+    <tr><td>IDCC(b)</td><td><strong>20:00 D-1</strong></td></tr>
+    <tr><td>IDCC(c)</td><td><strong>02:00 D</strong></td></tr>
+    <tr><td>IDCC(d)</td><td><strong>07:00 D</strong></td></tr>
+  </table>
+</li>
+<li><strong>Potwierdzenie do CCC</strong> mailowo.</li>
+<li><strong>Zgłoszenie:</strong> zgłoś + telefon CCC.</li>
+</ol>
+
+<div class="shortcut">IDCC(a) brak AAC → dostarcz computed AACs do XBID (deadliny: b 20:00 D-1 / c 02:00 D / d 07:00 D) → potwierdzenie mailem CCC → zgłoś</div>
+</div>
+
+<div class="risk" id="R29">
+<h3>R29 — Late NTC delivery po IDA2</h3>
+<div class="risk-meta">
+<strong>Aplikacja:</strong> XBID (N17), Core CC Tool (N02) |
+<strong>Źródło:</strong> <span class="tag html">HTML §9 R15</span> |
+<strong>U-kod:</strong> U22 |
+<strong>Dotyczy:</strong> FIDx-921 (Final Intraday NTC)
+</div>
+<div class="critical"><strong>Wpływ na IDCC:</strong> IDCC(b) wstrzymany do 22:30; brak NTC do XBID przed aukcją IDA2.</div>
+
+<h4>A. Procedura szczegółowa</h4>
+<ol class="steps">
+<li><strong>Identyfikacja:</strong> NTC nie dostarczono do XBID przed <strong>21:53 D-1</strong>; checkpoint przed IDA2 nieosiągnięty; proces IDCC(b) wstrzymany automatycznie.</li>
+<li><strong>Monitorowanie wznowienia:</strong> po IDA2 → automatyczne wznowienie; deadline publikacji NTC: <strong>22:30</strong>; CCM kafelek FIDx-921 — monitoring.</li>
+<li><strong>Brak wznowienia / publikacji NTC przed 22:30:</strong> zgłoś + telefon CCC.</li>
+<li>P06 — wpis A.4.</li>
+</ol>
+
+<div class="shortcut">NTC brak do 21:53 D-1 → IDCC(b) wstrzymane → automatyczne wznowienie po IDA2 → monitoruj NTC przed 22:30 → brak = zgłoś + telefon CCC</div>
+</div>
+
+<h2>Podsumowanie</h2>
+<table>
+<tr><th>Grupa</th><th>Liczba ryzyk</th><th>Źródła</th></tr>
+<tr><td>I — CCM</td><td>2 (R01-R02)</td><td>HTML R06 + BUP #27, #28</td></tr>
+<tr><td>II — CCCt</td><td>5 (R03-R07)</td><td>HTML R05, R07, R09, R11 + BUP #11, #12, #13</td></tr>
+<tr><td>III — Perun4V</td><td>7 (R08-R14)</td><td>HTML R01, R02, R03 + BUP #1, #4-#9</td></tr>
+<tr><td>IV — MinIO</td><td>3 (R15-R17)</td><td>BUP #2, #3, #25</td></tr>
+<tr><td>V — Connector 2.0</td><td>2 (R18-R19)</td><td>HTML R09, R16 + BUP #2, #10</td></tr>
+<tr><td>VI — Aplikacje wewnętrzne</td><td>5 (R20-R24)</td><td>HTML R12, R20 + BUP #14, #26 + ZP, Kreator</td></tr>
+<tr><td>VII — Pomocnicze</td><td>2 (R25-R26)</td><td>BUP #25, #1</td></tr>
+<tr><td>VIII — Zgłoszenie zewn.</td><td>3 (R27-R29)</td><td>HTML R13, R14, R15</td></tr>
+<tr><td><strong>Razem</strong></td><td><strong>29</strong></td><td>—</td></tr>
+</table>
+
+<p><strong>Pominięte (LTA-specific z BUP DA):</strong> Ryzyka #15-24, #29 — IDCC nie ma LTA.</p>
+<p><strong>Sposób wykorzystania:</strong></p>
+<ul>
+<li><strong>Forma rozbudowana (z screenami)</strong> — dla pełnego onboardingu Dyspozytora i instrukcji szkoleniowych</li>
+<li><strong>Skrót strzałkami</strong> — gotowy wkład do opisów stanów kafelków per FID</li>
+</ul>
+
+<p><strong>Powiązane dokumenty:</strong></p>
+<ul>
+<li><a href="Inwentarz_IDCC.md">Inwentarz_IDCC.md</a> — narzędzia (N01-N22), buckety MinIO, macierze stanów</li>
+<li><a href="Karta_ryzyk_IDCC.md">Karta_ryzyk_IDCC.md</a> — ryzyka U01-U23 + procedury P01-P06</li>
+<li><a href="Ryzyka_per_aplikacja_IDCC.md">Ryzyka_per_aplikacja_IDCC.md</a> — ryzyka pogrupowane per aplikacja</li>
+<li><a href="Ryzyka_pelna_baza_IDCC.md">Ryzyka_pelna_baza_IDCC.md</a> — wersja markdown bez screenów</li>
+<li><a href="Przyklady_FID1-831.md">Przyklady_FID1-831.md</a>, <a href="Przyklady_FID1-921.md">Przyklady_FID1-921.md</a> — karty per stan kafelka</li>
+</ul>
+
+<a href="#top" class="back-to-top">↑</a>
+
+</body>
+</html>

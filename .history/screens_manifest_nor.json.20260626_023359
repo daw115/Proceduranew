@@ -1,0 +1,173 @@
+[
+  {
+    "file": "screens/nor/image1.png",
+    "screen": "Diagram etapów procesu FBA",
+    "shows": "Oś czasu kolejnych kroków procesu FBA z wyróżnionym (czerwona ramka) krokiem FBA_TSO_NOR_03 Walidacja domeny FBA (Wyznaczenie IVA).",
+    "maps_to": "Umiejscowienie procedury FBA_TSO_NOR_03 w całym procesie FBA",
+    "text_visible": "Kolejne etapy procesu FBA; FBA_TSO_NOR_01..06; FBA_TSO_BUP_01..04; FBA_TSO_FAL_01/02; Walidacja domeny FBA (Wyznaczenie IVA); Incident Management",
+    "quality": "clear",
+    "caption": "Mapa etapów procesu FBA z zaznaczonym krokiem walidacji domeny (NOR_03)"
+  },
+  {
+    "file": "screens/nor/image2.png",
+    "screen": "Schemat pojęć CNEC / IVA",
+    "shows": "Diagram słupkowy parametrów elementu CNEC (F0,CORE, FRM, RAM, Fmax) z legendą i strzałką IVA do poziomu bezpiecznego dla systemu.",
+    "maps_to": "Definicja IVA (Individual Validation Adjustment) i parametrów RAM/Fmax/FRM — podstawa walidacji",
+    "text_visible": "IVA; Poziom bezpieczny dla systemu; RAM; Fmax; FRM; F0,CORE; CNEC; legenda definicji IVA/Fmax/F0,CORE/FRM/RAM",
+    "quality": "clear",
+    "caption": "Definicja IVA i parametrów elementu CNEC (RAM, Fmax, FRM, F0,CORE)"
+  },
+  {
+    "file": "screens/nor/image3.png",
+    "screen": "Schemat blokowy walidacji domeny DA",
+    "shows": "Diagram decyzyjny kroku Individual validation dla domeny DA z bramkami TAK/NIE prowadzącymi do ryzyk i procedury BUP_03.",
+    "maps_to": "Główny przebieg walidacji domeny DA (sFTP, Perun4V, obliczenia, plik F310 do ccctoola)",
+    "text_visible": "Rozpoczęto krok Individual validation; sFTP działa; Uruchomiono i zalogowano do platformy Perun4V; Uruchomiono obliczenia; Sukcesem zakończono obliczenia dla wszystkich godzin; Prawidłowo wysłano wynikowy plik F310 do ccctoola; Zakończono proces walidacji domeny DA; Przejdź do procedury FBA_TSO_BUP_03; Ryzyko 1-14",
+    "quality": "clear",
+    "caption": "Schemat decyzyjny walidacji domeny DA z punktami kontrolnymi i ryzykami"
+  },
+  {
+    "file": "screens/nor/image4.png",
+    "screen": "Schemat blokowy walidacji domeny LTA",
+    "shows": "Diagram decyzyjny kroku Individual validation dla domeny LTA z bramkami TAK/NIE, gałęzią IVA=0 oraz raportem CCA o redukcji LTA.",
+    "maps_to": "Przebieg walidacji domeny LTA (sFTP, Perun4V, obliczenia, F310 do MinIO, IVA=0, raport o redukcji LTA)",
+    "text_visible": "Rozpoczęto krok Individual validation; sFTP działa; Perun4V; Uruchomiono obliczenia; Wgranie pliku F310 i raportów do MinIO (bucket perun); IVA dla domeny LTA wynosi 0; Otrzymanie raportu z CCA informującej o redukcji LTA; Zakończono proces walidacji domeny LTA; Ryzyko 10/15/17/22-29",
+    "quality": "clear",
+    "caption": "Schemat decyzyjny walidacji domeny LTA z gałęzią redukcji LTA"
+  },
+  {
+    "file": "screens/nor/image5.png",
+    "screen": "Diagram przepływu danych (architektura systemów)",
+    "shows": "Schemat wymiany plików między CCCTool, CN2, MinIO/Perun, MinIO/CCA, SFTP i Perun4V z ponumerowanymi krokami 1-11.",
+    "maps_to": "Architektura przepływu danych w walidacji domeny FBA (paczki LTA/FB_CCA, IVA, raporty)",
+    "text_visible": "Perun4V; SFTP; CCCTool; CN2; Minio/Perun; Minio/CCA; ZP,SYSPLAN,KDM; Pkt 1-11; Paczka FB_CCA/LTA; IVA; Raporty; Vertices_map_LTA; F320_CCA; F320_LTA",
+    "quality": "clear",
+    "caption": "Diagram przepływu danych między systemami (CN2, Perun, MinIO, SFTP) — kroki 1-11"
+  },
+  {
+    "file": "screens/nor/image6.png",
+    "screen": "Aplikacja CCM — Lista pulpitów",
+    "shows": "Ekran przeglądarki aplikacji CCM (ccm.spsm.pse.pl) z listą pulpitów dyspozytorskich; wyróżniony 'DACC FB Pulpit dyspozytorski'.",
+    "maps_to": "Wejście do pulpitu dyspozytorskiego CCM na potrzeby monitorowania walidacji",
+    "text_visible": "CCM; Środowisko produkcyjne; PSE; Lista pulpitów; DACC FB Pulpit dyspozytorski 2024-03-01; IDCC FB Pulpit dyspozytorski 2024-04-02",
+    "quality": "clear",
+    "caption": "Lista pulpitów w aplikacji CCM z wyborem pulpitu DACC FB"
+  },
+  {
+    "file": "screens/nor/image7.png",
+    "screen": "CCM — tabela statusów przepływów (Paczka ZIP_CCA)",
+    "shows": "Tabela monitoringu przepływów danych FBA z kolumnami statusów; wyróżniony wiersz 'Paczka ZIP_CCA do Perun' (PERUN_DA_CCA).",
+    "maps_to": "Punkt kontrolny: wysłanie paczki ZIP_CCA do Perun (sFTP/MinIO)",
+    "text_visible": "Nazwa Obszaru/przepływu; Kod; Target/Critical End Time; Wersja; CCCtool wysł./zwalid.; MinIO; sFTP/ZP wysł.; Individual Validation - walidacja domeny FBA; Paczka ZIP_CCA do Perun PERUN_DA_CCA 07:15 08:50; IVA F310; Raporty z Perun",
+    "quality": "clear",
+    "caption": "Tabela statusów przepływów FBA — wiersz Paczka ZIP_CCA do Perun"
+  },
+  {
+    "file": "screens/nor/image8.png",
+    "screen": "CCM — tabela statusów przepływów (IVA / Raporty z Perun)",
+    "shows": "Ta sama tabela monitoringu z wyróżnionymi wierszami 'IVA' (F310) oraz 'Raporty z Perun' (RAP_PERUN_DA).",
+    "maps_to": "Punkt kontrolny: wytworzenie pliku IVA (F310) i raportów z Perun dla domeny DA",
+    "text_visible": "IVA F310 07:15 08:50; Raporty z Perun RAP_PERUN_DA 07:15 08:50; CCCtool wysł./zwalid.; MinIO; Individual Validation - walidacja domeny FBA",
+    "quality": "clear",
+    "caption": "Tabela statusów FBA — wiersze IVA (F310) i Raporty z Perun"
+  },
+  {
+    "file": "screens/nor/image9.png",
+    "screen": "LCCV — ekran logowania (akceptacja polityki)",
+    "shows": "Ekran startowy logowania do platformy LCCV (TSCNET) z polem akceptacji polityki i przyciskami Login / Local Login.",
+    "maps_to": "Logowanie do narzędzia LCCV (weryfikacja domeny po stronie CCC/TSCNET)",
+    "text_visible": "LCCV; Read and accept the TSCNET Policy to be able to login; Information according to Art. 13 GDPR here; Login; Local Login",
+    "quality": "clear",
+    "caption": "Ekran startowy logowania do platformy LCCV (TSCNET)"
+  },
+  {
+    "file": "screens/nor/image10.png",
+    "screen": "LCCV — formularz logowania (Local Login)",
+    "shows": "Formularz logowania lokalnego LCCV z polami Username i Password oraz przyciskami Login / Back.",
+    "maps_to": "Logowanie lokalne (Local Login) do platformy LCCV",
+    "text_visible": "LCCV; Username; Password; Forgot password?; secure connection; Read and accept the TSCNET Policy; Art. 13 GDPR here; Login; Back",
+    "quality": "clear",
+    "caption": "Formularz logowania lokalnego LCCV (Username/Password)"
+  },
+  {
+    "file": "screens/nor/image11.png",
+    "screen": "Perun4V / LCCV — Calculation Logs",
+    "shows": "Ekran logów obliczeń z filtrami i wierszem zakończonego obliczenia DA (Estimate security reserve) ze statusem 0/25 Failed, 25 Success.",
+    "maps_to": "Punkt kontrolny: uruchomienie i sukces obliczeń (Estimate security reserve) dla wszystkich godzin",
+    "text_visible": "Calculation Logs; Configurations; Save/Load calculation parameters; F427 conversion; Estimate security reserve; Business Process; Status; No 7826; 2025-01-17; sFTP@pse.pl; DA; 0/25/0/25; F310 V; F427 V; Download",
+    "quality": "clear",
+    "caption": "Logi obliczeń (Calculation Logs) — zakończone obliczenie DA Estimate security reserve 25/25"
+  },
+  {
+    "file": "screens/nor/image12.png",
+    "screen": "E-mail [CCA] F310 — raport VALIDATION_OVERVIEW (DA/FB)",
+    "shows": "Wiadomość e-mail od FB Core Team z załącznikiem raportu zbiorczego validation_overview dla domeny FB, informacja o maksymalnej IVA = 0.00.",
+    "maps_to": "Otrzymanie raportu zbiorczego VALIDATION_OVERVIEW potwierdzającego wynik walidacji FB (IVA=0)",
+    "text_visible": "CCS CCA Gin; [CCA][Core DACC] F310 za 2025-01-29; 20250129_validation_overview_FB_PERUN.xlsx; raport zbiorczy VALIDATION_OVERVIEW dla walidacji domeny FB w PERUN4V; Maksymalna IVA z PERUN4V tego dnia wyniosła 0.00; FB Core Team",
+    "quality": "clear",
+    "caption": "E-mail z raportem VALIDATION_OVERVIEW dla domeny FB (maks. IVA = 0.00)"
+  },
+  {
+    "file": "screens/nor/image13.png",
+    "screen": "Diagram przepływu danych (wariant)",
+    "shows": "Niemal identyczny diagram przepływu danych jak image5 (kroki 1-11) z drobnymi różnicami w opisach (Pkt 9 IVA z domeny FB_CCA).",
+    "maps_to": "Architektura przepływu danych w walidacji domeny FBA (wariant opisowy)",
+    "text_visible": "Perun4V; SFTP; CCCTool; CN2; Minio/Perun; Minio/CCA; ZP,SYSPLAN,KDM; Pkt 1-11; Paczka FB_CCA/LTA; IVA z domeny FB_CCA; Vertices_map_LTA; F320_CCA; F320_LTA",
+    "quality": "duplicate",
+    "caption": "Wariant diagramu przepływu danych (zbliżony do image5, inne podpisy Pkt 9)"
+  },
+  {
+    "file": "screens/nor/image14.png",
+    "screen": "CCM — tabela statusów przepływów (sekcja LTA)",
+    "shows": "Fragment tabeli monitoringu przepływów ograniczony do sekcji 'Walidacja domeny LTA' (Vertices, Paczka ZIP_LTA, IVA LTA, Raporty, RLTA).",
+    "maps_to": "Punkty kontrolne walidacji domeny LTA w pulpicie CCM",
+    "text_visible": "Raporty z Perun RAP_PERUN_DA; Walidacja domeny LTA; Vertices of Inter. FB Domain F320_LTA; Paczka ZIP_LTA do Perun PERUN_DA_LTA; IVA LTA F310_LTA; Raporty z Perun LTA RAP_PERUN_DA_LTA; Raport PSE z CCA o RLTA (XML) RLTA",
+    "quality": "clear",
+    "caption": "Tabela statusów FBA — sekcja Walidacja domeny LTA"
+  },
+  {
+    "file": "screens/nor/image15.png",
+    "screen": "CCM — tabela statusów LTA (Paczka ZIP_LTA / IVA LTA)",
+    "shows": "Ten sam fragment sekcji LTA co image14, z wyróżnionymi (czerwona ramka) wierszami 'Paczka ZIP_LTA do Perun' i 'IVA LTA'.",
+    "maps_to": "Punkt kontrolny: wysłanie paczki ZIP_LTA do Perun i wytworzenie IVA LTA (F310_LTA)",
+    "text_visible": "Walidacja domeny LTA; Paczka ZIP_LTA do Perun PERUN_DA_LTA 07:15 08:00; IVA LTA F310_LTA 07:15 08:00; Raporty z Perun LTA; Raport PSE z CCA o RLTA (XML) RLTA",
+    "quality": "clear",
+    "caption": "Tabela statusów LTA — wyróżnione wiersze Paczka ZIP_LTA i IVA LTA"
+  },
+  {
+    "file": "screens/nor/image16.png",
+    "screen": "Plik Excel — LTA curtailment (init/curt) wszystkie zera",
+    "shows": "Arkusz z kolumnami LTA-XX-PL_init i _curt dla 24 godzin, wszystkie wartości zerowe (brak redukcji LTA).",
+    "maps_to": "Wynikowy plik redukcji LTA (lta_curtailment) — przypadek braku redukcji (same zera)",
+    "text_visible": "hour 1-24; LTA-CZ-PL_init/_curt; LTA-DE-PL; LTA-PL-CZ; LTA-PL-DE; LTA-PL-SK; LTA-SK-PL; wartości 0",
+    "quality": "clear",
+    "caption": "Arkusz lta_curtailment bez redukcji — wszystkie wartości zerowe"
+  },
+  {
+    "file": "screens/nor/image17.png",
+    "screen": "Plik Excel — LTA curtailment z redukcjami (kolorowane)",
+    "shows": "Arkusz LTA init/curt dla 24 godzin z wyróżnionymi (żółto/czerwono) godzinami i wartościami, gdzie wystąpiła redukcja LTA oraz RDP.",
+    "maps_to": "Wynikowy plik redukcji LTA z faktycznymi redukcjami (curtailment > 0) i wartościami RDP",
+    "text_visible": "hour 1-24; LTA-DE-AT_init/_curt; LTA-AT-SK; LTA-CZ-SK; SK RDP+/RDP-; LTA-AT-HU; AT RDP+; HU RDP+; LTA-DE-CZ; DE RDP+; wartości liczbowe, komórki czerwone/żółte",
+    "quality": "clear",
+    "caption": "Arkusz lta_curtailment z faktycznymi redukcjami LTA i wartościami RDP"
+  },
+  {
+    "file": "screens/nor/image18.png",
+    "screen": "Plik Excel — przeciążenia CNEC (overload/Fmax/F0)",
+    "shows": "Arkusz z wierszami godzinowymi dla elementu [PL-PL] Polaniec-Klikowa pod kontyngencją N-1 Polaniec-Tarnow, kolumny OVERLOAD, F_MAX, F_0.",
+    "maps_to": "Raport przeciążeń elementów sieci (CNEC/CNE) będący podstawą wyznaczenia IVA",
+    "text_visible": "HOUR; CB_NAME [PL-PL] Polaniec - Klikowa [DIR]; CO_NAME N-1 Polaniec - Tarnow; OVERLOAD; F_MAX 487; F_0 (356/320/327/332/315/351)",
+    "quality": "clear",
+    "caption": "Arkusz przeciążeń CNEC (Polaniec-Klikowa) — OVERLOAD, F_MAX, F_0 per godzina"
+  },
+  {
+    "file": "screens/nor/image19.png",
+    "screen": "E-mail [CCA] lta_curtailment — raport redukcji LTA",
+    "shows": "Wiadomość e-mail od FB Core Team z załącznikami raportu 'lta_curtailment' (xlsx + xml) CCA-to-ZP za dany dzień.",
+    "maps_to": "Otrzymanie raportu z CCA informującego o redukcji LTA (gałąź RLTA w schemacie LTA)",
+    "text_visible": "CCS CCA Gin; [CCA] 'lta_curtailment' za 2022-04-13; 20220413-RLTA-v1-CCA-to-ZP.xlsx; 20220413-RLTA-v1-CCA-to-ZP.xml; raport 'lta_curtailment' za 2022-04-13; FB Core Team",
+    "quality": "clear",
+    "caption": "E-mail z raportem lta_curtailment (RLTA) z CCA o redukcji LTA"
+  }
+]

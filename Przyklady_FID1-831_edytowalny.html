@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>FID1-831 — edytowalna baza stanów</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; max-width: 1280px; margin: 0 auto; padding: 24px; line-height: 1.55; color: #222; background: #fafafa; }
+  h1 { color: #1F4E78; border-bottom: 3px solid #1F4E78; padding-bottom: 8px; }
+  h2 { color: #1F4E78; margin-top: 32px; }
+  h3 { color: #2E75B6; margin: 18px 0 8px 0; }
+  h4 { color: #424242; margin: 10px 0 4px 0; font-size: 1.0em; }
+  .header-info { background: #F2F7FC; padding: 14px 20px; border-left: 4px solid #1F4E78; margin: 16px 0; font-size: 0.95em; }
+  .download-bar { position: sticky; top: 0; background: #1F4E78; padding: 12px 20px; margin: -24px -24px 24px -24px; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+  .download-bar button { background: white; color: #1F4E78; border: none; padding: 8px 18px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.95em; }
+  .download-bar button:hover { background: #E3F2FD; }
+  .download-bar span { color: white; margin-left: 14px; font-size: 0.9em; }
+  .category-header { padding: 12px 18px; border-radius: 6px; margin: 32px 0 12px 0; color: white; }
+  .category-A { background: linear-gradient(90deg, #2E7D32 0%, #43A047 100%); }
+  .category-B { background: linear-gradient(90deg, #757575 0%, #9E9E9E 100%); }
+  .category-C { background: linear-gradient(90deg, #F57C00 0%, #FB8C00 100%); }
+  .category-D { background: linear-gradient(90deg, #C62828 0%, #D32F2F 100%); }
+  .category-header h2 { color: white; border: none; margin: 0; font-size: 1.15em; }
+  .state-card { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 16px 20px; margin: 14px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .state-card.cat-A { border-left: 5px solid #2E7D32; }
+  .state-card.cat-B { border-left: 5px solid #757575; }
+  .state-card.cat-C { border-left: 5px solid #F57C00; }
+  .state-card.cat-D { border-left: 5px solid #C62828; }
+  .state-num { font-size: 1.05em; font-weight: bold; color: #1F4E78; }
+  .state-cat-tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.78em; font-weight: bold; margin-left: 8px; }
+  .state-cat-tag.A { background: #C8E6C9; color: #1B5E20; }
+  .state-cat-tag.B { background: #E0E0E0; color: #424242; }
+  .state-cat-tag.C { background: #FFE0B2; color: #E65100; }
+  .state-cat-tag.D { background: #FFCDD2; color: #B71C1C; }
+  table.tile-row { border-collapse: collapse; margin: 8px 0 14px 0; }
+  table.tile-row td { border: 1px solid #999; padding: 0; vertical-align: middle; }
+  table.tile-row th { border: 1px solid #999; padding: 5px 11px; background: #1F4E78; color: white; font-size: 0.85em; }
+  .tile { width: 110px; height: 32px; display: inline-block; position: relative; }
+  .tile-szary { background: #BFBFBF; }
+  .tile-puste { background: white; }
+  .tile-pomarancz { background: #ED7D31; border: 2px solid #C55A11 !important; }
+  .tile-czerwony { background: #C00000; }
+  .tile-czerwony-excl { background: #C00000; color: white; text-align: center; line-height: 32px; font-weight: bold; font-size: 1.4em; }
+  .tile-czerwony-excl::after { content: "!"; }
+  .tile-czerwony-qmark { background: #C00000; color: white; text-align: center; line-height: 32px; font-weight: bold; font-size: 1.4em; }
+  .tile-czerwony-qmark::after { content: "?"; }
+  .tile-zielony { background: #00B050; }
+  .tile-zielony-R { background: #00B050; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-zielony-R::after { content: "R"; }
+  .tile-cz-W { background: #2E7D32; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-cz-W::after { content: "W"; }
+  .tile-cz-Wcet { background: #1B5E20; color: white; text-align: center; line-height: 32px; font-weight: bold; font-size: 0.75em; }
+  .tile-cz-Wcet::after { content: "W po CET"; }
+  .tile-fioletowy { background: #7030A0; }
+  .tile-czarny { background: #000000; }
+  .editable { background: #FFFEF7; border: 1px dashed #ccc; padding: 8px 12px; margin: 4px 0 12px 0; border-radius: 4px; min-height: 24px; font-size: 0.95em; }
+  .editable:focus { outline: 2px solid #2E75B6; background: white; }
+  .editable:hover { border-color: #2E75B6; }
+  .editable.procedures { background: #FFF9E6; }
+  .editable.procedures ol { padding-left: 20px; }
+  .editable.procedures ol li { margin-bottom: 4px; }
+  .editable.procedures ul { padding-left: 20px; }
+  .section-label { font-weight: bold; color: #1F4E78; font-size: 0.92em; margin-top: 8px; }
+  .confluence-desc { background: #E3F2FD; }
+  a { color: #2E75B6; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-family: "SF Mono", Consolas, monospace; font-size: 0.88em; }
+</style>
+</head>
+<body>
+
+<div class="download-bar">
+  <button onclick="downloadHTML()">📥 Pobierz aktualną wersję HTML</button>
+  <span>Wszystkie obszary z przerywaną ramką są edytowalne. Kliknij „Pobierz" aby zapisać zmiany.</span>
+</div>
+
+<h1>FID1-831 (AC, IDCC(a)) — edytowalna baza 35 stanów</h1>
+<div style="background:#FFF8E1;border-left:4px solid #FB8C00;padding:10px 14px;margin:12px 0;font-weight:600;">⚠ Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).</div>
+
+<div class="header-info">
+<strong>TET:</strong> 14:00 <em>(dla XBID)</em> | <strong>CET:</strong> 17:36 | <strong>Profil pulpitu:</strong> 2CCT (CCtool wyśl. + CCtool zwalid.) — <strong>dwa kafelki</strong><br>
+<strong>Wysyłki automatyczne ZP:</strong> v1 — 13:46 | 14:41 — automat publikujący najbardziej aktualną wersję<br>
+<strong>Format każdego stanu:</strong> wizualizacja 2 kafelków + 5 sekcji edytowalnych (opis Confluence + opis pliku + ścieżka + aplikacje + procedury awaryjne)<br>
+<strong>Procedury awaryjne</strong> — pełna lista czynności krok po kroku z hiperłączami do: <a href="Ryzyka_pelna_baza_IDCC.html">Ryzyka R01-R29</a> · <a href="Karta_ryzyk_IDCC.md">Procedury P01-P06</a> · <a href="Inwentarz_IDCC.md">Narzędzia N01-N22</a><br>
+<strong>Źródło opisów stanów:</strong> Confluence „ID FB CC" — adaptacja z IVA (3COL) do 2COL FID1-831
+</div>
+
+<div class="category-header category-A"><h2>🟢 Kategoria A.1 — STANY OK pozytywne automatyczne (5 stanów)</h2></div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 1</span> <span class="state-cat-tag A">A.1</span>
+<h3>kafelek 1: ziel, kafelek 2: ziel</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-zielony"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument wysłany prawidłowo do CCTool, otrzymano potwierdzenie ACK z pozytywnym komunikatem. Komunikat statusu powinien pojawić się po najechaniu kursorem na status.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Brak procedur awaryjnych</strong> — Happy Day. Proces przebiegł poprawnie. Wymagana akcja: brak.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 2</span> <span class="state-cat-tag A">A.1</span>
+<h3>kafelek 1: ziel, kafelek 2: ziel R</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-zielony-R"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument wysłany prawidłowo do CCTool. Nie otrzymano potwierdzenia ACK automatycznie, natomiast Dyspozytor ustawił status ręcznie 'R' po weryfikacji po stronie CCTool, iż proces został zrealizowany poprawnie.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Brak procedur awaryjnych.</strong>
+<ol>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z uzasadnieniem (powód weryfikacji ręcznej / czas dostarczenia / uzasadnienie statusu)</li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Inwentarz_IDCC.md#N02">Core CC Tool</a> — Message Viewer pokazuje pełną historię.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 3</span> <span class="state-cat-tag A">A.1</span>
+<h3>kafelek 1: ziel, kafelek 2: fiol</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-fioletowy"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument wysłany prawidłowo do CCTool. Dokument ACK (CCTool zwalid.) napłynął po CET z pozytywnym komunikatem (komunikat statusu powinien pojawić się po najechaniu kursorem).</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Brak procedur awaryjnych.</strong>
+<ol>
+<li>Najedź kursorem na fioletowy status — menu boczne pokaże czas dostarczenia</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z czasem dostarczenia i przyczyną opóźnienia</li>
+</ol>
+<strong>Pełny obraz:</strong> stan zgodny z <a href="Ryzyka_pelna_baza_IDCC.html#R29">R29 — Late delivery po IDA2</a> (jeśli systematyczny).</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 4</span> <span class="state-cat-tag A">A.1</span>
+<h3>kafelek 1: fiol, kafelek 2: fiol</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-fioletowy"></div></td><td><div class="tile tile-fioletowy"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument wysłany prawidłowo do CCTool po CET, Dokument ACK (CCTool zwalid.) napłynął po CET z pozytywnym komunikatem.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Brak procedur awaryjnych.</strong>
+<ol>
+<li>Najedź kursorem na fioletowy status — menu boczne pokaże czas dostarczenia</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z czasem dostarczenia i przyczyną opóźnienia</li>
+</ol>
+<strong>Pełny obraz:</strong> stan zgodny z <a href="Ryzyka_pelna_baza_IDCC.html#R29">R29 — Late delivery po IDA2</a> (jeśli systematyczny).</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 5</span> <span class="state-cat-tag A">A.1</span>
+<h3>kafelek 1: ziel R, kafelek 2: ziel R</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-zielony-R"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument AC został oznaczony ręcznie jako wysłany prawidłowo do CCTool oraz otrzymanie potwierdzenia ACK. Pełna decyzja ręczna Dyspozytora.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Brak procedur awaryjnych.</strong>
+<ol>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z uzasadnieniem (powód weryfikacji ręcznej / czas dostarczenia / uzasadnienie statusu)</li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Inwentarz_IDCC.md#N02">Core CC Tool</a> — Message Viewer pokazuje pełną historię.</div>
+</div>
+<div class="category-header category-A"><h2>🟢 Kategoria A.2 — STANY z ręcznym znacznikiem (16 stanów)</h2></div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 6</span> <span class="state-cat-tag A">A.2</span>
+<h3>kafelek 1: cz W, kafelek 2: ziel</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-zielony"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument AC prawidłowo wysłany ręcznie z poziomu aplikacji CCM (np. PPM na wierszu → Wyślij, lub przez GUI CCCt Manual Upload). Otrzymano potwierdzenie ACK z pozytywnym komunikatem.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Brak procedur awaryjnych — wysyłka ręczna wykonana pomyślnie.</strong>
+<ol>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z uzasadnieniem ręcznej wysyłki (typowo: awaria CN2 / brak wersji w ZP / błąd automatycznego transportu)</li>
+<li>Zweryfikuj historię w <a href="Inwentarz_IDCC.md#N02">Core CC Tool</a> → Message Viewer → filtr FID1-831</li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18 — Awaria Connector 2.0</a> (jeśli był powodem), <a href="Karta_ryzyk_IDCC.md#P01">P01 — GUI CCCt Manual Upload</a> (jeśli przez Manual Upload), <a href="Karta_ryzyk_IDCC.md#P02">P02 — Pobranie z ZP</a> (jeśli pobrano nowy plik).</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 7</span> <span class="state-cat-tag A">A.2</span>
+<h3>kafelek 1: cz W, kafelek 2: puste</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-puste"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument AC prawidłowo wysłany ręcznie z poziomu CCM. Trwa oczekiwanie na potwierdzenie ACK (CCTool zwalid.) — około 2 minut trwa taki status.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Brak procedur awaryjnych — czekać do 5 min na ACK.</strong>
+<ol>
+<li>Monitoring statusu w CCM (odśwież w razie potrzeby)</li>
+<li>Jeśli po 5 min nadal brak ACK → przejdź do <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06 — Brak ACK / timeout</a></li>
+<li>Jeśli proces przebiegł poprawnie → ustaw status 'R' dla ACK ręcznie w CCM (PPM → Ustaw status ręcznie)</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z uzasadnieniem</li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06 — Brak ACK / timeout</a>, <a href="Karta_ryzyk_IDCC.md#P06">P06</a>.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 8</span> <span class="state-cat-tag A">A.2</span>
+<h3>kafelek 1: cz W, kafelek 2: czerw qmark</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument wysłany ręcznie z poziomu CCM, ale nie napłynął ACK w żądanym czasie i zbliża się Critical End Time (17:36).</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Monitoring + decyzja Dyspozytora.</strong>
+<ol>
+<li><a href="Inwentarz_IDCC.md#N02">CCCt</a> → Message Viewer → filtr <code>FID1-831</code></li>
+<li>Sprawdź status:
+  <ul>
+    <li><code>Processed</code> → CCM się nie odświeżył; ustaw 'R' w CCM + zgłoś</li>
+    <li><code>Rejected</code> → odczytaj kod ACK → <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05 — Plik odrzucony</a></li>
+    <li>Brak wpisu → <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18 — Awaria CN2</a> → zgłoś</li>
+  </ul>
+</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a></li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a>.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 9</span> <span class="state-cat-tag A">A.2</span>
+<h3>kafelek 1: cz W, kafelek 2: czerw</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-czerwony"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument wysłany ręcznie z poziomu CCM, a otrzymane potwierdzenie ACK (CCTool zwalid.): (1) zawiera komunikat błędu (najedź kursorem); (2) proces zakończył się błędem — 'Błąd procesu'.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Odczyt kodu ACK + decyzja o ponowieniu.</strong>
+<ol>
+<li>Najedź kursorem na czerwony status — odczytaj kod ACK</li>
+<li><a href="Inwentarz_IDCC.md#N02">CCCt</a> → Message Viewer → filtr <code>FID1-831</code> → szczegóły rejekcji</li>
+<li>Reakcja per kod:
+  <ul>
+    <li>kod <strong>20</strong> gateClosed → bramka zamknięta; sprawdź CCCt proces <code>IDx-AC-FORWARDING</code>; admin CCCt (zgłoś)</li>
+    <li>kod <strong>21</strong> duplicatedVersion → pobierz wersję +1 z ZP (<a href="Karta_ryzyk_IDCC.md#P02">P02</a>) → <a href="Karta_ryzyk_IDCC.md#P01">P01 GUI CCCt Manual Upload</a> z v+1</li>
+    <li>kod <strong>30</strong> file size mismatch → <a href="Karta_ryzyk_IDCC.md#P04">P04 pobranie z MinIO</a> lub <a href="Karta_ryzyk_IDCC.md#P02">P02 z ZP</a> → weryfikacja zawartości → <a href="Karta_ryzyk_IDCC.md#P01">P01</a></li>
+  </ul>
+</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z kodem ACK i opisem reakcji</li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05 — Plik odrzucony</a>, kody ACK w <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05 sekcja A</a>.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 10</span> <span class="state-cat-tag A">A.2</span>
+<h3>kafelek 1: cz W, kafelek 2: fiol</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-fioletowy"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument AC prawidłowo wysłany ręcznie z poziomu CCM. Otrzymano potwierdzenie ACK z pozytywnym komunikatem po CET.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Brak procedur awaryjnych.</strong>
+<ol>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z czasami: ręcznej wysyłki + napłynięcia ACK</li>
+</ol>
+<strong>Pełny obraz:</strong> stan stabilny, wysyłka ręczna + ACK opóźniony — wszystko zaakceptowane.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 11</span> <span class="state-cat-tag A">A.2</span>
+<h3>kafelek 1: cz W, kafelek 2: czarn</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-czarny"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument AC prawidłowo wysłany ręcznie z poziomu CCM. Nie otrzymano potwierdzenia ACK — upłynął czas CET.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Weryfikacja w CCCt + decyzja.</strong>
+<ol>
+<li><a href="Inwentarz_IDCC.md#N02">CCCt</a> → Message Viewer → status pliku</li>
+<li>Jeśli <code>Processed</code> → ustaw status 'R' ręcznie w CCM (PPM → Ustaw status ręcznie → 'R'); zgłoś (CCM nie odświeżył)</li>
+<li>Jeśli rzeczywista awaria CN2 zwrotny → <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18 — Awaria CN2</a>; zgłoś</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z pełnym opisem zdarzenia</li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06 — Brak ACK</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18 — CN2</a>.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 12</span> <span class="state-cat-tag A">A.2</span>
+<h3>kafelek 1: cz W, kafelek 2: ziel R</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-zielony-R"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument AC prawidłowo wysłany ręcznie z poziomu CCM. Nie otrzymano ACK, natomiast Dyspozytor ustawił status ręcznie 'R' po weryfikacji po stronie CCTool, iż proces został zrealizowany poprawnie.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Brak procedur awaryjnych — pełna decyzja ręczna Dyspozytora.</strong>
+<ol>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z pełnym uzasadnieniem (ręczna wysyłka + ręczna walidacja statusu po weryfikacji w CCCt)</li>
+</ol>
+<strong>Pełny obraz:</strong> stan stabilny operacyjnie.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 13</span> <span class="state-cat-tag A">A.2</span>
+<h3>kafelek 1: cz Wcet, kafelek 2: puste</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-puste"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument AC prawidłowo wysłany ręcznie z poziomu CCM po CET (opcja 'Wyślij po CET'). Trwa oczekiwanie na potwierdzenie ACK (CCTool zwalid.) — około 2 minut trwa taki status.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Brak akcji backupowych — czekać 2-5 min na ACK.</strong>
+<ol>
+<li>Monitoring CCM</li>
+<li>Po 5 min jeśli ACK nie napłynął → <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06 — timeout</a>; ustaw 'R' jeśli proces OK po weryfikacji w <a href="Inwentarz_IDCC.md#N02">CCCt</a></li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z uzasadnieniem opóźnienia (wysyłka po CET)</li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>, <a href="Karta_ryzyk_IDCC.md#P06">P06</a>.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 14</span> <span class="state-cat-tag A">A.2</span>
+<h3>kafelek 1: cz Wcet, kafelek 2: czerw qmark</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument wysłany ręcznie z poziomu CCM po CET. Trwa oczekiwanie na potwierdzenie ACK (CCTool zwalid.) — upłynęło więcej niż 2 minuty (czas oczekiwania można sprawdzić najeżdżając kursorem na status).</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Weryfikacja sytuacji.</strong>
+<ol>
+<li><a href="Inwentarz_IDCC.md#N02">CCCt</a> → Message Viewer → status</li>
+<li>Najedź na czerwony znak zapytania — odczytaj czas oczekiwania</li>
+<li>Jeśli proces przebiegł poprawnie → ustaw status 'R' dla ACK ręcznie w CCM</li>
+<li>Brak wpisu w MV → <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18 — CN2 zwrotny</a>; zgłoś</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a></li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 15</span> <span class="state-cat-tag A">A.2</span>
+<h3>kafelek 1: cz Wcet, kafelek 2: czerw</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-czerwony"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument wysłany ręcznie z poziomu CCM po CET, a otrzymane potwierdzenie ACK (CCTool zwalid.): (1) zawiera komunikat błędu; (2) proces zakończył się błędem. Typowo kod 20 gateClosed.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Odczyt kodu ACK + zgłoszenie.</strong>
+<ol>
+<li>Najedź na status — odczytaj kod ACK</li>
+<li><a href="Inwentarz_IDCC.md#N02">CCCt</a> → Message Viewer → szczegóły</li>
+<li>Typowo kod <strong>20</strong> gateClosed (bramka zamknięta po CET) → sprawdź proces <code>IDx-AC-FORWARDING</code> w CCCt</li>
+<li><strong>Zgłoś</strong> (CIZ, WPO, PSE-I) (po CET nie ma już co poprawiać)</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z kodem ACK</li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05</a>.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 16</span> <span class="state-cat-tag A">A.2</span>
+<h3>kafelek 1: cz Wcet, kafelek 2: fiol</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-fioletowy"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument AC prawidłowo wysłany ręcznie z poziomu CCM po CET. Otrzymano potwierdzenie ACK z pozytywnym komunikatem (też po CET).</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Brak procedur awaryjnych.</strong>
+<ol>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z czasami obu zdarzeń (wysyłka po CET + ACK po CET)</li>
+</ol>
+<strong>Pełny obraz:</strong> proces zakończony z opóźnieniem, ale OK.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 17</span> <span class="state-cat-tag A">A.2</span>
+<h3>kafelek 1: cz Wcet, kafelek 2: czarn</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-czarny"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument AC prawidłowo wysłany ręcznie z poziomu CCM po CET. Nie otrzymano potwierdzenia ACK — upłynął czas CET.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Zgłoszenie + diagnostyka CN2.</strong>
+<ol>
+<li><a href="Inwentarz_IDCC.md#N02">CCCt</a> → Message Viewer → weryfikacja statusu</li>
+<li>Brak wpisu lub wpis Processed bez powiązanego ACK → <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18 — Awaria CN2 zwrotny</a></li>
+<li><strong>Zgłoś</strong> (CIZ, WPO, PSE-I)</li>
+<li>Zgłoś + telefon <a href="Inwentarz_IDCC.md#N13">CCC</a></li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z pełnym opisem</li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a>.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 18</span> <span class="state-cat-tag A">A.2</span>
+<h3>kafelek 1: ziel R, kafelek 2: puste</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-puste"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument AC został oznaczony ręcznie jako wysłany prawidłowo do CCTool. Trwa oczekiwanie na potwierdzenie ACK (CCTool zwalid.) — około 2 minut trwa taki status.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Brak akcji — czekać 5 min na ACK.</strong>
+<ol>
+<li>Monitoring CCM</li>
+<li>Jeśli po 5 min proces OK w CCCt → ustaw status 'R' dla ACK ręcznie</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a></li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 19</span> <span class="state-cat-tag A">A.2</span>
+<h3>kafelek 1: ziel R, kafelek 2: czerw qmark</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument AC oznaczony ręcznie jako wysłany prawidłowo. Trwa oczekiwanie na potwierdzenie ACK — upłynęło więcej niż 2 minuty.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Weryfikacja w CCCt.</strong>
+<ol>
+<li><a href="Inwentarz_IDCC.md#N02">CCCt</a> → Message Viewer → status pliku</li>
+<li>Jeśli OK → ustaw 'R' w obu kolumnach ręcznie</li>
+<li>Jeśli problem → <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18 — CN2</a>; zgłoś</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a></li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 20</span> <span class="state-cat-tag A">A.2</span>
+<h3>kafelek 1: ziel R, kafelek 2: czarn</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-czarny"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument AC oznaczony ręcznie jako wysłany prawidłowo. Nie otrzymano potwierdzenia ACK — upłynął czas CET.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Weryfikacja + decyzja.</strong>
+<ol>
+<li><a href="Inwentarz_IDCC.md#N02">CCCt</a> → Message Viewer → status</li>
+<li>Brak wpisu w MV → diagnostyka CN2 zwrotny → <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a>; zgłoś</li>
+<li>Jeśli Processed → utrzymaj status 'R' jako uzasadnienie (proces OK pomimo braku auto ACK)</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z pełnym opisem</li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a>.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">Stan 21</span> <span class="state-cat-tag A">A.2</span>
+<h3>kafelek 1: czerw excl, kafelek 2: ziel R</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-zielony-R"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Wysłany dokument nie spełnia kryterium rozmiaru. Nie otrzymano potwierdzenie ACK, natomiast Dyspozytor ustawił status ręcznie 'R' po weryfikacji po stronie CCTool, iż zawartość AC jest poprawna mimo małego rozmiaru.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Brak procedur awaryjnych — Dyspozytor zatwierdził mimo ostrzeżenia o rozmiarze.</strong>
+<ol>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z uzasadnieniem: zawartość AC zweryfikowana jako poprawna mimo małego rozmiaru</li>
+<li>Zgłoś → propozycja zmiany konfiguracji minimum rozmiaru (jeśli problem się powtarza)</li>
+</ol>
+<strong>Pełny obraz:</strong> historia podobnych przypadków — jeśli >2 w miesiącu → przegląd konfiguracji.</div>
+</div>
+<div class="category-header category-B"><h2>⚪ Kategoria B — MONITORING (3 stany)</h2></div>
+
+<div class="state-card cat-B">
+<span class="state-num">Stan 22</span> <span class="state-cat-tag B">B</span>
+<h3>kafelek 1: szary, kafelek 2: szary</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-szary"></div></td><td><div class="tile tile-szary"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument jeszcze nie został wysłany do CCTool, w związku z tym potwierdzenie ACK nie napłynęło. Plik nie wymagany — pozostało >30 min do TET (14:00).</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Brak procedur awaryjnych — plik nie wymagany.</strong>
+<ol>
+<li>Monitoring CCM — kafelek nie wymaga reakcji</li>
+<li>Czekaj do TET (14:00) — wtedy ZP rozpocznie automatyczną wysyłkę</li>
+</ol>
+<strong>Pełny obraz:</strong> stan normalny.</div>
+</div>
+
+<div class="state-card cat-B">
+<span class="state-num">Stan 23</span> <span class="state-cat-tag B">B</span>
+<h3>kafelek 1: pomar, kafelek 2: szary</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-pomarancz"></div></td><td><div class="tile tile-szary"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Zbliża się TET (14:00 dla XBID), a dokument AC nie został jeszcze wysłany do CCTool. ZP miało wysłać v1 o 13:46 — plik nie dotarł do CCM.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Czujność — bez akcji backupowej.</strong>
+<ol>
+<li>Sprawdź <a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> (Główne okno → bilans AC → czy FID1-831 wygenerowany; v1 powinno być o 13:46)</li>
+<li>Sprawdź <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> — czy transport działa (HTML §8.9)</li>
+<li>Sprawdź <a href="Inwentarz_IDCC.md#N02">CCCt</a> → Message Viewer → filtr FID1-831 → czy są wpisy</li>
+<li>Jeśli sytuacja utrzyma się do CET → przejdź do Kategorii C — <a href="Ryzyka_pelna_baza_IDCC.html#R20">R20 — Brak ZP / brak wersji</a> lub <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18 — Awaria CN2</a></li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R20">R20</a>, <a href="Inwentarz_IDCC.md#N06">ZP</a>.</div>
+</div>
+
+<div class="state-card cat-B">
+<span class="state-num">Stan 24</span> <span class="state-cat-tag B">B</span>
+<h3>kafelek 1: czerw qmark, kafelek 2: puste</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-czerwony-qmark"></div></td><td><div class="tile tile-puste"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Wysyłka do CCTool trwa — plik oddany do Connector 2.0, oczekiwanie na potwierdzenie transportu i ACK. Stan przejściowy (~1-2 min).</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Stan przejściowy — bez akcji.</strong>
+<ol>
+<li>Czekaj 5 min — wysyłka przez CN2 trwa</li>
+<li>Po 5 min jeśli nadal "czerwony ?" → diagnostyka <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18 — Awaria CN2</a></li>
+<li>Jeśli >10 min → zgłoś</li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a>.</div>
+</div>
+<div class="category-header category-C"><h2>🟡 Kategoria C — BACKUP WYMAGANY (10 stanów)</h2></div>
+
+<div class="state-card cat-C">
+<span class="state-num">Stan 25</span> <span class="state-cat-tag C">C</span>
+<h3>kafelek 1: pomar, kafelek 2: czerw</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-pomarancz"></div></td><td><div class="tile tile-czerwony"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Zbliża się TET + ACK negatywny z poprzedniej próby wysyłki. Sytuacja nietypowa (poprzednia próba została odrzucona przez CCCt).</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Sprawdź kod ACK + przygotuj nową wersję.</strong>
+<ol>
+<li>Najedź na czerwony status zwalid. — odczytaj kod ACK z poprzedniej próby</li>
+<li><a href="Inwentarz_IDCC.md#N02">CCCt</a> → Message Viewer → filtr FID1-831 → szczegóły</li>
+<li>Reakcja per kod:
+  <ul>
+    <li><strong>20 gateClosed</strong> → admin CCCt (zgłoś); sprawdź proces <code>IDx-AC-FORWARDING</code></li>
+    <li><strong>21 duplicatedVersion</strong> → <a href="Karta_ryzyk_IDCC.md#P02">P02 — Pobranie z ZP</a> z podbiciem wersji → <a href="Karta_ryzyk_IDCC.md#P01">P01 — GUI CCCt Manual Upload</a> z v+1</li>
+    <li><strong>30 file size</strong> → przejdź do Stan 29</li>
+  </ul>
+</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a></li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05 — Plik odrzucony</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R20">R20 — ZP</a>.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">Stan 26</span> <span class="state-cat-tag C">C</span>
+<h3>kafelek 1: czerw, kafelek 2: czerw</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-czerwony"></div></td><td><div class="tile tile-czerwony"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Zbliża się CET (17:36) — plik niedostarczony lub wysyłka zakończona błędem. Stan alarmowy.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Stan alarmowy — pełna procedura backupowa.</strong>
+<ol>
+<li><a href="Inwentarz_IDCC.md#N02">CCCt</a> → Message Viewer → filtr FID1-831 → sprawdź czy plik jest w CCCt</li>
+<li>Sprawdź <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> — jeśli awaria CN2 → <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a></li>
+<li><a href="Karta_ryzyk_IDCC.md#P02">P02 — Pobranie z ZP</a>: ZP → Główne okno → bilans AC → FID1-831 → Pobierz XML</li>
+<li><a href="Karta_ryzyk_IDCC.md#P01">P01 — GUI CCCt Manual Upload</a>: CCCt → Manual Upload → wskaż pobrany plik → Upload file</li>
+<li>Brak ACK >5 min po wysyłce → ponów <a href="Karta_ryzyk_IDCC.md#P01">P01</a> z podbiciem wersji</li>
+<li>Zgłoś + telefon <a href="Inwentarz_IDCC.md#N13">CCC</a> przy braku rozwiązania w 10 min</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a></li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R04">R04 — Brak pliku</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18 — CN2</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R20">R20 — ZP</a>.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">Stan 27</span> <span class="state-cat-tag C">C</span>
+<h3>kafelek 1: czerw, kafelek 2: czerw qmark</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-czerwony"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">CET zbliża się + ACK w trakcie próby (timeout). Ostatnia szansa.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Ostatnia szansa — pełna procedura.</strong>
+<ol>
+<li><a href="Inwentarz_IDCC.md#N02">CCCt</a> → Message Viewer → po 2 min weryfikacja statusu</li>
+<li><a href="Karta_ryzyk_IDCC.md#P02">P02 — Pobranie z ZP</a> → <a href="Karta_ryzyk_IDCC.md#P01">P01 — Manual Upload</a></li>
+<li>Zgłoś + telefon <a href="Inwentarz_IDCC.md#N13">CCC</a></li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a></li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R04">R04</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a>.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">Stan 28</span> <span class="state-cat-tag C">C</span>
+<h3>kafelek 1: czerw excl, kafelek 2: czerw qmark</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Wysłany dokument nie spełnia kryterium rozmiaru. Trwa oczekiwanie na potwierdzenie ACK — upłynęło więcej niż 2 minuty.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Weryfikacja rozmiaru + ponowienie.</strong>
+<ol>
+<li>CCM → LPM na statusie wyśl. → <strong>Informacje</strong> → odczytaj rzeczywisty rozmiar vs oczekiwany</li>
+<li><a href="Karta_ryzyk_IDCC.md#P04">P04 — Pobierz z MinIO</a> → rozpakuj plik → sprawdź zawartość</li>
+<li>Jeśli zawartość OK pomimo małego rozmiaru → ustaw 'R' ręcznie (przejście do Stan 21); zgłoś z propozycją zmiany konfiguracji minimum</li>
+<li>Jeśli zawartość niepoprawna → <a href="Karta_ryzyk_IDCC.md#P02">P02 — Pobranie z ZP</a> (Pobierz XML w bilans AC) → <a href="Karta_ryzyk_IDCC.md#P01">P01 — Manual Upload</a> z podbitą wersją</li>
+<li>Po 3 min sprawdź CCCt MV</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a></li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05 — kod 30</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06 — timeout</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R20">R20 — ZP</a>.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">Stan 29</span> <span class="state-cat-tag C">C</span>
+<h3>kafelek 1: czerw excl, kafelek 2: czerw</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-czerwony"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Wysłany dokument nie spełnia kryterium rozmiaru, a otrzymane potwierdzenie ACK ma status czerwony — typowo kod 30 file size mismatch.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Kod 30 file size mismatch — pełna procedura.</strong>
+<ol>
+<li>CCM → LPM → <strong>Informacje</strong> → potwierdź rozmiar (rzeczywisty vs minimum)</li>
+<li><a href="Karta_ryzyk_IDCC.md#P02">P02 — Pobranie z ZP</a>: bilans AC → FID1-831 → Pobierz XML (najnowsza wersja)</li>
+<li>Weryfikacja zawartości pobranego pliku (rozpakuj jeśli ZIP)</li>
+<li><a href="Karta_ryzyk_IDCC.md#P01">P01 — GUI CCCt Manual Upload</a> z podbitą wersją</li>
+<li>Jeśli nadal za mały rozmiar → zgłoś (problem generatora)</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z kodem ACK 30 i rozmiarem</li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05 — kod 30</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R20">R20 — ZP</a>.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">Stan 30</span> <span class="state-cat-tag C">C</span>
+<h3>kafelek 1: czerw excl, kafelek 2: fiol</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-fioletowy"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Wysłany dokument nie spełnia kryterium rozmiaru. Dokument ACK napłynął po CET z pozytywnym komunikatem. SPRZECZNOŚĆ — wymaga weryfikacji.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Sprzeczność — weryfikacja zawartości.</strong>
+<ol>
+<li><a href="Karta_ryzyk_IDCC.md#P04">P04 — Pobierz z MinIO</a> → rozpakuj plik → sprawdź zawartość</li>
+<li>Jeśli zawartość OK → zgłoś z propozycją zmiany konfiguracji minimum rozmiaru. Po weryfikacji można nadać 'R' (przejście do Stan 21 — Kat. A)</li>
+<li>Jeśli zawartość niepoprawna → zgłoś; sprawdź czy AC w <a href="Inwentarz_IDCC.md#N10">PuTo</a> jest aktualne</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z pełnym opisem sprzeczności</li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05</a>, kontekst Confluence (ACK pozytywny mimo rozmiaru).</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">Stan 31</span> <span class="state-cat-tag C">C</span>
+<h3>kafelek 1: ziel, kafelek 2: czerw</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-czerwony"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument wysłany prawidłowo do CCTool, ale ACK negatywny (Rejected). Kody najczęstsze: 20 gateClosed / 21 duplicatedVersion / 30 file size mismatch.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Reakcja per kod ACK.</strong>
+<ol>
+<li>Najedź na czerwony status zwalid. — odczytaj kod ACK</li>
+<li><a href="Inwentarz_IDCC.md#N02">CCCt</a> → Message Viewer → filtr FID1-831 → szczegóły rejekcji</li>
+<li>Reakcja:
+  <ul>
+    <li><strong>kod 20</strong> gateClosed → sprawdź TET/CET; CCCt proces <code>IDx-AC-FORWARDING</code> → admin CCCt (zgłoś)</li>
+    <li><strong>kod 21</strong> duplicatedVersion → <a href="Karta_ryzyk_IDCC.md#P02">P02 — ZP</a> (Pobierz XML wersji +1) → <a href="Karta_ryzyk_IDCC.md#P01">P01 — Manual Upload</a></li>
+    <li><strong>kod 30</strong> file size mismatch → <a href="Karta_ryzyk_IDCC.md#P04">P04 — MinIO</a> / <a href="Karta_ryzyk_IDCC.md#P02">P02 — ZP</a> → weryfikacja → <a href="Karta_ryzyk_IDCC.md#P01">P01</a></li>
+  </ul>
+</li>
+<li>Zweryfikuj status <code>Processed</code> po ponownej wysyłce</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z kodem ACK</li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05 — Plik odrzucony</a>.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">Stan 32</span> <span class="state-cat-tag C">C</span>
+<h3>kafelek 1: ziel, kafelek 2: czerw qmark</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument wysłany prawidłowo do CCTool, trwa oczekiwanie na potwierdzenie ACK, które nie napłynęło w zadanym czasie (>2-3 min).</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Timeout ACK — weryfikacja + decyzja.</strong>
+<ol>
+<li>Najedź na "?" — odczytaj czas oczekiwania</li>
+<li>Czekaj do 5 min od wysyłki (przeciążenie może być normalne)</li>
+<li>Po 5 min → <a href="Inwentarz_IDCC.md#N02">CCCt</a> → Message Viewer:
+  <ul>
+    <li><code>Processed</code> → zgłoś (CCM nie odświeżył); ustaw 'R' w CCM</li>
+    <li><code>Rejected</code> → przejdź do Stan 31 (<a href="Ryzyka_pelna_baza_IDCC.html#R05">R05</a>)</li>
+    <li>Brak wpisu → <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18 — Awaria CN2</a></li>
+  </ul>
+</li>
+<li>⚠ <strong>NIE wysyłać ponownie bez weryfikacji</strong> — kod 21 duplicatedVersion</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a></li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06 — timeout</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a>.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">Stan 33</span> <span class="state-cat-tag C">C</span>
+<h3>kafelek 1: ziel, kafelek 2: czarn</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-czarny"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument wysłany prawidłowo do CCTool, ale Dokument ACK (CCTool zwalid.) nie napłynął do CET.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>Brak ACK do CET — pełna procedura.</strong>
+<ol>
+<li><a href="Inwentarz_IDCC.md#N02">CCCt</a> → Message Viewer → filtr FID1-831 → status:
+  <ul>
+    <li><code>Processed</code> → status ręczny 'R' w CCM (PPM → Ustaw status ręcznie) + zgłoś → przechodzi do Stan 2 (Kategoria A)</li>
+    <li><code>Rejected</code> → <a href="Karta_ryzyk_IDCC.md#P01">P01 — Manual Upload</a> z opcją 'Wyślij po CET' (CCM)</li>
+    <li>Brak wpisu → <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18 — Awaria CN2 zwrotny</a> → zgłoś</li>
+  </ul>
+</li>
+<li>Zgłoś + telefon <a href="Inwentarz_IDCC.md#N13">CCC</a></li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z pełnym opisem</li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a>.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">Stan 34</span> <span class="state-cat-tag C">C</span>
+<h3>kafelek 1: czerw excl, kafelek 2: czarn</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-czarny"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Wysłany dokument nie spełnia kryterium rozmiaru. Dokument ACK (CCTool zwalid.) nie napłynął do CET. KRYTYCZNE w obrębie Kategorii C.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>KRYTYCZNE w obrębie Kategorii C — pełna procedura ratunkowa.</strong>
+<ol>
+<li><a href="Karta_ryzyk_IDCC.md#P02">P02 — Pobranie z ZP</a> (Pobierz XML najnowszej wersji)</li>
+<li><a href="Karta_ryzyk_IDCC.md#P01">P01 — GUI CCCt Manual Upload</a> z opcją "Wyślij po CET" — jeśli bramka jeszcze otwarta</li>
+<li>Natychmiast zgłoszenie:
+  <ul>
+    
+    <li><a href="Inwentarz_IDCC.md#N13">CCC</a> (operator@tscnet.eu + telefon)</li>
+    <li><strong>Zgłoś</strong> (CIZ, WPO, PSE-I) — incydent krytyczny</li>
+  </ul>
+</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z pełnym opisem</li>
+</ol>
+<strong>Pełny obraz:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a>, łączy się z Stan 35 (D).</div>
+</div>
+<div class="category-header category-D"><h2>🔴 Kategoria D — KRYTYCZNY (1 stan)</h2></div>
+
+<div class="state-card cat-D">
+<span class="state-num">Stan 35</span> <span class="state-cat-tag D">D</span>
+<h3>kafelek 1: czarn, kafelek 2: czarn</h3>
+<table class="tile-row"><tr><th>CCtool wyśl.</th><th>CCtool zwalid.</th></tr>
+<tr><td><div class="tile tile-czarny"></div></td><td><div class="tile tile-czarny"></div></td></tr></table>
+
+<div class="section-label">1. Opis z instrukcji dla Dyspozytora — co oznacza dany kafelek</div>
+<div class="editable confluence-desc" contenteditable="true">Dokument nie został dostarczony do CCTool, w związku z tym potwierdzenie ACK nie napłynęło. Minął czas CET (17:36). KRYTYCZNE — po CET dograć już nie można, bramka zamknięta.</div>
+
+<div class="section-label">1. Opis pliku</div>
+<div class="editable" contenteditable="true">FID1-831 (AC — Allocation Constraints) dla iteracji IDCC(a). Plik z wartościami ograniczeń alokacyjnych publikowany przez PSE do PuTo. Format XML, struktura TimeSeries per kierunek transgraniczny, wartości per godzina (MTU 60 min). Wersjonowanie: v1, v2, ... (każda kolejna wyższa, sprawdzane przez CCCt — kod ACK 21 jeśli nie).</div>
+
+<div class="section-label">2. Ścieżka produkcji / pozyskania pliku</div>
+<div class="editable" contenteditable="true">Generator: aplikacja <a href="Inwentarz_IDCC.md#N06">ZP (zdolności przesyłowe) [N06]</a> → <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> (kanał EDX_KAFKA_CCCTOOL-SQLNET_ZP) → <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> (publikacja do <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a>) + <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> bucket <code>/cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FID1-831-v*</code>. TET 14:00 (XBID), CET 17:36. Wysyłki automatyczne ZP: v1 o 13:46, automat o 14:41 publikuje najbardziej aktualną wersję.</div>
+
+<div class="section-label">3. Aplikacje powiązane</div>
+<div class="editable" contenteditable="true"><a href="Inwentarz_IDCC.md#N06">ZP [N06]</a> · <a href="Inwentarz_IDCC.md#N01">CCM [N01]</a> · <a href="Inwentarz_IDCC.md#N05">Connector 2.0 [N05]</a> · <a href="Inwentarz_IDCC.md#N02">Core CC Tool [N02]</a> · <a href="Inwentarz_IDCC.md#N04">MinIO [N04]</a> · <a href="Inwentarz_IDCC.md#N10">PuTo [N10]</a> · <a href="Inwentarz_IDCC.md#N16">ECP/EDX [N16]</a>. <strong>Zgłoś</strong> (CIZ, WPO, PSE-I). Koordynator zewnętrzny: <a href="Inwentarz_IDCC.md#N13">CCC/TSCNET [N13]</a>.</div>
+
+<div class="section-label">4. Procedury awaryjne dla tej opcji — czynności do wykonania krok po kroku z hiperłączami</div>
+<div class="editable procedures" contenteditable="true"><strong>KRYTYCZNE — brak możliwości naprawy lokalnej.</strong>
+<ol>
+<li>Telefon natychmiast: <a href="Inwentarz_IDCC.md#N13">CCC (operator@tscnet.eu)</a> — uprzedzić o braku publikacji AC dla doby D</li>
+<li><strong>Zgłoś</strong> (CIZ, WPO, PSE-I) — incydent krytyczny (priorytet 1)</li>
+<li>Diagnoza po fakcie:
+  <ul>
+    <li><a href="Inwentarz_IDCC.md#N06">ZP</a> — czy plik był wygenerowany? (sprawdź bilans AC)</li>
+    <li><a href="Inwentarz_IDCC.md#N05">Connector 2.0</a> — czy działał? (logi)</li>
+    <li><a href="Inwentarz_IDCC.md#N02">CCCt</a> — Message Viewer → czy są jakieś wpisy?</li>
+    <li><a href="Inwentarz_IDCC.md#N04">MinIO</a> — czy plik w bucketcie cca/ID_FBCC/in/?</li>
+  </ul>
+</li>
+<li><a href="Karta_ryzyk_IDCC.md#P06">P06 — Wpis A.4</a> z pełnym opisem zdarzenia, czasem, analizą przyczyn (root cause), zaangażowanymi osobami i podjętymi działaniami</li>
+<li>Współpraca z <a href="Inwentarz_IDCC.md#N13">CCC</a> przy rekonstrukcji procesu / decyzji o ewentualnej wcześniejszej iteracji następnego dnia</li>
+</ol>
+<strong>Pełny obraz:</strong> wszystkie ryzyka grup R04, R05, R06, R18, R20, R29.</div>
+</div>
+
+<script>
+function downloadHTML() {
+  const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Przyklady_FID1-831_edytowalny_kopia.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,386 @@
+  private staticHints: Record<string, Hint[]> = {
+    'AC': [
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SUCCESS },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.SUCCESS }
+        ],
+        situationDescription: 'Dokument wysłany prawidłowo do CCTool, otrzymano potwierdzenie ACK z pozytywnym komunikatem.',
+        emergencyProcedures: 'Brak działań — proces poprawny.',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SUCCESS },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.FORCEDSUCCESS }
+        ],
+        situationDescription: 'Dokument wysłany prawidłowo do CCTool. Dyspozytor ustawił status ręcznie \'R\' po weryfikacji w CCTool.',
+        emergencyProcedures: 'Brak działań.',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.CONN_AFTER_CET },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.CONN_AFTER_CET }
+        ],
+        situationDescription: 'Dokument wysłany prawidłowo do CCTool po CET, ACK napłynął po CET z pozytywnym komunikatem.',
+        emergencyProcedures: 'Brak działań — dostarczone po CET, OK.',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.FORCEDSUCCESS },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.FORCEDSUCCESS }
+        ],
+        situationDescription: 'Dokument oznaczony ręcznie jako wysłany prawidłowo do CCTool oraz otrzymanie potwierdzenia ACK.',
+        emergencyProcedures: 'Brak działań.',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SENTMANUALLY },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.SUCCESS }
+        ],
+        situationDescription: 'Dokument prawidłowo wysłany ręcznie z poziomu CCM. Otrzymano potwierdzenie ACK z pozytywnym komunikatem.',
+        emergencyProcedures: 'Brak działań — wysyłka ręczna wykonana.',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SENTMANUALLY },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.SUCCESS }
+        ],
+        situationDescription: 'Dokument prawidłowo wysłany ręcznie z poziomu CCM. Trwa oczekiwanie na potwierdzenie ACK — około 2 min.',
+        emergencyProcedures: 'Postępowanie:• Czekaj 5 min • OK → ustaw \'R\' w CCM',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SENTMANUALLY },
+        ],
+        situationDescription: 'Dokument wysłany ręcznie z poziomu CCM, ale ACK nie napłynął w żądanym czasie i zbliża się CET.',
+        emergencyProcedures: 'Postępowanie:• Core CC Tool → sprawdź czy plik dotarł (Message Viewer) Jeżeli:• OK → oznacz \'R\' w CCM • błąd → Plik został odrzucony — odczytaj kod błędu z potwierdzenia ACK i zareaguj zależnie od kodu:• kod 20 (bramka dla pliku zamknięta) — zgłoś administratorowi Core CC Tool • kod 21 (wersja nie jest wyższa niż już zapisana) — w źródle podnieś numer wersji i wyślij plik ponownie • kod 30 (rozmiar pliku niezgodny) — pobierz poprawny plik i wyślij ponownie [R05 — pełny opis] • brak → Awaria transportu plików (Connector 2.0). Zgłoś awarię. W międzyczasie pobierz plik ze źródła (aplikacji ZP) i wyślij go ręcznie przez Core CC Tool (Manual Upload). [R18 — pełny opis]',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SENTMANUALLY },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.ACKNOTRECEIVED }
+        ],
+        situationDescription: 'Dokument wysłany ręcznie z poziomu CCM, a otrzymane ACK: (1) zawiera komunikat błędu (najedź kursorem); (2) proces zakończył się błędem — \'Błąd procesu\'.',
+        emergencyProcedures: 'Postępowanie:• Najedź kursorem na status i odczytaj kod ACK Jeżeli:• kod 20 (bramka dla pliku zamknięta) → zgłoś administratorowi Core CC Tool • kod 21 (wersja nie jest wyższa niż zapisana) → podnieś numer wersji w aplikacji ZP i wyślij plik ponownie przez Core CC Tool (Manual Upload) • kod 30 (rozmiar pliku niezgodny) → pobierz poprawny plik z MinIO lub aplikacji ZP i wyślij ponownie',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SENTMANUALLY },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.FAILURE }
+        ],
+        situationDescription: 'Dokument prawidłowo wysłany ręcznie z poziomu CCM. Otrzymano potwierdzenie ACK z pozytywnym komunikatem po CET.',
+        emergencyProcedures: 'Brak działań — ręczna + ACK po CET, OK.',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SENTMANUALLY },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.CONN_AFTER_CET }
+        ],
+        situationDescription: 'Dokument prawidłowo wysłany ręcznie z poziomu CCM. Nie otrzymano potwierdzenia ACK — upłynął czas CET.',
+        emergencyProcedures: 'Postępowanie:• Core CC Tool → sprawdź status Jeżeli:• OK (Processed) → oznacz \'R\' w CCM + zgłoś • brak / awaria zwrotna → Awaria transportu plików (Connector 2.0). Zgłoś awarię. W międzyczasie pobierz plik ze źródła (aplikacji ZP) i wyślij go ręcznie przez Core CC Tool (Manual Upload). [R18 — pełny opis]',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SENTMANUALLY },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.FORCEDSUCCESS }
+        ],
+        situationDescription: 'Dokument prawidłowo wysłany ręcznie z poziomu CCM. Nie otrzymano ACK, Dyspozytor ustawił status \'R\' po weryfikacji w CCTool.',
+        emergencyProcedures: 'Brak działań — decyzja ręczna Dyspozytora.',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SENTMANUALLYAFTERCET },
+        ],
+        situationDescription: 'Dokument prawidłowo wysłany ręcznie z poziomu CCM po CET. Trwa oczekiwanie na potwierdzenie ACK — około 2 min.',
+        emergencyProcedures: 'Postępowanie:• Czekaj 2-5 min • OK → ustaw \'R\'',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SENTMANUALLYAFTERCET },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.ACKNOTRECEIVED }
+        ],
+        situationDescription: 'Dokument wysłany ręcznie z poziomu CCM po CET. Trwa oczekiwanie na potwierdzenie ACK — upłynęło więcej niż 2 minuty.',
+        emergencyProcedures: 'Postępowanie:• Core CC Tool → sprawdź czy plik dotarł (Message Viewer) Jeżeli:• OK → oznacz \'R\' w CCM • błąd → Plik został odrzucony — odczytaj kod błędu z potwierdzenia ACK i zareaguj zależnie od kodu:• kod 20 (bramka dla pliku zamknięta) — zgłoś administratorowi Core CC Tool • kod 21 (wersja nie jest wyższa niż już zapisana) — w źródle podnieś numer wersji i wyślij plik ponownie • kod 30 (rozmiar pliku niezgodny) — pobierz poprawny plik i wyślij ponownie [R05 — pełny opis] • brak → Awaria transportu plików (Connector 2.0). Zgłoś awarię. W międzyczasie pobierz plik ze źródła (aplikacji ZP) i wyślij go ręcznie przez Core CC Tool (Manual Upload). [R18 — pełny opis]',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SENTMANUALLYAFTERCET },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.FAILURE }
+        ],
+        situationDescription: 'Dokument wysłany ręcznie z poziomu CCM po CET, a otrzymane ACK: (1) komunikat błędu; (2) proces zakończył się błędem. Typowo kod 20 gateClosed.',
+        emergencyProcedures: 'Postępowanie:• Najedź kursorem na status i odczytaj kod ACK (typowo kod 20) Jeżeli:• kod 20 (bramka dla pliku zamknięta) → po CET bramka jest zamknięta → zgłoś • inny kod → Plik został odrzucony — odczytaj kod błędu z potwierdzenia ACK i zareaguj zależnie od kodu:• kod 20 (bramka dla pliku zamknięta) — zgłoś administratorowi Core CC Tool • kod 21 (wersja nie jest wyższa niż już zapisana) — w źródle podnieś numer wersji i wyślij plik ponownie • kod 30 (rozmiar pliku niezgodny) — pobierz poprawny plik i wyślij ponownie [R05 — pełny opis]',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SENTMANUALLYAFTERCET },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.CONN_AFTER_CET }
+        ],
+        situationDescription: 'Dokument prawidłowo wysłany ręcznie z poziomu CCM po CET. Otrzymano potwierdzenie ACK z pozytywnym komunikatem (po CET).',
+        emergencyProcedures: 'Brak działań — ręczna + ACK po CET, OK.',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SENTMANUALLYAFTERCET },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.EXCEEDED }
+        ],
+        situationDescription: 'Dokument prawidłowo wysłany ręcznie z poziomu CCM po CET. Nie otrzymano potwierdzenia ACK — upłynął czas CET.',
+        emergencyProcedures: 'Postępowanie:• Core CC Tool → sprawdź status Jeżeli:• OK (Processed) → oznacz \'R\' w CCM + zgłoś • brak / awaria zwrotna → Awaria transportu plików (Connector 2.0). Zgłoś awarię. W międzyczasie pobierz plik ze źródła (aplikacji ZP) i wyślij go ręcznie przez Core CC Tool (Manual Upload). [R18 — pełny opis]',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.FORCEDSUCCESS },
+        ],
+        situationDescription: 'Dokument oznaczony ręcznie jako wysłany prawidłowo do CCTool. Trwa oczekiwanie na ACK — około 2 min.',
+        emergencyProcedures: 'Postępowanie:• Czekaj 5 min • OK → \'R\' dla ACK',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.FORCEDSUCCESS },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.ACKNOTRECEIVED }
+        ],
+        situationDescription: 'Dokument oznaczony ręcznie jako wysłany prawidłowo. Trwa oczekiwanie na ACK — upłynęło więcej niż 2 min.',
+        emergencyProcedures: 'Postępowanie:• Czekaj 5 min • OK → \'R\' dla ACK',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.FORCEDSUCCESS },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.EXCEEDED }
+        ],
+        situationDescription: 'Dokument oznaczony ręcznie jako wysłany prawidłowo. Nie otrzymano potwierdzenia ACK — upłynął czas CET.',
+        emergencyProcedures: 'Postępowanie:• Core CC Tool → sprawdź status Jeżeli:• OK (Processed) → utrzymaj \'R\' • brak / awaria → Awaria transportu plików (Connector 2.0). Zgłoś awarię. W międzyczasie pobierz plik ze źródła (aplikacji ZP) i wyślij go ręcznie przez Core CC Tool (Manual Upload). [R18 — pełny opis]',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.FILESIZEBAD },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.FORCEDSUCCESS }
+        ],
+        situationDescription: 'Wysłany dokument nie spełnia kryterium rozmiaru. ACK nie otrzymano, Dyspozytor ustawił status \'R\' po weryfikacji w CCTool.',
+        emergencyProcedures: 'Brak działań — Dyspozytor zatwierdził zawartość.',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.UNKNOWN },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.UNKNOWN }
+        ],
+        situationDescription: 'Dokument jeszcze nie został wysłany do CCTool, ACK nie napłynął. Plik nie wymagany (>30 min do TET).',
+        emergencyProcedures: 'Brak działań — czekaj do TET 14:00.',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.FAILURE },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.FAILURE }
+        ],
+        situationDescription: 'Zbliża się CET — plik niedostarczony lub błąd wysyłki. Stan alarmowy.',
+        emergencyProcedures: 'Postępowanie (alarm):• Core CC Tool → sprawdź czy plik dotarł do Core CC Tool Jeżeli:• plik jest, brak ACK → Plik został odrzucony — odczytaj kod błędu z potwierdzenia ACK i zareaguj zależnie od kodu:• kod 20 (bramka dla pliku zamknięta) — zgłoś administratorowi Core CC Tool • kod 21 (wersja nie jest wyższa niż już zapisana) — w źródle podnieś numer wersji i wyślij plik ponownie • kod 30 (rozmiar pliku niezgodny) — pobierz poprawny plik i wyślij ponownie [R05 — pełny opis] • brak pliku (awaria Connector 2.0) → Awaria transportu plików (Connector 2.0). Zgłoś awarię. W międzyczasie pobierz plik ze źródła (aplikacji ZP) i wyślij go ręcznie przez Core CC Tool (Manual Upload). [R18 — pełny opis] • brak pliku w źródle → Brak pliku lub wersji w aplikacji źródłowej. Otwórz aplikacji ZP, przejdź do bilansu i sprawdź wersję pliku: jeśli wersja jest dostępna — pobierz ją (Pobierz XML); jeśli brakuje — wygeneruj nową wersję; jeśli aplikacja nie działa — zgłoś. [R20 — pełny opis]',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.FILESIZEBAD },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.ACKNOTRECEIVED }
+        ],
+        situationDescription: 'Wysłany dokument nie spełnia kryterium rozmiaru. Oczekiwanie na ACK — upłynęło więcej niż 2 min.',
+        emergencyProcedures: 'Postępowanie:• W aplikacji CCM kliknij plik lewym przyciskiem myszy → Informacje → sprawdź rozmiar; pobierz z MinIO i rozpakuj Jeżeli:• zawartość OK mimo rozmiaru → oznacz \'R\' (→ Stan 20) • zawartość niepoprawna → Plik został odrzucony — odczytaj kod błędu z potwierdzenia ACK i zareaguj zależnie od kodu:• kod 20 (bramka dla pliku zamknięta) — zgłoś administratorowi Core CC Tool • kod 21 (wersja nie jest wyższa niż już zapisana) — w źródle podnieś numer wersji i wyślij plik ponownie • kod 30 (rozmiar pliku niezgodny) — pobierz poprawny plik i wyślij ponownie [R05 — pełny opis]',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.FILESIZEBAD },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.FAILURE }
+        ],
+        situationDescription: 'Wysłany dokument nie spełnia kryterium rozmiaru, a ACK ma status czerwony — typowo kod 30.',
+        emergencyProcedures: 'Postępowanie:• W aplikacji CCM kliknij plik lewym przyciskiem myszy → Informacje → potwierdź rozmiar • Pobierz poprawny plik z aplikacji ZP (Pobierz XML) i wyślij przez Core CC Tool (Manual Upload) z kolejnym numerem wersji • Nadal za mały → zgłoś Szczegóły (opis + screeny): R05 · R20',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.FILESIZEBAD },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.CONN_AFTER_CET }
+        ],
+        situationDescription: 'Wysłany dokument nie spełnia kryterium rozmiaru. ACK napłynął po CET z pozytywnym komunikatem. Sprzeczność.',
+        emergencyProcedures: 'Postępowanie:• Pobierz z MinIO → rozpakuj → sprawdź zawartość Jeżeli:• zawartość OK → oznacz \'R\' (→ Stan 20); zgłoś • niepoprawna → zgłoś',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SUCCESS },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.FAILURE }
+        ],
+        situationDescription: 'Dokument wysłany prawidłowo do CCTool, ale ACK negatywny (Rejected). Kody: 20/21/30.',
+        emergencyProcedures: 'Postępowanie:• Najedź kursorem na status i odczytaj kod ACK Jeżeli:• kod 20 (bramka dla pliku zamknięta) → zgłoś (administrator Core CC Tool otwiera bramkę); sprawdź proces IDx-AC-FORWARDING • kod 21 (wersja nie jest wyższa niż zapisana) → podnieś numer wersji w aplikacji ZP i wyślij plik ponownie przez Core CC Tool (Manual Upload) • kod 30 (rozmiar pliku niezgodny) → pobierz poprawny plik z MinIO lub aplikacji ZP i wyślij ponownie',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SUCCESS },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.ACKNOTRECEIVED }
+        ],
+        situationDescription: 'Dokument wysłany prawidłowo, trwa oczekiwanie na ACK, który nie napłynął w zadanym czasie (>2-3 min).',
+        emergencyProcedures: 'Postępowanie:• Czekaj 5 min → Core CC Tool (⚠ nie wysyłaj ponownie!) Jeżeli:• Processed → oznacz \'R\' + zgłoś • Rejected → patrz Stan 26 (kod ACK) • brak wpisu → Awaria transportu plików (Connector 2.0). Zgłoś awarię. W międzyczasie pobierz plik ze źródła (aplikacji ZP) i wyślij go ręcznie przez Core CC Tool (Manual Upload). [R18 — pełny opis]',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.SUCCESS },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.EXCEEDED }
+        ],
+        situationDescription: 'Dokument wysłany prawidłowo, ACK nie napłynął do CET.',
+        emergencyProcedures: 'Postępowanie:• Core CC Tool → sprawdź status Jeżeli:• Processed → oznacz \'R\' + zgłoś (→ Stan 2) • Rejected → wyślij ponownie przez Core CC Tool (Manual Upload) ""po CET"" • brak → Awaria transportu plików (Connector 2.0). Zgłoś awarię. W międzyczasie pobierz plik ze źródła (aplikacji ZP) i wyślij go ręcznie przez Core CC Tool (Manual Upload). [R18 — pełny opis] + powiadom RCC',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.FILESIZEBAD },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.EXCEEDED }
+        ],
+        situationDescription: 'Wysłany dokument nie spełnia kryterium rozmiaru. ACK nie napłynął do CET. Krytyczne.',
+        emergencyProcedures: 'Postępowanie (KRYTYCZNE w C):• Pobierz poprawny plik z aplikacji ZP i wyślij przez Core CC Tool (Manual Upload) ""po CET"" (jeśli bramka otwarta) • Natychmiast: zgłoś + powiadom RCC Szczegóły (opis + screeny): R05 · R18',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.CONN_AFTER_CET },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.FAILURE }
+        ],
+        situationDescription: 'Dokument zarejestrowany w CCTool po CET (wysyłka pozytywna), ale walidacja zakończona negatywnie — ACK Rejected po CET.',
+        emergencyProcedures: 'Postępowanie (po CET):• Najedź kursorem na status i odczytaj kod ACK (kontekst: rejestracja po CET) Jeżeli:• kod 20 (bramka dla pliku zamknięta) → po CET bramka zamknięta → zgłoś + powiadom RCC • kod 21 (wersja nie jest wyższa niż zapisana) → podnieś numer wersji w aplikacji ZP i wyślij plik ponownie przez Core CC Tool (Manual Upload) (jeśli bramka otwarta) • kod 30 (rozmiar pliku niezgodny) → pobierz poprawny plik z MinIO lub aplikacji ZP i wyślij ponownie (jeśli bramka otwarta)',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.CONN_AFTER_CET },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.EXCEEDED }
+        ],
+        situationDescription: 'Dokument zarejestrowany w CCTool po CET (wysyłka pozytywna), ale ACK walidacji nie napłynął — plik dostarczony, lecz niezwalidowany.',
+        emergencyProcedures: 'Postępowanie (po CET):• Core CC Tool → sprawdź status walidacji (plik dostarczony po CET) Jeżeli:• Processed → oznacz \'R\' w CCM + zgłoś • Rejected → postępuj jak w Stanie 30 (odczytaj kod ACK) • brak wpisu → Awaria transportu plików (Connector 2.0). Zgłoś awarię. W międzyczasie pobierz plik ze źródła (aplikacji ZP) i wyślij go ręcznie przez Core CC Tool (Manual Upload). [R18 — pełny opis] + powiadom RCC',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+      {
+        status: [
+          { colName: 'CCtool wysł.', status: DashboardItemStatus.EXCEEDED },
+          { colName: 'CCtool zwalid.', status: DashboardItemStatus.EXCEEDED }
+        ],
+        situationDescription: 'Dokument nie został dostarczony do CCTool, ACK nie napłynął. Minął czas CET. KRYTYCZNE — po CET dograć nie można.',
+        emergencyProcedures: 'Postępowanie (KRYTYCZNE — brak naprawy):• Telefon do RCC + zgłoś (priorytet P1) • Po CET — brak naprawy. Diagnoza przyczyn: ZP · Connector 2.0 · Core CC Tool Szczegóły (opis + screeny): R04 · R18 · R20',
+        minioSftp: 'MinIO: plik kopiowany na MinIO + PuTo przez Connector 2.0. sFTP/ZP: źródło = ZP (automat). Gdy pliku NIE ma na MinIO → pobierz/wygeneruj ręcznie ze źródła i wgraj ręcznie przez Manual Upload (GUI Core CC Tool) / wyślij z CCM (Wyślij).',
+        fileDesc: 'AC (Allocation Constraints, FID1-831) — plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.',
+        filePath: 'ZP [N06] → Connector 2.0 [N05] → Core CC Tool [N02] → PuTo [N10] + MinIO [N04]',
+        howto: 'Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).'
+      },
+
+    ]
+  }

@@ -1,0 +1,272 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Buduje CCM/info.pdf z profesjonalnego szablonu HTML+CSS (weasyprint).
+   Kotwice = atrybut id (weasyprint tworzy named destinations): info.pdf#FID1_831, #R05.
+   Uruchamiać: DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib python3 _build_info_pdf.py
+"""
+import os
+os.environ.setdefault('DYLD_FALLBACK_LIBRARY_PATH', '/opt/homebrew/lib')
+import html as H
+from pathlib import Path
+import re
+import _build_naklejki as B           # loadery danych (bez auto-buildu)
+import weasyprint
+
+ACTION_RE = re.compile(
+    r'(→|\bgdy\b|sprawdź|pobierz|wyślij|manual upload|zgłoś|weryfik|zweryfik|'
+    r'ustaw|podnieś|telefon|diagnost|wgraj|wygeneruj|reaguj|ponów|'
+    r'oznacz|odczytaj|przejdź|otwórz|\bstop\b)', re.I)
+
+ROOT = B.ROOT
+CCM  = B.CCM
+
+def esc(s): return H.escape(str(s or ''))
+
+# ── kafelki jako wektorowe spany (z TILE_SPEC) ─────────────────────────────
+def tile_css():
+    out = []
+    for color, (fill, mark, mcol, border) in B.TILE_SPEC.items():
+        cls = 'tl-' + color.replace(' ', '_').replace('!', 'x').replace('?', 'q')
+        bd = f'border:2px solid {border};' if border else f'border:1px solid {fill};'
+        out.append(f'.{cls}{{background:{fill};color:{mcol};{bd}}}')
+    return '\n'.join(out)
+
+def tile(color):
+    spec = B.TILE_SPEC.get((color or '').strip())
+    if not spec:
+        spec = B.TILE_SPEC['puste']
+        color = 'puste'
+    cls = 'tl-' + color.strip().replace(' ', '_').replace('!', 'x').replace('?', 'q')
+    return f'<span class="tile {cls}">{esc(spec[1])}</span>'
+
+def stan_html(stan_text):
+    pairs = B.parse_stan(stan_text)
+    if not pairs:
+        return f'<span class="muted">{esc(stan_text or "—")}</span>'
+    rows = ''.join(
+        f'<div class="kf"><span class="kf-lab">{esc(col)}</span>{tile(clr)}</div>'
+        for col, clr in pairs)
+    return f'<div class="kf-wrap">{rows}</div>'
+
+# ── procedury/opisy → hierarchiczny HTML (wzór staticHints) ────────────────
+def proc_html(text):
+    parts = B.format_proc(text)
+    if not parts:
+        return '<span class="muted">—</span>'
+    html, stack = [], []   # stack: lista otwartych poziomów (1/2)
+    def close_to(level):
+        while stack and stack[-1] >= level:
+            html.append('</li></ul>')
+            stack.pop()
+    for lvl, txt, hdr in parts:
+        body = esc(txt)
+        if hdr or lvl == 0:
+            close_to(1)
+            html.append(f'<div class="p-hdr">{body}</div>' if hdr else f'<div class="p-line">{body}</div>')
+        elif lvl == 1:
+            close_to(1)
+            html.append(f'<ul class="p-ul"><li>{body}')
+            stack.append(1)
+        elif lvl == 2:
+            if not stack:
+                html.append('<ul class="p-ul"><li>'); stack.append(1)
+            close_to(2)
+            html.append(f'<ul class="p-sub"><li>{body}')
+            stack.append(2)
+    close_to(1)
+    return ''.join(html)
+
+def is_passive(text):
+    t = B.html_to_text(text)
+    return ('•' not in t) and not B.ACTION_RE.search(t)
+
+def proc_block(text):
+    if is_passive(text):
+        return f'<div class="p-ok">{esc(B.html_to_text(text))}</div>'
+    return proc_html(text)
+
+# ── sekcja: naklejka ───────────────────────────────────────────────────────
+def naklejka_html(code):
+    m = B.meta(code)
+    st = B.variant_for(code) or []
+    rows = ''
+    for s in st:
+        rows += (f'<tr><td class="c-nr">{esc(s.get("nr",""))}</td>'
+                 f'<td class="c-st">{stan_html(s.get("stan",""))}</td>'
+                 f'<td class="c-op">{esc(B.html_to_text(s.get("opis_stanu","")))}</td>'
+                 f'<td class="c-pr">{proc_block(s.get("procedura",""))}</td></tr>')
+    cat = (f'<h4 class="sec-h">Katalog stanów kafelków '
+           f'<span class="badge">{len(st)}</span></h4>'
+           f'<table class="cat"><thead><tr>'
+           f'<th class="c-nr">#</th><th class="c-st">Stan kafelków</th>'
+           f'<th class="c-op">Opis stanu</th><th class="c-pr">Procedury awaryjne</th>'
+           f'</tr></thead><tbody>{rows}</tbody></table>') if st else (
+           '<p class="muted">Dla tego pliku katalog stanów nie jest zdefiniowany odrębnie '
+           '— monitorowanie zgodnie z profilem i procedurą główną.</p>')
+    return f'''<section class="page nk" id="{esc(code)}">
+  <div class="nk-head">
+    <div class="nk-code">{esc(code)}</div>
+    <div class="nk-name">{esc(m["nazwa"])}<span class="nk-area">{esc(m["obszar"])}</span></div>
+  </div>
+  <div class="meta">
+    <div class="mi"><span>Profil</span><b>{esc(m["profil"])}</b></div>
+    <div class="mi"><span>Target End Time</span><b>{esc(m["tet"])}</b></div>
+    <div class="mi"><span>Critical End Time</span><b>{esc(m["cet"])}</b></div>
+    <div class="mi"><span>Wersja</span><b>{esc(m["wersja"])}</b></div>
+    <div class="mi"><span>Źródło</span><b>{esc(m["zrodlo"])}</b></div>
+  </div>
+  <div class="cards">
+    <div class="card"><h5>Opis pliku</h5><p>{esc(B.html_to_text(m["opis"]))}</p></div>
+    <div class="card"><h5>Ścieżka pliku</h5><p>{esc(B.html_to_text(m["sciezka"]))}</p></div>
+    <div class="card"><h5>Kontakt w przypadku awarii</h5><p>{esc(B.html_to_text(m["kontakt"]))}</p></div>
+  </div>
+  {cat}
+</section>'''
+
+# ── sekcja: ryzyko ─────────────────────────────────────────────────────────
+def risk_html(rk):
+    impact = (rk['impact'].replace('Wpływ na IDCC:', '').strip()) if rk['impact'] else ''
+    body_parts = [p.strip() for p in (rk['body'] or '').split('\n')
+                  if p.strip() and not p.strip().startswith('Wpływ na IDCC')]
+    body = ''.join(f'<p>{esc(p)}</p>' for p in body_parts)
+    blocks = ''
+    if impact:
+        blocks += f'<div class="callout"><h5>Wpływ na IDCC</h5><p>{esc(impact)}</p></div>'
+    if body:
+        blocks += f'<h5 class="sec-h">Postępowanie</h5>{body}'
+    if rk['shortcut']:
+        blocks += f'<div class="card shortcut"><h5>Skrót</h5><p>{esc(rk["shortcut"])}</p></div>'
+    return f'''<section class="page risk" id="{esc(rk["id"])}">
+  <div class="rk-head"><span class="rk-id">{esc(rk["id"])}</span>
+    <span class="rk-title">{esc(rk["title"].split("—",1)[-1].strip())}</span></div>
+  {f'<div class="rk-meta">{esc(rk["meta"])}</div>' if rk['meta'] else ''}
+  {blocks}
+</section>'''
+
+# ── CSS ────────────────────────────────────────────────────────────────────
+CSS = '''
+@page {
+  size: A4; margin: 16mm 14mm 18mm 14mm;
+  @bottom-left { content: "Klasyfikacja: Informacja służbowa GK PSE / GK PSE Confidential";
+                 font-size: 7pt; color: #8a97a6; }
+  @bottom-right { content: "info.pdf · str. " counter(page); font-size: 7pt; color: #8a97a6; }
+}
+@page cover { margin: 0; }
+* { box-sizing: border-box; }
+body { font-family: "Helvetica Neue", Arial, sans-serif; color: #1b2733; font-size: 9.2pt; line-height: 1.45; }
+.muted { color: #8a97a6; font-style: italic; }
+
+/* COVER */
+.cover { page: cover; height: 297mm; background: linear-gradient(150deg,#02335f,#0a4f86 60%,#0c63a8);
+         color: #fff; padding: 40mm 26mm; page-break-after: always; }
+.cover .logo { font-weight: 800; font-size: 22pt; letter-spacing: 2px; }
+.cover .sub { opacity:.8; font-size: 10pt; margin-top: 4px; }
+.cover h1 { font-size: 30pt; font-weight: 700; margin: 60mm 0 6mm; line-height:1.1; }
+.cover .lead { font-size: 12pt; opacity:.9; max-width: 130mm; }
+.cover .tags { margin-top: 14mm; font-size: 9pt; opacity:.85; }
+.cover .tags b { display:inline-block; background: rgba(255,255,255,.15); padding:3px 10px;
+                 border-radius: 20px; margin-right:6px; }
+
+/* SECTION / PAGE */
+.page { page-break-before: always; }
+.nk-head { display:flex; align-items:baseline; gap:12px; border-bottom: 3px solid #0a4f86;
+           padding-bottom: 6px; margin-bottom: 10px; }
+.nk-code { font-family: "SF Mono", Menlo, monospace; font-weight:800; font-size: 17pt; color:#02335f; }
+.nk-name { font-size: 11pt; font-weight:600; color:#0a4f86; }
+.nk-area { display:block; font-size: 8.4pt; font-weight:400; color:#7a8896; margin-top:1px; }
+
+.meta { display:flex; gap:6px; margin: 0 0 10px; }
+.mi { flex:1; background:#eef4fb; border:1px solid #d7e3f0; border-radius:6px; padding:5px 8px; }
+.mi span { display:block; font-size:6.8pt; text-transform:uppercase; letter-spacing:.5px; color:#7a8896; }
+.mi b { font-size: 9.4pt; color:#1b2733; }
+
+.cards { display:flex; gap:8px; margin-bottom: 12px; }
+.card { flex:1; border:1px solid #e1e8f0; border-left:3px solid #0a4f86; border-radius:5px;
+        padding:7px 10px; background:#fbfcfe; }
+.card h5 { margin:0 0 3px; font-size:7.6pt; text-transform:uppercase; letter-spacing:.5px; color:#0a4f86; }
+.card p { margin:0; font-size:8.6pt; }
+.callout { border:1px solid #ffe1b0; background:#fff7ea; border-left:3px solid #e08a1e;
+           border-radius:5px; padding:7px 10px; margin-bottom:10px; }
+.callout h5 { margin:0 0 3px; font-size:7.6pt; text-transform:uppercase; color:#b96d0d; letter-spacing:.5px; }
+.callout p { margin:0; }
+.shortcut { border-left-color:#2e7d32; }
+
+.sec-h { font-size:10pt; color:#02335f; margin:14px 0 6px; padding-bottom:3px;
+         border-bottom:1px solid #e1e8f0; }
+.badge { background:#0a4f86; color:#fff; font-size:7.5pt; border-radius:10px; padding:1px 8px;
+         vertical-align:middle; margin-left:4px; }
+
+/* TABELA KATALOGU */
+table.cat { width:100%; border-collapse:collapse; font-size:8pt; }
+table.cat thead th { background:#02335f; color:#fff; font-size:7.6pt; text-align:left;
+                     padding:5px 6px; font-weight:600; }
+table.cat thead { display: table-header-group; }
+table.cat td { border:1px solid #dde6ef; padding:4px 6px; vertical-align:top; }
+table.cat tbody tr:nth-child(even) { background:#f6f9fc; }
+.c-nr { width:5%; text-align:center; color:#7a8896; }
+.c-st { width:22%; }
+.c-op { width:30%; }
+.c-pr { width:43%; }
+tr { page-break-inside: avoid; }
+
+/* KAFELKI */
+.kf-wrap { display:flex; flex-direction:column; gap:3px; }
+.kf { display:flex; align-items:center; gap:5px; }
+.kf-lab { font-size:7pt; color:#5a6b7a; white-space:nowrap; }
+.tile { display:inline-block; width:15px; height:13px; border-radius:3px; text-align:center;
+        line-height:13px; font-size:8px; font-weight:700; flex:none; }
+''' + tile_css() + '''
+
+/* PROCEDURY */
+.p-hdr { font-weight:700; color:#02335f; margin:3px 0 1px; }
+.p-line { margin:2px 0; }
+.p-ok { font-weight:600; color:#2e7d32; }
+ul.p-ul { margin:2px 0 2px 0; padding-left:14px; }
+ul.p-sub { margin:1px 0 1px 0; padding-left:13px; list-style:circle; }
+ul.p-ul li, ul.p-sub li { margin:1px 0; }
+
+/* RYZYKA */
+.rk-head { display:flex; align-items:baseline; gap:10px; border-bottom:3px solid #c0392b;
+           padding-bottom:6px; margin-bottom:8px; }
+.rk-id { font-family:"SF Mono",Menlo,monospace; font-weight:800; font-size:16pt; color:#c0392b; }
+.rk-title { font-size:12pt; font-weight:600; color:#1b2733; }
+.rk-meta { font-size:8pt; color:#7a8896; margin-bottom:10px; }
+.rk-divider { page-break-before: always; }
+.section-title { page-break-before: always; color:#02335f; font-size:18pt; border-bottom:3px solid #c0392b;
+                 padding-bottom:6px; }
+'''
+
+def build():
+    parts = ['<!DOCTYPE html><html lang="pl"><head><meta charset="utf-8">',
+             f'<style>{CSS}</style></head><body>']
+    # cover
+    parts.append('''<div class="cover">
+      <div class="logo">PSE</div><div class="sub">Polskie Sieci Elektroenergetyczne</div>
+      <h1>CCM — Pulpit dyspozytorski IDCC<br>Naklejki informacyjne i baza ryzyk</h1>
+      <div class="lead">Opis plików, pełny katalog stanów kafelków oraz baza ryzyk operacyjnych.
+      Kotwice: /assets/info.pdf#KOD oraz /assets/info.pdf#R05.</div>
+      <div class="tags"><b>71 plików</b><b>1414 stanów</b><b>29 ryzyk</b></div>
+    </div>''')
+    # naklejki
+    for code in B.ANCHORS:
+        parts.append(naklejka_html(code))
+    # ryzyka
+    risks = B.parse_risks()
+    parts.append('<h2 class="section-title" id="ryzyka">Ryzyka — pełna baza IDCC</h2>')
+    for rk in risks:
+        parts.append(risk_html(rk))
+    parts.append('</body></html>')
+    html = '\n'.join(parts)
+
+    out = CCM / 'info.pdf'
+    weasyprint.HTML(string=html, base_url=str(ROOT)).write_pdf(str(out))
+    # weryfikacja kotwic
+    from pypdf import PdfReader
+    nd = PdfReader(str(out)).named_destinations
+    rs = sum(1 for k in nd if k.startswith('R') and k[1:].isdigit())
+    print(f'PDF: {out}  ({out.stat().st_size:,} B)')
+    print(f'Named destinations: {len(nd)} | naklejki+ryzyka | '
+          f'FID1_831={"FID1_831" in nd} R05={"R05" in nd} ryzyk={rs}')
+
+if __name__ == '__main__':
+    build()

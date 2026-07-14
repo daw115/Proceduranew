@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>FID1-831 (AC, IDCC(a)) — stany kafelka</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 24px; line-height: 1.5; color: #222; background: #fafafa; }
+  h1 { color: #1F4E78; border-bottom: 3px solid #1F4E78; padding-bottom: 8px; }
+  h2 { color: #1F4E78; margin-top: 32px; }
+  h3 { color: #2E75B6; margin-top: 18px; margin-bottom: 6px; }
+
+  .header-info { background: #F2F7FC; padding: 14px 20px; border-left: 4px solid #1F4E78; margin: 16px 0; font-size: 0.95em; }
+
+  .toc { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 16px 24px; margin: 24px 0; }
+  .toc ol { padding-left: 24px; }
+  .toc a { text-decoration: none; color: #2E75B6; }
+  .toc a:hover { text-decoration: underline; }
+
+  .category-header { padding: 14px 20px; border-radius: 6px; margin: 32px 0 16px 0; color: white; }
+  .category-A { background: linear-gradient(90deg, #2E7D32 0%, #43A047 100%); }
+  .category-B { background: linear-gradient(90deg, #757575 0%, #9E9E9E 100%); }
+  .category-C { background: linear-gradient(90deg, #F57C00 0%, #FB8C00 100%); }
+  .category-D { background: linear-gradient(90deg, #C62828 0%, #D32F2F 100%); }
+  .category-header h2 { color: white; border: none; margin: 0; }
+  .category-header .desc { font-size: 0.92em; margin-top: 4px; opacity: 0.95; }
+
+  .state-card { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 16px 20px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .state-card.cat-A { border-left: 5px solid #2E7D32; }
+  .state-card.cat-B { border-left: 5px solid #757575; }
+  .state-card.cat-C { border-left: 5px solid #F57C00; }
+  .state-card.cat-D { border-left: 5px solid #C62828; }
+
+  .state-num { font-size: 1.1em; font-weight: bold; color: #1F4E78; }
+  .state-cat { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; margin-left: 8px; }
+  .state-cat.A { background: #C8E6C9; color: #1B5E20; }
+  .state-cat.B { background: #E0E0E0; color: #424242; }
+  .state-cat.C { background: #FFE0B2; color: #E65100; }
+  .state-cat.D { background: #FFCDD2; color: #B71C1C; }
+
+  /* Tabela kafelków — wizualizacja kolorów */
+  table.tile-row { border-collapse: collapse; margin: 10px 0; }
+  table.tile-row td { border: 1px solid #999; padding: 0; vertical-align: middle; }
+  table.tile-row th { border: 1px solid #999; padding: 6px 12px; background: #1F4E78; color: white; font-size: 0.85em; }
+
+  .tile { width: 110px; height: 32px; display: inline-block; position: relative; }
+  .tile-szary { background: #BFBFBF; }
+  .tile-pomarancz { background: #ED7D31; border: 2px solid #C55A11 !important; }
+  .tile-czerwony { background: #C00000; }
+  .tile-czerwony-excl { background: #C00000; color: white; text-align: center; line-height: 32px; font-weight: bold; font-size: 1.4em; }
+  .tile-czerwony-excl::after { content: "!"; }
+  .tile-czerwony-qmark { background: #C00000; color: white; text-align: center; line-height: 32px; font-weight: bold; font-size: 1.4em; }
+  .tile-czerwony-qmark::after { content: "?"; }
+  .tile-zielony { background: #00B050; }
+  .tile-zielony-R { background: #00B050; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-zielony-R::after { content: "R"; }
+  .tile-cz-W { background: #2E7D32; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-cz-W::after { content: "W"; }
+  .tile-cz-Wcet { background: #1B5E20; color: white; text-align: center; line-height: 32px; font-weight: bold; font-size: 0.75em; }
+  .tile-cz-Wcet::after { content: "W po CET"; }
+  .tile-fioletowy { background: #7030A0; }
+  .tile-czarny { background: #000000; }
+
+  .meaning { background: #F5F5F5; padding: 10px 14px; border-left: 3px solid #2E75B6; margin: 8px 0; font-size: 0.95em; }
+  .actions { background: #FFF9E6; padding: 10px 14px; border-left: 3px solid #F9A825; margin: 8px 0; font-size: 0.95em; }
+  .actions.ok { background: #E8F5E9; border-left-color: #2E7D32; }
+  .actions.critical { background: #FFEBEE; border-left-color: #C62828; }
+  .actions strong { color: #1F4E78; }
+
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-family: "SF Mono", Consolas, monospace; font-size: 0.88em; }
+  a { color: #2E75B6; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  table.stats { border-collapse: collapse; width: 100%; margin: 16px 0; background: white; }
+  table.stats th, table.stats td { border: 1px solid #ccc; padding: 10px 14px; text-align: left; }
+  table.stats th { background: #1F4E78; color: white; }
+
+  .definition { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 24px 0; }
+  .definition h2 { margin-top: 0; }
+
+  .back-to-top { position: fixed; bottom: 20px; right: 20px; background: #1F4E78; color: white; padding: 8px 12px; border-radius: 50%; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+  .back-to-top:hover { background: #2E75B6; }
+</style>
+</head>
+<body id="top">
+
+<h1>FID1-831 (AC, Allocation Constraints, IDCC(a)) — stany kafelka</h1>
+<div style="background:#FFF8E1;border-left:4px solid #FB8C00;padding:10px 14px;margin:12px 0;font-weight:600;">⚠ Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).</div>
+
+<div class="header-info">
+<strong>TET:</strong> 14:00 <em>(dla XBID)</em> | <strong>CET:</strong> 17:36 | <strong>Profil pulpitu:</strong> 2CCT (CCTool wyśl. + CCTool zwalid.)<br>
+<strong>Wysyłki automatyczne z ZP:</strong> <strong>v1</strong> — 13:46 (pierwsza wersja przed TET) | <strong>14:41</strong> — automat publikujący najbardziej aktualną wersję<br>
+<strong>Plik przychodzący z:</strong> ZP (zdolności przesyłowe) → <strong>wychodzący do:</strong> Core CC Tool → PuTo<br>
+<strong>Powiązane dokumenty:</strong> <a href="Ryzyka_pelna_baza_IDCC.html">Ryzyka_pelna_baza_IDCC.html</a> · <a href="Inwentarz_IDCC.md">Inwentarz_IDCC.md</a> · <a href="Karta_ryzyk_IDCC.md">Karta_ryzyk_IDCC.md</a>
+</div>
+
+<h2>Legenda kategorii</h2>
+<table class="stats">
+<tr><th>Kategoria</th><th>Liczba stanów</th><th>Charakterystyka</th><th>Działania</th></tr>
+<tr><td>🟢 <strong>A.1 — OK pozytywne automatyczne</strong></td><td>14 (#1-14)</td><td>Wszystkie kolumny zielone / fioletowe</td><td>Bez procedur; ewentualnie P06 wpis A.4</td></tr>
+<tr><td>🟢 <strong>A.2 — Ręczne znaczniki</strong></td><td>10 (#15-24)</td><td>W którejkolwiek kolumnie jest W / W po CET / R</td><td>Dyspozytor podjął decyzję — bez procedur; P06 wpis A.4</td></tr>
+<tr><td>⚪ <strong>B — Monitoring</strong></td><td>3 (#25-27)</td><td>Szary / pomarańczowy / wysyłka trwa</td><td>Czujność, bez akcji</td></tr>
+<tr><td>🟡 <strong>C — Backup wymagany</strong></td><td>10 (#28-37)</td><td>Czerwony / czerwony ? / czerwony ! bez ręcznego znacznika</td><td>Procedury z R-kodów</td></tr>
+<tr><td>🔴 <strong>D — Krytyczny</strong></td><td>1 (#38)</td><td>Czarny / czarny — po CET</td><td>Zgłoszenie, brak naprawy</td></tr>
+<tr><td><strong>Razem</strong></td><td><strong>38</strong></td><td></td><td></td></tr>
+</table>
+
+<p><strong>Zasada główna:</strong> ręczny znacznik (<code>W</code>, <code>W po CET</code>, <code>R</code>) w którejkolwiek kolumnie = Dyspozytor już wykonał interwencję / zatwierdził status = brak procedur backupowych.</p>
+
+<h2>Legenda kolorów kafelków</h2>
+<table class="tile-row" style="margin-bottom:24px;">
+<tr><th>Kolor</th><th>Wizualizacja</th><th>Znaczenie</th></tr>
+<tr><td>szary</td><td><div class="tile tile-szary"></div></td><td>plik nie wymagany (>30 min do TET)</td></tr>
+<tr><td>pomarańczowy</td><td><div class="tile tile-pomarancz"></div></td><td>zbliża się TET, plik nie dostarczony</td></tr>
+<tr><td>czerwony</td><td><div class="tile tile-czerwony"></div></td><td>CET zbliża się / błąd wysyłki / ACK negatywny</td></tr>
+<tr><td>czerwony !</td><td><div class="tile tile-czerwony-excl"></div></td><td>plik dostarczony, ale rozmiar za mały</td></tr>
+<tr><td>czerwony ?</td><td><div class="tile tile-czerwony-qmark"></div></td><td>brak ACK / proces nie skończył się w czasie</td></tr>
+<tr><td>zielony</td><td><div class="tile tile-zielony"></div></td><td>plik dostarczony, ACK pozytywny</td></tr>
+<tr><td>ciemnozielony W</td><td><div class="tile tile-cz-W"></div></td><td>ręczna wysyłka z CCM przed CET</td></tr>
+<tr><td>ciemnozielony W po CET</td><td><div class="tile tile-cz-Wcet"></div></td><td>ręczna wysyłka po CET</td></tr>
+<tr><td>zielony R</td><td><div class="tile tile-zielony-R"></div></td><td>status ręczny nadany przez Dyspozytora</td></tr>
+<tr><td>fioletowy</td><td><div class="tile tile-fioletowy"></div></td><td>dostarczone po CET, ACK pozytywny</td></tr>
+<tr><td>czarny</td><td><div class="tile tile-czarny"></div></td><td>niedostarczone, minął CET</td></tr>
+</table>
+
+<!-- =============== KATEGORIA A.1 =============== -->
+<div class="category-header category-A">
+  <h2>🟢 Kategoria A.1 — Stany OK pozytywne automatyczne (14 stanów)</h2>
+  <div class="desc">Bez procedur backupowych. Ewentualnie [P06] wpis A.4 jeśli była interwencja.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#1</span> <span class="state-cat A">A.1</span>
+<h3>Happy Day — zielony / zielony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-zielony"></div></td></tr></table>
+<div class="meaning">Plik dostarczony z ZP automatycznie, ACK pozytywny, publikacja AC do PuTo zaakceptowana.</div>
+<div class="actions ok"><strong>Działania:</strong> Brak — proces przebiegł poprawnie.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#2</span> <span class="state-cat A">A.1</span>
+<h3>zielony / zielony R</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-zielony-R"></div></td></tr></table>
+<div class="meaning">Plik dotarł, ACK oznaczono ręcznie statusem 'R' przez Dyspozytora po weryfikacji w CCCt.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z uzasadnieniem statusu 'R'.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#3</span> <span class="state-cat A">A.1</span>
+<h3>zielony / fioletowy</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-fioletowy"></div></td></tr></table>
+<div class="meaning">ACK pozytywny, ale dotarł po CET. Plik zaakceptowany z opóźnieniem.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z czasem dostarczenia.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#4</span> <span class="state-cat A">A.1</span>
+<h3>ciemnozielony W / zielony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-zielony"></div></td></tr></table>
+<div class="meaning">Plik wysłany ręcznie z CCM (PPM → Wyślij) lub przez GUI CCCt (Manual Upload) przed CET. ACK pozytywny.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z uzasadnieniem ręcznej wysyłki.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#5</span> <span class="state-cat A">A.1</span>
+<h3>ciemnozielony W / zielony R</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-zielony-R"></div></td></tr></table>
+<div class="meaning">Ręczna wysyłka przed CET + ACK ręczny 'R' po weryfikacji w CCCt.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z pełnym uzasadnieniem.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#6</span> <span class="state-cat A">A.1</span>
+<h3>ciemnozielony W / fioletowy</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-fioletowy"></div></td></tr></table>
+<div class="meaning">Ręczna wysyłka przed CET, ale ACK napłynął po CET. Proces zakończony.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#7</span> <span class="state-cat A">A.1</span>
+<h3>ciemnozielony W po CET / zielony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-zielony"></div></td></tr></table>
+<div class="meaning">Ręczna wysyłka po CET (opcja „Wyślij po CET"), ACK pozytywny. Proces zakończony po terminie.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z pełnym uzasadnieniem opóźnienia + zgłoś.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#8</span> <span class="state-cat A">A.1</span>
+<h3>ciemnozielony W po CET / zielony R</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-zielony-R"></div></td></tr></table>
+<div class="meaning">Ręczna wysyłka po CET + status ACK 'R' nadany ręcznie.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#9</span> <span class="state-cat A">A.1</span>
+<h3>ciemnozielony W po CET / fioletowy</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-fioletowy"></div></td></tr></table>
+<div class="meaning">Wszystko po CET — ręczna wysyłka po CET + ACK po CET pozytywny.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z pełnym opisem opóźnienia.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#10</span> <span class="state-cat A">A.1</span>
+<h3>zielony R / zielony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-zielony"></div></td></tr></table>
+<div class="meaning">Status wysyłki nadany ręcznie 'R' + ACK automatyczny pozytywny.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z uzasadnieniem statusu ręcznego.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#11</span> <span class="state-cat A">A.1</span>
+<h3>zielony R / zielony R</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-zielony-R"></div></td></tr></table>
+<div class="meaning">Status ręczny 'R' w obu kolumnach — proces w pełni oznaczony ręcznie po weryfikacji w CCCt.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z pełnym uzasadnieniem.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#12</span> <span class="state-cat A">A.1</span>
+<h3>zielony R / fioletowy</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-fioletowy"></div></td></tr></table>
+<div class="meaning">Status wysyłki nadany ręcznie 'R' + ACK pozytywny po CET.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#13</span> <span class="state-cat A">A.1</span>
+<h3>fioletowy / zielony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-fioletowy"></div></td><td><div class="tile tile-zielony"></div></td></tr></table>
+<div class="meaning">Plik dostarczony do CCCt po CET, ale ACK wcześniejszy pozytywny.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#14</span> <span class="state-cat A">A.1</span>
+<h3>fioletowy / fioletowy</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-fioletowy"></div></td><td><div class="tile tile-fioletowy"></div></td></tr></table>
+<div class="meaning">AC dostarczone i zwalidowane automatycznie po CET. Proces zakończony z opóźnieniem.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z czasem dostarczenia + przyczyna opóźnienia.</div>
+</div>
+
+<!-- =============== KATEGORIA A.2 =============== -->
+<div class="category-header category-A">
+  <h2>🟢 Kategoria A.2 — Stany z ręcznym znacznikiem (10 stanów)</h2>
+  <div class="desc">Dyspozytor podjął świadomą decyzję — bez procedur backupowych. P06 wpis A.4 wymagany.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#15</span> <span class="state-cat A">A.2</span>
+<h3>ciemnozielony W / czerwony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-czerwony"></div></td></tr></table>
+<div class="meaning">Ręczna wysyłka przed CET, ACK negatywny — Dyspozytor wysłał, CCCt odrzucił z kodem (typowo 20/21/30).</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 — odczytaj kod ACK, opisz przyczynę. Jeśli krytyczne — decyzja Dyspozytora o kolejnej iteracji (ponowna ręczna z v+1).</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#16</span> <span class="state-cat A">A.2</span>
+<h3>ciemnozielony W / czerwony ?</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr></table>
+<div class="meaning">Ręczna wysyłka przed CET, ACK nie napłynął w czasie — opóźnienie potwierdzenia z CCCt.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4. Monitoring (CCCt MV); jeśli sytuacja długotrwała — decyzja Dyspozytora (zgłoś jeśli CN2 zwrotny).</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#17</span> <span class="state-cat A">A.2</span>
+<h3>ciemnozielony W / czarny</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-czarny"></div></td></tr></table>
+<div class="meaning">Ręczna wysyłka przed CET, ACK nie napłynął do CET — możliwa awaria transportu zwrotnego CN2 lub plik został przyjęty bez ACK.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4. Weryfikacja w CCCt MV; jeśli Processed → ustaw ręczny 'R' i zgłoś na CCM. Jeśli rzeczywista awaria CN2 zwrotny → zgłoś.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#18</span> <span class="state-cat A">A.2</span>
+<h3>ciemnozielony W po CET / czerwony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-czerwony"></div></td></tr></table>
+<div class="meaning">Ręczna wysyłka po CET, ACK negatywny (typowo 20 gateClosed — bramka zamknięta po CET).</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z kodem ACK. Zgłoś.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#19</span> <span class="state-cat A">A.2</span>
+<h3>ciemnozielony W po CET / czerwony ?</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr></table>
+<div class="meaning">Ręczna wysyłka po CET, ACK nie napłynął w czasie (>2 min).</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4. Monitoring CCCt MV; po 2 min → status ręczny 'R' jeśli zasadne.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#20</span> <span class="state-cat A">A.2</span>
+<h3>ciemnozielony W po CET / czarny</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-czarny"></div></td></tr></table>
+<div class="meaning">Ręczna wysyłka po CET, brak ACK do końca doby.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z pełnym opisem. Zgłoś + telefon CCC; diagnostyka CN2.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#21</span> <span class="state-cat A">A.2</span>
+<h3>zielony R / czerwony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-czerwony"></div></td></tr></table>
+<div class="meaning">Status wysyłki nadany ręcznie 'R' + ACK negatywny — Dyspozytor zaznaczył jako wysłane, ale CCCt zwrócił błąd ACK.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z kodem ACK i uzasadnieniem statusu 'R'. Weryfikacja w CCCt MV; ewentualna decyzja o nowej iteracji.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#22</span> <span class="state-cat A">A.2</span>
+<h3>zielony R / czerwony ?</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr></table>
+<div class="meaning">Status wysyłki ręczny 'R' + ACK nie napłynął.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4. CCCt MV → weryfikacja; po 5 min → ustaw 'R' w obu kolumnach jeśli proces OK.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#23</span> <span class="state-cat A">A.2</span>
+<h3>zielony R / czarny</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-czarny"></div></td></tr></table>
+<div class="meaning">Status wysyłki ręczny 'R' + brak ACK do CET.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4. CCCt MV → weryfikacja statusu; diagnostyka CN2 zwrotny przy konieczności → zgłoś.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#24</span> <span class="state-cat A">A.2</span>
+<h3>czerwony ! / zielony R</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-zielony-R"></div></td></tr></table>
+<div class="meaning">Plik o niepoprawnym rozmiarze, ale status ACK ręczny 'R' przyznany przez Dyspozytora po weryfikacji w CCCt — zawartość pliku została potwierdzona jako poprawna mimo małego rozmiaru.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z uzasadnieniem (zawartość zweryfikowana mimo ostrzeżenia o rozmiarze). Zgłoś (zmiana konfiguracji minimalnego rozmiaru jeśli problem powtarza się).</div>
+</div>
+
+<!-- =============== KATEGORIA B =============== -->
+<div class="category-header category-B">
+  <h2>⚪ Kategoria B — Monitoring (3 stany)</h2>
+  <div class="desc">Bez procedur, czujność. Stan przejściowy lub przedwczesny.</div>
+</div>
+
+<div class="state-card cat-B">
+<span class="state-num">#25</span> <span class="state-cat B">B</span>
+<h3>szary / szary</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-szary"></div></td><td><div class="tile tile-szary"></div></td></tr></table>
+<div class="meaning">Plik nie wymagany — pozostało >30 min do TET. Stan normalny przed startem procesu.</div>
+<div class="actions"><strong>Działania:</strong> Brak — monitoring.</div>
+</div>
+
+<div class="state-card cat-B">
+<span class="state-num">#26</span> <span class="state-cat B">B</span>
+<h3>pomarańczowy / szary</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-pomarancz"></div></td><td><div class="tile tile-szary"></div></td></tr></table>
+<div class="meaning">Zbliża się TET (14:00) — TET dla XBID. ZP miało wysłać v1 o 13:46 — plik nie dotarł do CCM. <strong>Czujność.</strong></div>
+<div class="actions"><strong>Działania:</strong> Brak. Czujność i przygotowanie — sprawdź <a href="Ryzyka_pelna_baza_IDCC.html#R20">R20</a> (ZP gotowość), <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a> (CN2). Jeśli sytuacja się utrzyma do CET → Kategoria C (Stan 28-29).</div>
+</div>
+
+<div class="state-card cat-B">
+<span class="state-num">#27</span> <span class="state-cat B">B</span>
+<h3>czerwony ? / szary</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-czerwony-qmark"></div></td><td><div class="tile tile-szary"></div></td></tr></table>
+<div class="meaning">Wysyłka trwa — plik oddany do Connector 2.0, oczekiwanie na potwierdzenie. Stan przejściowy (~1-2 min).</div>
+<div class="actions"><strong>Działania:</strong> Brak. Czekaj 5 min; jeśli nadal czerwony ? → sprawdź <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a> CN2.</div>
+</div>
+
+<!-- =============== KATEGORIA C =============== -->
+<div class="category-header category-C">
+  <h2>🟡 Kategoria C — Backup wymagany (10 stanów)</h2>
+  <div class="desc">Stany bez ręcznego znacznika wymagające procedur backupowych z R-kodów.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#28</span> <span class="state-cat C">C</span>
+<h3>pomarańczowy / czerwony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-pomarancz"></div></td><td><div class="tile tile-czerwony"></div></td></tr></table>
+<div class="meaning">TET zbliża się + ACK negatywny z poprzedniej próby wysyłki. Sytuacja nietypowa.</div>
+<div class="actions"><strong>Procedura:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05</a> — odczytaj kod ACK; przygotuj nową wersję.<br>
+<strong>Kroki:</strong> odczytaj kod ACK (20 gateClosed → admin CCCt (zgłoś); 21 duplicatedVersion → <a href="Ryzyka_pelna_baza_IDCC.html#R20">R20</a> ZP → P01 z v+1; 30 file size → patrz Stan 32).</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#29</span> <span class="state-cat C">C</span>
+<h3>czerwony / czerwony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-czerwony"></div></td><td><div class="tile tile-czerwony"></div></td></tr></table>
+<div class="meaning">Zbliża się CET (17:36) — plik niedostarczony lub wysyłka zakończona błędem. <strong>Stan alarmowy.</strong></div>
+<div class="actions"><strong>Procedury:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R04">R04</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a>.<br>
+<strong>Kroki:</strong> CCCt MV → sprawdź czy plik jest; brak CN2 → <a href="Ryzyka_pelna_baza_IDCC.html#R20">R20</a> ZP → P02 → P01. Brak ACK >5 min → ponów z wyższą wersją.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#30</span> <span class="state-cat C">C</span>
+<h3>czerwony / czerwony ?</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-czerwony"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr></table>
+<div class="meaning">CET zbliża się + ACK w trakcie próby. <strong>Ostatnia szansa.</strong></div>
+<div class="actions"><strong>Procedury:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R04">R04</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>.<br>
+<strong>Kroki:</strong> CCCt MV → po 2 min weryfikacja; → P02 + P01; zgłoś + telefon CCC.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#31</span> <span class="state-cat C">C</span>
+<h3>czerwony ! / czerwony ?</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr></table>
+<div class="meaning">Niepoprawny rozmiar pliku + brak ACK w czasie.</div>
+<div class="actions"><strong>Procedury:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>.<br>
+<strong>Kroki:</strong> weryfikacja rozmiaru (CCM LPM → Informacje); <a href="Ryzyka_pelna_baza_IDCC.html#R20">R20</a> ZP → P02 → P01 z v+1; po 3 min CCCt MV.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#32</span> <span class="state-cat C">C</span>
+<h3>czerwony ! / czerwony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-czerwony"></div></td></tr></table>
+<div class="meaning">Niepoprawny rozmiar + ACK negatywny (typowo kod 30 file size mismatch).</div>
+<div class="actions"><strong>Procedura:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05</a> (kod 30).<br>
+<strong>Kroki:</strong> CCM LPM → Informacje → potwierdź rozmiar; <a href="Ryzyka_pelna_baza_IDCC.html#R20">R20</a> ZP → P02 → P01 z v+1. Nadal za mały → zgłoś.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#33</span> <span class="state-cat C">C</span>
+<h3>czerwony ! / fioletowy <span style="color:#C62828">(sprzeczność)</span></h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-fioletowy"></div></td></tr></table>
+<div class="meaning">Niepoprawny rozmiar + ACK po CET pozytywny. <strong>Sprzeczność</strong> — wymaga weryfikacji.</div>
+<div class="actions"><strong>Działania:</strong> P04 — pobierz z MinIO, sprawdź zawartość; zawartość OK → zgłoś (zmiana konfiguracji rozmiaru); niepoprawna → zgłoś; sprawdź czy AC w PuTo jest aktualne. Po weryfikacji można nadać zielony R → Stan 24 (Kategoria A).</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#34</span> <span class="state-cat C">C</span>
+<h3>zielony / czerwony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-czerwony"></div></td></tr></table>
+<div class="meaning">Plik dotarł do CCCt, ale ACK negatywny (Rejected). Kody najczęstsze: 20 / 21 / 30.</div>
+<div class="actions"><strong>Procedura:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05</a> — reakcja per kod ACK.<br>
+<strong>Kroki:</strong> odczytaj kod ACK (najedź na czerwony status); reakcja:
+<ul>
+<li><strong>20 gateClosed</strong> → admin CCCt (zgłoś); sprawdź <code>IDx-AC-FORWARDING</code></li>
+<li><strong>21 duplicatedVersion</strong> → <a href="Ryzyka_pelna_baza_IDCC.html#R20">R20</a> ZP → P01 z v+1</li>
+<li><strong>30 file size</strong> → P04 MinIO / P02 ZP → weryfikacja → P01</li>
+</ul></div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#35</span> <span class="state-cat C">C</span>
+<h3>zielony / czerwony ?</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr></table>
+<div class="meaning">Plik wysłany, ACK nie napłynął w przewidywanym czasie (>2-3 min). Stan oczekiwania.</div>
+<div class="actions"><strong>Procedura:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>.<br>
+<strong>Kroki:</strong> czekaj do 5 min od wysyłki; po 5 min → CCCt MV (Processed → zgłoś; Rejected → patrz Stan 34; brak wpisu → <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18 CN2</a>). ⚠ NIE wysyłać ponownie bez weryfikacji.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#36</span> <span class="state-cat C">C</span>
+<h3>zielony / czarny</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-czarny"></div></td></tr></table>
+<div class="meaning">Plik wysłany, ale ACK nie napłynął do CET. Niejasny status w CCCt.</div>
+<div class="actions"><strong>Procedury:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a>.<br>
+<strong>Kroki:</strong> CCCt MV → status; Processed → status ręczny 'R' w CCM + zgłoś → przechodzi do Stan 2 (Kategoria A); Rejected → P01 z opcją „Wyślij po CET"; brak wpisu → <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18 CN2 awaria zwrotna</a> → zgłoś. Telefon CCC.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#37</span> <span class="state-cat C">C</span>
+<h3>czerwony ! / czarny <span style="color:#C62828">(krytyczne w obrębie C)</span></h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-czarny"></div></td></tr></table>
+<div class="meaning">Niepoprawny rozmiar + brak ACK do CET. Plik nieprzyjęty, proces zatrzymany.</div>
+<div class="actions"><strong>Procedury:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a>.<br>
+<strong>Kroki:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R20">R20 ZP</a> → P02 → P01 „Wyślij po CET" (jeśli bramka jeszcze otwarta); natychmiast zgłoś + telefon CCC.</div>
+</div>
+
+<!-- =============== KATEGORIA D =============== -->
+<div class="category-header category-D">
+  <h2>🔴 Kategoria D — Krytyczny (1 stan)</h2>
+  <div class="desc">Stan terminalny — po CET, bez możliwości naprawy.</div>
+</div>
+
+<div class="state-card cat-D">
+<span class="state-num">#38</span> <span class="state-cat D">D</span>
+<h3>czarny / czarny — KRYTYCZNE</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th></tr>
+<tr><td><div class="tile tile-czarny"></div></td><td><div class="tile tile-czarny"></div></td></tr></table>
+<div class="meaning"><strong>KRYTYCZNE</strong> — minął CET (17:36), AC niedostarczone. Publikacja do PuTo nie nastąpiła. <strong>Po CET dograć już nie można</strong> — bramka zamknięta.</div>
+<div class="actions critical"><strong>Brak możliwości naprawy.</strong> Natychmiast:
+<ul>
+<li>Telefon <strong>CCC (N13)</strong> — uprzedzić o braku publikacji AC dla doby D</li>
+<li><strong>Zgłoś</strong> (CIZ, WPO, PSE-I) — incydent krytyczny</li>
+<li>[P06] wpis A.4 z pełnym opisem zdarzenia i analizą przyczyn</li>
+</ul></div>
+</div>
+
+<!-- =============== DEFINICJA PLIKU =============== -->
+<div class="definition">
+<h2>Definicja pliku FID1-831</h2>
+<p><strong>Plik:</strong> FID1-831 (AC — Allocation Constraints)</p>
+<p><strong>Plik przychodzący z:</strong> aplikacja <strong>ZP</strong> (zdolności przesyłowe) — system wewnętrzny PSE</p>
+<p><strong>Plik wychodzący do:</strong> Core CC Tool → publikacja <strong>AC do PuTo</strong> (Platforma Udostępniania Transmisyjnych)</p>
+<p><strong>Transport:</strong> Connector 2.0 (kanał <code>EDX_KAFKA_CCCTOOL-SQLNET_ZP</code>); kopia na MinIO <code>cca/ID_FBCC/in/yyyymmdd/</code></p>
+
+<h3>Budowa pliku:</h3>
+<ul>
+<li><strong>Format:</strong> XML</li>
+<li><strong>Maska nazwy:</strong> <code>rrrrMMdd-FID1-831-v*-&lt;sender&gt;-to-&lt;receiver&gt;.xml</code></li>
+<li><strong>Zawartość:</strong> wartości Allocation Constraints (ograniczenia alokacyjne) dla iteracji IDCC(a), per godzina doby handlowej</li>
+<li><strong>Struktura logiczna:</strong> TimeSeries per kierunek (np. PL→DE, DE→PL), wartość ograniczenia mocowego per godzina (MTU = 60 min)</li>
+<li><strong>Wersjonowanie:</strong> v1, v2, … (kolejna wersja musi być wyższa — sprawdzane przez CCCt, kod ACK 21 jeśli nie)</li>
+</ul>
+</div>
+
+<a href="#top" class="back-to-top">↑</a>
+
+</body>
+</html>

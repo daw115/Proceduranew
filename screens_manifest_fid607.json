@@ -1,0 +1,290 @@
+[
+  {
+    "file": "screens_fid607/state_01.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Dwa zielone kafelki bez oznaczeń literowych.",
+    "maps_to": "SUCCESS zielony (oba sl024 OK, stan bazowy poprawny)",
+    "text_visible": "(brak)",
+    "quality": "clear",
+    "caption": "Stan bazowy - oba kafelki zielone, plik GLSK poprawny."
+  },
+  {
+    "file": "screens_fid607/state_02.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy zielony pusty, prawy zielony z literą B.",
+    "maps_to": "SUCCESS zielony + znacznik B (np. obliczony/wgrany)",
+    "text_visible": "B",
+    "quality": "clear",
+    "caption": "Zielony kafelek z oznaczeniem B - sukces ze znacznikiem stanu."
+  },
+  {
+    "file": "screens_fid607/state_03.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Dwa fioletowe kafelki bez oznaczeń.",
+    "maps_to": "IN PROGRESS fioletowy (przetwarzanie/obliczanie w toku)",
+    "text_visible": "(brak)",
+    "quality": "clear",
+    "caption": "Oba kafelki fioletowe - przetwarzanie w toku."
+  },
+  {
+    "file": "screens_fid607/state_04.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Oba kafelki zielone z literą B.",
+    "maps_to": "SUCCESS zielony + znacznik B (oba)",
+    "text_visible": "B B",
+    "quality": "clear",
+    "caption": "Oba zielone kafelki ze znacznikiem B - sukces."
+  },
+  {
+    "file": "screens_fid607/state_05.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy ciemnozielony z literą W, prawy jasnozielony pusty.",
+    "maps_to": "SUCCESS aktywny (W = wysłany/wykonany) + SUCCESS zielony",
+    "text_visible": "W",
+    "quality": "clear",
+    "caption": "Ciemnozielony kafelek W (wysłany) obok jasnozielonego."
+  },
+  {
+    "file": "screens_fid607/state_06.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy ciemnozielony z literą W, prawy biały/pusty.",
+    "maps_to": "SUCCESS aktywny W (wysłany) + brak statusu (biały)",
+    "text_visible": "W",
+    "quality": "clear",
+    "caption": "Kafelek W (wysłany) obok pustego - brak statusu po prawej."
+  },
+  {
+    "file": "screens_fid607/state_07.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy ciemnozielony z W, prawy czerwony ze znakiem ?.",
+    "maps_to": "SUCCESS W (lewy) + FAILURE/oczekiwanie czerwony ? (prawy)",
+    "text_visible": "W  ?",
+    "quality": "clear",
+    "caption": "Wysłany (W) po lewej, czerwony ze znakiem zapytania po prawej - problem/oczekiwanie."
+  },
+  {
+    "file": "screens_fid607/state_08.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy ciemnozielony z W, prawy pełny czerwony.",
+    "maps_to": "SUCCESS W (lewy) + FAILURE czerwony (prawy)",
+    "text_visible": "W",
+    "quality": "clear",
+    "caption": "Wysłany (W) po lewej, błąd czerwony po prawej."
+  },
+  {
+    "file": "screens_fid607/state_09.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy ciemnozielony z W, prawy fioletowy.",
+    "maps_to": "SUCCESS W (lewy) + IN PROGRESS fioletowy (prawy)",
+    "text_visible": "W",
+    "quality": "clear",
+    "caption": "Wysłany (W) po lewej, przetwarzanie (fioletowy) po prawej."
+  },
+  {
+    "file": "screens_fid607/state_10.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy ciemnozielony z W, prawy granatowy.",
+    "maps_to": "SUCCESS W (lewy) + PENDING/zakolejkowany granatowy (prawy)",
+    "text_visible": "W",
+    "quality": "clear",
+    "caption": "Wysłany (W) po lewej, oczekujący w kolejce (granatowy) po prawej."
+  },
+  {
+    "file": "screens_fid607/state_11.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy ciemnozielony z W, prawy jasnozielony z B.",
+    "maps_to": "SUCCESS W (lewy) + SUCCESS zielony B (prawy)",
+    "text_visible": "W  B",
+    "quality": "clear",
+    "caption": "Wysłany (W) po lewej, zielony ze znacznikiem B po prawej."
+  },
+  {
+    "file": "screens_fid607/state_12.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy ciemnozielony z W*, prawy biały/pusty.",
+    "maps_to": "SUCCESS aktywny zmodyfikowany W* (lewy) + brak statusu biały (prawy)",
+    "text_visible": "W*",
+    "quality": "clear",
+    "caption": "Wysłany i zmodyfikowany (W*) po lewej, pusty po prawej."
+  },
+  {
+    "file": "screens_fid607/state_13.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy ciemnozielony z W*, prawy czerwony ze znakiem ?.",
+    "maps_to": "SUCCESS W* (lewy) + FAILURE/oczekiwanie czerwony ? (prawy)",
+    "text_visible": "W*  ?",
+    "quality": "clear",
+    "caption": "Zmodyfikowany wysłany (W*) po lewej, czerwony ze znakiem zapytania po prawej."
+  },
+  {
+    "file": "screens_fid607/state_14.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy ciemnozielony z W*, prawy pełny czerwony.",
+    "maps_to": "SUCCESS W* (lewy) + FAILURE czerwony (prawy)",
+    "text_visible": "W*",
+    "quality": "clear",
+    "caption": "Zmodyfikowany wysłany (W*) po lewej, błąd czerwony po prawej."
+  },
+  {
+    "file": "screens_fid607/state_15.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy ciemnozielony z W*, prawy fioletowy.",
+    "maps_to": "SUCCESS W* (lewy) + IN PROGRESS fioletowy (prawy)",
+    "text_visible": "W*",
+    "quality": "clear",
+    "caption": "Zmodyfikowany wysłany (W*) po lewej, przetwarzanie (fioletowy) po prawej."
+  },
+  {
+    "file": "screens_fid607/state_16.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy ciemnozielony z W*, prawy granatowy.",
+    "maps_to": "SUCCESS W* (lewy) + PENDING/zakolejkowany granatowy (prawy)",
+    "text_visible": "W*",
+    "quality": "clear",
+    "caption": "Zmodyfikowany wysłany (W*) po lewej, oczekujący (granatowy) po prawej."
+  },
+  {
+    "file": "screens_fid607/state_17.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy jasnozielony z B, prawy biały/pusty.",
+    "maps_to": "SUCCESS zielony B (lewy) + brak statusu biały (prawy)",
+    "text_visible": "B",
+    "quality": "clear",
+    "caption": "Zielony ze znacznikiem B po lewej, pusty po prawej."
+  },
+  {
+    "file": "screens_fid607/state_18.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy jasnozielony z B, prawy czerwony ze znakiem ?.",
+    "maps_to": "SUCCESS zielony B (lewy) + FAILURE/oczekiwanie czerwony ? (prawy)",
+    "text_visible": "B  ?",
+    "quality": "clear",
+    "caption": "Zielony B po lewej, czerwony ze znakiem zapytania po prawej."
+  },
+  {
+    "file": "screens_fid607/state_19.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy jasnozielony z B, prawy granatowy.",
+    "maps_to": "SUCCESS zielony B (lewy) + PENDING/zakolejkowany granatowy (prawy)",
+    "text_visible": "B",
+    "quality": "clear",
+    "caption": "Zielony B po lewej, oczekujący (granatowy) po prawej."
+  },
+  {
+    "file": "screens_fid607/state_20.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy czerwony ze znakiem !, prawy jasnozielony z B.",
+    "maps_to": "FAILURE/alert czerwony ! (lewy) + SUCCESS zielony B (prawy)",
+    "text_visible": "!  B",
+    "quality": "clear",
+    "caption": "Błąd/alert (czerwony !) po lewej, zielony B po prawej."
+  },
+  {
+    "file": "screens_fid607/state_21.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Dwa szare/wyłączone kafelki bez oznaczeń.",
+    "maps_to": "DISABLED/nieaktywny szary (brak danych, kafelek wyłączony)",
+    "text_visible": "(brak)",
+    "quality": "clear",
+    "caption": "Oba kafelki szare - stan nieaktywny/wyłączony."
+  },
+  {
+    "file": "screens_fid607/state_22.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Dwa pełne czerwone kafelki bez oznaczeń.",
+    "maps_to": "FAILURE czerwony (oba - błąd po obu stronach)",
+    "text_visible": "(brak)",
+    "quality": "clear",
+    "caption": "Oba kafelki czerwone - błąd/awaria po obu stronach."
+  },
+  {
+    "file": "screens_fid607/state_23.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy czerwony ze znakiem !, prawy czerwony ze znakiem ?.",
+    "maps_to": "FAILURE czerwony ! (lewy) + FAILURE/oczekiwanie czerwony ? (prawy)",
+    "text_visible": "!  ?",
+    "quality": "clear",
+    "caption": "Czerwony alert (!) po lewej, czerwony ze znakiem zapytania po prawej."
+  },
+  {
+    "file": "screens_fid607/state_24.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy czerwony ze znakiem !, prawy pełny czerwony.",
+    "maps_to": "FAILURE czerwony ! (lewy) + FAILURE czerwony (prawy)",
+    "text_visible": "!",
+    "quality": "clear",
+    "caption": "Czerwony alert (!) po lewej, błąd czerwony po prawej."
+  },
+  {
+    "file": "screens_fid607/state_25.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy czerwony ze znakiem !, prawy fioletowy.",
+    "maps_to": "FAILURE czerwony ! (lewy) + IN PROGRESS fioletowy (prawy)",
+    "text_visible": "!",
+    "quality": "clear",
+    "caption": "Czerwony alert (!) po lewej, przetwarzanie (fioletowy) po prawej."
+  },
+  {
+    "file": "screens_fid607/state_26.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy jasnozielony pusty, prawy pełny czerwony.",
+    "maps_to": "SUCCESS zielony (lewy) + FAILURE czerwony (prawy)",
+    "text_visible": "(brak)",
+    "quality": "clear",
+    "caption": "Zielony po lewej, błąd czerwony po prawej."
+  },
+  {
+    "file": "screens_fid607/state_27.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy jasnozielony pusty, prawy czerwony ze znakiem ?.",
+    "maps_to": "SUCCESS zielony (lewy) + FAILURE/oczekiwanie czerwony ? (prawy)",
+    "text_visible": "?",
+    "quality": "clear",
+    "caption": "Zielony po lewej, czerwony ze znakiem zapytania po prawej."
+  },
+  {
+    "file": "screens_fid607/state_28.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy jasnozielony pusty, prawy granatowy.",
+    "maps_to": "SUCCESS zielony (lewy) + PENDING/zakolejkowany granatowy (prawy)",
+    "text_visible": "(brak)",
+    "quality": "clear",
+    "caption": "Zielony po lewej, oczekujący (granatowy) po prawej."
+  },
+  {
+    "file": "screens_fid607/state_29.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy czerwony ze znakiem !, prawy granatowy.",
+    "maps_to": "FAILURE czerwony ! (lewy) + PENDING/zakolejkowany granatowy (prawy)",
+    "text_visible": "!",
+    "quality": "clear",
+    "caption": "Czerwony alert (!) po lewej, oczekujący (granatowy) po prawej."
+  },
+  {
+    "file": "screens_fid607/state_30.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy fioletowy, prawy pełny czerwony.",
+    "maps_to": "IN PROGRESS fioletowy (lewy) + FAILURE czerwony (prawy)",
+    "text_visible": "(brak)",
+    "quality": "clear",
+    "caption": "Przetwarzanie (fioletowy) po lewej, błąd czerwony po prawej."
+  },
+  {
+    "file": "screens_fid607/state_31.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Lewy fioletowy, prawy granatowy.",
+    "maps_to": "IN PROGRESS fioletowy (lewy) + PENDING/zakolejkowany granatowy (prawy)",
+    "text_visible": "(brak)",
+    "quality": "clear",
+    "caption": "Przetwarzanie (fioletowy) po lewej, oczekujący (granatowy) po prawej."
+  },
+  {
+    "file": "screens_fid607/state_32.png",
+    "screen": "kafelek GLSK - status",
+    "shows": "Dwa granatowe kafelki bez oznaczeń.",
+    "maps_to": "PENDING/zakolejkowany granatowy (oba - oczekiwanie po obu stronach)",
+    "text_visible": "(brak)",
+    "quality": "clear",
+    "caption": "Oba kafelki granatowe - oczekiwanie/zakolejkowanie po obu stronach."
+  }
+]

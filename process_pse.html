@@ -1,0 +1,181 @@
+<h3 id="proc-pse">PSE/TSO — zakres odpowiedzialności i pliki wejściowe</h3>
+
+<h4>Zakres odpowiedzialności PSE</h4>
+<p>W procesie IDCC po stronie PSE jako TSO leżą następujące zadania:</p>
+<ul>
+  <li>dostarczenie IGM do RCC (serwer Swissgrid) przed target run DACF/IDCF;</li>
+  <li>dostarczenie CB (FIDx-617) i GLSK (FIDx-607) do CCCt w fazie TSO Data Gathering;</li>
+  <li>monitoring poprawnego utworzenia paczek FBA i ATC w CCM;</li>
+  <li>monitoring automatycznego uruchomienia obliczeń FBA w Perun4V;</li>
+  <li>monitoring publikacji wyników FBA do CCCt i MinIO;</li>
+  <li>monitoring wyniku walidacji ATC (FIDx-928) w CCM;</li>
+  <li>monitoring automatycznej IVA BACKUP oraz ocena, czy logika publikacji odpowiada stanowi obliczeń Perun4V;</li>
+  <li>publikacja AC (FIDx-831) do PuTo jako wynik procesu;</li>
+  <li>wykonanie działań backupowych wyłącznie w zakresie dopuszczonym niniejszą procedurą.</li>
+</ul>
+<p><strong>Ograniczenia odpowiedzialności PSE:</strong> PSE nie steruje fazami centralnymi procesu, nie wykonuje czynności należących do CCC oraz nie rozbudowuje ręcznie procesu ATC poza ewentualnym uzupełnieniem brakujących danych do paczki wejściowej.</p>
+
+<h4>Dostarczenie IGM (DACF/IDCF)</h4>
+<p>Dla iteracji IDCC(b), IDCC(c), IDCC(d) PSE musi dostarczyć IGM (Individual Grid Model) do RCC przed target run DACF/IDCF. IGM jest podstawą do utworzenia CGM (Common Grid Model) przez RCC. Brak IGM lub opóźnienie w dostarczeniu powoduje fallback na starszy CGM lub awarię procesu. Obowiązek ten nie występuje w iteracji IDCC(a).</p>
+
+<p><strong>Harmonogram dostarczenia IGM</strong></p>
+<table class="ref">
+  <thead>
+    <tr><th>Iteracja</th><th>Model CGM</th><th>Target run RCC</th><th>Deadline IGM PSE</th><th>Deadline CGM do CCCt</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>IDCC(a)</td><td>—</td><td>—</td><td>Nie dotyczy</td><td>—</td></tr>
+    <tr><td>IDCC(b)</td><td>DACF (Combined)</td><td>D-1 20:19</td><td>D-1 ~18:00–20:19</td><td>D-1 20:22</td></tr>
+    <tr><td>IDCC(c)</td><td>IDCF</td><td>D 02:15</td><td>D ~01:45–02:15</td><td>D 02:18</td></tr>
+    <tr><td>IDCC(d)</td><td>IDCF</td><td>D 07:15</td><td>D ~06:45–07:15</td><td>D 07:18</td></tr>
+  </tbody>
+</table>
+
+<p><strong>Proces dostarczenia IGM</strong></p>
+<ol>
+  <li>PSE przygotowuje IGM na podstawie aktualnego stanu sieci, prognoz obciążenia i planowanych wyłączeń:
+    <ul>
+      <li>IDCC(b): ręcznie przez Kreator2DAF&amp;DACF_CGMES;</li>
+      <li>IDCC(c-d): automatycznie przez Monitor + KreatorIDCF_CGMES.</li>
+    </ul>
+  </li>
+  <li>IGM jest dostarczany na serwer Swissgrid, z którego pobiera go TSCNET (RCC odpowiedzialny za PSE).</li>
+  <li>TSCNET merguje IGM-y wszystkich TSO w swojej strefie odpowiedzialności i tworzy CGM.</li>
+  <li>Coreso (jako Merging Entity) łączy CGM-y TSCNET i Coreso w Combined DACF (dla IDCC(b)) lub używa TSCNET IDCF (dla IDCC(c-d)).</li>
+  <li>Coreso dostarcza merging package (CGM, AAC Grid Model, Merging Response, X-nodes) do CCCt.</li>
+</ol>
+
+<p><strong>Fallback przy braku CGM</strong></p>
+<p>Jeżeli Combined DACF nie jest dostępny (IDCC(b)), stosuje się następującą kolejność fallbacku:</p>
+<ol>
+  <li>Coreso DACF — jeżeli dostępny, używany jako backup;</li>
+  <li>TSCNET DACF — jeżeli Coreso DACF niedostępny;</li>
+  <li>Automatyczny fallback CCCt — jeżeli żaden CGM nie jest dostępny, CCCt używa ostatniego dostępnego CGM lub DA Domain jako fallback.</li>
+</ol>
+<p>Dla IDCC(c–d): jeżeli TSCNET IDCF z target run nie jest dostępny, używany jest CGM z poprzedniego IDCF run.</p>
+<p><strong>Monitoring CGM w CCM:</strong> po dostarczeniu CGM przez Coreso dyspozytor PSE powinien zweryfikować w CCM pojawienie się plików: IDx-613 (CGM), IDx-615 (Merging Response), IDx-751 (AAC Grid Model), IDx-752 (X-nodes). Monitoring jakości CGM (DQC) jest odpowiedzialnością RCC.</p>
+
+<h4>TSO Data Gathering</h4>
+<p>Faza TSO Data Gathering występuje przed fazą Individual Validation w iteracjach IDCC(b), IDCC(c), IDCC(d). PSE dostarcza do CCCt pliki wejściowe niezbędne do Initial FB Computation. Brak dostarczenia obowiązkowych plików (CB, GLSK) powoduje zastosowanie automatycznego replacement lub fallback na DA Domain.</p>
+
+<p><strong>Harmonogram TSO Data Gathering</strong></p>
+<table class="ref">
+  <thead>
+    <tr><th>Iteracja</th><th>Target Start Time</th><th>Target End Time</th><th>Critical End Time</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>IDCC(b)</td><td>D-1 ~20:30</td><td>D-1 ~20:50</td><td>D-1 ~21:00</td></tr>
+    <tr><td>IDCC(c)</td><td>D ~02:30</td><td>D ~02:50</td><td>D ~03:00</td></tr>
+    <tr><td>IDCC(d)</td><td>D ~07:30</td><td>D ~07:50</td><td>D ~08:00</td></tr>
+  </tbody>
+</table>
+<p>Czasy referencyjne; wiążące są aktualne parametry w HLBP CCCt 4.2 v1.</p>
+
+<p><strong>Pliki dostarczane przez PSE w TSO Data Gathering</strong></p>
+<table class="ref">
+  <thead>
+    <tr><th>Plik</th><th>Kod</th><th>Obligatoryjność</th><th>Kanał</th><th>Opis</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>CB file (CBCORA)</td><td>FIDx-617</td><td>MANDATORY</td><td>ECP/EDX lub CCCt GUI</td><td>Critical Branches — lista CNEC-ów PSE w formacie XML lub XLSX (z konwerterem CCCt)</td></tr>
+    <tr><td>GLSK file</td><td>FIDx-607</td><td>MANDATORY</td><td>ECP/EDX lub CCCt GUI</td><td>Generation Load Shift Keys — klucze przesunięcia generacji dla strefy PL</td></tr>
+  </tbody>
+</table>
+
+<p><strong>Monitoring po zamknięciu bramki TSO Data Gathering:</strong> po zamknięciu bramki (Critical End Time) CCCt dystrybuuje do PSE pliki zwrotne:</p>
+<ul>
+  <li>Merged CB — scalony plik CNEC-ów wszystkich TSO;</li>
+  <li>Merged GLSK — scalony plik GLSK.</li>
+</ul>
+
+<h4>Plik CB (FIDx-617)</h4>
+<p>Plik CB (Critical Branch / CBCORA) zawiera listę CNEC-ów (Critical Network Element and Contingency) zdefiniowanych przez PSE. Każdy CNEC to kombinacja:</p>
+<ul>
+  <li>CNE — Critical Network Element (linia, kabel, transformator w obszarze kontrolnym PSE);</li>
+  <li>Contingency — zdarzenie awaryjne (N-1, N-2, busbar fault) monitorowane dla danego CNE;</li>
+  <li>Remedial Actions — środki zaradcze (kosztowe i bezkosztowe) dostępne dla danego CNEC.</li>
+</ul>
+
+<p><strong>Format pliku.</strong> PSE może dostarczyć plik CB w dwóch formatach:</p>
+<ul>
+  <li>XML — format natywny CCCt; wysyłany przez ECP/EDX lub CCCt GUI;</li>
+  <li>XLSX — format arkusza kalkulacyjnego; konwertowany do XML przez CCCt CBCORA Converter (dostępny w CCCt GUI lub REST API).</li>
+</ul>
+
+<p><strong>Kluczowe atrybuty CNEC w pliku CB</strong></p>
+<table class="ref">
+  <thead>
+    <tr><th>Atrybut</th><th>Opis</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>CBCO ID</td><td>Identyfikator CNEC; konwencja: PL_CBCO_XXXXX (5 cyfr) dla wewnętrznych CNEC PSE</td></tr>
+    <tr><td>CO ID</td><td>Identyfikator Contingency; musi być zgodny z CO Dictionary; konwencja: PL_CO_XXXXX</td></tr>
+    <tr><td>CNEC flag</td><td>true / false — czy dany NEC jest używany w capacity calculation</td></tr>
+    <tr><td>TSO</td><td>Lokalizacja TSO (PL dla PSE)</td></tr>
+    <tr><td>Time from / Time to</td><td>Zakres czasowy (HH:00) gdy NE jest brany pod uwagę</td></tr>
+    <tr><td>Direction</td><td>DIRECT / OPPOSITE — kierunek przepływu</td></tr>
+    <tr><td>FRM</td><td>Flow Reliability Margin (wg ID CCM art. 10)</td></tr>
+    <tr><td>Imax type</td><td>fixed / seasonal / dynamic — typ limitu prądowego</td></tr>
+    <tr><td>Temporary / Permanent Imax</td><td>Wartości limitu prądowego (A) lub współczynnik mnożnikowy</td></tr>
+    <tr><td>UCT Node From / To</td><td>Kody UCT węzłów (7 lub 8 znaków)</td></tr>
+    <tr><td>Order Code / Element Name</td><td>Identyfikator elementu w CGM</td></tr>
+    <tr><td>NE EIC code</td><td>Kod EIC elementu sieciowego (obowiązkowy)</td></tr>
+  </tbody>
+</table>
+
+<p><strong>Generowanie pliku CB przez PSE.</strong> Plik CB (CBCORA) dla procesu IDCC jest generowany automatycznie przez narzędzia PSE:</p>
+<ul>
+  <li>IDCC(b) — plik CB generowany przez Kreator2DAF&amp;DACF_CGMES na podstawie IGM wysłanych do procesu DACF;</li>
+  <li>IDCC(c) i IDCC(d) — plik CB generowany przez KreatorIDCF_CGMES na podstawie IGM wysłanych do procesu IDCF.</li>
+</ul>
+
+<p><strong>Proces dostarczenia CB</strong></p>
+<ol>
+  <li>PSE przygotowuje plik CB w formacie XLSX lub XML na podstawie aktualnej listy CNEC-ów (generowany przez Kreator2DAF&amp;DACF_CGMES/KreatorIDCF_CGMES).</li>
+  <li>Jeżeli plik jest w XLSX — konwersja do XML przez CCCt CBCORA Converter (GUI lub REST API).</li>
+  <li>Wysyłka pliku FIDx-617 do CCCt przez ECP/EDX lub CCCt GUI (Message Viewer).</li>
+  <li>CCCt wykonuje walidację pliku i zwraca ACK (pozytywny lub negatywny).</li>
+  <li>Po zamknięciu bramki TSO Data Gathering CCCt dystrybuuje Merged CB — PSE sprawdza poprawność scalenia.</li>
+</ol>
+<p><strong>Replacement strategy dla CB:</strong> jeżeli PSE nie dostarczy pliku CB lub plik zawiera błędy uniemożliwiające proces, CCCt może zastosować automatyczny replacement — użycie pliku CB z poprzedniego dnia lub dnia referencyjnego (wg konfiguracji PSE). Jeżeli replacement nie jest możliwy, proces przechodzi do fallbacku na DA Domain.</p>
+
+<h4>Plik GLSK (FIDx-607)</h4>
+<p>Plik GLSK (Generation Load Shift Key) definiuje, jak zmiana net position strefy przetargowej PL jest mapowana na jednostki wytwórcze lub obciążenia wewnątrz tej strefy. GLSK zawiera relację między zmianą net position a zmianą mocy każdej jednostki wytwórczej/obciążenia.</p>
+
+<p><strong>Zasady tworzenia GLSK</strong></p>
+<ul>
+  <li>GLSK ma na celu dostarczenie najlepszej prognozy wpływu zmiany net position na critical branches, uwzględniając operacyjną wykonalność reference production program.</li>
+  <li>GLSK obejmuje jednostki rynkowe (market-driven) i elastyczne: gaz/olej, hydro, pumped-storage, węgiel kamienny.</li>
+  <li>PSE może dodatkowo uwzględnić mniej elastyczne jednostki (np. jądrowe) lub obciążenia, jeżeli nie ma wystarczającej elastycznej generacji lub chce moderować wpływ elastycznych jednostek.</li>
+  <li>Wartości GLSK mogą się różnić dla każdej godziny i są podane w jednostkach bezwymiarowych (np. 0.05 = 5% zmiany net position realizowane przez daną jednostkę).</li>
+</ul>
+
+<p><strong>Replacement strategy dla GLSK.</strong> Jeżeli plik GLSK nie jest dostarczony lub zawiera błędy, CCCt zastosuje automatyczny replacement wg następującej logiki:</p>
+<ol>
+  <li>Ostatni ważny plik GLSK z procesu DA (tego samego dnia);</li>
+  <li>Plik GLSK z poprzedniego dnia;</li>
+  <li>Plik GLSK z dnia referencyjnego (wg konfiguracji PSE):
+    <ul>
+      <li>Niedziela → poprzednia niedziela;</li>
+      <li>Sobota → poprzednia sobota;</li>
+      <li>Poniedziałek → poprzedni piątek;</li>
+      <li>Wtorek–piątek → poprzedni dzień roboczy;</li>
+      <li>Święto → ostatnia niedziela.</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>Generowanie pliku GLSK przez PSE.</strong> Plik GLSK dla procesu IDCC jest generowany automatycznie przez narzędzia PSE:</p>
+<ul>
+  <li>IDCC(b) — plik GLSK generowany przez Kreator2DAF&amp;DACF_CGMES na podstawie IGM wysłanych do procesu DACF;</li>
+  <li>IDCC(c) i IDCC(d) — plik GLSK generowany przez KreatorIDCF_CGMES na podstawie IGM wysłanych do procesu IDCF.</li>
+</ul>
+
+<p><strong>Proces dostarczenia GLSK</strong></p>
+<ol>
+  <li>PSE przygotowuje plik GLSK w formacie XML na podstawie aktualnej prognozy generacji i obciążenia (generowany przez Kreator2DAF&amp;DACF_CGMES/KreatorIDCF_CGMES).</li>
+  <li>Wysyłka pliku FIDx-607 do CCCt przez ECP/EDX lub CCCt GUI.</li>
+  <li>CCCt wykonuje walidację pliku i zwraca ACK.</li>
+  <li>Po zamknięciu bramki CCCt dystrybuuje Merged GLSK — PSE sprawdza poprawność scalenia.</li>
+</ol>
+<p><strong>Pre-merge GLSK dla strefy DE:</strong> dla strefy przetargowej DE (Niemcy) CCCt wykonuje automatyczny pre-merge indywidualnych plików GLSK od 4 niemieckich TSO (50Hertz, Amprion, TenneT DE, TransnetBW) do wspólnego GLSK DE wg współczynników pre-merge. PSE dostarcza jeden plik GLSK dla strefy PL.</p>

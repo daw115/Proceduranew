@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Inwentarz IDCC — Master Reference</title>
+  <style>
+
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+  <style type="text/css">body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; max-width: 1100px; margin: 0 auto; padding: 24px; line-height: 1.55; color: #172B4D; background: #fafafa; }
+h1 { color: #1F4E78; border-bottom: 3px solid #1F4E78; padding-bottom: 8px; }
+h1#1.-narzędzia, h1[id^="1."], h1[id^="2."], h1[id^="3."], h1[id^="4."], h1[id^="5."], h1[id^="6."], h1[id^="7."] { background: linear-gradient(90deg,#1F4E78,#2E75B6); color:white; padding:10px 16px; border-radius:6px; border:none; }
+h2 { color: #1F4E78; border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-top: 28px; }
+h3 { color: #2E75B6; margin-top: 20px; background:#F2F7FC; padding:6px 12px; border-left:4px solid #2E75B6; border-radius:0 4px 4px 0; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0; background: white; }
+th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; vertical-align: top; }
+th { background: #1F4E78; color: white; }
+tr:nth-child(even) { background: #f8f8f8; }
+code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-family: "SF Mono", Consolas, monospace; font-size: 0.9em; }
+a { color: #0052CC; text-decoration: none; }
+a:hover { text-decoration: underline; }
+blockquote { background:#FFF9E6; border-left:4px solid #F9A825; padding:10px 16px; margin:12px 0; }
+:target { background: #FFF3CD; padding: 4px; border-radius: 4px; animation: highlight 2s ease; }
+@keyframes highlight { from { background:#FFE082; } to { background:#FFF3CD; } }
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Inwentarz IDCC — Master Reference</h1>
+</header>
+<h1 id="inwentarz-idcc-master-reference">Inwentarz IDCC — Master
+Reference</h1>
+<div style="background:#FFF8E1;border-left:4px solid #FB8C00;padding:10px 14px;margin:12px 0;font-weight:600;">⚠ Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).</div>
+<blockquote>
+<p><strong>Cel:</strong> Jeden dokument referencyjny agregujący
+narzędzia, ryzyka, stany kafelków, procedury i buckety MinIO dla całego
+procesu IDCC. Inne dokumenty (karty FID, karty stanów) linkują tu jako
+master source.</p>
+</blockquote>
+<p><strong>Źródła pierwotne:</strong> - HTML procedura IDCC
+(FBA_TSO_IDCC v1.0 FINAL DRAFT) - FBA_TSO_BUP_03 — Walidacja domeny FBA
+v0.31 (BUP DA) - FBA_TSO_NOR_03 — Walidacja domeny FBA v0.21 (NOR DA) -
+CCM Instrukcja Użytkownika Dyspozytora v2.6 - Confluence „ID FB CC
+Zawartość opisów biznesowych do podpowiedzi na pulpicie dyspozytorskim
+dla pozycji IVA i IVA Backup” v.X - AC manuall ZP.docx</p>
+<hr />
+<h2 id="spis-treści">Spis treści</h2>
+<ol type="1">
+<li><a href="#tools">Narzędzia</a> — N01–N22 (wewnętrzne PSE,
+zewnętrzne, zgłoszenie)</li>
+<li><a href="#states">Stany kafelków</a> — legenda + macierze per profil
+(3COL, 2CCT, 2MS, MIN, SFTP)</li>
+<li><a href="#risks">Ryzyka uniwersalne U01–U23</a> — definicje +
+mapowanie źródeł</li>
+<li><a href="#procedures">Procedury P01–P06</a> — działania backupowe +
+procedury narzędziowe (krok po kroku)</li>
+<li><a href="#buckets">Buckety MinIO</a> — pełna mapa lokalizacji
+plików</li>
+<li><a href="#matrix">Mapa relacji</a> — narzędzie ↔︎ ryzyko ↔︎
+procedura</li>
+<li><a href="#todo">TODO — do dopytania</a></li>
+</ol>
+<hr />
+<p><a id="tools"></a> # 1. Narzędzia</p>
+<h2 id="a.-wewnętrzne-pse">1.A. Wewnętrzne PSE</h2>
+<p><a id="N01"></a> ### N01 — CCM (Capacity Calculation Monitoring) -
+<strong>URL:</strong> https://ccm.spsm.pse.pl -
+<strong>Funkcja:</strong> główny pulpit dyspozytorski; monitoring
+statusów wszystkich kafelków IDCC; ręczna wysyłka plików (PPM → Wyślij);
+ustawianie statusu ręcznego ‘R’; opcja „Wyślij po CET” -
+<strong>Pulpity:</strong> <em>„IDCC FB Pulpit dyspozytorski”</em>,
+<em>„IDCC (do 3C) z ATC i SFTP Pulpit dyspozytorski”</em> -
+<strong>Tryby odświeżania:</strong> ultraszybki (10s) / szybki (30s) /
+wolny (5 min) - <strong>Powiązane ryzyko:</strong> <a href="#U01">U01</a> (brak dostępu) - <strong>Procedury:</strong>
+ustawianie statusu ręcznego — patrz <a href="#proc-ccm">Logowanie i
+nawigacja w CCM</a></p>
+<p><a id="N02"></a> ### N02 — Core CC Tool (CCCt) -
+<strong>URL:</strong> (zewnętrzny URL CCCt — zgodnie z aktualną
+konfiguracją) - <strong>Funkcja:</strong> system centralny procesu;
+Message Viewer (status pliku, kody ACK); Manual Upload (ręczna wysyłka
+pliku z dysku); publikacja wyników do PuTo - <strong>Selektor
+procesu:</strong> <code>ID1</code>, <code>ID2</code>, <code>ID3C</code>,
+<code>ID3</code> <em>(IDCC)</em> vs domyślny <code>DA</code>
+<em>(Day-Ahead)</em> - <strong>Powiązane ryzyko:</strong> <a href="#U02">U02</a> (brak dostępu) - <strong>Procedury:</strong> <a href="#proc-cct">Logowanie i nawigacja w Core CC Tool</a>, <a href="#P01">P01</a> Manual Upload</p>
+<p><a id="N03"></a> ### N03 — Perun4V - <strong>URL:</strong>
+https://lccv.tscnet.eu - <strong>Funkcja:</strong> narzędzie walidacji
+FBA — wykonuje obliczenia IVA dla danej doby; pokazuje status obliczeń
+(Successful / ERR-I / Process failed); umożliwia ręczne uruchomienie
+procesu - <strong>Logowanie:</strong> Local Login → username/password →
+akceptacja TSCNET Policy - <strong>Powiązane ryzyko:</strong> <a href="#U05">U05</a> (brak dostępu) - <strong>Procedury:</strong> <a href="#proc-perun">Logowanie i nawigacja w Perun4V</a>, <a href="#P03">P03</a> Ręczne uruchomienie obliczeń</p>
+<p><a id="N04"></a> ### N04 — MinIO - <strong>URL:</strong>
+https://minio-gui.pse.pl - <strong>Funkcja:</strong> centralne
+repozytorium plików procesowych w sieci PSE; buckety:
+<code>perun/</code>, <code>cca/</code>, <code>mam/</code> -
+<strong>Powiązane ryzyko:</strong> <a href="#U04">U04</a> (brak dostępu)
+- <strong>Procedury:</strong> <a href="#proc-minio">Logowanie i
+nawigacja w MinIO</a>, <a href="#P04">P04</a> Pobranie z MinIO</p>
+<p><a id="N05"></a> ### N05 — Connector 2.0 (CN2) -
+<strong>Lokalizacja:</strong> narzędzie transportowe działa w tle -
+<strong>Funkcja:</strong> główny kanał transportu plików w PSE: CCM ↔︎
+CCCt ↔︎ MinIO ↔︎ Perun4V - <strong>Stworzony przez:</strong> PSE Innowacje
+- <strong>Powiązane ryzyko:</strong> <a href="#U03">U03</a> (awaria,
+obejmuje też scalone U18 — Connector nie kopiuje do bucketów)</p>
+<p><a id="N06"></a> ### N06 — ZP (zdolności przesyłowe) -
+<strong>Lokalizacja:</strong> aplikacja desktop na komputerze
+dyspozytorskim - <strong>Funkcja:</strong> źródło plików <strong>AC
+(FIDx-831)</strong> dla iteracji IDCC; bilans AC; generowanie nowych
+wersji - <strong>Powiązane ryzyko:</strong> <a href="#U06">U06</a> (brak
+dostępu / brak wersji) - <strong>Procedury:</strong> <a href="#proc-zp">Logowanie i nawigacja w ZP</a>, <a href="#P02">P02</a>
+Pobranie z ZP</p>
+<p><a id="N07"></a> ### N07 — KreatorDACF&amp;2DAF_CGMES -
+<strong>Lokalizacja:</strong> aplikacja PSE / PLANS -
+<strong>Funkcja:</strong> generator IGM (Individual Grid Model) i plików
+wejściowych — <strong>dla iteracji IDCC(b)</strong>: FID2-607 (GLSK),
+FID2-617 (CBCORA) - <strong>Powiązane ryzyko:</strong> <a href="#U06">U06</a> (brak dostępu / błąd generowania)</p>
+<p><a id="N08"></a> ### N08 — KreatorIDCF_CGMES -
+<strong>Lokalizacja:</strong> aplikacja PSE / PLANS -
+<strong>Funkcja:</strong> dla iteracji <strong>IDCC(c),
+IDCC(d), IDCC(e)</strong> generuje modele IGM/CGM oraz pliki GLSK (FIDx-607), CBCORA (FIDx-617) i RA (środki zaradcze); publikacja przez <strong>Publikuj Connector</strong> -
+<strong>Procedura ręczna (backup) ze screenami:</strong> <a href="Procedura_KreatorIDCF_GLSK_CBCORA.html">Generowanie GLSK + CBCORA + RA w KreatorIDCF</a> (gdy auto-skrypt Monitora zgłosi BŁĄD) -
+<strong>Pełna instrukcja narzędzia:</strong> <code>IDCF_InstrUżytk_v5</code> -
+<strong>Powiązane ryzyko:</strong> <a href="#U06">U06</a></p>
+<p><a id="N09"></a> ### N09 — CCA (Capacity Calculation Application) -
+<strong>Lokalizacja:</strong> aplikacja wewnętrzna PSE -
+<strong>Funkcja:</strong> generowanie raportów walidacyjnych,
+<strong>IVA BACKUP</strong> (publikacja do
+<code>cca/ID_FBCC/out/[BD]/</code>), automatyczne wysyłki backupowe do
+CCCt - <strong>Powiązane ryzyko:</strong> <a href="#U19">U19</a>
+(niezgodność wersji IVA/Backup), <a href="#U23">U23</a> (brak raportu
+CCA), <a href="#U03">U18 scalone z U03</a> (Connector nie kopiuje IVA do
+bucketów CCA) - <strong>Zgłoszenie:</strong> <a href="#N21">Zespół
+utrzymania CCA N21</a></p>
+<p><a id="N10"></a> ### N10 — PuTo (Platforma Udostępniania
+Transmisyjnych) - <strong>Lokalizacja:</strong> wewnętrzny system PSE -
+<strong>Funkcja:</strong> docelowy odbiorca pliku <strong>AC
+(FIDx-831)</strong> po publikacji przez Core CC Tool jako wynik
+IDCC(a)/IDCC(b)/(c)/(d)</p>
+<p><a id="N11"></a> ### N11 — kdm6@pse.pl -
+<strong>Lokalizacja:</strong> skrzynka mailowa PSE -
+<strong>Funkcja:</strong> kanał pasywny dla raportów: CCA (raporty
+walidacyjne, LTA_CURTAILMENT, IVA na CNECach), Perun4V (raporty po
+obliczeniach z informacją o policzonych godzinach i max IVA) -
+<strong>Powiązane ryzyko:</strong> <a href="#U07">U07</a> (brak
+dostępu)</p>
+<p><a id="N12"></a> ### N12 — sFTP@pse.pl -
+<strong>Lokalizacja:</strong> protokół transportowy -
+<strong>Funkcja:</strong> transport paczek ZIP z MinIO do Perun4V (i
+wyniki zwrotnie do MinIO/Connector 2.0) - <strong>Powiązane
+ryzyko:</strong> wpisuje się w <a href="#U03">U03</a> (jeśli sFTP nie
+działa, paczki nie dotrą do Perun4V)</p>
+<h2 id="b.-zewnętrzne-ccc-rcc-tso">1.B. Zewnętrzne (CCC / RCC /
+TSO)</h2>
+<p><a id="N13"></a> ### N13 — RCC / TSCNET - <strong>Kontakt:</strong>
+operator@tscnet.eu (lista operacyjna do telefonu) -
+<strong>Funkcja:</strong> Regional Coordination Centre — koordynacja
+procesu IDCC; sterowanie fazami centralnymi (CGM merging, Domain
+calculation, NTC publication)</p>
+<p><a id="N14"></a> ### N14 — CORESO - <strong>Kontakt:</strong>
+day-ahead.engineer@coreso.eu - <strong>Funkcja:</strong> koordynacja po
+stronie operatora procesu</p>
+<p><a id="N15"></a> ### N15 — Core CC Tool (centralne procesy) -
+<strong>Funkcja:</strong> publikacja wyników centralnych (FIDx-928
+walidacja ATC, FID1-921 NTC, ID1-373 AAC); dyspozytor PSE wyłącznie
+monitoruje — nie wykonuje czynności wykonawczych</p>
+<p><a id="N16"></a> ### N16 — ECP/EDX (Energy Communication Platforms) -
+<strong>Funkcja:</strong> protokół wymiany TSO ↔︎ CCCt — automatyczna
+wysyłka CB/GLSK/EC; ręczny upload przez CCCt GUI; dostarczenie Shadow
+Auction (MD250) - <strong>Powiązane ryzyko:</strong> wpisuje się w <a href="#U21">U21</a> (Decoupling SDAC — MD250)</p>
+<p><a id="N17"></a> ### N17 — XBID - <strong>Funkcja:</strong> system
+aukcyjny intraday — odbiorca AAC (ID1-373-XX), NTC (FIDx-921) -
+<strong>Powiązane ryzyko:</strong> <a href="#U20">U20</a> (AAC
+Fallback), <a href="#U22">U22</a> (Late NTC)</p>
+<h2 id="c.-zgłoszenie-wsparcie">1.C. Zgłoszenie / wsparcie</h2>
+<p><a id="N18"></a> ### N18 — WPO (Wydział Wsparcia Procesów
+Operatorskich) - <strong>Skład:</strong> Słabicki, Jarzęcka,
+Krzysztoszek, Łukaszewski, Rodo - <strong>Funkcja:</strong> zgłoszenie
+operacyjna; decyzje w sytuacjach niestandardowych</p>
+<p><a id="N19"></a> ### N19 — CIZ (Centrum Zgłaszania Incydentów PSE) -
+<strong>Lokalizacja:</strong> wewnętrzny system PSE -
+<strong>Funkcja:</strong> rejestracja incydentów (awarie narzędzi,
+problemy procesowe); priorytet zależny od fazy procesu</p>
+<p><a id="N20"></a> ### N20 — PSE Innowacje - <strong>Kanał:</strong>
+wewnętrzny PSE - <strong>Funkcja:</strong> utrzymanie narzędzi PSE —
+CCM, Connector 2.0, MinIO, sFTP - <strong>Zgłoszenie przy:</strong> <a href="#U01">U01</a>, <a href="#U03">U03</a>, <a href="#U04">U04</a></p>
+<p><a id="N21"></a> ### N21 — Zespół utrzymania CCA -
+<strong>Kanał:</strong> wewnętrzny PSE Innowacje (zespół CCA) -
+<strong>Funkcja:</strong> utrzymanie aplikacji CCA, raportów
+walidacyjnych, IVA BACKUP, FID1-928 - <strong>Zgłoszenie przy:</strong>
+<a href="#U19">U19</a>, <a href="#U23">U23</a></p>
+<p><a id="N22"></a> ### N22 — Zespół utrzymania ZP -
+<strong>Kanał:</strong> wewnętrzny PSE - <strong>Funkcja:</strong>
+utrzymanie aplikacji ZP (zdolności przesyłowe) — źródła AC FIDx-831 -
+<strong>Zgłoszenie przy:</strong> <a href="#U06">U06</a> (awaria ZP, brak
+generowania)</p>
+<hr />
+<p><a id="states"></a> # 2. Stany kafelków</p>
+<p><a id="states-legend"></a> ## 2.A. Legenda kolorów + ikon</p>
+<p>Źródło: PDF Dyspozytora s. 11–15, Confluence v.X</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Kolor / Symbol</th>
+<th>Znaczenie</th>
+<th>Typowy moment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>szary</code></td>
+<td>Plik nie wymagany (&gt;30 min do TET)</td>
+<td>Przed startem procesu</td>
+</tr>
+<tr>
+<td><code>pomarańczowy</code></td>
+<td>30 min przed TET do 30 min przed CET — dokumentu nie ma</td>
+<td>TET zbliża się</td>
+</tr>
+<tr>
+<td><code>czerwony</code></td>
+<td>Plik niedostarczony przed CET lub wysyłka zakończyła się błędem</td>
+<td>CET zbliża się</td>
+</tr>
+<tr>
+<td><code>czerwony !</code></td>
+<td>Plik dostarczony, ale rozmiar &lt; minimum</td>
+<td>Po dostarczeniu</td>
+</tr>
+<tr>
+<td><code>czerwony ?</code></td>
+<td>Brak ACK / proces nie skończył się w czasie</td>
+<td>Po wysyłce</td>
+</tr>
+<tr>
+<td><code>zielony</code></td>
+<td>Plik dostarczony, ACK pozytywny (Processed)</td>
+<td>Happy Day</td>
+</tr>
+<tr>
+<td><code>ciemnozielony &#39;W&#39;</code></td>
+<td>Dostarczone ręcznie z CCM przed CET</td>
+<td>Po C.4</td>
+</tr>
+<tr>
+<td><code>ciemnozielony &#39;W po CET&#39;</code></td>
+<td>Dostarczone ręcznie z CCM po CET</td>
+<td>Po C.5</td>
+</tr>
+<tr>
+<td><code>zielony &#39;R&#39;</code></td>
+<td>Status ręczny nadany przez Dyspozytora</td>
+<td>Po ręcznej decyzji</td>
+</tr>
+<tr>
+<td><code>fioletowy</code></td>
+<td>Dostarczone i zwalidowane po CET, ACK pozytywny</td>
+<td>Opóźnienie automatyczne</td>
+</tr>
+<tr>
+<td><code>czarny</code></td>
+<td>Plik nie dostarczony, minął CET</td>
+<td>Krytyczne</td>
+</tr>
+<tr>
+<td><code>spinner</code> (kółko)</td>
+<td>Operacja w toku — wysyłka backupowa do CCCt</td>
+<td>IVA Backup automat</td>
+</tr>
+<tr>
+<td><code>red_pulse</code> (zielony z pulsującą czerwoną obwódką)</td>
+<td>Nowa wersja IVA Backup wymaga monitoringu</td>
+<td>Scenariusz 4</td>
+</tr>
+</tbody>
+</table>
+<p><a id="states-3col"></a> ## 2.B. Profil 3COL — CCTool wyśl. + CCTool
+zwalid. + MinIO</p>
+<p>Stosowany dla <strong>IVA (FIDx-710)</strong>. Źródło: Confluence
+PDF, opis dla pozycji IVA.</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>CCTool wyśl.</th>
+<th>CCTool zwalid.</th>
+<th>MinIO</th>
+<th>Co oznacza</th>
+<th>Ryzyka</th>
+<th>Procedura</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>szary</td>
+<td>szary</td>
+<td>szary</td>
+<td>Plik jeszcze nie wysłany ani do CCCt ani na MinIO. Brak ACK.</td>
+<td>—</td>
+<td>monitoring</td>
+</tr>
+<tr>
+<td>2</td>
+<td>pomarańczowy</td>
+<td>pomarańczowy</td>
+<td>pomarańczowy</td>
+<td>Zbliża się TET, dokument nie obsłużony.</td>
+<td><a href="#U02">U02</a>, <a href="#U03">U03</a></td>
+<td>sprawdź CCCt MV / MinIO</td>
+</tr>
+<tr>
+<td>3</td>
+<td>czerwony</td>
+<td>czerwony</td>
+<td>czerwony</td>
+<td>Zbliża się CET, dokument nie obsłużony. Możliwa ręczna wysyłka IVA
+Backup.</td>
+<td><a href="#U03">U03</a>, <a href="#U08">U08</a></td>
+<td><a href="#P01">P01</a> lub <a href="#P02">P02</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td>czarny</td>
+<td>czarny</td>
+<td>czarny</td>
+<td>Dokument niedostarczony ani do CCCt ani na MinIO, minął CET.</td>
+<td><a href="#U03">U03</a>, <a href="#U08">U08</a>, <a href="#U16">U16</a></td>
+<td>zgłoś + telefon CCC; <a href="#P03">P03</a> Perun4V</td>
+</tr>
+<tr>
+<td>5</td>
+<td>fioletowy</td>
+<td>fioletowy</td>
+<td>fioletowy</td>
+<td>Dokument dostarczony do CCCt i na MinIO po CET, ACK pozytywny.</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a> wpis A.4</td>
+</tr>
+<tr>
+<td>6</td>
+<td>zielony R</td>
+<td>zielony R</td>
+<td>zielony R</td>
+<td>Dokument IVA oznaczony ręcznie jako wysłany OK.</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>zielony</td>
+<td>zielony</td>
+<td>zielony</td>
+<td><strong>Happy Day</strong> — Processed w CCCt, IVA na MinIO.</td>
+<td>—</td>
+<td>brak</td>
+</tr>
+<tr>
+<td>8</td>
+<td>czerwony ?</td>
+<td>(puste)</td>
+<td>zielony</td>
+<td>Wysyłka do CCCt trwa, ACK oczekuje. Dokument dostarczony na
+MinIO.</td>
+<td><a href="#U11">U11</a></td>
+<td>po 5 min CCCt MV</td>
+</tr>
+<tr>
+<td>9</td>
+<td>zielony</td>
+<td>(puste)</td>
+<td>zielony</td>
+<td>Plik wysłany OK, oczekiwanie ACK (&lt;3 min).</td>
+<td><a href="#U11">U11</a></td>
+<td>monitoring</td>
+</tr>
+<tr>
+<td>10</td>
+<td>zielony</td>
+<td>czerwony ?</td>
+<td>zielony</td>
+<td>Brak ACK w żądanym czasie. Po najechaniu — czas oczekiwania.</td>
+<td><a href="#U11">U11</a></td>
+<td>po 3 min CCCt MV</td>
+</tr>
+<tr>
+<td>11</td>
+<td>zielony</td>
+<td>czerwony</td>
+<td>zielony</td>
+<td>ACK negatywny: kod 20/21/22/30 lub Błąd procesu.</td>
+<td><a href="#U10">U10</a></td>
+<td>per kod ACK; <a href="#P01">P01</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>zielony</td>
+<td>fioletowy</td>
+<td>zielony</td>
+<td>ACK pozytywny po CET.</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td>zielony</td>
+<td>czarny</td>
+<td>zielony</td>
+<td>ACK nie napłynął do CET.</td>
+<td><a href="#U03">U03</a>, <a href="#U11">U11</a></td>
+<td>zgłoś; sprawdź CN2</td>
+</tr>
+<tr>
+<td>14</td>
+<td>zielony</td>
+<td>zielony R</td>
+<td>zielony</td>
+<td>Brak automatycznego ACK, Dyspozytor ustawił ‘R’ po weryfikacji.</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>15</td>
+<td>czerwony ?</td>
+<td>(puste)</td>
+<td>czerwony !</td>
+<td>Wysyłka trwa; plik na MinIO ma za mały rozmiar.</td>
+<td><a href="#U09">U09</a>, <a href="#U11">U11</a></td>
+<td>sprawdź rozmiar; <a href="#P02">P02</a></td>
+</tr>
+<tr>
+<td>16</td>
+<td>czerwony !</td>
+<td>(puste)</td>
+<td>czerwony !</td>
+<td>Wysłany dokument za mały, ACK oczekuje.</td>
+<td><a href="#U09">U09</a></td>
+<td><a href="#P02">P02</a> → <a href="#P01">P01</a></td>
+</tr>
+<tr>
+<td>17</td>
+<td>czerwony !</td>
+<td>czerwony ?</td>
+<td>czerwony !</td>
+<td>Za mały rozmiar + brak ACK.</td>
+<td><a href="#U09">U09</a>, <a href="#U11">U11</a></td>
+<td><a href="#P02">P02</a> → <a href="#P01">P01</a></td>
+</tr>
+<tr>
+<td>18</td>
+<td>czerwony !</td>
+<td>czerwony</td>
+<td>czerwony !</td>
+<td>Za mały rozmiar + ACK negatywny.</td>
+<td><a href="#U09">U09</a>, <a href="#U10">U10</a></td>
+<td><a href="#P02">P02</a> → <a href="#P01">P01</a> z v+1</td>
+</tr>
+<tr>
+<td>19</td>
+<td>czerwony !</td>
+<td>fioletowy</td>
+<td>czerwony !</td>
+<td>Za mały rozmiar + ACK pozytywny po CET. Sprzeczność.</td>
+<td><a href="#U09">U09</a>, <a href="#U13">U13</a></td>
+<td>weryfikuj zawartość</td>
+</tr>
+<tr>
+<td>20</td>
+<td>czerwony !</td>
+<td>czarny</td>
+<td>czerwony !</td>
+<td>Za mały rozmiar + brak ACK do CET.</td>
+<td><a href="#U03">U03</a>, <a href="#U09">U09</a></td>
+<td>zgłoś + telefon CCC</td>
+</tr>
+<tr>
+<td>21</td>
+<td>czerwony !</td>
+<td>zielony R</td>
+<td>czerwony !</td>
+<td>Za mały rozmiar + Dyspozytor ustawił ‘R’.</td>
+<td><a href="#U09">U09</a>, <a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>22</td>
+<td>ciemnozielony W</td>
+<td>zielony</td>
+<td>ciemnozielony W</td>
+<td>Ręczna wysyłka z CCM, ACK OK.</td>
+<td><a href="#U03">U03</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>23</td>
+<td>ciemnozielony W</td>
+<td>(puste)</td>
+<td>ciemnozielony W</td>
+<td>Ręczna wysyłka, ACK oczekuje.</td>
+<td><a href="#U11">U11</a></td>
+<td>po 3 min CCCt MV</td>
+</tr>
+<tr>
+<td>24</td>
+<td>ciemnozielony W</td>
+<td>czerwony ?</td>
+<td>ciemnozielony W</td>
+<td>Ręczna wysyłka, ACK nie napłynął, zbliża się CET.</td>
+<td><a href="#U11">U11</a></td>
+<td><a href="#P01">P01</a> z v+1</td>
+</tr>
+<tr>
+<td>25</td>
+<td>ciemnozielony W</td>
+<td>czerwony</td>
+<td>ciemnozielony W</td>
+<td>Ręczna wysyłka, ACK negatywny.</td>
+<td><a href="#U10">U10</a></td>
+<td>per kod ACK</td>
+</tr>
+<tr>
+<td>26</td>
+<td>ciemnozielony W</td>
+<td>fioletowy</td>
+<td>ciemnozielony W</td>
+<td>Ręczna wysyłka, ACK po CET OK.</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>27</td>
+<td>ciemnozielony W</td>
+<td>czarny</td>
+<td>ciemnozielony W</td>
+<td>Ręczna wysyłka, brak ACK do CET.</td>
+<td><a href="#U03">U03</a>, <a href="#U11">U11</a></td>
+<td>zgłoś + sprawdź CN2</td>
+</tr>
+<tr>
+<td>28</td>
+<td>ciemnozielony W</td>
+<td>zielony R</td>
+<td>ciemnozielony W</td>
+<td>Ręczna wysyłka, Dyspozytor ustawił ‘R’.</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>29</td>
+<td>ciemnozielony W po CET</td>
+<td>(puste)</td>
+<td>ciemnozielony W po CET</td>
+<td>Ręczna wysyłka po CET, ACK oczekuje.</td>
+<td><a href="#U13">U13</a></td>
+<td>po 2 min status ‘R’</td>
+</tr>
+<tr>
+<td>30</td>
+<td>ciemnozielony W po CET</td>
+<td>czerwony ?</td>
+<td>ciemnozielony W po CET</td>
+<td>Ręczna po CET, brak ACK (&gt;2 min).</td>
+<td><a href="#U11">U11</a>, <a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a> z ‘R’</td>
+</tr>
+<tr>
+<td>31</td>
+<td>ciemnozielony W po CET</td>
+<td>czerwony</td>
+<td>ciemnozielony W po CET</td>
+<td>Ręczna po CET, ACK negatywny.</td>
+<td><a href="#U10">U10</a></td>
+<td>zgłoś</td>
+</tr>
+<tr>
+<td>32</td>
+<td>ciemnozielony W po CET</td>
+<td>fioletowy</td>
+<td>ciemnozielony W po CET</td>
+<td>Ręczna po CET, ACK pozytywny.</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>33</td>
+<td>ciemnozielony W po CET</td>
+<td>czarny</td>
+<td>ciemnozielony W po CET</td>
+<td>Ręczna po CET, brak ACK do końca doby.</td>
+<td><a href="#U03">U03</a></td>
+<td>zgłoś + telefon CCC</td>
+</tr>
+<tr>
+<td>34</td>
+<td>zielony R</td>
+<td>(puste)</td>
+<td>zielony R</td>
+<td>Status ręczny ‘R’, ACK oczekuje.</td>
+<td><a href="#U11">U11</a>, <a href="#U13">U13</a></td>
+<td>po 2 min CCCt MV</td>
+</tr>
+<tr>
+<td>35</td>
+<td>zielony R</td>
+<td>czerwony ?</td>
+<td>zielony R</td>
+<td>Status ręczny, brak ACK (&gt;2 min).</td>
+<td><a href="#U11">U11</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>36</td>
+<td>zielony R</td>
+<td>czarny</td>
+<td>zielony R</td>
+<td>Status ręczny, brak ACK do CET.</td>
+<td><a href="#U11">U11</a></td>
+<td>zgłoś</td>
+</tr>
+<tr>
+<td>37</td>
+<td>fioletowy</td>
+<td>czerwony</td>
+<td>fioletowy</td>
+<td>Dostarczone po CET, ACK negatywny.</td>
+<td><a href="#U10">U10</a>, <a href="#U13">U13</a></td>
+<td>zgłoś</td>
+</tr>
+<tr>
+<td>38</td>
+<td>fioletowy</td>
+<td>czarny</td>
+<td>fioletowy</td>
+<td>Dostarczone po CET, ACK nie napłynął.</td>
+<td><a href="#U03">U03</a>, <a href="#U13">U13</a></td>
+<td>zgłoś + sprawdź CN2</td>
+</tr>
+</tbody>
+</table>
+<p><a id="states-2cct"></a> ## 2.C. Profil 2CCT — CCTool wyśl. + CCTool
+zwalid.</p>
+<p>Stosowany dla: <strong>AC (FIDx-831), GLSK (FIDx-607), CBCORA
+(FIDx-617), ATC Based Validation (FIDx-928), MD250 (FID1-250)</strong>.
+<strong>Pełny katalog 28 stanów</strong> dla FID1-831 — patrz <a href="Przyklady_FID1-831.md">Przyklady_FID1-831.md</a>. Wzór ogólny:</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>CCTool wyśl.</th>
+<th>CCTool zwalid.</th>
+<th>Co oznacza</th>
+<th>Ryzyka</th>
+<th>Procedura</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>szary</td>
+<td>szary</td>
+<td>Plik nie wymagany</td>
+<td>—</td>
+<td>monitoring</td>
+</tr>
+<tr>
+<td>2</td>
+<td>pomarańczowy</td>
+<td>pomarańczowy</td>
+<td>TET zbliża się, brak pliku</td>
+<td><a href="#U03">U03</a>, <a href="#U06">U06</a>, <a href="#U08">U08</a></td>
+<td>CCCt MV → MinIO → źródło</td>
+</tr>
+<tr>
+<td>3</td>
+<td>pomarańczowy</td>
+<td>czerwony</td>
+<td>TET + ACK negatywny</td>
+<td><a href="#U10">U10</a>, <a href="#U12">U12</a></td>
+<td>per kod ACK</td>
+</tr>
+<tr>
+<td>4</td>
+<td>czerwony</td>
+<td>czerwony</td>
+<td>CET zbliża się, brak / błąd</td>
+<td><a href="#U03">U03</a>, <a href="#U08">U08</a>, <a href="#U10">U10</a></td>
+<td><a href="#P02">P02</a>/<a href="#P04">P04</a> → <a href="#P01">P01</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>czerwony ?</td>
+<td>(puste)</td>
+<td>Wysyłka trwa</td>
+<td><a href="#U11">U11</a></td>
+<td>po 5 min CCCt MV</td>
+</tr>
+<tr>
+<td>6</td>
+<td>czarny</td>
+<td>czarny</td>
+<td>Niedostarczone, minął CET</td>
+<td><a href="#U03">U03</a>, <a href="#U08">U08</a></td>
+<td>KRYTYCZNE — zgłoś + telefon CCC</td>
+</tr>
+<tr>
+<td>7</td>
+<td>zielony</td>
+<td>czarny</td>
+<td>Plik wysłany, brak ACK do CET</td>
+<td><a href="#U03">U03</a>, <a href="#U11">U11</a></td>
+<td>CCCt MV → status ‘R’ lub <a href="#P01">P01</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>zielony</td>
+<td>zielony</td>
+<td><strong>Happy Day</strong></td>
+<td>—</td>
+<td>brak</td>
+</tr>
+<tr>
+<td>9</td>
+<td>zielony</td>
+<td>czerwony</td>
+<td>ACK negatywny</td>
+<td><a href="#U10">U10</a></td>
+<td>per kod ACK (20/21/30)</td>
+</tr>
+<tr>
+<td>10</td>
+<td>zielony</td>
+<td>czerwony ?</td>
+<td>ACK timeout</td>
+<td><a href="#U11">U11</a></td>
+<td>po 10 min <a href="#P01">P01</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>zielony</td>
+<td>fioletowy</td>
+<td>ACK pozytywny po CET</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>zielony</td>
+<td>zielony R</td>
+<td>ACK ręczny</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td>ciemnozielony W</td>
+<td>zielony</td>
+<td>Ręczna OK</td>
+<td><a href="#U03">U03</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>14</td>
+<td>ciemnozielony W</td>
+<td>czerwony</td>
+<td>Ręczna, ACK negatywny</td>
+<td><a href="#U10">U10</a>, <a href="#U12">U12</a></td>
+<td>per kod ACK</td>
+</tr>
+<tr>
+<td>15</td>
+<td>ciemnozielony W</td>
+<td>czerwony ?</td>
+<td>Ręczna, timeout</td>
+<td><a href="#U11">U11</a></td>
+<td>po 5 min <a href="#P01">P01</a> v+1</td>
+</tr>
+<tr>
+<td>16</td>
+<td>ciemnozielony W</td>
+<td>czarny</td>
+<td>Ręczna, brak ACK do CET</td>
+<td><a href="#U03">U03</a>, <a href="#U11">U11</a></td>
+<td>zgłoś + sprawdź CN2</td>
+</tr>
+<tr>
+<td>17</td>
+<td>ciemnozielony W po CET</td>
+<td>zielony</td>
+<td>Ręczna po CET, ACK OK</td>
+<td><a href="#U03">U03</a>, <a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>18</td>
+<td>ciemnozielony W po CET</td>
+<td>czerwony</td>
+<td>Ręczna po CET, ACK negatywny</td>
+<td><a href="#U10">U10</a>, <a href="#U12">U12</a></td>
+<td>zgłoś</td>
+</tr>
+<tr>
+<td>19</td>
+<td>ciemnozielony W po CET</td>
+<td>czerwony ?</td>
+<td>Ręczna po CET, timeout</td>
+<td><a href="#U11">U11</a></td>
+<td>status ‘R’</td>
+</tr>
+<tr>
+<td>20</td>
+<td>ciemnozielony W po CET</td>
+<td>czarny</td>
+<td>Ręczna po CET, brak ACK do końca doby</td>
+<td><a href="#U03">U03</a>, <a href="#U11">U11</a></td>
+<td>zgłoś + telefon CCC</td>
+</tr>
+<tr>
+<td>21</td>
+<td>zielony R</td>
+<td>zielony R</td>
+<td>Status ręczny w obu</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>22</td>
+<td>fioletowy</td>
+<td>fioletowy</td>
+<td>Wszystko po CET, OK</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>23</td>
+<td>czerwony !</td>
+<td>czerwony !</td>
+<td>Za mały rozmiar</td>
+<td><a href="#U09">U09</a></td>
+<td>weryfikuj zawartość; <a href="#P02">P02</a></td>
+</tr>
+<tr>
+<td>24</td>
+<td>czerwony !</td>
+<td>czerwony ?</td>
+<td>Za mały + timeout</td>
+<td><a href="#U09">U09</a>, <a href="#U11">U11</a></td>
+<td><a href="#P02">P02</a>; CCCt MV</td>
+</tr>
+<tr>
+<td>25</td>
+<td>czerwony !</td>
+<td>czerwony</td>
+<td>Za mały + ACK negatywny</td>
+<td><a href="#U09">U09</a>, <a href="#U10">U10</a>, <a href="#U12">U12</a></td>
+<td><a href="#P02">P02</a> → <a href="#P01">P01</a> v+1</td>
+</tr>
+<tr>
+<td>26</td>
+<td>czerwony !</td>
+<td>czarny</td>
+<td>Za mały + brak ACK do CET</td>
+<td><a href="#U03">U03</a>, <a href="#U09">U09</a>, <a href="#U11">U11</a></td>
+<td>KRYTYCZNE — zgłoś + telefon CCC</td>
+</tr>
+<tr>
+<td>27</td>
+<td>czerwony !</td>
+<td>fioletowy</td>
+<td>Za mały + ACK po CET pozytywny</td>
+<td><a href="#U09">U09</a>, <a href="#U13">U13</a></td>
+<td>weryfikuj; zgłoś jeśli niepoprawny</td>
+</tr>
+<tr>
+<td>28</td>
+<td>czerwony !</td>
+<td>zielony R</td>
+<td>Za mały + status ręczny</td>
+<td><a href="#U09">U09</a>, <a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+</tbody>
+</table>
+<p><a id="states-2ms"></a> ## 2.D. Profil 2MS — MinIO + sFTP/ZP
+wyśl.</p>
+<p>Stosowany dla <strong>AGR Paczka ZIP (top-level)</strong>: PERUN_ID2,
+PERUN_ID3C, PERUN_ID3 oraz analogiczne paczki ATC.</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>MinIO</th>
+<th>sFTP/ZP wyśl.</th>
+<th>Co oznacza</th>
+<th>Ryzyka</th>
+<th>Procedura</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>szary</td>
+<td>szary</td>
+<td>Paczka jeszcze nie wygenerowana</td>
+<td>—</td>
+<td>monitoring</td>
+</tr>
+<tr>
+<td>2</td>
+<td>pomarańczowy</td>
+<td>pomarańczowy</td>
+<td>Zbliża się TET, paczka nie powstała</td>
+<td><a href="#U08">U08</a></td>
+<td>sprawdź składowe</td>
+</tr>
+<tr>
+<td>3</td>
+<td>czerwony</td>
+<td>czerwony</td>
+<td>CET zbliża się, paczka nieobsłużona</td>
+<td><a href="#U08">U08</a></td>
+<td>uzupełnij składowe</td>
+</tr>
+<tr>
+<td>4</td>
+<td>czarny</td>
+<td>czarny</td>
+<td>Niedostarczona, minął CET</td>
+<td><a href="#U03">U03</a>, <a href="#U08">U08</a></td>
+<td>zgłoś + telefon CCC; składowe → S.13</td>
+</tr>
+<tr>
+<td>5</td>
+<td>zielony</td>
+<td>zielony</td>
+<td><strong>Happy Day</strong> — paczka wysłana do Perun4V</td>
+<td><a href="#U14">U14</a> (potencjalne)</td>
+<td>brak interwencji</td>
+</tr>
+<tr>
+<td>6</td>
+<td>zielony</td>
+<td>szary</td>
+<td>Paczka na MinIO, brak transportu sFTP</td>
+<td><a href="#U03">U03</a></td>
+<td>sprawdź CN2</td>
+</tr>
+<tr>
+<td>7</td>
+<td>zielony</td>
+<td>czerwony</td>
+<td>Paczka na MinIO, błąd sFTP</td>
+<td><a href="#U03">U03</a></td>
+<td><a href="#P05">P05</a>; zgłoś</td>
+</tr>
+<tr>
+<td>8</td>
+<td>zielony</td>
+<td>czarny</td>
+<td>Paczka na MinIO, brak sFTP do CET</td>
+<td><a href="#U03">U03</a></td>
+<td>zgłoś + sprawdź CN2</td>
+</tr>
+<tr>
+<td>9</td>
+<td>ciemnozielony W</td>
+<td>zielony</td>
+<td>Paczka uzupełniona ręcznie</td>
+<td><a href="#U08">U08</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>ciemnozielony W</td>
+<td>czerwony</td>
+<td>Uzupełniona, błąd sFTP</td>
+<td><a href="#U03">U03</a>, <a href="#U08">U08</a></td>
+<td>CN2 + <a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>fioletowy</td>
+<td>fioletowy</td>
+<td>Dostarczona po CET, OK</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>czerwony !</td>
+<td>czerwony !</td>
+<td>Składowa za mała → cała paczka błędna</td>
+<td><a href="#U09">U09</a></td>
+<td>rozwiń agregat → <a href="#P05">P05</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td>ciemnozielony W po CET</td>
+<td>zielony</td>
+<td>Uzupełniona po CET</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>14</td>
+<td>zielony R</td>
+<td>zielony R</td>
+<td>Status ręczny</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>15</td>
+<td>czarny</td>
+<td>szary</td>
+<td>Składowe nie dotarły, paczka nigdy się nie pojawiła</td>
+<td><a href="#U03">U03</a>, <a href="#U08">U08</a></td>
+<td>KRYTYCZNE — zgłoś + telefon CCC</td>
+</tr>
+</tbody>
+</table>
+<p><a id="states-min"></a> ## 2.E. Profil MIN — tylko MinIO</p>
+<p>Stosowany dla: <strong>IVA Backup (FIDx-710 wariant MIN), IVA_ATC
+(FIDx-710_ATC), składowe paczek ZIP
+(FIDx-610/-620/-632/-645/-657/-659/-665/-701/-701_ATC/-882,
+XID_RA)</strong>.</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>MinIO</th>
+<th>Co oznacza</th>
+<th>Ryzyka</th>
+<th>Procedura</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>szary</td>
+<td>Plik nie dostarczony jeszcze na MinIO</td>
+<td>—</td>
+<td>monitoring</td>
+</tr>
+<tr>
+<td>2</td>
+<td>spinner (kółko)</td>
+<td>Trwa wysyłka backupowa CCA → CCCt (IVA Backup)</td>
+<td>—</td>
+<td>monitoring</td>
+</tr>
+<tr>
+<td>3</td>
+<td>pomarańczowy</td>
+<td>TET zbliża się, plik nie obsłużony</td>
+<td><a href="#U03">U03</a></td>
+<td>sprawdź źródło</td>
+</tr>
+<tr>
+<td>4</td>
+<td>czerwony</td>
+<td>CET zbliża się — możliwa ręczna wysyłka backupowa</td>
+<td><a href="#U03">U03</a>, <a href="#U08">U08</a></td>
+<td>menu boczne → Wyślij; sprawdź „Błąd procesu”</td>
+</tr>
+<tr>
+<td>5</td>
+<td>czerwony !</td>
+<td>Plik dostarczony, niepoprawny rozmiar</td>
+<td><a href="#U09">U09</a></td>
+<td>LPM → Informacje; zgłoś jeśli błędny</td>
+</tr>
+<tr>
+<td>6</td>
+<td>zielony</td>
+<td>Plik dostarczony OK</td>
+<td>—</td>
+<td>monitoring (IVA Backup: porównaj wersję z IVA)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>ciemnozielony W</td>
+<td>Wysłany ręcznie z CCM przed CET (Wyślij)</td>
+<td>—</td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>ciemnozielony W po CET</td>
+<td>Wysłany ręcznie z CCM po CET</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>zielony R</td>
+<td>Status ręczny</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td>zielony (z notką CCA, v+1)</td>
+<td>Plik z CCA z wersją o 1 wyższą niż IVA</td>
+<td><a href="#U19">U19</a></td>
+<td>wysłać ręcznie do CCCt (IVA Backup); zgłoś (R16)</td>
+</tr>
+<tr>
+<td>11</td>
+<td>ciemnozielony W (CCA, v+1)</td>
+<td>Wysłany ręcznie przed CET z CCA, v+1</td>
+<td><a href="#U19">U19</a></td>
+<td><a href="#P01">P01</a> do CCCt; zgłoś</td>
+</tr>
+<tr>
+<td>12</td>
+<td>ciemnozielony W po CET (CCA, v+1)</td>
+<td>Wysłany ręcznie po CET z CCA, v+1</td>
+<td><a href="#U19">U19</a>, <a href="#U13">U13</a></td>
+<td><a href="#P01">P01</a> do CCCt; zgłoś</td>
+</tr>
+<tr>
+<td>13</td>
+<td>fioletowy</td>
+<td>Dostarczone po CET</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>14</td>
+<td>czarny</td>
+<td>Niedostarczone, minął CET</td>
+<td><a href="#U03">U03</a>, <a href="#U23">U23</a></td>
+<td>zgłoś</td>
+</tr>
+<tr>
+<td>15</td>
+<td>red_pulse</td>
+<td>Nowa wersja IVA Backup z wyższym numerem niż IVA — Scenariusz 4</td>
+<td><a href="#U19">U19</a></td>
+<td>porównaj wersje IVA vs Backup; NIE wysyłać ręcznie (HTML §5.3 dla
+standardowego modelu IDCC)</td>
+</tr>
+</tbody>
+</table>
+<p><a id="states-sftp"></a> ## 2.F. Profil SFTP — tylko sFTP/ZP
+wyśl.</p>
+<p>Stosowany dla: **24 modele IGM (DACF_IGM_UCT), Raporty z Perun
+(RAP_PERUN_*), Final Intraday NTC (FIDx-921), MD250 (FID1-250)**.</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>sFTP/ZP wyśl.</th>
+<th>Co oznacza</th>
+<th>Ryzyka</th>
+<th>Procedura</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>szary</td>
+<td>Plik nie wymagany</td>
+<td>—</td>
+<td>monitoring</td>
+</tr>
+<tr>
+<td>2</td>
+<td>pomarańczowy</td>
+<td>TET zbliża się, brak transportu</td>
+<td><a href="#U03">U03</a></td>
+<td>sprawdź CN2 / sFTP</td>
+</tr>
+<tr>
+<td>3</td>
+<td>czerwony</td>
+<td>CET zbliża się, brak / błąd</td>
+<td><a href="#U03">U03</a>, <a href="#U08">U08</a></td>
+<td><a href="#P05">P05</a> z CCCt MV</td>
+</tr>
+<tr>
+<td>4</td>
+<td>czarny</td>
+<td>Niedostarczone, minął CET</td>
+<td><a href="#U03">U03</a>, <a href="#U08">U08</a>, <a href="#U22">U22</a></td>
+<td>zgłoś + telefon CCC (dla NTC: <a href="#U22">U22</a>)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>zielony</td>
+<td><strong>Happy Day</strong></td>
+<td>—</td>
+<td>brak</td>
+</tr>
+<tr>
+<td>6</td>
+<td>ciemnozielony W</td>
+<td>Ręczna wysyłka</td>
+<td><a href="#U03">U03</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>fioletowy</td>
+<td>Dostarczone po CET</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>zielony R</td>
+<td>Status ręczny</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>czerwony ?</td>
+<td>Wysyłka trwa, timeout</td>
+<td><a href="#U11">U11</a></td>
+<td>po 5 min CCCt MV</td>
+</tr>
+<tr>
+<td>10</td>
+<td>czerwony !</td>
+<td>Plik za mały</td>
+<td><a href="#U09">U09</a></td>
+<td>sprawdź zawartość; <a href="#P05">P05</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>ciemnozielony W po CET</td>
+<td>Ręczna po CET</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>czerwony + zgłoś + telefon CCC</td>
+<td>(dla FID1-250 MD250 / FID1-921 NTC)</td>
+<td><a href="#U21">U21</a> / <a href="#U22">U22</a></td>
+<td>natychmiastowa zgłoszenie</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><a id="risks"></a> # 3. Ryzyka uniwersalne U01–U23</p>
+<blockquote>
+<p>Pełne karty ryzyk z opisami, objawami, działaniami i zgłoszeniem: patrz
+<a href="Karta_ryzyk_IDCC.md">Karta_ryzyk_IDCC.md</a>. Poniżej
+<strong>skrót + mapowanie do dokumentów źródłowych</strong>.</p>
+</blockquote>
+<h2 id="a.-grupa-i-dostępność-narzędzi">3.A. Grupa I — Dostępność
+narzędzi</h2>
+<p><a id="U01"></a><strong>U01 — Brak dostępu do CCM</strong> <em>(<a href="#N01">N01</a>)</em> - HTML §9: R06 | BUP DA: #27 (str. 69) | NOR
+DA: #27</p>
+<p><a id="U02"></a><strong>U02 — Brak dostępu do Core CC Tool</strong>
+<em>(<a href="#N02">N02</a>)</em> - HTML §9: R07 | BUP DA: #11 (str. 47)
+| NOR DA: #11</p>
+<p><a id="U03"></a><strong>U03 — Brak dostępu / awaria Connector
+2.0</strong> <em>(<a href="#N05">N05</a>)</em> — <em>obejmuje też
+scalone U18 (CN2 nie kopiuje do bucketów)</em> - HTML §9: R09 + R16 |
+BUP DA: #1 (str. 9), #2 (str. 17), #10 (str. 46), #16 (str. 54), #24 |
+NOR DA: #2, #10, #16, #24</p>
+<p><a id="U04"></a><strong>U04 — Brak dostępu do MinIO</strong> <em>(<a href="#N04">N04</a>)</em> - BUP DA: #2 (częściowo), #24, #25 (str. 67) |
+NOR DA: #24, #25</p>
+<p><a id="U05"></a><strong>U05 — Brak dostępu do Perun4V</strong>
+<em>(<a href="#N03">N03</a>)</em> - BUP DA: #4 (str. 26), #17 | NOR DA:
+#4, #17</p>
+<p><a id="U06"></a><strong>U06 — Brak dostępu do źródła pliku</strong>
+<em>(<a href="#N06">N06</a>, <a href="#N07">N07</a>, <a href="#N08">N08</a>, <a href="#N09">N09</a>)</em> - Nowe
+(zidentyfikowane w trakcie pracy); pokrywa ZP, Kreatory, CCA</p>
+<p><a id="U07"></a><strong>U07 — Brak dostępu do poczty kdm6</strong>
+<em>(<a href="#N11">N11</a>)</em> - BUP DA: #25 (częściowo)</p>
+<h2 id="b.-grupa-ii-plik-i-dostarczenie">3.B. Grupa II — Plik i
+dostarczenie</h2>
+<p><a id="U08"></a><strong>U08 — Plik niedostarczony w czasie</strong> -
+HTML §9: R04 | BUP DA: #3 (str. 22), #28 | Stany: czarny, czerwony,
+pomarańczowy</p>
+<p><a id="U09"></a><strong>U09 — Plik dostarczony, ale błędny (rozmiar /
+struktura)</strong> - HTML §9: R04 (rozszerzony) | ACK kod 30 (file size
+mismatch); „Message has some invalid timeSeries…”</p>
+<p><a id="U10"></a><strong>U10 — ACK negatywny (odrzucenie)</strong> -
+HTML §9: R05 | BUP DA: #13 (str. 49) | Kody ACK: 20 (gateClosed), 21
+(duplicatedVersion), 22 (Negative — historyczny), 30 (size)</p>
+<p><a id="U11"></a><strong>U11 — Brak ACK (timeout)</strong> - HTML §9:
+R05 (zawężenie) | BUP DA: #12 (str. 48)</p>
+<p><a id="U12"></a><strong>U12 — Niezgodność wersji pliku</strong> - ACK
+kod 21 (duplicatedVersion), kod 40 (Backup version lower)</p>
+<p><a id="U13"></a><strong>U13 — Plik dostarczony po CET
+(informacyjne)</strong> - Stan: fioletowy; bez działań naprawczych poza
+<a href="#P06">P06</a></p>
+<h2 id="c.-grupa-iii-proces-obliczeniowy-perun4v-iva">3.C. Grupa III —
+Proces obliczeniowy (Perun4V / IVA)</h2>
+<p><a id="U14"></a><strong>U14 — Brak uruchomienia obliczeń w
+Perun4V</strong> - HTML §9: R01 | BUP DA: #1 (str. 9)</p>
+<p><a id="U15"></a><strong>U15 — ERR-I (część TS niepoliczona)</strong>
+- HTML §9: R02 | BUP DA: #6 (str. 29), #20</p>
+<p><a id="U16"></a><strong>U16 — Process failed (wszystkie TS
+niepoliczone)</strong> - HTML §9: R03 | BUP DA: #7 (str. 39), #21</p>
+<h2 id="d.-grupa-iv-strumień-atc">3.D. Grupa IV — Strumień ATC</h2>
+<p><a id="U17"></a><strong>U17 — Niezakończenie walidacji ATC w
+czasie</strong> - HTML §9: R11 | Dotyczy: FIDx-928</p>
+<h2 id="e.-grupa-v-transport-zwrotny">3.E. Grupa V — Transport
+zwrotny</h2>
+<p><a id="U18"></a><strong><del>U18</del></strong> → scalone z <a href="#U03">U03</a></p>
+<p><a id="U19"></a><strong>U19 — Niezgodność wersji IVA / IVA
+BACKUP</strong> - HTML §9: R12 | Dotyczy: FIDx-710 (3COL) vs FIDx-710
+(MIN — IVA Backup)</p>
+<h2 id="f.-grupa-vi-zgłoszenie-zewnętrzna">3.F. Grupa VI — Zgłoszenie
+zewnętrzna</h2>
+<p><a id="U20"></a><strong>U20 — AAC Fallback</strong> <em>(<a href="#N17">N17</a>)</em> - HTML §9: R13 | Deadliny: 20:00 D-1
+(IDCC(b)), 02:00 D (IDCC(c)), 07:00 D (IDCC(d))</p>
+<p><a id="U21"></a><strong>U21 — Decoupling SDAC — konieczność
+MD250</strong> <em>(<a href="#N16">N16</a>)</em> - HTML §9: R14 | Plik:
+FID1-250 (Shadow Auction)</p>
+<p><a id="U22"></a><strong>U22 — Late NTC delivery po IDA2</strong>
+<em>(<a href="#N17">N17</a>)</em> - HTML §9: R15 | Plik: FIDx-921</p>
+<p><a id="U23"></a><strong>U23 — Brak raportu CCA</strong> <em>(<a href="#N09">N09</a>)</em> - HTML §9: R20 | BUP DA: #26 (str. 69) |
+Bucket: <code>cca/ID_FBCC/out/[BD]/</code></p>
+<h2 id="g.-tabela-kodów-ack-ccct">3.G. Tabela kodów ACK (CCCt)</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Kod</th>
+<th>Treść</th>
+<th>Działanie</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Message fully accepted</td>
+<td>OK</td>
+</tr>
+<tr>
+<td>20</td>
+<td>Gate for provided message definition is not opened</td>
+<td>Bramka zamknięta — sprawdź TET/CET; CCCt
+<code>IDx-AC-FORWARDING</code> → admin CCCt + zgłoś</td>
+</tr>
+<tr>
+<td>21</td>
+<td>Provided version is not higher than already stored data
+(duplicatedVersion)</td>
+<td>Podbić wersję; ponów <a href="#P01">P01</a></td>
+</tr>
+<tr>
+<td>22</td>
+<td><del>Delivered constraint value is negative</del></td>
+<td>❌ Nieaktualny (CCCt akceptuje wartości ujemne)</td>
+</tr>
+<tr>
+<td>30</td>
+<td>File size mismatch</td>
+<td><a href="#P04">P04</a> lub <a href="#P02">P02</a>; weryfikuj
+zawartość → <a href="#P01">P01</a></td>
+</tr>
+<tr>
+<td>40</td>
+<td>Backup version lower</td>
+<td>NIE wysyłać backup z niższą wersją</td>
+</tr>
+<tr>
+<td>41</td>
+<td>Backup not available</td>
+<td>→ <a href="#U23">U23</a></td>
+</tr>
+<tr>
+<td>42</td>
+<td>Backup validation failed</td>
+<td>Raport CCA; zgłoś</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Message has some invalid timeSeries that does not meet primary MTU
+rules</td>
+<td>Poprawić strukturę pliku → <a href="#P01">P01</a></td>
+</tr>
+<tr>
+<td>—</td>
+<td>Błąd procesu</td>
+<td>Proces CCCt zakończony błędem; zgłoś</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><a id="procedures"></a> # 4. Procedury</p>
+<h2 id="a.-procedury-reagujące-na-ryzyka-p01p06">4.A. Procedury
+reagujące na ryzyka (P01–P06)</h2>
+<blockquote>
+<p>Pełne opisy: <a href="Karta_ryzyk_IDCC.md">Karta_ryzyk_IDCC.md</a>.
+Skrót poniżej.</p>
+</blockquote>
+<p><a id="P01"></a><strong>P01 — GUI CCCt Manual Upload</strong> — w
+odpowiedzi na <a href="#U03">U03</a>, <a href="#U09">U09</a>, <a href="#U10">U10</a>, <a href="#U11">U11</a>. Procedura: <a href="#proc-cct">4.B Logowanie i nawigacja w CCCt</a>.</p>
+<p><a id="P02"></a><strong>P02 — Pobranie z ZP → GUI CCCt</strong> — w
+odpowiedzi na <a href="#U03">U03</a>, <a href="#U06">U06</a>. Dotyczy
+FIDx-831. Procedura: <a href="#proc-zp">4.B Logowanie i nawigacja w
+ZP</a>.</p>
+<p><a id="P03"></a><strong>P03 — Ręczne uruchomienie obliczeń w
+Perun4V</strong> — w odpowiedzi na <a href="#U14">U14</a>. Procedura: <a href="#proc-perun">4.B Logowanie i nawigacja w Perun4V</a>.</p>
+<p><a id="P04"></a><strong>P04 — Pobranie z MinIO → CCM Wyślij</strong>
+— w odpowiedzi na <a href="#U08">U08</a>, <a href="#U09">U09</a>.
+Procedura: <a href="#proc-minio">4.B Logowanie i nawigacja w
+MinIO</a>.</p>
+<p><a id="P05"></a><strong>P05 — Pobranie z CCCt Message Viewer → CCM
+Wyślij</strong> — dla składowych paczki (FIDx-610 Merged GLSK ≠ FIDx-607
+raw GLSK).</p>
+<p><a id="P06"></a><strong>P06 — Wpis w karcie A.4</strong> — przy
+każdym ręcznym działaniu. Pola: data, iteracja, FID, stan przed/po,
+procedura, ryzyko, wersja, zgłoszenie, uwagi.</p>
+<h2 id="b.-procedury-narzędziowe-krok-po-kroku">4.B. Procedury
+narzędziowe (krok po kroku)</h2>
+<p><a id="proc-ccm"></a> ### Logowanie i nawigacja w CCM 1. Otwórz
+przeglądarkę → https://ccm.spsm.pse.pl 2. Zaloguj (na środowisku
+produkcyjnym proces automatyczny dla stanowiska dyspozytorskiego) 3.
+Lista pulpitów → kliknij ikonę oka 👁 obok wybranego pulpitu 4. Wybierz
+dobę biznesową (strzałki ← →) lub kliknij kalendarz 📅 5. Tryby
+odświeżania: ultraszybki (10s) / szybki (30s) / wolny (5 min,
+domyślny)</p>
+<p><strong>Wysyłka pliku (przed CET):</strong> najedź na wiersz →
+<strong>PPM → Wyślij</strong> → wskaż plik z dysku → potwierdź → kafelek
+→ <code>ciemnozielony W</code> → <code>zielony</code> po ACK</p>
+<p><strong>Wysyłka po CET:</strong> najedź → <strong>PPM → Wyślij po
+CET</strong> → wskaż plik → potwierdź</p>
+<p><strong>Ustaw status ręcznie ‘R’:</strong> PPM na wierszu →
+<strong>Ustaw status ręcznie</strong> → wybierz ‘R’ → zatwierdź <em>(❓
+dokładna ścieżka — do weryfikacji w CCM Instrukcji Dyspozytora v2.6,
+rozdz. „Zmiana statusu dokumentu na wysłany ręcznie”)</em></p>
+<p><strong>Informacje o pliku:</strong> LPM na kolumnie statusu → menu →
+<strong>Informacje</strong> → rozmiar, lokalizacja MinIO, data
+dostarczenia</p>
+<p><a id="proc-cct"></a> ### Logowanie i nawigacja w Core CC Tool &gt;
+📖 BUP DA Ryzyko 2 (str. 17), Rys. 11–13</p>
+<ol type="1">
+<li>Otwórz przeglądarkę → URL CCCt (wewn.)</li>
+<li>Zaloguj danymi dyspozytorskimi</li>
+<li><strong>Selektor procesu</strong> (obok niebieskiego pola u góry) →
+wybierz <code>ID1</code> / <code>ID2</code> / <code>ID3C</code> /
+<code>ID3</code> (zamiast domyślnego <code>DA</code>)</li>
+<li>Na niebieskim tle → wybierz <strong>Business Day</strong></li>
+<li><strong>Process Instance</strong> (lewe menu) → wybierz dla daty
+(lub wyczyść filtry)</li>
+<li><strong>Message Viewer</strong> → pole <strong>Message
+Definition</strong> → wpisz np. <code>FID1-831</code> →
+<strong>Apply</strong></li>
+<li>Sprawdź <strong>kolumnę Status</strong>: <code>Processed</code> /
+<code>Rejected</code> / brak wpisu</li>
+<li><strong>Pobranie pliku:</strong> strzałka w dół po prawej stronie
+wiersza</li>
+<li><strong>Manual Upload:</strong> przycisk <strong>Manual
+Upload</strong> → wskaż plik z dysku → <strong>Upload file</strong> →
+odśwież → Message Viewer</li>
+</ol>
+<p><a id="proc-minio"></a> ### Logowanie i nawigacja w MinIO &gt; 📖 BUP
+DA Ryzyko 3 (str. 22)</p>
+<ol type="1">
+<li>Otwórz przeglądarkę → https://minio-gui.pse.pl</li>
+<li>Zaloguj danymi dyspozytorskimi</li>
+<li>Lewy panel → <strong>Buckets</strong> → wybierz bucket
+(<code>perun</code>, <code>cca</code>, <code>mam</code>)</li>
+<li>Nawiguj do podfolderu (np.
+<code>cca/ID_FBCC/in/yyyymmdd/</code>)</li>
+<li><strong>Pobierz plik:</strong> ikona <strong>Download</strong> po
+prawej stronie wiersza pliku</li>
+<li><strong>Alternatywnie</strong> (z poziomu CCM): kafelek
+<code>MinIO</code> → LPM → <strong>Pobierz</strong> → wskaż katalog
+lokalny</li>
+</ol>
+<p><a id="proc-zp"></a> ### Logowanie i nawigacja w ZP &gt; 📖 AC
+manuall ZP.docx</p>
+<ol type="1">
+<li>Otwórz aplikację <strong>ZP</strong> (zdolności przesyłowe) —
+desktop</li>
+<li>Zaloguj danymi dyspozytorskimi</li>
+<li><strong>Główne okno</strong> → zakładka
+<strong><code>bilans AC</code></strong></li>
+<li>Górna część listy dokumentów → wybierz <strong>FID1-831</strong>
+(lub odpowiedni FIDx-831 dla iteracji)</li>
+<li><strong>Pobranie pliku:</strong> kliknij
+<strong><code>Pobierz XML</code></strong> → plik zapisany lokalnie</li>
+<li><strong>Generowanie nowej wersji</strong> (gdy brak):
+<ul>
+<li>Wróć do okna <code>bilans AC</code></li>
+<li>Wybierz wersję</li>
+<li>Kliknij niebieski przycisk
+<strong><code>Nowa wersja</code></strong></li>
+<li>Po wygenerowaniu wróć do kroku 5 (Pobierz XML)</li>
+</ul></li>
+</ol>
+<p><a id="proc-perun"></a> ### Logowanie i nawigacja w Perun4V &gt; 📖
+BUP DA Ryzyko 1 (str. 9), NOR DA §2.3.2.2</p>
+<ol type="1">
+<li>Otwórz przeglądarkę → https://lccv.tscnet.eu</li>
+<li>Kliknij <strong>Local Login</strong></li>
+<li>Wpisz <code>Username</code> i <code>Password</code> → zaznacz
+<strong>Read and accept the TSCNET Policy</strong> →
+<strong>Login</strong></li>
+<li><strong>Główne okno</strong> — lista obliczeń per data</li>
+<li>Sprawdź dostarczającego (typowo <code>sFTP@pse.pl</code>)</li>
+<li>Sprawdź status obliczeń: <code>Calculating</code> /
+<code>Successful</code> / <code>ERR-I</code> /
+<code>Process failed</code></li>
+<li><strong>Wczytanie paczki:</strong> sekcja <strong>Select timestamp
+date</strong> → wybierz BD → przeciągnij plik ZIP na pole (lub kliknij i
+wybierz z dysku)</li>
+<li><strong>Uruchomienie obliczeń:</strong> kliknij przycisk
+uruchamiania</li>
+<li><strong>Status → Details</strong> — szczegóły per godzina, kolumna
+<code>[Result]</code></li>
+<li><strong>Pobranie wyniku</strong> (F310/IVA): po zakończeniu obliczeń
+kliknij download</li>
+</ol>
+<hr />
+<p><a id="buckets"></a> # 5. Buckety MinIO</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Bucket</th>
+<th>Pełna ścieżka</th>
+<th>Zawartość</th>
+<th>Źródło</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>perun/</code></td>
+<td><code>perun/DA_FBCC/in/yyyy-mm-dd/</code></td>
+<td>Paczki wejściowe DA do Perun4V</td>
+<td>BUP DA §6, NOR DA</td>
+</tr>
+<tr>
+<td><code>perun/</code></td>
+<td><code>perun/ID_FBCC/in/yyyy-mm-dd/</code></td>
+<td>Paczki wejściowe IDCC do Perun4V</td>
+<td>HTML §6</td>
+</tr>
+<tr>
+<td><code>perun/</code></td>
+<td><code>perun/DA_FBCC/out/yyyy-mm-dd/</code></td>
+<td>Wyniki DA z Perun4V (IVA F310, raporty)</td>
+<td>BUP DA</td>
+</tr>
+<tr>
+<td><code>perun/</code></td>
+<td><code>perun/ID_FBCC/out/yyyy-mm-dd/</code></td>
+<td>Wyniki IDCC z Perun4V (IVA FIDx-710, raporty)</td>
+<td>HTML §6</td>
+</tr>
+<tr>
+<td><code>cca/</code></td>
+<td><code>cca/DA_FBCC/out/[BD]/</code></td>
+<td>IVA BACKUP + raporty CCA (DA)</td>
+<td>BUP DA §6, HTML §6</td>
+</tr>
+<tr>
+<td><code>cca/</code></td>
+<td><code>cca/ID_FBCC/out/[BD]/</code></td>
+<td>IVA BACKUP + raporty CCA (IDCC)</td>
+<td>HTML §6, Aneks A.3</td>
+</tr>
+<tr>
+<td><code>cca/</code></td>
+<td><code>cca/ID_FBCC/in/yyyymmdd/yyyymmdd-FIDx-831-v*</code></td>
+<td>Pliki AC (FIDx-831) — wejście CCA</td>
+<td>uzgodnienie z użytkownikiem</td>
+</tr>
+<tr>
+<td><code>mam/</code></td>
+<td>(do uzupełnienia)</td>
+<td>❓ — nieznana zawartość, do dopytania PSE Innowacje (<a href="#todo">TODO-5</a>)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Katalog sieciowy zapisu plików ręcznie pobranych z
+CCCt:</strong>
+<code>\\uo-data\ZUO\Pion_UOD\Wydzial_DP\MODELE\5_DYSP\FBA\Pliki wejściowe do DA FBA\rrrMMdd\PERUN\</code>
+<em>(BUP DA)</em> <em>(❓ analogiczna ścieżka dla IDCC — do
+weryfikacji)</em></p>
+<hr />
+<p><a id="matrix"></a> # 6. Mapa relacji</p>
+<h2 id="a.-macierz-narzędzie-ryzyko">6.A. Macierz narzędzie ×
+ryzyko</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Narzędzie</th>
+<th>Ryzyko gdy niedostępne</th>
+<th>Ryzyko transportowe / procesowe</th>
+<th>Zespół utrzymania</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#N01">CCM (N01)</a></td>
+<td><a href="#U01">U01</a></td>
+<td>—</td>
+<td>zgłoś</td>
+</tr>
+<tr>
+<td><a href="#N02">Core CC Tool (N02)</a></td>
+<td><a href="#U02">U02</a></td>
+<td><a href="#U10">U10</a>, <a href="#U11">U11</a>, <a href="#U12">U12</a></td>
+<td><a href="#N13">CCC/TSCNET (N13)</a></td>
+</tr>
+<tr>
+<td><a href="#N03">Perun4V (N03)</a></td>
+<td><a href="#U05">U05</a></td>
+<td><a href="#U14">U14</a>, <a href="#U15">U15</a>, <a href="#U16">U16</a></td>
+<td><a href="#N13">TSCNET (N13)</a></td>
+</tr>
+<tr>
+<td><a href="#N04">MinIO (N04)</a></td>
+<td><a href="#U04">U04</a></td>
+<td>—</td>
+<td>zgłoś</td>
+</tr>
+<tr>
+<td><a href="#N05">Connector 2.0 (N05)</a></td>
+<td><a href="#U03">U03</a></td>
+<td>obejmuje też scalone U18</td>
+<td>zgłoś</td>
+</tr>
+<tr>
+<td><a href="#N06">ZP (N06)</a></td>
+<td><a href="#U06">U06</a></td>
+<td>—</td>
+<td>zgłoś</td>
+</tr>
+<tr>
+<td><a href="#N07">Kreator2DAF/IDCF (N07/N08)</a></td>
+<td><a href="#U06">U06</a></td>
+<td>—</td>
+<td>PLANS</td>
+</tr>
+<tr>
+<td><a href="#N09">CCA (N09)</a></td>
+<td>—</td>
+<td><a href="#U19">U19</a>, <a href="#U23">U23</a></td>
+<td>zgłoś</td>
+</tr>
+<tr>
+<td><a href="#N10">PuTo (N10)</a></td>
+<td>(pośrednio przez CCCt)</td>
+<td>—</td>
+<td>wewn. PSE</td>
+</tr>
+<tr>
+<td><a href="#N11">kdm6 (N11)</a></td>
+<td><a href="#U07">U07</a></td>
+<td>—</td>
+<td>utrzymanie poczty PSE</td>
+</tr>
+<tr>
+<td><a href="#N12">sFTP (N12)</a></td>
+<td>(część <a href="#U03">U03</a>)</td>
+<td>—</td>
+<td>zgłoś</td>
+</tr>
+<tr>
+<td><a href="#N16">ECP/EDX (N16)</a></td>
+<td>—</td>
+<td><a href="#U21">U21</a></td>
+<td>TSCNET</td>
+</tr>
+<tr>
+<td><a href="#N17">XBID (N17)</a></td>
+<td>—</td>
+<td><a href="#U20">U20</a>, <a href="#U22">U22</a></td>
+<td>zewn.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="b.-macierz-stan-kafelka-procedura-backupowa-skrót">6.B. Macierz
+stan kafelka × procedura backupowa (skrót)</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Stan kafelka (uniwersalny)</th>
+<th>Typowe ryzyka</th>
+<th>Sugerowana ścieżka</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>szary/szary (przed TET)</td>
+<td>—</td>
+<td>monitoring</td>
+</tr>
+<tr>
+<td>pomarańczowy/* (TET zbliża się)</td>
+<td><a href="#U03">U03</a>, <a href="#U06">U06</a>, <a href="#U08">U08</a></td>
+<td>CCCt MV → MinIO → źródło (<a href="#N06">N06</a>)</td>
+</tr>
+<tr>
+<td>czerwony/* (CET zbliża się)</td>
+<td><a href="#U03">U03</a>, <a href="#U08">U08</a>, <a href="#U10">U10</a></td>
+<td><a href="#P02">P02</a>/<a href="#P04">P04</a> → <a href="#P01">P01</a></td>
+</tr>
+<tr>
+<td>czarny/czarny (po CET)</td>
+<td><a href="#U03">U03</a>, <a href="#U08">U08</a></td>
+<td>KRYTYCZNE — zgłoś + telefon CCC</td>
+</tr>
+<tr>
+<td>zielony/czerwony (ACK Rejected)</td>
+<td><a href="#U10">U10</a></td>
+<td>per kod ACK (20/21/30)</td>
+</tr>
+<tr>
+<td>zielony/czerwony ? (timeout)</td>
+<td><a href="#U11">U11</a></td>
+<td>CCCt MV → <a href="#P01">P01</a></td>
+</tr>
+<tr>
+<td>zielony/zielony (Happy Day)</td>
+<td>—</td>
+<td>brak</td>
+</tr>
+<tr>
+<td>czerwony ! / * (size mismatch)</td>
+<td><a href="#U09">U09</a></td>
+<td><a href="#P04">P04</a> / <a href="#P02">P02</a> → <a href="#P01">P01</a></td>
+</tr>
+<tr>
+<td>ciemnozielony W / zielony</td>
+<td><a href="#U03">U03</a></td>
+<td><a href="#P06">P06</a> wpis A.4</td>
+</tr>
+<tr>
+<td>fioletowy / fioletowy</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>zielony R / zielony R</td>
+<td><a href="#U13">U13</a></td>
+<td><a href="#P06">P06</a></td>
+</tr>
+<tr>
+<td>red_pulse (IVA Backup)</td>
+<td><a href="#U19">U19</a></td>
+<td>porównaj wersje IVA vs Backup</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><a id="todo"></a> # 7. TODO — do dopytania zespołu CCA / PSE
+Innowacje</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>Pytanie</th>
+<th>Skierowane do</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TODO-1</td>
+<td>Czym dokładnie jest <strong>R08</strong> (HTML §9)? Hipoteza: „Brak
+dostępu do Perun4V” — czy potwierdzone?</td>
+<td>Zespół CCA</td>
+<td>otwarte</td>
+</tr>
+<tr>
+<td>TODO-2</td>
+<td>Czy <strong>R10</strong> istnieje? Brak opisu w HTML §9 — czy to
+numer archiwalny?</td>
+<td>Zespół CCA / WPO</td>
+<td>otwarte</td>
+</tr>
+<tr>
+<td>TODO-3</td>
+<td>Opisy <strong>R17, R18, R19</strong> — wzmiankowane w kontaktach CCA
+(„Zgłoszenie przy ryzykach R12, R16, R17, R18, R19, R20”), brak definicji
+w §9</td>
+<td>Zespół CCA</td>
+<td>otwarte</td>
+</tr>
+<tr>
+<td>TODO-4</td>
+<td>Czy istnieje dedykowany <strong>email</strong> zespołu CCA, czy
+zawsze przez PSE Innowacje?</td>
+<td>Zespół CCA</td>
+<td>otwarte</td>
+</tr>
+<tr>
+<td>TODO-5</td>
+<td>Bucket MinIO <strong><code>mam/</code></strong> — co zawiera i kiedy
+używany?</td>
+<td>PSE Innowacje</td>
+<td>otwarte</td>
+</tr>
+<tr>
+<td>TODO-6</td>
+<td>Dokładna ścieżka **„Ustaw status ręcznie ‘R’“** w CCM — czy zgodnie
+z CCM Instrukcją v2.6 (rozdz. „Zmiana statusu dokumentu na wysłany
+ręcznie”)?</td>
+<td>PSE Innowacje</td>
+<td>otwarte</td>
+</tr>
+<tr>
+<td>TODO-7</td>
+<td>Katalog sieciowy zapisu plików <strong>dla IDCC</strong> — czy
+<code>…\Pliki wejściowe do ID FBA\rrrMMdd\</code> czy ten sam co
+DA?</td>
+<td>Dyspozytor IDCC</td>
+<td>otwarte</td>
+</tr>
+<tr>
+<td>TODO-8</td>
+<td>Wzorzec wysyłek automatycznych z ZP <strong>v+1</strong> — czy 14:20
+to dla doby D+1 czy backup dla D?</td>
+<td>Dyspozytor / ZP</td>
+<td>otwarte</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>Wersja Inwentarza:</strong> 1.0 — utworzony zgodnie z planem
+<code>/Users/dawidslabicki/.claude/plans/potrzebuje-dla-kazdego-jednego-snoopy-sprout.md</code>
+<strong>Data:</strong> 2026-05-20</p>
+</body>
+</html>

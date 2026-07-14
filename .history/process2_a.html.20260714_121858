@@ -1,0 +1,119 @@
+<h3 id="proc-a">IDCC(a) — kroki istotne dla PSE</h3>
+
+<p>PSE działa jako jeden z TSO regionu Core. Poniżej tylko kroki, w których PSE
+dostarcza dane, waliduje, wysyła pliki lub działa na swoich granicach
+(50Hertz–PSE, CEPS–PSE, SEPS–PLC). Kroki czysto centralne (CCC/Coreso/RCC),
+których PSE nie dotyczą, pominięto.</p>
+
+<h4>Distribution of Initial Data</h4>
+<p>CCC wysyła do XBID pliki high-negative NTC (test komunikacji). Krok obejmuje
+zdolności na granicach PSE — działania wykonuje CCC, a PSE monitoruje wynik na
+swoich granicach. Przy braku lub negatywnym ACK dla high-negative NTC (FID1-921)
+CCC stosuje fallback <code>ID1_1</code> i informuje mailem #1.</p>
+
+<h4>Open gates for AC (Allocation Constraints)</h4>
+<p>PSE dostarcza plik <strong>AC — Allocation Constraints (FID1-831)</strong>
+(ograniczenia alokacyjne wyznaczone przez PSE). Ścieżka: ZP → Connector 2.0 →
+Core CC Tool → PuTo. TET 13:50, CET 14:45.</p>
+
+<h4>MCR Data Gathering — Shadow Auction Results (przy decouplingu SDAC)</h4>
+<p>Przy (częściowym) decouplingu na granicach Core PSE jest przypomniane mailem o
+obowiązku dostarczenia <strong>MD250 — Shadow Auction Results (FID1-250)</strong>
+przez ECP/EDX. Deadline 1: TET 15:43; Deadline 2 (przypomnienie): CET 17:24.
+Po 17:24 brakujące DA AAC PSE wprowadza bezpośrednio w XBID. Fallbacki:
+<code>ID1_7</code> (mail #20 — wezwanie do MD250), <code>ID1_8</code>/<code>ID1_9</code>
+(przy błędzie liczenia PSE/TSO dostarcza AAC do XBID, mail #2),
+<code>ID1_12</code> (TSO uploaduje AAC do XBID).</p>
+
+<h4>Individual CB and ATC validation</h4>
+<p>PSE prowadzi <strong>indywidualną walidację</strong> (we własnym zakresie, np.
+Perun) — czy zdolności nie naruszają granic bezpieczeństwa we własnym obszarze i
+czy da się temu zapobiec środkami zaradczymi. Okno 40 min, walidacja zawsze min.
+25 min nawet w fallbacku/opóźnieniu. PSE musi uwzględnić pliki
+<strong>FID1-928 — ATC Based Validation</strong> (plik zwrotny z walidacji ATC,
+Core CC Tool → Connector 2.0 → CCM; TET 13:40, CET 14:20). PSE może aktualizować
+EC/ATC (MD609) dla wirtualnych hubów do końca okna. Fallback opóźnienia okna:
+<code>ID1_16</code> (pauza + wznowienie, zapewnienie 25 min).</p>
+
+<h4>Final ID ATC extraction</h4>
+<p>PSE otwiera bramki i może dostarczyć indywidualne EC/ATC. Wynik finalny to
+<strong>FID1-921 — Final Intraday NTC</strong> (oraz ID1-921-XX per granica),
+wysyłany do XBID (TET 14:45, CET 14:55, kanał zapasowy sFTP). DISCLAIMER: TSO po
+obu stronach granicy (m.in. PSE) współodpowiada za sprawdzenie poprawności
+zdolności wgranych na swojej granicy i potwierdzenie ich do CCC. Liczne fallbacki
+dotyczące dostarczenia NTC do XBID — patrz tabela.</p>
+
+<h4>Changing individual factors (rLTAincl / rAmrId)</h4>
+<p>Krok wewnętrzny PSE. PSE może zmienić swoje parametry redukcji wirtualnych
+zdolności. Harmonogram: D-14 poinformować pozostałych TSO przez Core CCB; D-7
+opublikować Market Message do interesariuszy zewnętrznych + NRA; D wprowadzić
+zmianę w ekstrakcji ATC na poziomie obszaru i granicy (rLTA).</p>
+
+<h4>General Fallbacks — przejęcie procesu przez PSE</h4>
+<p>Gdy ID CCCt jest down i proces oddany TSO: PSE dostarcza policzone AAC do XBID
+lokalnym narzędziem najpóźniej do 20:00 (warunek startu IDCC(b)) i potwierdza ich
+obecność do CCC (<code>ID1_26</code>). Przy problemie EDX/ECP PSE↔CCCt — PSE
+informuje USY/CCC i ręcznie wgrywa wejścia przez Message Viewer lub mailem do CCC
+(<code>ID1_27</code>).</p>
+
+<table class="ref">
+  <thead>
+    <tr><th>Kod</th><th>Sytuacja</th><th>Działanie PSE</th><th>Mail #</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ID1_1</td>
+      <td>Brak / negatywny ACK dla high-neg NTC (FID1-921)</td>
+      <td>PSE dotknięte (granice PSE); CCC ponawia przez sFTP, czeka na ACK</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>ID1_7</td>
+      <td>Decoupling SDAC — wymagane Shadow Auction (MD250 / FID1-250)</td>
+      <td>PSE dostarcza MD250 do CCCt (TET 15:43, CET 17:24); po 17:24 brakujące DA AAC bezpośrednio w XBID</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>ID1_8</td>
+      <td>Błąd obliczeń AAC — przejęcie procesu</td>
+      <td>PSE otrzymuje wezwanie i przejmuje IDCC(a); dostarcza AAC do XBID</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>ID1_9</td>
+      <td>Błąd obliczeń AAC</td>
+      <td>PSE/TSO wgrywa policzone AAC do XBID</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>ID1_12</td>
+      <td>Brak rozwiązania dla policzonych AAC</td>
+      <td>PSE (dotknięty TSO) wgrywa AAC do XBID</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>ID1_16</td>
+      <td>Opóźnione okno walidacji (zapewnienie 25 min)</td>
+      <td>PSE prowadzi walidację min. 25 min mimo opóźnienia; okno jest pauzowane i wznawiane</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>ID1_23</td>
+      <td>Brak / negatywny ACK dla NTC (FID1-921) na granicy</td>
+      <td>PSE (TSO na granicy) współsprawdza poprawność NTC na swojej granicy i potwierdza do CCC</td>
+      <td>12, 7</td>
+    </tr>
+    <tr>
+      <td>ID1_26</td>
+      <td>ID CCCt down — proces oddany TSO</td>
+      <td>PSE dostarcza policzone AAC do XBID lokalnym narzędziem do 20:00; potwierdza obecność AAC do CCC</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>ID1_27</td>
+      <td>Problem EDX/ECP między PSE a CCCt</td>
+      <td>PSE informuje USY/CCC i ręcznie wgrywa wejścia przez Message Viewer lub przesyła pliki mailem do CCC</td>
+      <td>—</td>
+    </tr>
+  </tbody>
+</table>

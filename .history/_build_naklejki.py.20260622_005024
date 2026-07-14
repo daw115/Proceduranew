@@ -1,0 +1,764 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Buduje 'naklejki' CCM w formie info.pdf + edytowalny-info.docx.
+
+Każdy z 71 kodów = jedna kotwica (nagłówek = KOD z podkreśleniami) → strona z:
+  - meta (profil, TET, CET, wersja, źródło)
+  - Opis pliku / Ścieżka pliku / Kontakt
+  - Pełny katalog stanów kafelków (dla profilu 2CCT: AC / GLSK-CBCORA / 928)
+
+Wyjścia:
+  CCM/edytowalny-info.docx   — master edytowalny (Heading = kotwica + zakładka Word)
+  CCM/info.pdf               — named destinations = KOD (info.pdf#FID1_831 działa)
+
+Kolejność kotwic = bieżąca kolejność stron w CCM/info.pdf (zachowana).
+"""
+import json, re, html as htmlmod, subprocess
+from pathlib import Path
+
+ROOT = Path('/Volumes/SSD/CLAUDE_WORK/Procedura')
+CCM  = ROOT / 'CCM'
+
+# ── kolejność kotwic z kanonicznego pliku (NIE z info.pdf — unika samo-odwołania) ──
+import re as _re
+def anchor_order():
+    f = CCM/'anchors.txt'
+    codes = [l.strip() for l in f.read_text(encoding='utf-8').splitlines() if l.strip()]
+    # twarda walidacja: tylko litery/cyfry/podkreślenia (poprawna kotwica)
+    bad = [c for c in codes if not _re.fullmatch(r'[A-Za-z0-9_]+', c)]
+    if bad:
+        raise ValueError(f'Niepoprawne kotwice w anchors.txt: {bad[:5]}')
+    return codes
+
+ANCHORS = anchor_order()
+
+# ── dane źródłowe ──────────────────────────────────────────────────────────
+from openpyxl import load_workbook
+
+content = json.load(open(ROOT/'popup_content_IDCC.json', encoding='utf-8'))
+
+def norm(s): return s.replace('-', '_').strip()
+
+# content: pierwsza (najbogatsza) pozycja per znormalizowany kod
+content_by = {}
+for it in content:
+    k = norm(it['kod'])
+    if k not in content_by:
+        content_by[k] = it
+
+# ── pełny katalog stanów per kod (Stany_kafelkow_per_plik_IDCC.xlsx) ────────
+# Każdy arkusz = jeden profil; kolumna „Opis (pełna ramka)" zawiera komplet
+# treści dla danego stanu. Parsujemy ją na sekcje.
+STATE_SHEETS = ['AC 831 (2CCT)','GLSK CBCORA 607-617 (2CCT)','ATC 928 (zwrotny)',
+                'IVA 710 (3COL)','Paczki PERUN (2MS)','Skladowe MinIO (MIN)',
+                'sFTP-ZP NTC MD250 IGM (SFTP)']
+SHEET_PROFILE = {
+    'AC 831 (2CCT)':'2CCT','GLSK CBCORA 607-617 (2CCT)':'2CCT','ATC 928 (zwrotny)':'2CCT',
+    'IVA 710 (3COL)':'3COL','Paczki PERUN (2MS)':'2MS','Skladowe MinIO (MIN)':'MIN',
+    'sFTP-ZP NTC MD250 IGM (SFTP)':'SFTP',
+}
+KAT_NAZWA = {'A':'OK','B':'Obserwacja','C':'Interwencja','D':'Eskalacja'}
+FRAME_SECTIONS = ['Stan kafelków','Opis stanu kafelków','Procedury awaryjne',
+                  'Kafelek MinIO / sFTP','Opis pliku','Ścieżka pliku',
+                  'Kontakt w przypadku awarii']
+
+def parse_frame(text):
+    """Rozkłada 'pełną ramkę' stanu na pola."""
+    if not text: return None
+    text = text.replace('\r\n','\n')
+    lines = text.split('\n')
+    head = lines[0].strip()
+    m = re.match(r'^(.*?)\s+—\s+Stan\s+(\d+)\s+·\s+([A-D])\s+—\s+(.*)$', head)
+    rec = {'kod':'','nr':'','kat':'','nazwa':''}
+    if m:
+        rec.update(kod=m.group(1).strip(), nr=m.group(2),
+                   kat=m.group(3), nazwa=m.group(4).strip())
+    body = '\n'.join(lines[1:])
+    idx = []
+    for sec in FRAME_SECTIONS:
+        for mm in re.finditer(r'(?m)^'+re.escape(sec)+r'\s*$', body):
+            idx.append((mm.start(), mm.end(), sec))
+    idx.sort()
+    for i,(s,e,sec) in enumerate(idx):
+        nxt = idx[i+1][0] if i+1 < len(idx) else len(body)
+        rec[sec] = body[e:nxt].strip()
+    return rec
+
+def _load_states():
+    wb = load_workbook(ROOT/'Stany_kafelkow_per_plik_IDCC.xlsx', data_only=True)
+    by_anchor = {}
+    extra = {}   # dodatkowe meta per kod: kanał MinIO/sFTP, nazwa
+    for sh in STATE_SHEETS:
+        prof = SHEET_PROFILE[sh]
+        for r in wb[sh].iter_rows(min_row=2, values_only=True):
+            if not (r and r[0]): continue
+            rec = parse_frame(r[5])
+            if not rec: continue
+            anchor = norm(str(r[0]).strip())
+            norm_rec = {
+                'nr': rec.get('nr',''),
+                'kategoria': rec.get('kat',''),
+                'kategoria_nazwa': KAT_NAZWA.get(rec.get('kat',''),''),
+                'stan': rec.get('Stan kafelków',''),
+                'opis_stanu': rec.get('Opis stanu kafelków',''),
+                'procedura': rec.get('Procedury awaryjne',''),
+                'profil': prof,
+            }
+            by_anchor.setdefault(anchor, []).append(norm_rec)
+            if anchor not in extra:
+                extra[anchor] = {
+                    'profil': prof,
+                    'nazwa': rec.get('nazwa',''),
+                    'kanal': rec.get('Kafelek MinIO / sFTP',''),
+                    'opis_pliku': rec.get('Opis pliku',''),
+                    'sciezka': rec.get('Ścieżka pliku',''),
+                    'kontakt': rec.get('Kontakt w przypadku awarii',''),
+                }
+    # sortuj stany po numerze
+    for a in by_anchor:
+        by_anchor[a].sort(key=lambda x: int(x['nr']) if str(x['nr']).isdigit() else 0)
+    return by_anchor, extra
+
+STATES_BY_ANCHOR, STATE_EXTRA = _load_states()
+
+def variant_for(code):
+    """Zwraca pełny katalog stanów dla kodu (z xlsx) lub None."""
+    return STATES_BY_ANCHOR.get(code)
+
+# ── konwersja HTML procedur → tekst / markup ───────────────────────────────
+def html_to_text(s):
+    if not s: return ''
+    s = s.replace('&nbsp;', ' ')
+    s = re.sub(r'<br\s*/?>', '\n', s, flags=re.I)
+    s = re.sub(r'</(p|div|li)>', '\n', s, flags=re.I)
+    s = re.sub(r'<li[^>]*>', '• ', s, flags=re.I)
+    s = re.sub(r'<[^>]+>', '', s)
+    s = htmlmod.unescape(s)
+    s = re.sub(r'[ \t]+', ' ', s)
+    s = re.sub(r'\n{3,}', '\n\n', s)
+    return s.strip()
+
+def html_to_rl(s):
+    """HTML → markup akceptowany przez reportlab Paragraph (<b>,<i>,<br/>)."""
+    if not s: return ''
+    s = s.replace('&nbsp;', ' ')
+    s = re.sub(r'<strong>', '<b>', s, flags=re.I)
+    s = re.sub(r'</strong>', '</b>', s, flags=re.I)
+    s = re.sub(r'<em>', '<i>', s, flags=re.I)
+    s = re.sub(r'</em>', '</i>', s, flags=re.I)
+    s = re.sub(r'<br\s*/?>', '<br/>', s, flags=re.I)
+    s = re.sub(r'<li[^>]*>', '<br/>• ', s, flags=re.I)
+    s = re.sub(r'</(p|div|ul|ol)>', '<br/>', s, flags=re.I)
+    s = re.sub(r'<(?!/?(b|i|br|font)[ />])[^>]*>', '', s)  # usuń pozostałe tagi
+    # napraw & (poza encjami)
+    s = re.sub(r'&(?!amp;|lt;|gt;|#)', '&amp;', s)
+    s = re.sub(r'(<br/>)+', '<br/>', s)
+    s = re.sub(r'^(<br/>)+', '', s)
+    return s.strip()
+
+# ── formatowanie procedur/opisów wg wzoru staticHints (hierarchia bulletów) ──
+def format_proc(text):
+    """Rozkłada tekst na hierarchię (level, tekst, header) jak w staticHints:
+       0 = nagłówek/lead-in, 1 = punkt •, 2 = zagnieżdżony 'kod NN'."""
+    if not text: return []
+    t = re.sub(r'[ \t]*\n[ \t]*', ' ', str(text)).strip()
+    t = re.sub(r'\s+', ' ', t)
+    t = re.sub(r'\s*(Jeżeli:)', r' ‖\1', t)        # 'Jeżeli:' jako osobny nagłówek
+    parts = t.split('•')
+    lead = parts[0].strip()
+    items = [p.strip() for p in parts[1:] if p.strip()]
+    out = []
+    for seg in re.split(r'‖', lead):
+        seg = seg.strip()
+        if seg:
+            out.append((0, seg, seg.endswith(':')))
+    for it in items:
+        sub = re.split(r'‖', it)
+        main = sub[0].strip()
+        lvl = 2 if re.match(r'^kod\s', main, re.I) else 1
+        if main:
+            out.append((lvl, main, False))
+        for extra in sub[1:]:
+            extra = extra.strip()
+            if extra:
+                out.append((0, extra, extra.endswith(':')))
+    return out
+
+def _esc_rl(s):
+    s = htmlmod.escape(str(s))
+    return s
+
+def proc_to_rl(text):
+    """Hierarchia procedury → markup reportlab (nagłówki <b>, bullety, wcięcia)."""
+    parts = format_proc(text)
+    if not parts:
+        return '—'
+    lines = []
+    for lvl, txt, hdr in parts:
+        body = _esc_rl(txt)
+        # podświetl odnośniki [Rxx — pełny opis]
+        body = re.sub(r'\[(R\d+[^\]]*)\]', r'<font color="#1F4E78">[\1]</font>', body)
+        if hdr:
+            lines.append(f'<b>{body}</b>')
+        elif lvl == 1:
+            lines.append(f'• {body}')
+        elif lvl == 2:
+            lines.append(f'&nbsp;&nbsp;&nbsp;&nbsp;– {body}')
+        else:
+            lines.append(body)
+    return '<br/>'.join(lines)
+
+# ── kafelki statusów: specyfikacja 1:1 z oryginalnej instrukcji (CSS popupów) ──
+# wartość koloru : (fill, znacznik, kolor_znacznika, obramowanie)
+TILE_SPEC = {
+    'zielony':         ('#00B050', '',  '#FFFFFF', None),
+    'zielony R':       ('#00B050', 'R', '#FFFFFF', None),
+    'ciemnozielony W': ('#2E7D32', 'W', '#FFFFFF', None),
+    'W po CET':        ('#1B5E20', 'W', '#FFFFFF', None),
+    'fioletowy':       ('#7030A0', '',  '#FFFFFF', None),
+    'pomarańczowy':    ('#ED7D31', '',  '#FFFFFF', '#C55A11'),
+    'czerwony':        ('#C00000', '',  '#FFFFFF', None),
+    'czerwony !':      ('#C00000', '!', '#FFFFFF', None),
+    'czerwony ?':      ('#C00000', '?', '#FFFFFF', None),
+    'szary':           ('#BFBFBF', '',  '#42526E', None),
+    'szary ?':         ('#BFBFBF', '?', '#42526E', None),
+    'czarny':          ('#000000', '',  '#FFFFFF', None),
+    'puste':           ('#FFFFFF', '',  '#42526E', '#DFE1E6'),
+}
+TILES_DIR = ROOT / 'img_ccm' / 'tiles'
+
+def _gen_tiles():
+    """Generuje kafelki PNG 1:1 z oryginalnej instrukcji."""
+    from PIL import Image, ImageDraw, ImageFont
+    TILES_DIR.mkdir(parents=True, exist_ok=True)
+    SCALE, W, H, R = 6, 30, 30, 7
+    def hx(c): return tuple(int(c[i:i+2],16) for i in (1,3,5))
+    fp = None
+    for cand in ['/System/Library/Fonts/Supplemental/Arial Bold.ttf',
+                 '/Library/Fonts/Arial Bold.ttf']:
+        if Path(cand).exists(): fp = cand; break
+    paths = {}
+    for key,(fill,mark,mcol,border) in TILE_SPEC.items():
+        w,h = W*SCALE, H*SCALE
+        im = Image.new('RGBA',(w,h),(0,0,0,0)); d = ImageDraw.Draw(im)
+        bcol = hx(border) if border else hx(fill)
+        d.rounded_rectangle([SCALE,SCALE,w-SCALE,h-SCALE], radius=R*SCALE,
+                            fill=hx(fill), outline=bcol, width=(2*SCALE if border else 1))
+        if mark and fp:
+            fnt = ImageFont.truetype(fp, int(15*SCALE))
+            tb = d.textbbox((0,0), mark, font=fnt)
+            d.text(((w-(tb[2]-tb[0]))/2 - tb[0], (h-(tb[3]-tb[1]))/2 - tb[1]),
+                   mark, font=fnt, fill=hx(mcol))
+        im = im.resize((W,H), Image.LANCZOS)
+        safe = key.replace(' ','_').replace('!','excl').replace('?','q')
+        out = TILES_DIR/f'{safe}.png'; im.save(out)
+        paths[key] = out
+    return paths
+
+TILE_PATHS = _gen_tiles()
+
+def tile_path(color):
+    """Ścieżka kafelka dla wartości koloru (z fallbackiem na 'puste')."""
+    return TILE_PATHS.get((color or '').strip(), TILE_PATHS['puste'])
+
+def parse_stan(text):
+    """'CCtool wysł.: zielony · MinIO: szary' → [('CCtool wysł.','zielony'), ...]"""
+    out = []
+    for part in re.split(r'\s*·\s*', (text or '').strip()):
+        if ':' in part:
+            col, clr = part.split(':', 1)
+            out.append((col.strip(), clr.strip()))
+    return out
+
+# ── meta kodu ──────────────────────────────────────────────────────────────
+def meta(code):
+    it = content_by.get(code, {})
+    ex = STATE_EXTRA.get(code, {})
+    return {
+        'nazwa': it.get('nazwa_przeplywu','') or ex.get('nazwa',''),
+        'obszar': it.get('obszar',''),
+        'profil': it.get('profil','') or ex.get('profil',''),
+        'tet': it.get('target_end_time',''),
+        'cet': it.get('critical_end_time',''),
+        'wersja': it.get('wersja',''),
+        'zrodlo': it.get('zrodlo',''),
+        'opis': it.get('opis_pliku','') or ex.get('opis_pliku',''),
+        'sciezka': it.get('sciezka_pliku','') or ex.get('sciezka',''),
+        'kontakt': it.get('kontakt','') or ex.get('kontakt',''),
+        'kanal': ex.get('kanal',''),
+        'uwagi': it.get('uwagi',''),
+    }
+
+print(f'Kotwic: {len(ANCHORS)} | z katalogiem stanów: '
+      f'{sum(1 for c in ANCHORS if variant_for(c))}')
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 1) edytowalny-info.docx
+# ═══════════════════════════════════════════════════════════════════════════
+from docx import Document
+from docx.shared import Pt, Cm, RGBColor
+from docx.enum.text import WD_BREAK
+from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
+
+PSE_BLUE = RGBColor(0x1F, 0x4E, 0x78)
+
+def add_bookmark(paragraph, name):
+    """Wstrzykuje zakładkę Word o nazwie = name wokół akapitu (dla #anchor po eksporcie)."""
+    start = OxmlElement('w:bookmarkStart')
+    start.set(qn('w:id'), str(abs(hash(name)) % 100000))
+    start.set(qn('w:name'), name)
+    end = OxmlElement('w:bookmarkEnd')
+    end.set(qn('w:id'), str(abs(hash(name)) % 100000))
+    p = paragraph._p
+    p.insert(0, start)
+    p.append(end)
+
+def shade(cell, hexclr):
+    tcPr = cell._tc.get_or_add_tcPr()
+    shd = OxmlElement('w:shd'); shd.set(qn('w:val'),'clear'); shd.set(qn('w:fill'),hexclr)
+    tcPr.append(shd)
+
+def set_borders(tbl):
+    tblPr = tbl._tbl.tblPr
+    b = OxmlElement('w:tblBorders')
+    for edge in ('top','left','bottom','right','insideH','insideV'):
+        e = OxmlElement(f'w:{edge}')
+        e.set(qn('w:val'),'single'); e.set(qn('w:sz'),'4'); e.set(qn('w:color'),'A8B8C8')
+        b.append(e)
+    tblPr.append(b)
+
+def fill_proc_cell(cell, text, size=8):
+    """Wypełnia komórkę hierarchią procedury (akapity z wcięciem/bulletem) wg staticHints."""
+    parts = format_proc(text)
+    cell.text = ''
+    first = True
+    if not parts:
+        cell.paragraphs[0].add_run('—'); return
+    for lvl, txt, hdr in parts:
+        para = cell.paragraphs[0] if first else cell.add_paragraph()
+        first = False
+        pf = para.paragraph_format
+        pf.space_before = Pt(0); pf.space_after = Pt(0)
+        if lvl == 2:
+            pf.left_indent = Cm(0.55); prefix = '– '
+        elif lvl == 1:
+            pf.left_indent = Cm(0.2); prefix = '• '
+        else:
+            prefix = ''
+        if hdr:
+            r = para.add_run(txt); r.bold = True; r.font.size = Pt(size)
+        else:
+            r = para.add_run(prefix + txt); r.font.size = Pt(size)
+
+def build_docx():
+    doc = Document()
+    # marginesy A4
+    sec = doc.sections[0]
+    sec.page_width, sec.page_height = Cm(21), Cm(29.7)
+    sec.left_margin = sec.right_margin = Cm(1.8)
+    sec.top_margin = sec.bottom_margin = Cm(1.6)
+    base = doc.styles['Normal']
+    base.font.name = 'Calibri'; base.font.size = Pt(10)
+
+    # strona tytułowa
+    t = doc.add_paragraph(); r = t.add_run('CCM — Naklejki informacyjne IDCC')
+    r.bold = True; r.font.size = Pt(20); r.font.color.rgb = PSE_BLUE
+    s = doc.add_paragraph().add_run(
+        'Załącznik info.pdf — pełny opis plików i katalog stanów kafelków. '
+        'Każdy nagłówek = kotwica: /assets/info.pdf#KOD (np. info.pdf#FID1_831).')
+    s.font.size = Pt(10); s.italic = True
+    note = doc.add_paragraph().add_run(
+        'Eksport do PDF: zaznacz opcję „Utwórz zakładki przy użyciu: Nagłówki / Zakładki programu Word", '
+        'aby nazwy nagłówków stały się kotwicami. W nazwach używaj wyłącznie liter, cyfr i podkreśleń '
+        '(myślniki nie działają jako kotwice).')
+    note.font.size = Pt(9); note.font.color.rgb = RGBColor(0x88,0x55,0x00)
+    doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
+
+    for ci, code in enumerate(ANCHORS):
+        m = meta(code)
+        # H1 = kotwica (TEKST = KOD)
+        h = doc.add_heading(level=1)
+        run = h.add_run(code)
+        run.font.color.rgb = PSE_BLUE
+        add_bookmark(h, code)
+        # podtytuł
+        sub = doc.add_paragraph()
+        rr = sub.add_run(f'{m["nazwa"]}  —  {m["obszar"]}')
+        rr.italic = True; rr.font.size = Pt(11); rr.font.color.rgb = RGBColor(0x44,0x44,0x44)
+
+        # meta tabela
+        mt = doc.add_table(rows=2, cols=5); mt.alignment = WD_TABLE_ALIGNMENT.LEFT
+        set_borders(mt)
+        hdr = ['Profil','Target End Time','Critical End Time','Wersja','Źródło']
+        val = [m['profil'], m['tet'], m['cet'], str(m['wersja']), m['zrodlo']]
+        for j,(hh,vv) in enumerate(zip(hdr,val)):
+            c0 = mt.rows[0].cells[j]; c0.text = hh; shade(c0,'1F4E78')
+            for p in c0.paragraphs:
+                for rn in p.runs: rn.bold=True; rn.font.size=Pt(9); rn.font.color.rgb=RGBColor(255,255,255)
+            c1 = mt.rows[1].cells[j]; c1.text = vv
+            for p in c1.paragraphs:
+                for rn in p.runs: rn.font.size=Pt(9)
+
+        def section(title, body):
+            ph = doc.add_paragraph(); rh = ph.add_run(title)
+            rh.bold=True; rh.font.size=Pt(10.5); rh.font.color.rgb=PSE_BLUE
+            ph.paragraph_format.space_before = Pt(8); ph.paragraph_format.space_after = Pt(2)
+            pb = doc.add_paragraph(html_to_text(body)); 
+            for rn in pb.runs: rn.font.size=Pt(10)
+
+        section('Opis pliku', m['opis'])
+        section('Ścieżka pliku', m['sciezka'])
+        if m['uwagi']: section('Uwagi', m['uwagi'])
+        section('Kontakt w przypadku awarii', m['kontakt'])
+
+        # katalog stanów — pełny, dla każdego kodu (kafelki jak w oryginale)
+        st = variant_for(code)
+        if st:
+            ph = doc.add_paragraph(); rh = ph.add_run(f'Katalog stanów kafelków ({len(st)} przypadków)')
+            rh.bold=True; rh.font.size=Pt(10.5); rh.font.color.rgb=PSE_BLUE
+            ph.paragraph_format.space_before = Pt(10)
+            tbl = doc.add_table(rows=1, cols=4); set_borders(tbl)
+            tbl.alignment = WD_TABLE_ALIGNMENT.LEFT
+            heads = ['#','Stan kafelków','Opis stanu','Procedury awaryjne']
+            widths = [Cm(0.8),Cm(3.8),Cm(5.0),Cm(7.2)]
+            for j,hh in enumerate(heads):
+                c = tbl.rows[0].cells[j]; c.text = hh; shade(c,'1F4E78')
+                for p in c.paragraphs:
+                    for rn in p.runs: rn.bold=True; rn.font.size=Pt(8.5); rn.font.color.rgb=RGBColor(255,255,255)
+            for sst in st:
+                cells = tbl.add_row().cells
+                # # — numer
+                cells[0].text = str(sst.get('nr','')); cells[0].width = widths[0]
+                for rn in cells[0].paragraphs[0].runs: rn.font.size=Pt(8)
+                # Opis stanu i Procedury awaryjne — hierarchia wg staticHints
+                cells[2].width = widths[2]; fill_proc_cell(cells[2], sst.get('opis_stanu',''))
+                cells[3].width = widths[3]; fill_proc_cell(cells[3], sst.get('procedura',''))
+                # Stan kafelków — kafelki obrazkowe z etykietą kolumny
+                cell = cells[1]; cell.width = widths[1]
+                pairs = parse_stan(sst.get('stan',''))
+                first = True
+                for col, clr in pairs:
+                    para = cell.paragraphs[0] if first else cell.add_paragraph()
+                    first = False
+                    para.paragraph_format.space_before=Pt(0); para.paragraph_format.space_after=Pt(1)
+                    rl = para.add_run(col + '  '); rl.font.size=Pt(7.5)
+                    para.add_run().add_picture(str(tile_path(clr)), height=Pt(11))
+        else:
+            inf = doc.add_paragraph().add_run(
+                'Dla tego pliku katalog stanów kafelków nie jest zdefiniowany odrębnie — '
+                'monitorowanie zgodnie z profilem „' + m['profil'] + '" i procedurą główną (rozdz. 7–9).')
+            inf.font.size = Pt(9); inf.italic=True; inf.font.color.rgb=RGBColor(0x66,0x66,0x66)
+
+        if ci != len(ANCHORS)-1:
+            doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
+
+    out = CCM/'edytowalny-info.docx'
+    doc.save(str(out))
+    print(f'DOCX: {out}  ({out.stat().st_size:,} B, {len(ANCHORS)} kotwic)')
+
+build_docx()
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 2) info.pdf — named destinations = KOD (info.pdf#FID1_831)
+# ═══════════════════════════════════════════════════════════════════════════
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import cm
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_LEFT
+from reportlab.platypus import (BaseDocTemplate, PageTemplate, Frame, Paragraph,
+                                Spacer, Table, TableStyle, PageBreak, Flowable,
+                                KeepTogether, Image)
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+
+# czcionka z polskimi znakami
+FONT, FONTB = 'Helvetica', 'Helvetica-Bold'
+for cand, name, bold in [
+    ('/Library/Fonts/Arial Unicode.ttf','ArialU','ArialU'),
+    ('/System/Library/Fonts/Supplemental/Arial.ttf','ArialReg',None),
+]:
+    try:
+        if Path(cand).exists():
+            pdfmetrics.registerFont(TTFont('PSE', cand)); FONT='PSE'
+            break
+    except Exception: pass
+try:
+    b='/System/Library/Fonts/Supplemental/Arial Bold.ttf'
+    if Path(b).exists():
+        pdfmetrics.registerFont(TTFont('PSE-B', b)); FONTB='PSE-B'
+    else:
+        FONTB=FONT
+except Exception:
+    FONTB=FONT
+
+BLUE = colors.HexColor('#1F4E78')
+GREY = colors.HexColor('#666666')
+
+styles = getSampleStyleSheet()
+def S(name, **kw):
+    kw.setdefault('fontName', FONT)
+    return ParagraphStyle(name, **kw)
+st_h1   = S('h1', fontName=FONTB, fontSize=17, textColor=BLUE, spaceAfter=2, leading=20)
+st_sub  = S('sub', fontSize=10.5, textColor=colors.HexColor('#444444'), spaceAfter=8, leading=13)
+st_sech = S('sech', fontName=FONTB, fontSize=10.5, textColor=BLUE, spaceBefore=8, spaceAfter=2, leading=13)
+st_body = S('body', fontSize=9.5, leading=12.5, spaceAfter=2)
+st_cell = S('cell', fontSize=7.6, leading=9.4)
+st_cellh= S('cellh', fontName=FONTB, fontSize=8, leading=10, textColor=colors.white)
+st_note = S('note', fontSize=8.5, leading=11, textColor=GREY)
+st_toc  = S('toc', fontSize=9, leading=12, textColor=BLUE)
+
+class Anchor(Flowable):
+    """Rejestruje named destination = key na bieżącej stronie + wpis do outline."""
+    def __init__(self, key, title, level=0):
+        super().__init__(); self.key=key; self.title=title; self.level=level
+        self.width=0; self.height=0
+    def draw(self):
+        self.canv.bookmarkPage(self.key)               # named destination = key
+        self.canv.addOutlineEntry(self.title, self.key, self.level, closed=(self.level>0))
+
+def p(txt, style):
+    raw = txt if txt else '&nbsp;'
+    try:
+        return Paragraph(raw, style)
+    except Exception:
+        # fallback: pełne escape'owanie (gdy markup zawiera nielegalne znaki)
+        safe = htmlmod.escape(_re.sub(r'<[^>]+>', '', raw))
+        return Paragraph(safe or '&nbsp;', style)
+
+st_tlab = ParagraphStyle('tlab', fontName=FONT, fontSize=7.2, leading=8.6)
+def stan_cell(stan_text):
+    """Komórka 'Stan kafelków' = etykieta kolumny + kafelek (obrazek) jak w oryginale."""
+    pairs = parse_stan(stan_text)
+    if not pairs:
+        return p(htmlmod.escape(stan_text or '—'), st_cell)
+    rows = []
+    for col, clr in pairs:
+        img = Image(str(tile_path(clr)), width=11, height=11)
+        rows.append([p(htmlmod.escape(col), st_tlab), img])
+    inner = Table(rows, colWidths=[None, 14])
+    inner.setStyle(TableStyle([
+        ('VALIGN',(0,0),(-1,-1),'MIDDLE'),
+        ('LEFTPADDING',(0,0),(-1,-1),0),('RIGHTPADDING',(0,0),(-1,-1),1),
+        ('TOPPADDING',(0,0),(-1,-1),1),('BOTTOMPADDING',(0,0),(-1,-1),1),
+    ]))
+    return inner
+
+# ── parser bazy ryzyk (Ryzyka_pelna_baza_IDCC.html) → kotwice #Rxx w PDF ────
+def parse_risks():
+    src = ROOT / 'Ryzyka_pelna_baza_IDCC.html'
+    if not src.exists():
+        return []
+    html = src.read_text(encoding='utf-8')
+    parts = re.split(r'<div class="risk(?: critical)?" id="(R\d+)">', html)
+    risks = []
+    for i in range(1, len(parts), 2):
+        rid = parts[i]
+        body = parts[i+1].split('<div class="risk')[0].split('<div class="group-header"')[0]
+        def block(cls):
+            m = re.search(r'<div class="'+cls+r'">(.*?)</div>', body, re.S)
+            return clean_html(m.group(1)) if m else ''
+        h3 = re.search(r'<h3>(.*?)</h3>', body, re.S)
+        title = clean_html(h3.group(1)) if h3 else rid
+        meta = re.search(r'<div class="risk-meta">(.*?)</div>', body, re.S)
+        meta_t = clean_html(meta.group(1)) if meta else ''
+        # treść główna: wszystko poza meta/screen-caption/h3 (procedura, tabele, shortcut)
+        main = body
+        main = re.sub(r'<h3>.*?</h3>', '', main, flags=re.S)
+        main = re.sub(r'<div class="risk-meta">.*?</div>', '', main, flags=re.S)
+        main = re.sub(r'<div class="screen-caption">.*?</div>', '', main, flags=re.S)
+        risks.append({'id': rid, 'title': title, 'meta': meta_t,
+                      'impact': block('impact'), 'shortcut': block('shortcut'),
+                      'body': clean_html(main)})
+    return risks
+
+def clean_html(s):
+    if not s: return ''
+    s = re.sub(r'<br\s*/?>', '\n', s, flags=re.I)
+    s = re.sub(r'</(p|div|li|tr|h[1-6])>', '\n', s, flags=re.I)
+    s = re.sub(r'<li[^>]*>', '• ', s, flags=re.I)
+    s = re.sub(r'<td[^>]*>', '  ', s, flags=re.I)
+    s = re.sub(r'<[^>]+>', '', s)
+    s = htmlmod.unescape(s)
+    s = re.sub(r'[ \t]+', ' ', s)
+    s = re.sub(r'\n[ \t]+', '\n', s)
+    s = re.sub(r'\n{2,}', '\n', s)
+    return s.strip()
+
+def build_pdf():
+    out = CCM/'info.pdf'
+    doc = BaseDocTemplate(str(out), pagesize=A4,
+                          leftMargin=1.6*cm, rightMargin=1.6*cm,
+                          topMargin=1.5*cm, bottomMargin=1.5*cm,
+                          title='CCM — info.pdf (naklejki IDCC)')
+    frame = Frame(doc.leftMargin, doc.bottomMargin,
+                  doc.width, doc.height, id='F')
+
+    def footer(canv, d):
+        canv.saveState()
+        canv.setFont(FONT, 7)
+        canv.setFillColor(GREY)
+        canv.drawString(doc.leftMargin, 1.0*cm,
+                        'Klasyfikacja: Informacja służbowa GK PSE / GK PSE Confidential')
+        canv.drawRightString(A4[0]-doc.rightMargin, 1.0*cm, 'info.pdf')
+        canv.restoreState()
+
+    doc.addPageTemplates([PageTemplate(id='main', frames=[frame], onPage=footer)])
+
+    flow = []
+    # strona tytułowa + spis kotwic
+    flow.append(p('CCM — Naklejki informacyjne IDCC', st_h1))
+    flow.append(p('Załącznik <b>info.pdf</b> — opis plików i katalog stanów kafelków. '
+                  'Linkowanie z popupów CCM: <b>/assets/info.pdf#KOD</b> '
+                  '(np. info.pdf#FID1_831). Kotwice używają podkreśleń.', st_body))
+    flow.append(Spacer(1, 6))
+    flow.append(p('Spis kotwic (' + str(len(ANCHORS)) + ')', st_sech))
+    # spis w 3 kolumnach z linkami wewnętrznymi
+    per = (len(ANCHORS)+2)//3
+    cols = [ANCHORS[i:i+per] for i in range(0, len(ANCHORS), per)]
+    maxr = max(len(c) for c in cols)
+    rows = []
+    for r in range(maxr):
+        row = []
+        for c in cols:
+            if r < len(c):
+                code = c[r]
+                row.append(p(f'<a href="#{code}" color="#1F4E78">{code}</a>', st_toc))
+            else:
+                row.append('')
+        rows.append(row)
+    toc = Table(rows, colWidths=[doc.width/3.0]*3)
+    toc.setStyle(TableStyle([('VALIGN',(0,0),(-1,-1),'TOP'),
+                             ('TOPPADDING',(0,0),(-1,-1),1),
+                             ('BOTTOMPADDING',(0,0),(-1,-1),1)]))
+    flow.append(toc)
+    flow.append(PageBreak())
+
+    for ci, code in enumerate(ANCHORS):
+        m = meta(code)
+        flow.append(Anchor(code, code, level=0))
+        flow.append(p(code, st_h1))
+        flow.append(p(f'{htmlmod.escape(m["nazwa"])} — {htmlmod.escape(m["obszar"])}', st_sub))
+
+        # meta tabela
+        mrow_h = [p('Profil',st_cellh),p('Target End Time',st_cellh),
+                  p('Critical End Time',st_cellh),p('Wersja',st_cellh),p('Źródło',st_cellh)]
+        mrow_v = [p(htmlmod.escape(str(m['profil'])),st_cell),p(htmlmod.escape(str(m['tet'])),st_cell),
+                  p(htmlmod.escape(str(m['cet'])),st_cell),p(htmlmod.escape(str(m['wersja'])),st_cell),
+                  p(htmlmod.escape(str(m['zrodlo'])),st_cell)]
+        mt = Table([mrow_h, mrow_v], colWidths=[doc.width*x for x in (0.16,0.22,0.22,0.12,0.28)])
+        mt.setStyle(TableStyle([
+            ('BACKGROUND',(0,0),(-1,0),BLUE),
+            ('GRID',(0,0),(-1,-1),0.4,colors.HexColor('#A8B8C8')),
+            ('VALIGN',(0,0),(-1,-1),'MIDDLE'),
+            ('TOPPADDING',(0,0),(-1,-1),3),('BOTTOMPADDING',(0,0),(-1,-1),3),
+            ('LEFTPADDING',(0,0),(-1,-1),4),
+        ]))
+        flow.append(mt)
+
+        def section(title, body):
+            flow.append(p(title, st_sech))
+            flow.append(p(html_to_rl(body) or '—', st_body))
+
+        section('Opis pliku', m['opis'])
+        section('Ścieżka pliku', m['sciezka'])
+        if m['uwagi']: section('Uwagi', m['uwagi'])
+        section('Kontakt w przypadku awarii', m['kontakt'])
+
+        st = variant_for(code)
+        if st:
+            flow.append(p(f'Katalog stanów kafelków ({len(st)} przypadków)', st_sech))
+            data = [[p('#',st_cellh),p('Stan kafelków',st_cellh),
+                     p('Opis stanu',st_cellh),p('Procedury awaryjne',st_cellh)]]
+            style = [
+                ('BACKGROUND',(0,0),(-1,0),BLUE),
+                ('GRID',(0,0),(-1,-1),0.4,colors.HexColor('#A8B8C8')),
+                ('VALIGN',(0,0),(-1,-1),'TOP'),
+                ('TOPPADDING',(0,0),(-1,-1),2),('BOTTOMPADDING',(0,0),(-1,-1),2),
+                ('LEFTPADDING',(0,0),(-1,-1),3),('RIGHTPADDING',(0,0),(-1,-1),3),
+                ('ROWBACKGROUNDS',(0,1),(-1,-1),[colors.white, colors.HexColor('#F4F7FB')]),
+            ]
+            for ri, sst in enumerate(st, start=1):
+                data.append([
+                    p(str(sst.get('nr','')), st_cell),
+                    stan_cell(sst.get('stan','')),
+                    p(proc_to_rl(sst.get('opis_stanu','')), st_cell),
+                    p(proc_to_rl(sst.get('procedura','')), st_cell),
+                ])
+            tbl = Table(data, colWidths=[doc.width*x for x in (0.05,0.22,0.31,0.42)],
+                        repeatRows=1)
+            tbl.setStyle(TableStyle(style))
+            flow.append(tbl)
+        else:
+            flow.append(p('Dla tego pliku katalog stanów kafelków nie jest zdefiniowany '
+                          'odrębnie — monitorowanie zgodnie z profilem „' +
+                          htmlmod.escape(m['profil']) + '" i procedurą główną (rozdz. 7–9).', st_note))
+
+        if ci != len(ANCHORS)-1:
+            flow.append(PageBreak())
+
+    # ── sekcja RYZYKA (kotwice #Rxx) ──
+    risks = parse_risks()
+    if risks:
+        flow.append(PageBreak())
+        flow.append(Anchor('ryzyka', 'Ryzyka — pełna baza', level=0))
+        flow.append(p('Ryzyka — pełna baza IDCC', st_h1))
+        flow.append(p('Katalog ryzyk operacyjnych (R01–R29). Kotwice: '
+                      '<b>/assets/info.pdf#R05</b> itd.', st_body))
+        flow.append(PageBreak())
+        for ri, rk in enumerate(risks):
+            flow.append(Anchor(rk['id'], rk['title'], level=1))
+            flow.append(p(htmlmod.escape(rk['title']), st_h1))
+            if rk['meta']:
+                flow.append(p(htmlmod.escape(rk['meta']), st_sub))
+            if rk['impact']:
+                flow.append(p('Wpływ na IDCC', st_sech))
+                flow.append(p(html_to_rl(rk['impact'].replace('Wpływ na IDCC:','').strip()), st_body))
+            if rk['body']:
+                flow.append(p('Postępowanie', st_sech))
+                for para in rk['body'].split('\n'):
+                    para = para.strip()
+                    if para and not para.startswith('Wpływ na IDCC'):
+                        flow.append(p(html_to_rl(para), st_body))
+            if rk['shortcut']:
+                flow.append(p('Skrót', st_sech))
+                flow.append(p(html_to_rl(rk['shortcut']), st_body))
+            if ri != len(risks)-1:
+                flow.append(PageBreak())
+
+    doc.build(flow)
+    print(f'PDF:  {out}  ({out.stat().st_size:,} B, {len(ANCHORS)} naklejek + '
+          f'{len(risks)} ryzyk)')
+
+build_pdf()
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 3) Named destinations w info.pdf (żeby info.pdf#KOD działało w przeglądarce)
+# ═══════════════════════════════════════════════════════════════════════════
+def add_named_dests():
+    from pypdf import PdfReader, PdfWriter
+    src = CCM/'info.pdf'
+    r = PdfReader(str(src))
+    w = PdfWriter(clone_from=str(src))
+    added = 0
+    def walk(items):
+        nonlocal added
+        for item in items:
+            if isinstance(item, list):     # zagnieżdżone — rekurencyjnie
+                walk(item); continue
+            w.add_named_destination(item.title, r.get_destination_page_number(item))
+            added += 1
+    walk(r.outline)
+    with open(src, 'wb') as f:
+        w.write(f)
+    chk = PdfReader(str(src)).named_destinations
+    print(f'Named destinations dodane: {added} | w pliku: {len(chk)}')
+    for t in ['FID1_831','PERUN_ID3_ATC','R05','R18','R20','ryzyka']:
+        print(f'   #{t:16} {"OK" if t in chk else "BRAK"}')
+
+add_named_dests()

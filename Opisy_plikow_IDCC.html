@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Opisy plików IDCC — per typ (FID1 / FIDx)</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; max-width: 1180px; margin: 0 auto; padding: 16px; background: #f4f5f7; color: #172B4D; line-height: 1.45; }
+  .topbar { background: #1F4E78; color:#fff; padding: 14px 22px; margin: -16px -16px 18px -16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  .topbar h1 { margin:0; font-size: 1.2em; } .topbar .sub { font-size: .82em; opacity:.85; margin-top:3px; }
+  .box { background:#fff; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,.08); padding: 10px 18px 16px; margin: 14px 0; }
+  h2 { color:#1F4E78; border-bottom:2px solid #E3F2FD; padding-bottom:6px; font-size:1.02em; }
+  table { border-collapse: collapse; width:100%; font-size: .85em; }
+  th, td { border:1px solid #DFE1E6; padding:6px 9px; vertical-align: top; text-align:left; }
+  th { background:#1F4E78; color:#fff; font-size:.82em; text-transform:uppercase; letter-spacing:.3px; }
+  tr:nth-child(even) td { background:#FAFBFC; }
+  code { background:#F4F5F7; padding:1px 4px; border-radius:3px; font-family:"SF Mono",Consolas,monospace; font-size:.86em; }
+  .prof { display:inline-block; padding:1px 7px; border-radius:10px; font-size:.74em; font-weight:700; white-space:nowrap; }
+  .p2cct{background:#E3FCEF;color:#006644;} .p3col{background:#DEEBFF;color:#0747A6;} .pmin{background:#EAE6FF;color:#403294;}
+  .p2ms{background:#FFF0B3;color:#974F00;} .psftp{background:#DFE1E6;color:#42526E;}
+  a { color:#0052CC; text-decoration:none; } a:hover{text-decoration:underline;}
+  .note { background:#EDF6FC; border-left:4px solid #1F4E78; padding:8px 12px; border-radius:0 3px 3px 0; font-size:.88em; margin:10px 0; }
+  .kod { font-weight:700; white-space:nowrap; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>Opisy plików IDCC — per unikalny typ (FID1 / FIDx)</h1>
+  <div class="sub">Pole „Opis pliku" dla każdego typu pliku z pulpitu CCM. Wzorzec <code>FIDx-</code> dotyczy wszystkich iteracji.</div>
+</div>
+
+<div class="box">
+<div class="note"><b>Iteracje (prefiks):</b> <code>FID1-</code> = IDCC(a) · <code>FID2-</code> = IDCC(b) / IDA3 · <code>FID3C-</code> = IDCC(c) · <code>FID3-</code> = IDCC(d), IDCC(e). <code>FIDx-</code> = wzorzec wspólny dla wszystkich. TET/CET/wersja zależą od iteracji (patrz <code>book.xlsx</code>).<br>
+<b>Profile kafelków:</b> <span class="prof p2cct">2CCT</span> CCtool wysł.+zwalid. · <span class="prof p3col">3COL</span> +MinIO · <span class="prof p2ms">2MS</span> MinIO+sFTP/ZP · <span class="prof pmin">MIN</span> tylko MinIO · <span class="prof psftp">SFTP</span> tylko sFTP/ZP.</div>
+</div>
+
+<div class="box">
+<h2>A. Pliki wynikowe / dostarczane (profil 2CCT)</h2>
+<table>
+<tr><th>Kod</th><th>Nazwa</th><th>Profil</th><th>Opis pliku</th><th>Źródło / narzędzie</th></tr>
+<tr><td class="kod"><a href="Przyklady_FID1-831_popup.html">FIDx-831</a></td><td>AC — Allocation Constraints</td><td><span class="prof p2cct">2CCT</span></td><td>Plik z wartościami ograniczeń alokacyjnych wyznaczonych przez PSE, publikowany do PuTo i do procesu Core. Format XML, MTU 15 min.</td><td><a href="Inwentarz_IDCC.html#N06">ZP</a> → <a href="Inwentarz_IDCC.html#N02">Core CC Tool</a></td></tr>
+<tr><td class="kod"><a href="Przyklady_FID1-928_popup.html">FIDx-928</a></td><td>ATC Based Validation</td><td><span class="prof p2cct">2CCT</span></td><td>Plik <b>zwrotny</b> — wynik walidacji ATC prowadzonej centralnie w Core CC Tool (strumień odrębny od FBA). NIE jest wysyłany przez TSO; publikowany CCCt → TSO przez Connector 2.0.</td><td><a href="Inwentarz_IDCC.html#N02">Core CC Tool</a> (zwrotnie)</td></tr>
+<tr><td class="kod"><a href="Przyklady_FID2-607_popup.html">FIDx-607</a></td><td>GLSK — Generation and Load Shift Keys</td><td><span class="prof p2cct">2CCT</span></td><td>Klucze rozdziału zmian generacji/obciążenia dla strefy PL — dane wejściowe „Initial TSO receiving".</td><td><a href="Inwentarz_IDCC.html#N07">KreatorDACF&2DAF</a> (b) / <a href="Inwentarz_IDCC.html#N08">KreatorIDCF</a> (c/d/e)</td></tr>
+<tr><td class="kod"><a href="Przyklady_FID2-617_popup.html">FIDx-617</a></td><td>CBCORA — Critical Branches & Critical Outages (+ RA)</td><td><span class="prof p2cct">2CCT</span></td><td>Lista krytycznych elementów sieci (CNEC) PSE wraz z wyłączeniami; dane wejściowe TSO.</td><td><a href="Inwentarz_IDCC.html#N07">KreatorDACF&2DAF</a> / <a href="Inwentarz_IDCC.html#N08">KreatorIDCF</a></td></tr>
+</table>
+</div>
+
+<div class="box">
+<h2>B. Finalne wyniki / aukcje (profil SFTP)</h2>
+<table>
+<tr><th>Kod</th><th>Nazwa</th><th>Profil</th><th>Opis pliku</th><th>Źródło / narzędzie</th></tr>
+<tr><td class="kod">FIDx-921</td><td>Final Intraday NTC</td><td><span class="prof psftp">SFTP</span></td><td>Finalne wyniki NTC (Net Transfer Capacity) z procesu IDCC — zdolności przesyłowe udostępniane na rynek intraday (XBID).</td><td>proces Core → sFTP/ZP</td></tr>
+<tr><td class="kod">FID1-250</td><td>MD250 — Shadow Auction Results</td><td><span class="prof psftp">SFTP</span></td><td>Wyniki aukcji rezerwowej (shadow auction) wymieniane z CCCt przez <b>ECP/EDX</b> przy decouplingu SDAC. Deadline 1 ~15:43 (TET MCR), Deadline 2 ~17:24.</td><td>ECP/EDX ↔ CCCt</td></tr>
+</table>
+</div>
+
+<div class="box">
+<h2>C. Paczka AGR i jej składowe (2MS / MIN)</h2>
+<table>
+<tr><th>Kod</th><th>Nazwa</th><th>Profil</th><th>Opis pliku</th><th>Źródło / narzędzie</th></tr>
+<tr><td class="kod">PERUN_IDx</td><td>AGR Paczka ZIP</td><td><span class="prof p2ms">2MS</span></td><td>Zagregowana paczka wejściowa do Perun4V (proces FBA). Zawiera składowe: scalone GLSK, CGM, RefProg, początkową domenę FB, CB, wierzchołki, RA. Kafelek nadrzędny paczki.</td><td>agregacja → <a href="Inwentarz_IDCC.html#N04">MinIO</a> / sFTP → <a href="Inwentarz_IDCC.html#N03">Perun4V</a></td></tr>
+<tr><td class="kod">PERUN_IDx_ATC</td><td>AGR Paczka ZIP_ATC</td><td><span class="prof p2ms">2MS</span></td><td>Paczka wejściowa dla <b>odrębnej ścieżki walidacji domeny ATC</b>.</td><td>→ MinIO / sFTP → Perun4V</td></tr>
+<tr><td class="kod">FIDx-610</td><td>Merged GLSK</td><td><span class="prof pmin">MIN</span></td><td>Scalone GLSK wszystkich TSO regionu Core. Składowa paczki.</td><td>proces Core</td></tr>
+<tr><td class="kod">FIDx-620</td><td>Merged DACF/IDCF Common Grid Model (CGM)</td><td><span class="prof pmin">MIN</span></td><td>Scalony wspólny model sieci (CGM) zbudowany z modeli indywidualnych (IGM) TSO. Składowa paczki.</td><td>proces Core / <a href="Inwentarz_IDCC.html#N08">Kreator</a></td></tr>
+<tr><td class="kod">FIDx-632</td><td>Reference Program (RefProg)</td><td><span class="prof pmin">MIN</span></td><td>Program referencyjny — planowane salda wymiany międzyobszarowej. Składowa paczki.</td><td>proces Core</td></tr>
+<tr><td class="kod">FIDx-645</td><td>Initial FB Domain (Virgin / RefProg Bal)</td><td><span class="prof pmin">MIN</span></td><td>Początkowa domena Flow-Based (wariant „virgin" lub zbilansowany RefProg). Składowa paczki.</td><td>Perun4V / proces Core</td></tr>
+<tr><td class="kod">FIDx-657</td><td>Real GLSK</td><td><span class="prof pmin">MIN</span></td><td>Rzeczywiste GLSK (po dostosowaniu do bieżącego stanu). Składowa paczki.</td><td><a href="Inwentarz_IDCC.html#N08">Kreator</a></td></tr>
+<tr><td class="kod">FIDx-659</td><td>CGM Data Quality Check</td><td><span class="prof pmin">MIN</span></td><td>Raport kontroli jakości danych scalonego modelu CGM. Składowa paczki.</td><td>proces Core</td></tr>
+<tr><td class="kod">FIDx-665</td><td>Individual Filtered Critical Branches (CB)</td><td><span class="prof pmin">MIN</span></td><td>Indywidualne, przefiltrowane gałęzie krytyczne PSE. Składowa paczki.</td><td><a href="Inwentarz_IDCC.html#N08">Kreator</a></td></tr>
+<tr><td class="kod">FIDx-701</td><td>Vertices of Initial FB Domain</td><td><span class="prof pmin">MIN</span></td><td>Wierzchołki początkowej domeny Flow-Based. Składowa paczki.</td><td>Perun4V</td></tr>
+<tr><td class="kod">FIDx-701_ATC</td><td>Vertices / CB Validation file ATC</td><td><span class="prof pmin">MIN</span></td><td>Wierzchołki domeny / plik walidacji CB dla <b>ścieżki ATC</b>. Składowa paczki ATC.</td><td>Perun4V</td></tr>
+<tr><td class="kod">FIDx-882</td><td>Initial Intraday ATCs</td><td><span class="prof pmin">MIN</span></td><td>Początkowe wartości ATC dla intraday — wejście walidacji ATC. Składowa paczki.</td><td>proces Core</td></tr>
+<tr><td class="kod">XIDx_RA</td><td>Plik ze środkami zaradczymi (RA)</td><td><span class="prof pmin">MIN</span></td><td>Środki zaradcze (remedial actions) wygenerowane w Kreatorze; publikowane razem z GLSK/CBCORA i jako składowa paczki.</td><td><a href="Inwentarz_IDCC.html#N08">KreatorIDCF</a></td></tr>
+</table>
+</div>
+
+<div class="box">
+<h2>D. Walidacja / wyniki Perun4V (3COL / MIN)</h2>
+<table>
+<tr><th>Kod</th><th>Nazwa</th><th>Profil</th><th>Opis pliku</th><th>Źródło / narzędzie</th></tr>
+<tr><td class="kod"><a href="Przyklady_FID2-710.html">FIDx-710</a></td><td>IVA — Individual Validation Adjustment</td><td><span class="prof p3col">3COL</span></td><td>Wynik indywidualnej walidacji domeny Flow-Based (z Perun4V) — korekta domeny po walidacji TSO.</td><td><a href="Inwentarz_IDCC.html#N03">Perun4V</a></td></tr>
+<tr><td class="kod">FIDx-710 (Backup)</td><td>IVA Backup</td><td><span class="prof pmin">MIN</span></td><td>Backupowa wersja IVA generowana przez <a href="Inwentarz_IDCC.html#N09">CCA</a> (publikowana do <code>cca/…/out/</code>), na wypadek braku/niezgodności IVA podstawowego.</td><td><a href="Inwentarz_IDCC.html#N09">CCA</a></td></tr>
+<tr><td class="kod">FIDx-710_ATC</td><td>IVA_ATC</td><td><span class="prof pmin">MIN</span></td><td>IVA dla <b>odrębnej ścieżki walidacji domeny ATC</b>.</td><td>Perun4V</td></tr>
+<tr><td class="kod">RAP_PERUN_IDx</td><td>Raporty z Perun</td><td><span class="prof psftp">SFTP</span></td><td>Raporty walidacyjne z procesu Perun4V (charakter informacyjny).</td><td>Perun4V → kdm6 / MinIO</td></tr>
+</table>
+</div>
+
+<div class="box">
+<h2>E. Modele wejściowe (SFTP)</h2>
+<table>
+<tr><th>Kod</th><th>Nazwa</th><th>Profil</th><th>Opis pliku</th><th>Źródło / narzędzie</th></tr>
+<tr><td class="kod">DACF_IGM_UCT</td><td>24 modele IGM</td><td><span class="prof psftp">SFTP</span></td><td>Indywidualne modele sieci (Individual Grid Model) na 24 godziny doby, format UCT/CGMES — przygotowanie i eksport TSO Data Preparation.</td><td><a href="Inwentarz_IDCC.html#N07">Kreator2DAF</a> / <a href="Inwentarz_IDCC.html#N08">KreatorIDCF</a></td></tr>
+</table>
+</div>
+
+<div class="box">
+<div class="note"><b>Uwaga:</b> opisy składowych paczki (FIDx-610…-882) oparte na nazwach przepływów z pulpitu (book.xlsx) i procesie Core FBA — szczegółowe definicje per specyfikacja CGMES/Core do potwierdzenia z zespołem CCA. Pliki z popupami (831, 928, 607, 617, 710) linkują do pełnych kart stanów.</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+# Kontekst projektu Procedura IDCC
+
+Aktualizacja: 2026-06-25
+
+## Cel
+Procedura operacyjna obsługi punktu IDCC dla TSO (PSE) + monitorowanie CCM
+(Capacity Calculation Module). Dwa nurty: (1) dokument procedury HTML/DOCX/PDF,
+(2) dane dla pulpitu CCM (mapowanie kafelków na statusy programu).
+
+## Najnowsza praca (24.06)
+- `_build_statichints.py` — generator słownika `staticHints` (TypeScript) dla
+  WSZYSTKICH plików IDCC. Źródła:
+  - `Stany_kafelkow_per_plik_IDCC.xlsx` (stany per kod: marker+fill = kafelek,
+    pełne ramki: sytuacja, procedury awaryjne, opis pliku, ścieżka)
+  - `CCM/staticHints-przyklad-dla-FID1-831.txt` (wzór formatu + enumy AC do walidacji)
+- Wynik: `CCM/staticHints-IDCC-all.txt` (9590 linii)
+  - **71 kluczy** w formacie `'NAZWA^KOD'` (np. `AC^FID1-831`, `IVA^FID2-710`,
+    `Final Intraday NTC^FID3-921`)
+  - **974 stany** (bloki `status:` → DashboardItemStatus)
+  - **0** oznaczeń `/*?*/` — mapowanie pełne wg oficjalnej legendy enumów
+- Mapowanie kafelek(marker,fill) → DashboardItemStatus: 13 kombinacji 1:1
+  (UNKNOWN, FAILURE, SUCCESS, FORCEDSUCCESS, SENTMANUALLY, SENTMANUALLYAFTERCET,
+  ACKNOTRECEIVED, WARNING, EXCEEDED, FILESIZEBAD, PROCESSRUNNING, CONN_AFTER_CET)
+- Walidacja: skrypt sprawdza dokładność per-enum na wzorze AC 831 (ma być 100%);
+  dedup identycznych stanów (IDCC(b)+IDA3 po usunięciu godzin)
+- Arkusze źródłowe (7): AC 831 (2CCT), GLSK CBCORA 607-617 (2CCT),
+  ATC 928 (zwrotny), IVA 710 (3COL), Paczki PERUN (2MS), Skladowe MinIO (MIN),
+  sFTP-ZP NTC MD250 IGM (SFTP)
+
+## Wcześniej (22.06 i starsze)
+- `PROCEDURA_IDCC_TSO_v5_2.html` / `.pdf` / `_EDYTOR.html` / `.docx` — pełna
+  procedura z monitorowaniem CCM (kafelki, 82 stany, pulpit, instrukcja dyspozytora)
+- `CCM/info.pdf` (6.4 MB) + `_build_info_pdf.py`
+- `CCM/mail_opis_prac.html` + `_build_mail.py` — mail z opisem prac
+- `CCM/edytowalny-info.docx`
+- Komplet popupów `Przyklady_FID*` (FID1/2/3/3C × 607/617/831/928)
+- `img_ccm/tiles/` — ikony kafelków (13 png: kolory + markery R/W/q/!/excl)
+
+## Stan
+Generator staticHints zakończony i zwalidowany (71 plików, 974 stany, 0 niejasnych).
+
+## Pliki kluczowe
+- Generator: `_build_statichints.py`
+- Wynik dla CCM: `CCM/staticHints-IDCC-all.txt`
+- Źródło danych: `Stany_kafelkow_per_plik_IDCC.xlsx`
+- Wzór formatu: `CCM/staticHints-przyklad-dla-FID1-831.txt`
+- Procedura: `PROCEDURA_IDCC_TSO_v5_2.html`

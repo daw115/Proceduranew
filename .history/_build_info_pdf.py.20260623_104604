@@ -1,0 +1,266 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""CCM/info.pdf z szablonu HTML+CSS w stylu instrukcji (Confluence popup).
+   Karty stanów (kolor kategorii), nagłówki sekcji, żółte boksy procedur,
+   punktory branch(→)/codes, kafelki 32px. Kotwice = id → named destinations.
+   Uruchom: DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib python3 _build_info_pdf.py
+"""
+import os
+os.environ.setdefault('DYLD_FALLBACK_LIBRARY_PATH', '/opt/homebrew/lib')
+import re, html as H
+import _build_naklejki as B
+import weasyprint
+
+ROOT, CCM = B.ROOT, B.CCM
+def esc(s): return H.escape(str(s or ''))
+
+ACTION_RE = re.compile(
+    r'(→|\bgdy\b|sprawdź|pobierz|wyślij|manual upload|zgłoś|weryfik|zweryfik|'
+    r'ustaw|podnieś|telefon|diagnost|wgraj|wygeneruj|reaguj|ponów|'
+    r'oznacz|odczytaj|przejdź|otwórz|\bstop\b)', re.I)
+
+# kolor (z xlsx) → klasa kafelka + litera (jak w instrukcji)
+TILE_CLS = {
+    'zielony':('tz',''), 'zielony R':('tzR','R'), 'ciemnozielony W':('tcw','W'),
+    'W po CET':('tcwc','W'), 'fioletowy':('tf',''), 'pomarańczowy':('tp',''),
+    'czerwony':('tc',''), 'czerwony !':('tce','!'), 'czerwony ?':('tcq','?'),
+    'szary':('ts',''), 'szary ?':('tsq','?'), 'czarny':('tk',''), 'puste':('tpu',''),
+}
+KATCOL = {'A':'#43A047','B':'#9E9E9E','C':'#FB8C00','D':'#D32F2F'}
+
+def decorate(s):
+    """Na zaescapowanym tekście: czyste klikalne linki do ryzyk, bez [Nxx]/numerków."""
+    s = re.sub(r'\[?\s*R(\d+)\s*—\s*pełny opis\s*\]?',
+               r'<a class="rlink" href="#R\1">pełny opis ryzyka</a>', s)
+    s = re.sub(r'Szczegóły \(opis \+ screeny\):\s*R(\d+)(?:\s*·\s*R\d+)*',
+               r'<a class="rlink" href="#R\1">szczegóły z opisem i zrzutami ekranu</a>', s)
+    s = re.sub(r'\bR(\d+)(?:\s*·\s*R\d+)+', r'<a class="rlink" href="#R\1">powiązane ryzyka</a>', s)
+    s = re.sub(r'\s*\[[NP]\d+\]', '', s)
+    s = re.sub(r'\bStan \d+\s*\(([^)]+)\)', r'stan \1', s)
+    s = re.sub(r'(→\s*)Stan \d+\b', r'\1powiązany stan', s)
+    s = re.sub(r'\bStan \d+\b', 'powiązany stan', s)
+    s = re.sub(r'HTML §[\d.]+:?\s*', '', s)
+    return s
+
+def tiles_table(stan_text, shot=None):
+    pairs = B.parse_stan(stan_text)
+    if not pairs:
+        return f'<div class="muted">{esc(stan_text or "—")}</div>'
+    ths, tds = '', ''
+    for col, clr in pairs:
+        cls, letter = TILE_CLS.get((clr or '').strip(), ('tpu', ''))
+        ths += f'<th>{esc(col)}</th>'
+        tds += f'<td><span class="tile {cls}">{letter}</span></td>'
+    table = f'<table class="tiles"><tr>{ths}</tr><tr>{tds}</tr></table>'
+    if shot:   # realny zrzut kafelków z CCM obok rekonstrukcji
+        table += (f'<div class="shot-cap">Zrzut z pulpitu CCM:</div>'
+                  f'<img class="tile-shot" src="{shot}">')
+    return table
+
+def proc_box(text):
+    """Procedura → żółty boks: nagłówki bold, listy branch(→) i codes (kod NN)."""
+    t = B.html_to_text(text)
+    if ('•' not in t) and not ACTION_RE.search(t):
+        return f'<div class="sec-c proc"><div class="ok">{decorate(esc(t))}</div></div>'
+    parts = B.format_proc(text)
+    html, stack = [], 0   # stack: 0 brak listy, 1 branch, 2 codes
+    def close(to):
+        nonlocal stack
+        while stack >= to and stack > 0:
+            html.append('</ul>'); stack -= 1
+    for lvl, txt, hdr in parts:
+        body = decorate(esc(txt))
+        if hdr or lvl == 0:
+            close(1)
+            html.append(f'<div class="proc-h">{body}</div>' if hdr else f'<div class="proc-l">{body}</div>')
+        elif lvl == 1:
+            if stack == 0: html.append('<ul class="branch">'); stack = 1
+            else: close(2)
+            html.append(f'<li>{body}</li>')
+        elif lvl == 2:
+            if stack < 1: html.append('<ul class="branch">'); stack = 1
+            if stack < 2: html.append('<ul class="codes">'); stack = 2
+            m = re.match(r'(kod\s+\d+)(.*)', body, re.I)
+            body = f'<b>{m.group(1)}</b>{m.group(2)}' if m else body
+            html.append(f'<li>{body}</li>')
+    close(1)
+    return f'<div class="sec-c proc">{"".join(html)}</div>'
+
+def state_card(code, m, s):
+    kat = str(s.get('kategoria', ''))[:1]
+    katn = s.get('kategoria_nazwa', '')
+    # realny zrzut kafelków dla plików GLSK/CBCORA (607/617): screens_fid607/state_NN.png
+    shot = None
+    if code.endswith('_607') or code.endswith('_617'):
+        nr = str(s.get('nr', '')).zfill(2)
+        p = ROOT / 'screens_fid607' / f'state_{nr}.png'
+        if p.exists():
+            shot = f'screens_fid607/state_{nr}.png'
+    return f'''<div class="card cat-{kat}">
+  <div class="case-top">
+    <span class="case-code">{esc(code)}</span>
+    <span class="case-name">{esc(m["nazwa"])} · {esc(m["obszar"])}</span>
+    <span class="tag {kat}">Stan {esc(s.get("nr",""))} · {esc(kat)} {esc(katn)}</span>
+    <div class="case-times">Profil <b>{esc(m["profil"])}</b> · TET <b>{esc(m["tet"])}</b> · CET <b>{esc(m["cet"])}</b></div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  {tiles_table(s.get("stan",""), shot)}
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c">{decorate(esc(B.html_to_text(s.get("opis_stanu",""))))}</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  {proc_box(s.get("procedura",""))}
+</div>'''
+
+def naklejka(code):
+    m = B.meta(code)
+    st = B.variant_for(code) or []
+    cards = ''.join(state_card(code, m, s) for s in st) if st else (
+        '<p class="muted">Dla tego pliku katalog stanów nie jest zdefiniowany odrębnie '
+        '— monitorowanie zgodnie z profilem i procedurą główną.</p>')
+    return f'''<section class="file" id="{esc(code)}">
+  <div class="file-h"><div class="file-code">{esc(code)}</div>
+    <div class="file-name">{esc(m["nazwa"])}<span>{esc(m["obszar"])}</span></div></div>
+  <div class="meta">
+    <span class="chip"><i>Profil</i> {esc(m["profil"])}</span>
+    <span class="chip"><i>TET</i> {esc(m["tet"])}</span>
+    <span class="chip"><i>CET</i> {esc(m["cet"])}</span>
+    <span class="chip"><i>Wersja</i> {esc(m["wersja"])}</span>
+    <span class="chip"><i>Źródło</i> {esc(m["zrodlo"])}</span></div>
+  <div class="info">
+    <div class="ic"><b>Opis pliku</b>{decorate(esc(B.html_to_text(m["opis"])))}</div>
+    <div class="ic"><b>Ścieżka pliku</b>{decorate(esc(B.html_to_text(m["sciezka"])))}</div>
+    <div class="ic"><b>Kontakt w przypadku awarii</b>{decorate(esc(B.html_to_text(m["kontakt"])))}</div>
+  </div>
+  <div class="grid">{cards}</div>
+</section>'''
+
+def risk(rk):
+    impact = rk['impact'].replace('Wpływ na IDCC:', '').strip() if rk['impact'] else ''
+    body = ''.join(f'<li>{decorate(esc(p.strip()))}</li>'
+                   for p in (rk['body'] or '').split('\n')
+                   if p.strip() and not p.strip().startswith('Wpływ na IDCC'))
+    blocks = ''
+    if impact:
+        blocks += f'<div class="callout"><b>Wpływ na IDCC</b><div>{decorate(esc(impact))}</div></div>'
+    if body:
+        blocks += f'<div class="sec-h">Postępowanie</div><div class="sec-c proc"><ul class="branch">{body}</ul></div>'
+    if rk['shortcut']:
+        blocks += f'<div class="sec-h">Skrót</div><div class="sec-c short">{decorate(esc(rk["shortcut"]))}</div>'
+    return f'''<section class="file risk" id="{esc(rk["id"])}">
+  <div class="file-h rk"><div class="file-code">{esc(rk["id"])}</div>
+    <div class="file-name">{esc(rk["title"].split("—",1)[-1].strip())}</div></div>
+  {f'<div class="rk-meta">{esc(rk["meta"])}</div>' if rk["meta"] else ''}
+  {blocks}
+</section>'''
+
+CSS = '''
+@page { size:A4; margin:14mm 12mm 16mm;
+  @bottom-left{content:"Klasyfikacja: Informacja służbowa GK PSE / GK PSE Confidential";font-size:7pt;color:#97a3b0;}
+  @bottom-right{content:"info.pdf · str. " counter(page);font-size:7pt;color:#97a3b0;} }
+@page cover { margin:0; @bottom-left{content:"";} @bottom-right{content:"";} }
+* { box-sizing:border-box; }
+body { font-family:"Helvetica Neue",Arial,sans-serif; color:#172B4D; font-size:8.6pt; line-height:1.45; }
+.muted { color:#8a97a6; font-style:italic; }
+a.rlink { color:#0052CC; text-decoration:underline; font-weight:600; }
+
+/* COVER */
+.cover { page:cover; height:297mm; background:linear-gradient(150deg,#0a3a66,#1F4E78 55%,#2766a0);
+         color:#fff; padding:42mm 26mm; page-break-after:always; }
+.cover .logo{font-weight:800;font-size:22pt;letter-spacing:2px;} .cover .sub{opacity:.8;margin-top:3px;}
+.cover h1{font-size:30pt;margin:58mm 0 6mm;line-height:1.12;} .cover .lead{font-size:11pt;opacity:.92;max-width:130mm;}
+.cover .tags{margin-top:14mm;} .cover .tags b{background:rgba(255,255,255,.16);padding:3px 11px;border-radius:20px;margin-right:6px;font-size:9pt;}
+
+/* FILE SECTION */
+.file { page-break-before:always; }
+.file-h{display:flex;align-items:baseline;border-bottom:3px solid #1F4E78;padding-bottom:6px;margin-bottom:9px;}
+.file-h.rk{border-bottom-color:#C00000;}
+.file-code{font-family:"SF Mono",Menlo,monospace;font-weight:800;font-size:16pt;color:#1F4E78;margin-right:12px;}
+.file-h.rk .file-code{color:#C00000;}
+.file-name{font-size:11pt;font-weight:700;color:#1F4E78;}
+.file-name span{display:block;font-size:8pt;font-weight:400;color:#6B778C;margin-top:1px;}
+
+.meta{margin-bottom:10px;}
+.meta .chip{display:inline-block;background:#F4F5F7;border:1px solid #DFE1E6;border-radius:14px;
+            padding:3px 12px;margin:0 5px 4px 0;font-weight:700;font-size:8.8pt;color:#172B4D;}
+.meta .chip i{font-style:normal;font-size:7pt;text-transform:uppercase;letter-spacing:.4px;color:#6B778C;font-weight:600;margin-right:4px;}
+
+.info{display:flex;gap:8px;margin-bottom:12px;}
+.ic{flex:1;background:#fff;border:1px solid #DFE1E6;border-left:3px solid #1F4E78;border-radius:4px;padding:7px 10px;font-size:8.4pt;box-shadow:0 1px 2px rgba(0,0,0,.05);}
+.ic b{display:block;color:#1F4E78;font-size:7.4pt;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;}
+
+/* JEDEN PRZYPADEK = JEDNA STRONA */
+.grid{}
+.card{page-break-inside:avoid;page-break-before:always;border:1px solid #DFE1E6;border-radius:6px;
+      border-top:4px solid #ccc;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.10);margin:0;
+      overflow:hidden;display:block;width:100%;}
+.grid .card:first-child{page-break-before:avoid;}   /* pierwszy przypadek przy nagłówku pliku */
+.card.cat-A{border-top-color:#43A047;} .card.cat-B{border-top-color:#9E9E9E;}
+.card.cat-C{border-top-color:#FB8C00;} .card.cat-D{border-top-color:#D32F2F;}
+.case-top{padding:11px 16px 9px;border-bottom:1px solid #EEF1F5;}
+.case-code{font-family:"SF Mono",Menlo,monospace;font-weight:800;font-size:15pt;color:#1F4E78;margin-right:10px;}
+.case-name{font-size:10pt;font-weight:600;color:#42526E;}
+.case-times{font-size:8.6pt;color:#6B778C;margin-top:5px;}
+.case-times b{color:#172B4D;}
+.tag{display:inline-block;padding:2px 10px;border-radius:12px;font-size:8pt;font-weight:700;margin-left:6px;vertical-align:middle;}
+.tag.A{background:#E3FCEF;color:#006644;} .tag.B{background:#DFE1E6;color:#42526E;}
+.tag.C{background:#FFF0B3;color:#974F00;} .tag.D{background:#FFEBE6;color:#BF2600;}
+
+/* TILE TABLE */
+table.tiles{margin:7px 16px;border-collapse:collapse;}
+table.tiles th{background:#F4F5F7;color:#42526E;padding:5px 14px;font-size:8pt;font-weight:700;border:1px solid #DFE1E6;text-align:center;}
+table.tiles td{padding:8px 14px;border:1px solid #DFE1E6;text-align:center;background:#fff;}
+.tile{width:38px;height:32px;display:inline-block;border-radius:4px;color:#fff;font-weight:700;font-size:13px;
+      line-height:32px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,.18);}
+.tz{background:#00B050;} .tzR{background:#00B050;} .tcw{background:#2E7D32;} .tcwc{background:#1B5E20;font-size:8px;}
+.tf{background:#7030A0;} .tp{background:#ED7D31;border:2px solid #C55A11;} .tc{background:#C00000;}
+.tce{background:#C00000;} .tcq{background:#C00000;} .ts{background:#BFBFBF;color:#42526E;}
+.tsq{background:#BFBFBF;color:#42526E;} .tk{background:#000;} .tpu{background:#fff;border:1px solid #DFE1E6;color:#42526E;}
+
+/* SECTIONS */
+.sec-h{margin:10px 16px 0;padding:5px 12px;background:#1F4E78;color:#fff;font-weight:800;font-size:8.4pt;
+       letter-spacing:.5px;border-radius:3px;text-transform:uppercase;}
+.sec-c{padding:7px 16px;font-size:9.6pt;line-height:1.5;}
+.sec-c.proc{background:#FFFAE6;border-left:4px solid #FFC107;margin:4px 16px 10px;padding:9px 14px;border-radius:0 3px 3px 0;font-size:9.6pt;}
+.sec-c.short{background:#EAF6EC;border-left:4px solid #2E7D32;margin:4px 16px 10px;padding:9px 14px;border-radius:0 3px 3px 0;}
+.proc .ok{font-weight:700;color:#006644;}
+.proc-h{font-weight:800;color:#1F4E78;margin:3px 0 1px;}
+.proc-l{margin:2px 0;}
+ul.branch{margin:3px 0;padding-left:16px;list-style:none;}
+ul.branch>li{margin:2px 0;padding-left:13px;position:relative;}
+ul.branch>li::before{content:"→";position:absolute;left:0;color:#6B778C;font-weight:700;}
+ul.codes{margin:2px 0 2px 4px;padding-left:16px;}
+ul.codes>li{margin:1px 0;}
+ul.codes b{color:#BF2600;}
+
+/* RISK */
+.rk-meta{font-size:7.6pt;color:#6B778C;margin-bottom:9px;}
+.callout{border:1px solid #FFE1B0;background:#FFF7EA;border-left:3px solid #E08A1E;border-radius:5px;padding:7px 10px;margin-bottom:9px;}
+.callout b{display:block;color:#B96D0D;font-size:7.4pt;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px;}
+.section-title{page-break-before:always;color:#C00000;font-size:18pt;border-bottom:3px solid #C00000;padding-bottom:6px;}
+'''
+
+def build():
+    parts = ['<!DOCTYPE html><html lang="pl"><head><meta charset="utf-8">',
+             f'<style>{CSS}</style></head><body>',
+             '''<div class="cover"><div class="logo">PSE</div>
+             <div class="sub">Polskie Sieci Elektroenergetyczne</div>
+             <h1>CCM — Pulpit dyspozytorski IDCC<br>Naklejki informacyjne i baza ryzyk</h1>
+             <div class="lead">Opis plików, pełny katalog stanów kafelków oraz baza ryzyk operacyjnych.
+             Kotwice: /assets/info.pdf#KOD oraz /assets/info.pdf#R05.</div>
+             <div class="tags"><b>71 plików</b><b>1414 stanów</b><b>29 ryzyk</b></div></div>''']
+    for code in B.ANCHORS:
+        parts.append(naklejka(code))
+    parts.append('<h2 class="section-title" id="ryzyka">Ryzyka — pełna baza IDCC</h2>')
+    for rk in B.parse_risks():
+        parts.append(risk(rk))
+    parts.append('</body></html>')
+    out = CCM / 'info.pdf'
+    weasyprint.HTML(string='\n'.join(parts), base_url=str(ROOT)).write_pdf(str(out))
+    from pypdf import PdfReader
+    nd = PdfReader(str(out)).named_destinations
+    rs = sum(1 for k in nd if re.fullmatch(r'R\d+', k))
+    print(f'PDF: {out}  ({out.stat().st_size:,} B) | named dests: {len(nd)} '
+          f'| FID1_831={"FID1_831" in nd} R05={"R05" in nd} ryzyk={rs}')
+
+if __name__ == '__main__':
+    build()

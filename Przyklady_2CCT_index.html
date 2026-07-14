@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>IDCC — popupy 2CCT (indeks)</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; max-width: 1400px; margin: 0 auto; padding: 16px; background: #f4f5f7; color: #172B4D; line-height: 1.4; }
+  h1 { color: #1F4E78; border-bottom: 3px solid #1F4E78; padding-bottom: 8px; margin-bottom: 8px; }
+  .topbar { background: #1F4E78; padding: 12px 20px; margin: -16px -16px 16px -16px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+  .topbar button { background: white; color: #1F4E78; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+  .topbar button:hover { background: #E3F2FD; }
+  .header-info { background: white; padding: 12px 20px; border-radius: 4px; margin: 12px 0 24px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-size: 0.92em; }
+  .cat-section { margin: 32px 0 16px 0; }
+  .cat-title { font-size: 1.1em; font-weight: 600; color: #172B4D; margin-bottom: 12px; padding-left: 8px; border-left: 4px solid #1F4E78; }
+  .states-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
+  .popup-card { background: white; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); overflow: hidden; position: relative; border: 1px solid #DFE1E6; }
+  .popup-header { padding: 8px 14px 6px 14px; position: relative; border-top: 4px solid transparent; }
+  .popup-header.cat-A { border-top-color: #43A047; }
+  .popup-header.cat-B { border-top-color: #9E9E9E; }
+  .popup-header.cat-C { border-top-color: #FB8C00; }
+  .popup-header.cat-D { border-top-color: #D32F2F; }
+  .popup-fid { font-size: 1.0em; font-weight: 700; color: #172B4D; margin-top: 4px; }
+  .popup-type { font-size: 0.85em; color: #6B778C; margin-top: 1px; }
+  .popup-close { position: absolute; top: 8px; right: 10px; color: #DE350B; font-size: 1.1em; font-weight: bold; cursor: pointer; background: none; border: none; padding: 0; line-height: 1; }
+  .popup-state-tag { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 0.7em; font-weight: 600; margin-left: 6px; vertical-align: middle; }
+  .popup-state-tag.A { background: #E3FCEF; color: #006644; }
+  .popup-state-tag.B { background: #DFE1E6; color: #42526E; }
+  .popup-state-tag.C { background: #FFF0B3; color: #974F00; }
+  .popup-state-tag.D { background: #FFEBE6; color: #BF2600; }
+  .tile-table { margin: 8px 14px; border-collapse: collapse; }
+  .tile-table th { background: #F4F5F7; color: #42526E; padding: 5px 8px; font-size: 0.72em; font-weight: 600; border: 1px solid #DFE1E6; text-align: center; }
+  .tile-table td { padding: 8px 10px; border: 1px solid #DFE1E6; text-align: center; background: white; }
+  .tile { width: 32px; height: 32px; display: inline-block; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+  .tile-szary { background: #BFBFBF; }
+  .tile-szary-qmark { background: #BFBFBF; color: #42526E; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-szary-qmark::after { content: "?"; }
+  .tile-puste { background: white; border: 1px solid #DFE1E6; }
+  .tile-pomarancz { background: #ED7D31; border: 2px solid #C55A11 !important; box-sizing: border-box; }
+  .tile-czerwony { background: #C00000; }
+  .tile-czerwony-excl { background: #C00000; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-czerwony-excl::after { content: "!"; }
+  .tile-czerwony-qmark { background: #C00000; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-czerwony-qmark::after { content: "?"; }
+  .tile-zielony { background: #00B050; }
+  .tile-zielony-R { background: #00B050; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-zielony-R::after { content: "R"; }
+  .tile-cz-W { background: #2E7D32; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-cz-W::after { content: "W"; }
+  .tile-cz-Wcet { background: #1B5E20; color: white; text-align: center; line-height: 32px; font-weight: bold; font-size: 9px; }
+  .tile-cz-Wcet::after { content: "W po CET"; }
+  .tile-fioletowy { background: #7030A0; }
+  .tile-czarny { background: #000000; }
+  .popup-desc { padding: 8px 14px 4px 14px; font-size: 0.88em; color: #172B4D; }
+  .section-label-mini { margin: 8px 14px 0 14px; font-size: 0.78em; font-weight: 700; color: #6B778C; }
+  .popup-desc[contenteditable="true"] { background: #FAFBFC; border: 1px dashed #DFE1E6; border-radius: 3px; min-height: 40px; }
+  .popup-desc[contenteditable="true"]:focus { background: white; border-color: #0052CC; outline: none; }
+  .popup-details { padding: 4px 14px 8px 14px; }
+  .popup-details details { margin: 4px 0; }
+  .popup-details summary { cursor: pointer; padding: 4px 6px; background: #F4F5F7; border-radius: 3px; font-size: 0.82em; font-weight: 600; color: #42526E; }
+  .popup-details summary:hover { background: #DFE1E6; }
+  .popup-details .editable { background: #FAFBFC; border: 1px dashed #DFE1E6; padding: 6px 10px; margin: 4px 0; border-radius: 3px; font-size: 0.82em; line-height: 1.4; }
+  .popup-details .editable:focus { background: white; border-color: #0052CC; outline: none; }
+  .popup-details .editable.procedures { background: #FFFAE6; border-color: #FFC107; }
+  .popup-details .editable.procedures ol { margin: 4px 0; padding-left: 18px; }
+  .popup-details .editable.procedures ol li { margin-bottom: 4px; }
+  .full-link { margin-top: 6px; padding-top: 5px; border-top: 1px dotted #DFE1E6; font-size: 0.92em; color: #6B778C; }
+  .editable a, .popup-fileinfo a { cursor: pointer; }
+  ul.branch { margin: 4px 0 4px 0; padding-left: 18px; list-style: none; }
+  ul.branch li { margin-bottom: 5px; padding-left: 14px; position: relative; }
+  ul.branch li::before { content: "→"; position: absolute; left: 0; color: #6B778C; }
+  ul.codes { margin: 4px 0; padding-left: 18px; }
+  ul.codes li { margin-bottom: 3px; }
+  ul.codes b { color: #BF2600; }
+  .rfull { font-size: 0.88em; color: #6B778C; }
+  .popup-fileinfo { padding: 6px 14px 2px 14px; border-bottom: 1px solid #F0F0F0; }
+  .section-divider { margin: 8px 14px 2px 14px; font-size: 0.78em; font-weight: 700; color: #1F4E78; text-transform: uppercase; letter-spacing: 0.5px; }
+  .sec-h { margin: 10px 14px 0 14px; padding: 5px 10px; background: #1F4E78; color: #fff; font-weight: 800; font-size: 0.8em; letter-spacing: 0.5px; border-radius: 3px; text-transform: uppercase; }
+  .sec-c { padding: 5px 14px 4px 14px; font-size: 0.86em; color: #172B4D; line-height: 1.45; }
+  .sec-c[contenteditable="true"]:focus { outline: none; background: #FAFBFC; }
+  .sec-c.proc { background: #FFFAE6; border-left: 3px solid #FFC107; margin: 3px 14px 4px 14px; padding: 7px 10px; border-radius: 0 3px 3px 0; }
+  .sec-c.proc ol { margin: 4px 0; padding-left: 18px; }
+  .sec-c.proc ol li { margin-bottom: 4px; }
+  .popup-footer { padding: 8px 14px 12px 14px; border-top: 1px solid #DFE1E6; background: #FAFBFC; }
+  .popup-footer button { background: white; color: #0052CC; border: 1px solid #0052CC; padding: 6px 14px; border-radius: 3px; cursor: pointer; font-weight: 500; font-size: 0.85em; }
+  .popup-footer button:hover { background: #DEEBFF; }
+  a { color: #0052CC; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code { background: #F4F5F7; padding: 1px 4px; border-radius: 3px; font-family: "SF Mono", Consolas, monospace; font-size: 0.85em; }
+
+  .idx-group { background:white; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin:16px 0; padding:8px 16px 16px 16px; }
+  .idx-group h2 { color:#1F4E78; font-size:1.05em; border-bottom:2px solid #E3F2FD; padding-bottom:6px; }
+  .idx-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:10px; }
+  .idx-list a { display:block; padding:10px 14px; background:#F4F5F7; border:1px solid #DFE1E6; border-radius:5px; font-weight:600; color:#0052CC; }
+  .idx-list a:hover { background:#DEEBFF; text-decoration:none; }
+  .idx-list a span { display:block; font-weight:400; font-size:0.82em; color:#6B778C; margin-top:2px; }
+</style>
+</head>
+<body>
+<div class="topbar"><span>IDCC — przepływy 2CCT (CCtool wysł. + CCtool zwalid.)</span></div>
+<div class="header-info"><strong>Profil 2CCT</strong> — dwa kafelki. AC i GLSK/CBCORA: macierz 32 stanów. ATC Based Validation (plik zwrotny): 18 stanów. Każdy popup zawiera edytowalne pola i hiperłącza do <a href="Ryzyka_pelna_baza_IDCC.html">pełnej bazy ryzyk</a> i <a href="Inwentarz_IDCC.html#tools">inwentarza narzędzi</a>.<br><strong>Procedura ręczna (backup):</strong> <a href="Procedura_KreatorIDCF_GLSK_CBCORA.html">Generowanie GLSK + CBCORA w KreatorIDCF (IDCC c/d/e) — ze screenami</a>.</div>
+<div class="idx-group"><h2>AC — Allocation Constraints (źródło: ZP)</h2><div class="idx-list"><a href="Przyklady_FID1-831_popup.html">FID1-831<span>IDCC(a)</span></a><a href="Przyklady_FID2-831_popup.html">FID2-831<span>IDCC(b)</span></a><a href="Przyklady_FID3C-831_popup.html">FID3C-831<span>IDCC(c)</span></a><a href="Przyklady_FID3-831_popup.html">FID3-831<span>IDCC(d)</span></a><a href="Przyklady_FID2-831-IDA3_popup.html">FID2-831<span>IDA3</span></a></div></div>
+<div class="idx-group"><h2>ATC Based Validation — plik zwrotny (18 stanów)</h2><div class="idx-list"><a href="Przyklady_FID1-928_popup.html">FID1-928<span>IDCC(a)</span></a><a href="Przyklady_FID2-928_popup.html">FID2-928<span>IDCC(b)</span></a><a href="Przyklady_FID3C-928_popup.html">FID3C-928<span>IDCC(c)</span></a><a href="Przyklady_FID3-928_popup.html">FID3-928<span>IDCC(d)</span></a></div></div>
+<div class="idx-group"><h2>GLSK — Generation and Load Shift Keys (źródło: Kreator)</h2><div class="idx-list"><a href="Przyklady_FID2-607_popup.html">FID2-607<span>IDCC(b) · KreatorDACF&2DAF</span></a><a href="Przyklady_FID3C-607_popup.html">FID3C-607<span>IDCC(c) · KreatorIDCF</span></a><a href="Przyklady_FID3-607_popup.html">FID3-607<span>IDCC(d) · KreatorIDCF</span></a></div></div>
+<div class="idx-group"><h2>CBCORA — Critical Branches/Outages (źródło: Kreator)</h2><div class="idx-list"><a href="Przyklady_FID2-617_popup.html">FID2-617<span>IDCC(b) · KreatorDACF&2DAF</span></a><a href="Przyklady_FID3C-617_popup.html">FID3C-617<span>IDCC(c) · KreatorIDCF</span></a><a href="Przyklady_FID3-617_popup.html">FID3-617<span>IDCC(d) · KreatorIDCF</span></a></div></div>
+</body>
+</html>

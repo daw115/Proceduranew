@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>FID2-710 (IVA, IDCC(b)) — stany kafelka</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; max-width: 1280px; margin: 0 auto; padding: 24px; line-height: 1.5; color: #222; background: #fafafa; }
+  h1 { color: #1F4E78; border-bottom: 3px solid #1F4E78; padding-bottom: 8px; }
+  h2 { color: #1F4E78; margin-top: 32px; }
+  h3 { color: #2E75B6; margin-top: 18px; margin-bottom: 6px; }
+
+  .header-info { background: #F2F7FC; padding: 14px 20px; border-left: 4px solid #1F4E78; margin: 16px 0; font-size: 0.95em; }
+
+  .category-header { padding: 14px 20px; border-radius: 6px; margin: 32px 0 16px 0; color: white; }
+  .category-A { background: linear-gradient(90deg, #2E7D32 0%, #43A047 100%); }
+  .category-B { background: linear-gradient(90deg, #757575 0%, #9E9E9E 100%); }
+  .category-C { background: linear-gradient(90deg, #F57C00 0%, #FB8C00 100%); }
+  .category-D { background: linear-gradient(90deg, #C62828 0%, #D32F2F 100%); }
+  .category-header h2 { color: white; border: none; margin: 0; }
+  .category-header .desc { font-size: 0.92em; margin-top: 4px; opacity: 0.95; }
+
+  .state-card { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 16px 20px; margin: 16px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .state-card.cat-A { border-left: 5px solid #2E7D32; }
+  .state-card.cat-B { border-left: 5px solid #757575; }
+  .state-card.cat-C { border-left: 5px solid #F57C00; }
+  .state-card.cat-D { border-left: 5px solid #C62828; }
+
+  .state-num { font-size: 1.1em; font-weight: bold; color: #1F4E78; }
+  .state-cat { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; margin-left: 8px; }
+  .state-cat.A { background: #C8E6C9; color: #1B5E20; }
+  .state-cat.B { background: #E0E0E0; color: #424242; }
+  .state-cat.C { background: #FFE0B2; color: #E65100; }
+  .state-cat.D { background: #FFCDD2; color: #B71C1C; }
+
+  table.tile-row { border-collapse: collapse; margin: 10px 0; }
+  table.tile-row td { border: 1px solid #999; padding: 0; vertical-align: middle; }
+  table.tile-row th { border: 1px solid #999; padding: 6px 12px; background: #1F4E78; color: white; font-size: 0.85em; }
+
+  .tile { width: 110px; height: 32px; display: inline-block; position: relative; }
+  .tile-szary { background: #BFBFBF; }
+  .tile-puste { background: white; }
+  .tile-pomarancz { background: #ED7D31; border: 2px solid #C55A11 !important; }
+  .tile-czerwony { background: #C00000; }
+  .tile-czerwony-excl { background: #C00000; color: white; text-align: center; line-height: 32px; font-weight: bold; font-size: 1.4em; }
+  .tile-czerwony-excl::after { content: "!"; }
+  .tile-czerwony-qmark { background: #C00000; color: white; text-align: center; line-height: 32px; font-weight: bold; font-size: 1.4em; }
+  .tile-czerwony-qmark::after { content: "?"; }
+  .tile-zielony { background: #00B050; }
+  .tile-zielony-R { background: #00B050; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-zielony-R::after { content: "R"; }
+  .tile-cz-W { background: #2E7D32; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-cz-W::after { content: "W"; }
+  .tile-cz-Wcet { background: #1B5E20; color: white; text-align: center; line-height: 32px; font-weight: bold; font-size: 0.75em; }
+  .tile-cz-Wcet::after { content: "W po CET"; }
+  .tile-fioletowy { background: #7030A0; }
+  .tile-czarny { background: #000000; }
+
+  .meaning { background: #F5F5F5; padding: 10px 14px; border-left: 3px solid #2E75B6; margin: 8px 0; font-size: 0.95em; }
+  .actions { background: #FFF9E6; padding: 10px 14px; border-left: 3px solid #F9A825; margin: 8px 0; font-size: 0.95em; }
+  .actions.ok { background: #E8F5E9; border-left-color: #2E7D32; }
+  .actions.critical { background: #FFEBEE; border-left-color: #C62828; }
+  .actions strong { color: #1F4E78; }
+
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-family: "SF Mono", Consolas, monospace; font-size: 0.88em; }
+  a { color: #2E75B6; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  table.stats { border-collapse: collapse; width: 100%; margin: 16px 0; background: white; }
+  table.stats th, table.stats td { border: 1px solid #ccc; padding: 10px 14px; text-align: left; }
+  table.stats th { background: #1F4E78; color: white; }
+
+  .definition { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 24px 0; }
+
+  .back-to-top { position: fixed; bottom: 20px; right: 20px; background: #1F4E78; color: white; padding: 8px 12px; border-radius: 50%; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+</style>
+</head>
+<body id="top">
+
+<h1>FID2-710 (IVA, IDCC(b)) — stany kafelka</h1>
+<div style="background:#FFF8E1;border-left:4px solid #FB8C00;padding:10px 14px;margin:12px 0;font-weight:600;">⚠ Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).</div>
+
+<div class="header-info">
+<strong>TET:</strong> 21:30 | <strong>CET:</strong> 22:06 | <strong>Profil pulpitu:</strong> 3COL (CCTool wyśl. + CCTool zwalid. + MinIO)<br>
+<strong>Plik przychodzący z:</strong> Perun4V (po obliczeniach FBA) → Connector 2.0 → <strong>wychodzący do:</strong> Core CC Tool + MinIO <code>cca/ID_FBCC/in/yyyymmdd/</code><br>
+<strong>Powiązane:</strong> <a href="Przyklady_FID1-831.html">FID1-831 (AC)</a> · <a href="Ryzyka_pelna_baza_IDCC.html">Ryzyka_pelna_baza_IDCC.html</a> · <a href="Inwentarz_IDCC.md">Inwentarz_IDCC.md</a><br>
+<strong>Źródło opisów stanów:</strong> Confluence „ID FB CC Zawartość opisów biznesowych do podpowiedzi na pulpicie dyspozytorskim dla pozycji IVA i IVA Backup" v.X
+</div>
+
+<h2>Legenda kategorii</h2>
+<table class="stats">
+<tr><th>Kategoria</th><th>Liczba stanów</th><th>Charakterystyka</th><th>Działania</th></tr>
+<tr><td>🟢 <strong>A.1 — OK pozytywne automatyczne</strong></td><td>5 (#1-5)</td><td>Wszystkie kolumny zielone / fioletowe / R</td><td>Bez procedur; ewentualnie P06 wpis A.4</td></tr>
+<tr><td>🟢 <strong>A.2 — Ręczne znaczniki (W / W po CET / R)</strong></td><td>16 (#6-21)</td><td>W którejkolwiek kolumnie jest ręczny znacznik</td><td>Dyspozytor podjął decyzję — bez procedur; P06 wpis A.4</td></tr>
+<tr><td>⚪ <strong>B — Monitoring</strong></td><td>5 (#22-26)</td><td>Szary / pomarańczowy / wysyłka trwa</td><td>Czujność, bez akcji</td></tr>
+<tr><td>🟡 <strong>C — Backup wymagany</strong></td><td>11 (#27-37)</td><td>Czerwony / ? / ! bez ręcznego znacznika</td><td>Procedury z R-kodów</td></tr>
+<tr><td>🔴 <strong>D — Krytyczny</strong></td><td>1 (#38)</td><td>Czarny / czarny / czarny — po CET</td><td>IVA BACKUP od CCA; brak naprawy</td></tr>
+<tr><td><strong>Razem</strong></td><td><strong>38</strong></td><td></td><td></td></tr>
+</table>
+
+<!-- =============== KATEGORIA A.1 =============== -->
+<div class="category-header category-A">
+  <h2>🟢 Kategoria A.1 — Stany OK pozytywne automatyczne (5 stanów)</h2>
+  <div class="desc">Wszystkie kolumny zielone / fioletowe / R. Bez procedur backupowych. [P06] wpis A.4 jeśli była interwencja.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#1</span> <span class="state-cat A">A.1</span>
+<h3>Happy Day — zielony / zielony / zielony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-zielony"></div></td></tr></table>
+<div class="meaning">Dokument został wysłany prawidłowo do CCTool i na MINIO, otrzymano potwierdzenie ACK z pozytywnym komunikatem (komunikat statusu powinien się pojawić po najechaniu kursorem na status).</div>
+<div class="actions ok"><strong>Działania:</strong> Brak — proces przebiegł poprawnie.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#2</span> <span class="state-cat A">A.1</span>
+<h3>zielony / fioletowy / zielony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-fioletowy"></div></td><td><div class="tile tile-zielony"></div></td></tr></table>
+<div class="meaning">Dokument wysłany prawidłowo do CCTool i na MINIO, Dokument ACK (CCTool zwalid.) napłynął po CET z pozytywnym komunikatem.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z czasem dostarczenia ACK.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#3</span> <span class="state-cat A">A.1</span>
+<h3>zielony / zielony R / zielony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-zielony"></div></td></tr></table>
+<div class="meaning">Dokument wysłany prawidłowo do CCTool i na MINIO, nie otrzymano potwierdzenia ACK, natomiast Dyspozytor ustawił status ręcznie 'R' po weryfikacji po stronie CCTool, iż proces został zrealizowany poprawnie.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z uzasadnieniem statusu 'R'.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#4</span> <span class="state-cat A">A.1</span>
+<h3>fioletowy / fioletowy / fioletowy</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-fioletowy"></div></td><td><div class="tile tile-fioletowy"></div></td><td><div class="tile tile-fioletowy"></div></td></tr></table>
+<div class="meaning">Dokument wysłany prawidłowo do CCTool i na MINIO po CET, Dokument ACK (CCTool zwalid.) napłynął po CET z pozytywnym komunikatem.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z pełnym opisem opóźnienia.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#5</span> <span class="state-cat A">A.1</span>
+<h3>zielony R / zielony R / zielony R</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-zielony-R"></div></td></tr></table>
+<div class="meaning">Dokument IVA został oznaczony ręcznie jako wysłany prawidłowo do CCTool i na MINIO oraz otrzymanie potwierdzenia ACK.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z pełnym uzasadnieniem (status ręczny we wszystkich kolumnach).</div>
+</div>
+
+<!-- =============== KATEGORIA A.2 — Ręczne znaczniki =============== -->
+<div class="category-header category-A">
+  <h2>🟢 Kategoria A.2 — Stany z ręcznym znacznikiem (16 stanów)</h2>
+  <div class="desc">Dyspozytor podjął świadomą decyzję (W / W po CET / R) — bez procedur backupowych. [P06] wpis A.4 wymagany.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#6</span> <span class="state-cat A">A.2</span>
+<h3>W / zielony / W</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-cz-W"></div></td></tr></table>
+<div class="meaning">Dokument IVA prawidłowo wysłany ręcznie z poziomu aplikacji CCM w jednym miejscu (np. z menu bocznego „CCTool wysł." bądź „MINIO" korzystając z opcji „Wyślij"). Otrzymano potwierdzenie ACK z pozytywnym komunikatem.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z uzasadnieniem ręcznej wysyłki.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#7</span> <span class="state-cat A">A.2</span>
+<h3>W / (puste) / W</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-puste"></div></td><td><div class="tile tile-cz-W"></div></td></tr></table>
+<div class="meaning">Dokument IVA prawidłowo wysłany ręcznie z poziomu CCM. Trwa oczekiwanie na potwierdzenie ACK (CCTool zwalid.) — około 2 minut trwa taki status.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4. Po 5 min jeśli proces przebiegł poprawnie → ustaw 'R' dla ACK.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#8</span> <span class="state-cat A">A.2</span>
+<h3>W / czerwony ? / W</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-czerwony-qmark"></div></td><td><div class="tile tile-cz-W"></div></td></tr></table>
+<div class="meaning">Dokument wysłany ręcznie z poziomu CCM, ale nie napłynął ACK w żądanym czasie i zbliża się Critical End Time dla obsługi tego dokumentu.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4. Monitoring CCCt MV; jeśli proces OK → status 'R' dla ACK.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#9</span> <span class="state-cat A">A.2</span>
+<h3>W / czerwony / W</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-czerwony"></div></td><td><div class="tile tile-cz-W"></div></td></tr></table>
+<div class="meaning">Dokument wysłany ręcznie z poziomu CCM, a otrzymane potwierdzenie ACK (CCTool zwalid.): (1) zawiera komunikat błędu (najedź kursorem na status); (2) proces zakończył się błędem — „Błąd procesu".</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z kodem ACK. Weryfikacja sytuacji w CCTool. Decyzja Dyspozytora o ewentualnej kolejnej iteracji.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#10</span> <span class="state-cat A">A.2</span>
+<h3>W / fioletowy / W</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-fioletowy"></div></td><td><div class="tile tile-cz-W"></div></td></tr></table>
+<div class="meaning">Dokument IVA prawidłowo wysłany ręcznie z poziomu CCM. Otrzymano potwierdzenie ACK z pozytywnym komunikatem po CET.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#11</span> <span class="state-cat A">A.2</span>
+<h3>W / czarny / W</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-czarny"></div></td><td><div class="tile tile-cz-W"></div></td></tr></table>
+<div class="meaning">Dokument IVA prawidłowo wysłany ręcznie z poziomu CCM. Nie otrzymano potwierdzenia ACK — upłynął czas CET.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4. Weryfikacja w CCCt MV; jeśli Processed → status 'R' ręcznie. Diagnostyka CN2 zwrotny → zgłoś.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#12</span> <span class="state-cat A">A.2</span>
+<h3>W / zielony R / W</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-cz-W"></div></td></tr></table>
+<div class="meaning">Dokument IVA prawidłowo wysłany ręcznie z poziomu CCM. Nie otrzymano ACK, natomiast Dyspozytor ustawił status ręcznie 'R' po weryfikacji po stronie CCTool, iż proces został zrealizowany poprawnie.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z pełnym uzasadnieniem.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#13</span> <span class="state-cat A">A.2</span>
+<h3>W po CET / (puste) / W po CET</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-puste"></div></td><td><div class="tile tile-cz-Wcet"></div></td></tr></table>
+<div class="meaning">Dokument IVA prawidłowo wysłany ręcznie z poziomu CCM po CET (opcja „Wyślij po CET"). Trwa oczekiwanie na potwierdzenie ACK (CCTool zwalid.) — około 2 minut trwa taki status.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z uzasadnieniem opóźnienia.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#14</span> <span class="state-cat A">A.2</span>
+<h3>W po CET / czerwony ? / W po CET</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-czerwony-qmark"></div></td><td><div class="tile tile-cz-Wcet"></div></td></tr></table>
+<div class="meaning">Dokument wysłany ręcznie z poziomu CCM po CET. Trwa oczekiwanie na potwierdzenie ACK (CCTool zwalid.) — upłynęło więcej niż 2 minuty (czas oczekiwania można sprawdzić najeżdżając kursorem na status).</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4. Weryfikacja sytuacji w CCTool; jeśli proces przebieg poprawnie → ustaw status 'R' dla ACK.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#15</span> <span class="state-cat A">A.2</span>
+<h3>W po CET / czerwony / W po CET</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-czerwony"></div></td><td><div class="tile tile-cz-Wcet"></div></td></tr></table>
+<div class="meaning">Dokument wysłany ręcznie z poziomu CCM po CET, a otrzymane potwierdzenie ACK (CCTool zwalid.): (1) zawiera komunikat błędu; (2) proces zakończył się błędem — „Błąd procesu".</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z kodem ACK. Weryfikacja sytuacji w CCTool. Zgłoś.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#16</span> <span class="state-cat A">A.2</span>
+<h3>W po CET / fioletowy / W po CET</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-fioletowy"></div></td><td><div class="tile tile-cz-Wcet"></div></td></tr></table>
+<div class="meaning">Dokument IVA prawidłowo wysłany ręcznie z poziomu CCM po CET. Otrzymano potwierdzenie ACK z pozytywnym komunikatem.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#17</span> <span class="state-cat A">A.2</span>
+<h3>W po CET / czarny / W po CET</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-czarny"></div></td><td><div class="tile tile-cz-Wcet"></div></td></tr></table>
+<div class="meaning">Dokument IVA prawidłowo wysłany ręcznie z poziomu CCM po CET. Nie otrzymano potwierdzenia ACK — upłynął czas CET.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z pełnym opisem. Diagnostyka CN2 zwrotny → zgłoś.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#18</span> <span class="state-cat A">A.2</span>
+<h3>zielony R / (puste) / zielony R</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-puste"></div></td><td><div class="tile tile-zielony-R"></div></td></tr></table>
+<div class="meaning">Dokument IVA został oznaczony ręcznie jako wysłany prawidłowo do CCTool i na MINIO. Trwa oczekiwanie na potwierdzenie ACK (CCTool zwalid.) — około 2 minut trwa taki status.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4. Weryfikacja w CCTool; po 5 min jeśli proces przebiegł poprawnie → ustaw 'R' dla ACK.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#19</span> <span class="state-cat A">A.2</span>
+<h3>zielony R / czerwony ? / zielony R</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-czerwony-qmark"></div></td><td><div class="tile tile-zielony-R"></div></td></tr></table>
+<div class="meaning">Dokument IVA został oznaczony ręcznie jako wysłany prawidłowo do CCTool i na MINIO. Trwa oczekiwanie na potwierdzenie ACK (CCTool zwalid.) — upłynęło więcej niż 2 minuty.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4. Weryfikacja w CCTool; jeśli proces przebiegł poprawnie → ustaw 'R' dla ACK.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#20</span> <span class="state-cat A">A.2</span>
+<h3>zielony R / czarny / zielony R</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-czarny"></div></td><td><div class="tile tile-zielony-R"></div></td></tr></table>
+<div class="meaning">Dokument IVA został oznaczony ręcznie jako wysłany prawidłowo do CCTool i na MINIO. Nie otrzymano potwierdzenia ACK — upłynął czas CET.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z pełnym opisem. Diagnostyka CN2 zwrotny → zgłoś.</div>
+</div>
+
+<div class="state-card cat-A">
+<span class="state-num">#21</span> <span class="state-cat A">A.2</span>
+<h3>czerwony ! / zielony R / czerwony !</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-czerwony-excl"></div></td></tr></table>
+<div class="meaning">Wysłany dokument nie spełnia kryterium rozmiaru (w informacjach o wielkości rozmiaru dostępna z poziomu menu bocznego na statusie). Nie otrzymano potwierdzenie ACK, natomiast Dyspozytor ustawił status ręcznie 'R' po weryfikacji po stronie CCTool, iż proces został zrealizowany poprawnie.</div>
+<div class="actions ok"><strong>Działania:</strong> [P06] wpis A.4 z uzasadnieniem (zawartość zweryfikowana mimo ostrzeżenia o rozmiarze). Zgłoś informacyjnie (ew. zmiana konfiguracji rozmiaru).</div>
+</div>
+
+<!-- =============== KATEGORIA B — Monitoring =============== -->
+<div class="category-header category-B">
+  <h2>⚪ Kategoria B — Monitoring (5 stanów)</h2>
+  <div class="desc">Stany przejściowe lub przedwczesne — bez procedur, czujność.</div>
+</div>
+
+<div class="state-card cat-B">
+<span class="state-num">#22</span> <span class="state-cat B">B</span>
+<h3>szary / szary / szary</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-szary"></div></td><td><div class="tile tile-szary"></div></td><td><div class="tile tile-szary"></div></td></tr></table>
+<div class="meaning">Dokument jeszcze nie został wysłany ani do CCTool ani na MINIO, w związku z tym potwierdzenie ACK nie napłynęło.</div>
+<div class="actions"><strong>Działania:</strong> Brak — monitoring. Plik nie wymagany (>30 min do TET 21:30).</div>
+</div>
+
+<div class="state-card cat-B">
+<span class="state-num">#23</span> <span class="state-cat B">B</span>
+<h3>pomarańczowy / pomarańczowy / pomarańczowy</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-pomarancz"></div></td><td><div class="tile tile-pomarancz"></div></td><td><div class="tile tile-pomarancz"></div></td></tr></table>
+<div class="meaning">Zbliża się TET (21:30), a dokument nie został jeszcze obsłużony.</div>
+<div class="actions"><strong>Działania:</strong> Brak. <strong>Czujność i przygotowanie.</strong> Sprawdź Perun4V (status obliczeń); sprawdź CN2; przygotuj się na ewentualne IVA BACKUP od CCA. Jeśli sytuacja się utrzyma → Kategoria C (Stan 27).</div>
+</div>
+
+<div class="state-card cat-B">
+<span class="state-num">#24</span> <span class="state-cat B">B</span>
+<h3>czerwony ? / (puste) / zielony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-czerwony-qmark"></div></td><td><div class="tile tile-puste"></div></td><td><div class="tile tile-zielony"></div></td></tr></table>
+<div class="meaning">Wysyłka do CCTool trwa i oczekiwany jest ACK, dokument dostarczony na MINIO.</div>
+<div class="actions"><strong>Działania:</strong> Jeśli taki status „CCTool wysł." trwa <strong>dłużej niż 5 minut</strong> należy zweryfikować stan w CCTool, ewentualnie zgłosić problem.</div>
+</div>
+
+<div class="state-card cat-B">
+<span class="state-num">#25</span> <span class="state-cat B">B</span>
+<h3>zielony / (puste) / zielony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-puste"></div></td><td><div class="tile tile-zielony"></div></td></tr></table>
+<div class="meaning">Dokument wysłany prawidłowo do CCTool i na MINIO, trwa oczekiwanie na potwierdzenie ACK (status powinien się utrzymać krócej niż 3 minuty).</div>
+<div class="actions"><strong>Działania:</strong> Brak. Czekaj do 3-5 min na ACK; po tym czasie → Stan 29 (timeout).</div>
+</div>
+
+<div class="state-card cat-B">
+<span class="state-num">#26</span> <span class="state-cat B">B</span>
+<h3>czerwony ? / (puste) / czerwony !</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-czerwony-qmark"></div></td><td><div class="tile tile-puste"></div></td><td><div class="tile tile-czerwony-excl"></div></td></tr></table>
+<div class="meaning">Wysyłka do CCTool trwa i oczekiwany jest ACK. Dokument dostarczony na MINIO nie spełnia kryterium rozmiaru (w informacjach o wielkości rozmiaru dostępna z poziomu menu bocznego na statusie).</div>
+<div class="actions"><strong>Działania:</strong>
+<ol>
+<li>Jeśli taki status „CCTool wysł." trwa dłużej niż 5 minut → zweryfikować stan w CCTool, ew. zgłosić problem</li>
+<li>Zweryfikować dokument IVA czy jest poprawny (pobierając go z CCM i rozpakowując) — pomimo zbyt małego rozmiaru sytuacja może być OK</li>
+<li>Jeśli plik z pkt. 2 jest niepoprawny → pozyskać IVA z PERUN i wysłać bezpośrednio z CCM bądź z GUI CCTool</li>
+</ol></div>
+</div>
+
+<!-- =============== KATEGORIA C — Backup wymagany =============== -->
+<div class="category-header category-C">
+  <h2>🟡 Kategoria C — Backup wymagany (11 stanów)</h2>
+  <div class="desc">Stany problematyczne bez ręcznego znacznika — procedury backupowe wymagane.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#27</span> <span class="state-cat C">C</span>
+<h3>czerwony / czerwony / czerwony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-czerwony"></div></td><td><div class="tile tile-czerwony"></div></td><td><div class="tile tile-czerwony"></div></td></tr></table>
+<div class="meaning">Zbliża się CET (22:06), a dokument nie został jeszcze obsłużony.</div>
+<div class="actions"><strong>Procedura (wg Confluence):</strong> Jeśli zbliża się CET (poniżej 3 minut) możliwa jest <strong>ręczna wysyłka IVA Backup</strong> z menu bocznego na poniższej pozycji pulpitu.<br>
+<strong>Alternatywnie:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R08">R08</a> (Perun4V awaria), <a href="Ryzyka_pelna_baza_IDCC.html#R09">R09</a> (ERR-I), <a href="Ryzyka_pelna_baza_IDCC.html#R10">R10</a> (Process failed).</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#28</span> <span class="state-cat C">C</span>
+<h3>zielony / czerwony / zielony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-czerwony"></div></td><td><div class="tile tile-zielony"></div></td></tr></table>
+<div class="meaning">Dokument wysłany prawidłowo do CCTool i na MINIO, potwierdzenie ACK ma status czerwony co może oznaczać: (1) zawiera komunikat błędu (najedź kursorem na status); (2) proces zakończył się błędem — „Błąd procesu".</div>
+<div class="actions"><strong>Procedura:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05</a> — reakcja per kod ACK (20 gateClosed / 21 duplicatedVersion / 30 file size).<br>
+Należy zweryfikować sytuację w CCTool.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#29</span> <span class="state-cat C">C</span>
+<h3>zielony / czerwony ? / zielony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-czerwony-qmark"></div></td><td><div class="tile tile-zielony"></div></td></tr></table>
+<div class="meaning">Dokument wysłany prawidłowo do CCTool i na MINIO, trwa oczekiwanie na potwierdzenie ACK, które nie napłynęło w zadanym czasie (po najechaniu na znak zapytania można sprawdzić ile upłynęło czasu).</div>
+<div class="actions"><strong>Procedura:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>.<br>
+Jeśli po około 3 minutach nie pojawi się status ACK wraz z informacją dostępną po najechaniu na status → należy zweryfikować sytuację w CCTool.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#30</span> <span class="state-cat C">C</span>
+<h3>zielony / czarny / zielony</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-czarny"></div></td><td><div class="tile tile-zielony"></div></td></tr></table>
+<div class="meaning">Dokument wysłany prawidłowo do CCTool i na MINIO. Dokument ACK (CCTool zwalid.) nie napłynął do CET.</div>
+<div class="actions"><strong>Procedury:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a>.<br>
+Należy zweryfikować sytuację w CCTool. W przypadku wygenerowania ACK po stronie CCTool — sytuację zgłosić.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#31</span> <span class="state-cat C">C</span>
+<h3>czerwony ! / (puste) / czerwony !</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-puste"></div></td><td><div class="tile tile-czerwony-excl"></div></td></tr></table>
+<div class="meaning">Wysłany dokument nie spełnia kryterium rozmiaru (w informacjach o wielkości rozmiaru dostępna z poziomu menu bocznego na statusie). Trwa oczekiwanie na potwierdzenie ACK (CCTool zwalid.) — około 2 minut trwa taki status.</div>
+<div class="actions"><strong>Procedura:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05</a>.<br>
+<ol>
+<li>Zweryfikować dokument IVA czy jest poprawny (pobierając go z CCM i rozpakowując) — pomimo zbyt małego rozmiaru sytuacja może być OK</li>
+<li>Jeśli plik z pkt. 1 jest niepoprawny → pozyskać IVA z PERUN i wysłać bezpośrednio z CCM bądź z GUI CCTool</li>
+</ol></div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#32</span> <span class="state-cat C">C</span>
+<h3>czerwony ! / czerwony ? / czerwony !</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-czerwony-qmark"></div></td><td><div class="tile tile-czerwony-excl"></div></td></tr></table>
+<div class="meaning">Wysłany dokument nie spełnia kryterium rozmiaru. Trwa oczekiwanie na potwierdzenie ACK (CCTool zwalid.), które nie napłynęło w zadanym czasie (po najechaniu na znak zapytania można sprawdzić ile upłynęło czasu).</div>
+<div class="actions"><strong>Procedura:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>.<br>
+<ol>
+<li>Jeśli po około 3 minutach nie pojawi się status ACK wraz z informacją po najechaniu na status → zweryfikować sytuację w CCTool</li>
+<li>Zweryfikować dokument IVA (pobranie z CCM i rozpakowanie) — pomimo małego rozmiaru sytuacja może być OK</li>
+<li>Jeśli plik z pkt. 2 jest niepoprawny → pozyskać IVA z PERUN i wysłać bezpośrednio z CCM bądź z GUI CCTool</li>
+</ol></div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#33</span> <span class="state-cat C">C</span>
+<h3>czerwony ! / czerwony / czerwony !</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-czerwony"></div></td><td><div class="tile tile-czerwony-excl"></div></td></tr></table>
+<div class="meaning">Wysłany dokument nie spełnia kryterium rozmiaru, a otrzymane potwierdzenie ACK (CCTool zwalid.): (1) zawiera komunikat błędu; (2) proces zakończył się błędem — „Błąd procesu".</div>
+<div class="actions"><strong>Procedura:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05</a>.<br>
+<ol>
+<li>Należy zweryfikować sytuację w CCTool</li>
+<li>Zweryfikować dokument IVA czy jest poprawny (pobranie z CCM i rozpakowanie) — pomimo małego rozmiaru sytuacja może być OK</li>
+<li>Jeśli plik z pkt. 2 jest niepoprawny → pozyskać IVA z PERUN i wysłać bezpośrednio z CCM bądź z GUI CCTool</li>
+</ol></div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#34</span> <span class="state-cat C">C</span>
+<h3>czerwony ! / fioletowy / czerwony !  <span style="color:#C62828">(sprzeczność)</span></h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-fioletowy"></div></td><td><div class="tile tile-czerwony-excl"></div></td></tr></table>
+<div class="meaning">Wysłany dokument nie spełnia kryterium rozmiaru. Dokument ACK (CCTool zwalid.) napłynął po CET z pozytywnym komunikatem.</div>
+<div class="actions"><strong>Działania:</strong>
+<ol>
+<li>Należy zweryfikować dokument IVA czy jest poprawny i czy został przyjęty w CCTool</li>
+<li>Jeśli plik z pkt. 1 jest niepoprawny → pozyskać IVA z PERUN i wysłać bezpośrednio z CCM bądź z GUI CCTool</li>
+</ol>
+Po weryfikacji można nadać 'R' → Stan #21 (Kategoria A).</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#35</span> <span class="state-cat C">C</span>
+<h3>czerwony ! / czarny / czerwony !</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-czarny"></div></td><td><div class="tile tile-czerwony-excl"></div></td></tr></table>
+<div class="meaning">Wysłany dokument nie spełnia kryterium rozmiaru. Dokument ACK (CCTool zwalid.) nie napłynął do CET.</div>
+<div class="actions"><strong>Działania:</strong>
+<ol>
+<li>Zweryfikować sytuację w CCTool — w przypadku wygenerowania ACK po stronie CCTool sytuację zgłosić</li>
+<li>Zweryfikować dokument IVA (pobranie z CCM i rozpakowanie) — pomimo małego rozmiaru sytuacja może być OK</li>
+<li>Jeśli plik z pkt. 2 jest niepoprawny → pozyskać IVA z PERUN i wysłać bezpośrednio z CCM bądź z GUI CCTool</li>
+</ol></div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#36</span> <span class="state-cat C">C</span>
+<h3>fioletowy / czerwony / fioletowy</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-fioletowy"></div></td><td><div class="tile tile-czerwony"></div></td><td><div class="tile tile-fioletowy"></div></td></tr></table>
+<div class="meaning">Dokument wysłany prawidłowo do CCTool i na MINIO po CET, potwierdzenie ACK ma status czerwony co może oznaczać: (1) zawiera komunikat błędu; (2) proces zakończył się błędem — „Błąd procesu".</div>
+<div class="actions"><strong>Procedura:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R05">R05</a>.<br>
+Należy zweryfikować sytuację w CCTool.</div>
+</div>
+
+<div class="state-card cat-C">
+<span class="state-num">#37</span> <span class="state-cat C">C</span>
+<h3>fioletowy / czarny / fioletowy</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-fioletowy"></div></td><td><div class="tile tile-czarny"></div></td><td><div class="tile tile-fioletowy"></div></td></tr></table>
+<div class="meaning">Dokument wysłany prawidłowo do CCTool i na MINIO po CET. Dokument ACK (CCTool zwalid.) nie napłynął do CET.</div>
+<div class="actions"><strong>Procedury:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R06">R06</a>, <a href="Ryzyka_pelna_baza_IDCC.html#R18">R18</a>.<br>
+Należy zweryfikować sytuację w CCTool, w przypadku wygenerowania ACK po stronie CCTool sytuację zgłosić.</div>
+</div>
+
+<!-- =============== KATEGORIA D — Krytyczny =============== -->
+<div class="category-header category-D">
+  <h2>🔴 Kategoria D — Krytyczny (1 stan)</h2>
+  <div class="desc">Stan terminalny — po CET, brak możliwości naprawy lokalnie. IVA BACKUP od CCA.</div>
+</div>
+
+<div class="state-card cat-D">
+<span class="state-num">#38</span> <span class="state-cat D">D</span>
+<h3>czarny / czarny / czarny — KRYTYCZNE</h3>
+<table class="tile-row"><tr><th>CCTool wyśl.</th><th>CCTool zwalid.</th><th>MinIO</th></tr>
+<tr><td><div class="tile tile-czarny"></div></td><td><div class="tile tile-czarny"></div></td><td><div class="tile tile-czarny"></div></td></tr></table>
+<div class="meaning">Dokument nie został dostarczony ani do CCTool ani na MINIO, w związku z tym potwierdzenie ACK nie napłynęło. Minął czas CET.</div>
+<div class="actions critical"><strong>Procedura (wg Confluence):</strong>
+<ol>
+<li>Należy zweryfikować czy dokument IVA jest w PERUN. Jeśli TAK to należy go niezwłocznie pozyskać ręcznie i wysłać ją bezpośrednio z CCM bądź z GUI CCTool</li>
+</ol>
+<strong>Procedury IDCC:</strong> <a href="Ryzyka_pelna_baza_IDCC.html#R10">R10</a> (Process failed) — oczekuj IVA BACKUP v1 od CCA; brak → <a href="Ryzyka_pelna_baza_IDCC.html#R19">R19</a> (CN2 nie kopiuje do CCA), <a href="Ryzyka_pelna_baza_IDCC.html#R23">R23</a> (brak raportu CCA).<br>
+<strong>Zgłoś</strong> (CIZ, WPO, PSE-I) + telefon CCC. ❌ <strong>Zakaz fallbacku 20% Fmax z DA</strong>.</div>
+</div>
+
+<!-- =============== DEFINICJA PLIKU =============== -->
+<div class="definition">
+<h2>Definicja pliku FID2-710 (IVA, IDCC(b))</h2>
+<p><strong>Plik:</strong> FID2-710 (IVA — Individual Validation Adjustment)</p>
+<p><strong>Plik przychodzący z:</strong> <strong>Perun4V</strong> (https://lccv.tscnet.eu) — po obliczeniach FBA dla paczki PERUN_ID2</p>
+<p><strong>Plik wychodzący do:</strong> <strong>Core CC Tool</strong> (centralne procesy CCCt) + <strong>MinIO</strong> <code>cca/ID_FBCC/in/yyyymmdd/</code></p>
+<p><strong>Transport:</strong> Perun4V → sFTP → Connector 2.0 → MinIO + CCCt; również do CCA (dla IVA BACKUP)</p>
+
+<h3>Budowa pliku:</h3>
+<ul>
+<li><strong>Format:</strong> XML</li>
+<li><strong>Maska nazwy:</strong> <code>rrrrmmdd-FID2-710-v*-10XPL-TSO------P-to-10V1001C--00264T.xml</code></li>
+<li><strong>Zawartość:</strong> wartości IVA (Individual Validation Adjustment) — możliwa redukcja RAM na danym CNECu, wynik walidacji domeny FBA przez Perun4V</li>
+<li><strong>Struktura logiczna:</strong> wartości per CNEC × godzina (MTU = 60 min); tylko dodatnie wartości</li>
+<li><strong>Wersjonowanie:</strong> v1 (po pierwszych obliczeniach), v2+ jeśli ponowne obliczenia (ERR-I → wyższa wersja z danymi CCA dla brakujących TS)</li>
+</ul>
+
+<h3>Analogiczne iteracje:</h3>
+<ul>
+<li><strong>FID2-710</strong> (IDCC(b)) — TET 21:30, CET 22:06 *(opisany w tym dokumencie)*</li>
+<li><strong>FID3C-710</strong> (IDCC(c)) — TET 04:00, CET 04:36</li>
+<li><strong>FID3-710</strong> (IDCC(d)) — TET 09:30, CET 10:06</li>
+</ul>
+<p>Stany kafelków są identyczne dla wszystkich iteracji — różnią się tylko TET/CET.</p>
+
+<h3>Powiązane kafelki:</h3>
+<ul>
+<li><strong>IVA Backup</strong> (FID2-710, profil MIN, 1 kolumna) — automatyczna kopia z CCA; aktywuje się gdy IVA niepoprawne</li>
+<li><strong>IVA_ATC</strong> (FID2-710_ATC, profil MIN) — wynik walidacji ATC</li>
+<li><strong>Składowe paczki PERUN_ID2</strong> (różne FID) — wejście do obliczeń Perun4V</li>
+</ul>
+</div>
+
+<a href="#top" class="back-to-top">↑</a>
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+[
+  {
+    "file": "screens_kreatoridcf/00_monitor_normal.jpg",
+    "screen": "Monitor — lista zadań Kreatora",
+    "shows": "Okno Monitor z listą cyklicznych zadań IDCF/FID3C i ich statusami (OK/BŁĄD), gdzie zadanie 13:13 FID3C_v3 jest OK (GLSK 24/24 i CBCORA 24/24 wysłane), a 13:12 FID3C_v2 ma BŁĄD (GLSK/CBCORA NIE wysłany).",
+    "maps_to": "Monitorowanie wykonania i statusu publikacji zadań RA w Kreatorze",
+    "text_visible": "Monitor; Lista zadań; Data/Godzina/Nazwa/Status/Opis; FID3C_v3 OK; FID3C_v2 BŁĄD; IDCF; GLSK 24/24 wysłany; CBCORA 24/24; Ustawienia; Zamknij",
+    "quality": "clear",
+    "caption": "Monitor Kreatora — statusy zadań FID3C/IDCF; widoczny sukces (OK) i błąd publikacji GLSK/CBCORA"
+  },
+  {
+    "file": "screens_kreatoridcf/03_wybrane_pliki_gsk.png",
+    "screen": "Wybrane pliki — GLSK (.uct)",
+    "shows": "Okno wyboru plików GLSK z listą plików .uct per kwadrans (z katalogu KreatorIDCF_CGMES_ST/parametry/IDCF), zaznaczonych checkboxami z opcją Wszystko i przyciskiem OK.",
+    "maps_to": "Wybór/dołączenie plików GLSK do publikacji RA w Kreatorze",
+    "text_visible": "Wybrane pliki; Katalog; Wersja modeli: najnowsza; wybrana: 0; lista ...IDCF\\20241202_...PL0.uct; Wszystko; OK; Anuluj",
+    "quality": "clear",
+    "caption": "Wybór plików GLSK (.uct) do publikacji w Kreatorze IDCF"
+  },
+  {
+    "file": "screens_kreatoridcf/06_wybrane_pliki_cbcora.png",
+    "screen": "Wybrane pliki — CBCORA (.epc)",
+    "shows": "Analogiczne okno wyboru plików, ale dla CBCORA — lista plików .epc per kwadrans z katalogu parametry, zaznaczonych checkboxami, z opcją Wszystko i OK.",
+    "maps_to": "Wybór/dołączenie plików CBCORA do publikacji RA w Kreatorze",
+    "text_visible": "Wybrane pliki; Katalog; Wersja modeli: najnowsza; wybrana: 0; lista ...20241202_...PL0.epc; Wszystko; OK; Anuluj",
+    "quality": "clear",
+    "caption": "Wybór plików CBCORA (.epc) do publikacji w Kreatorze IDCF"
+  },
+  {
+    "file": "screens_kreatoridcf/11_ccm_weryfikacja.png",
+    "screen": "IDCC FB Pulpit dyspozytorski (CCM) — weryfikacja",
+    "shows": "Pulpit dyspozytorski IDCC FB pokazujący przepływy procesu z kodami (FID2/FID3C), Target/Critical End Time i statusami narzędzi (CCCtool, MinIO, sFTP/ZP); zaznaczono wiersz IDCC(c) GLSK FID3C-607 i CBCORA FID3C-617 (zielone) oraz widoczny wiersz XID_RA Plik ze środkami zaradczymi z aplikacji KreatorDACF_CGMES.",
+    "maps_to": "Weryfikacja w CCM, że pliki RA/GLSK/CBCORA dotarły i zostały zwalidowane",
+    "text_visible": "[Testy PSE] IDCC FB Pulpit dyspozytorski; Tryb WOLNY (co 5 min); CBCORA FID2-617; AC FID2-831; GLSK FID3C-607; CBCORA FID3C-617; Plik ze środkami zaradczymi z aplikacji KreatorDACF_CGMES XID_RA; CCCtool wysł./zwalid.",
+    "quality": "clear",
+    "caption": "Pulpit IDCC FB (CCM) — weryfikacja wysłania i walidacji GLSK/CBCORA/RA dla FID3C"
+  },
+  {
+    "file": "screens_kreatoridcf/log_publikacji.png",
+    "screen": "KreatorIDCF_CGMES — zakładka LOG",
+    "shows": "Zakładka LOG po publikacji przez Connector 2.0: log przesyłania plików GLSK, CBCORA, RA_XML i RA_XLSX na MinIO (aliasy Kreator/Kreator2) z statusem OK i komunikatem Publikacja zakończona.",
+    "maps_to": "Potwierdzenie zakończenia publikacji RA (log wynikowy) w Kreatorze",
+    "text_visible": "KreatorIDCF_CGMES; LOG; Publikacja poprzez Connector 2.0; Przesłanie plików na MinIO; Typ/Adres/Plik/Status; GLSK/CBCORA/RA_XML/RA_XLSX OK; Publikacja zakończona; Otwórz log/Wyczyść log/Zapisz log; TEST; Zamknij",
+    "quality": "clear",
+    "caption": "Log publikacji Kreatora — GLSK/CBCORA/RA wysłane na MinIO ze statusem OK"
+  },
+  {
+    "file": "screens_kreatoridcf/okno_postep.png",
+    "screen": "Czekaj... — okno postępu publikacji",
+    "shows": "Modalne okno postępu pokazujące trwające przesyłanie plików na MinIO (bucket: kreator), sprawdzanie aliasu serwera PSE, pakowanie pliku FID3C-607 do archiwum ZIP, z przyciskiem Przerwij.",
+    "maps_to": "Etap przesyłania/pakowania plików w trakcie publikacji RA",
+    "text_visible": "Czekaj...; Przesłanie plików na MinIO (bucket: kreator); Sprawdzenie poprawności aliasu serwera PSE; 20250326-FID3C-607-...W.xml; Pakowanie do ZIP'a; Archiwum utworzone; Przerwij",
+    "quality": "clear",
+    "caption": "Okno postępu publikacji — przesyłanie i pakowanie plików na MinIO"
+  },
+  {
+    "file": "screens_kreatoridcf/okno_publikacji.png",
+    "screen": "Pliki do publikacji — wybór wersji",
+    "shows": "Okno Pliki do publikacji z datą i tabelą plików CBCORA/GLSK/RA_XML/RA_XLSX FID3D, ich wersjami, znacznikami Kreator/Kreator2 i uwagą Plik już opublikowany!; sekcja Wersja plików (Cbcora/GLSK/RA = Ostatni).",
+    "maps_to": "Wybór wersji plików i zatwierdzenie zestawu do publikacji RA",
+    "text_visible": "Pliki do publikacji; Data 2021/02/11; Wszystko/nic; Wersja plików Cbcora/GLSK/RA Ostatni; Typ/Plik/Wersja/Kreator/Kreator2/Uwagi; CBCORA/GLSK/RA_XML/RA_XLSX FID3D; Plik już opublikowany!; OK; Anuluj",
+    "quality": "clear",
+    "caption": "Okno wyboru plików i wersji do publikacji RA (CBCORA/GLSK/RA)"
+  },
+  {
+    "file": "screens_kreatoridcf/panel.png",
+    "screen": "Kreator — zakładka IDCF(2), panel publikacji",
+    "shows": "Fragment zakładki IDCF(2) z panelem FID3D zawierającym przyciski GLSK, CBCORA, RA (z polami wersji v.) oraz przycisk Publikuj Connector uruchamiający publikację.",
+    "maps_to": "Główny panel uruchomienia publikacji RA (GLSK/CBCORA/RA) w Kreatorze",
+    "text_visible": "IDCF; IDCF(2); Model; Dane dodatkowe; LOG; FID3D; GLSK; CBCORA; RA; v.; Publikuj Connector",
+    "quality": "cropped",
+    "caption": "Panel publikacji Kreatora (IDCF2) — przyciski GLSK/CBCORA/RA i Publikuj Connector"
+  },
+  {
+    "file": "screens/ac_zp/image1.png",
+    "screen": "ZP — Dokument AC FID2-831 (widok tabeli)",
+    "shows": "Widok dokumentu AC (Allocation Constraints) FID2-831 w aplikacji ZP z wartościami NTC godzinowymi dla kierunków EXP (800) i IMP (700), wersją 2, statusem Zatwierdzony oraz ostrzeżeniem weryfikacji ACS o niezgodności interwału czasowego.",
+    "maps_to": "Ręczna obsługa/przegląd dokumentu AC (FIDx-831) w ZP",
+    "text_visible": "ZP; Środowisko Testowe; Dokument AC FID2-831; Data handlowa; Wersja 2; Zatwierdzony; Zadanie automatyczne; Pobierz XML; Modyfikuj; Weryfikacja dokumentu; AC ...running process instance; EXP NTC 800; IMP NTC 700; Wyszukaj filtry",
+    "quality": "clear",
+    "caption": "Dokument AC FID2-831 w ZP — tabela NTC (EXP 800 / IMP 700), wersja zatwierdzona"
+  },
+  {
+    "file": "screens/ac_zp/image2.png",
+    "screen": "ZP — Bilansowe ograniczenia alokacji w hor. intraday",
+    "shows": "Widok Bilansowe ograniczenia alokacji w horyzoncie intraday w ZP z tabelą per kierunek/kod (ATC PBM, ATC BPKD, AAC/CJ3, AAC/3, ATC) i godzinowymi wartościami; panel Dokumenty z kierunkami PSE>50Hz / PSE>CO i znacznikami AAC1.0/NTC oraz przyciskiem Odśwież.",
+    "maps_to": "Ręczna obsługa AC w ZP — przegląd bilansowych ograniczeń alokacji i powiązanych dokumentów",
+    "text_visible": "ZP; Środowisko Testowe; Bilansowe ograniczenie alokacji w hor. intraday; Data handlowa; Nowa wersja; Dokumenty; AAC/NTC; PSE>50Hz; PSE>CO; Zawiera Zadanie automatyczne; Wyszukaj filtry; ATC PBM/ATC BPKD/AAC/CJ3/AAC/3/ATC",
+    "quality": "clear",
+    "caption": "ZP — bilansowe ograniczenia alokacji (intraday): tabela ATC/AAC i panel dokumentów"
+  },
+  {
+    "file": "screens/ac_zp/image3.png",
+    "screen": "ZP — Transport towarów: wielkości łańcucha (widok ogólny)",
+    "shows": "Szeroki, pomniejszony zrzut interfejsu ZP z rozbudowaną tabelą liczbową godzinową (Transport towarów / wielkości łańcucha) i górnym paskiem przycisków oraz lewym menu nawigacyjnym; tekst nieczytelny z powodu zmniejszenia.",
+    "maps_to": "Ręczna obsługa AC w ZP — pełny widok arkusza danych godzinowych",
+    "text_visible": "ZP; Transport towarów; wielkości łańcucha (górny nagłówek, reszta nieczytelna)",
+    "quality": "blurred",
+    "caption": "ZP — pełny widok arkusza godzinowego (mocno pomniejszony, mało czytelny)"
+  }
+]

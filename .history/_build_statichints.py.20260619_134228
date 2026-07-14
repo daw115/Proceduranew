@@ -1,0 +1,187 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Generuje staticHints (TS) dla WSZYSTKICH plików — w formacie pliku-wzoru
+   CCM/staticHints-przyklad-dla-FID1-831.txt.
+
+Źródła:
+  Stany_kafelkow_per_plik_IDCC.xlsx   — stany per kod (markery + fill = kafelek),
+                                         pełne ramki (sytuacja, procedury, opis…)
+  CCM/staticHints-przyklad-dla-FID1-831.txt — wzór formatu + enumy AC (do walidacji
+                                         i tabeli sygnatur wierszy dla profilu 2CCT)
+
+Mapowanie kafelek → DashboardItemStatus:
+  • 8 kombinacji (marker,fill) jednoznacznych — wprost.
+  • wieloznaczne (czerwony/fioletowy/czarny bez markera) → tabela sygnatur całego
+    wiersza wyprowadzona z AC (dokładna dla 2CCT/3COL o tych samych sygnaturach),
+    z fallbackiem per-cela.
+  • pomarańczowy (zbliża się TET) i szary‑? — brak w pliku-wzorze → oznaczone /*?*/
+    do potwierdzenia z definicją enuma w programie.
+
+Wyjście: CCM/staticHints-IDCC-all.txt
+"""
+import re
+from pathlib import Path
+from openpyxl import load_workbook
+
+ROOT = Path('/Volumes/SSD/CLAUDE_WORK/Procedura')
+CCM  = ROOT / 'CCM'
+XLSX = ROOT / 'Stany_kafelkow_per_plik_IDCC.xlsx'
+SAMPLE = CCM / 'staticHints-przyklad-dla-FID1-831.txt'
+
+SHEETS = ['AC 831 (2CCT)','GLSK CBCORA 607-617 (2CCT)','ATC 928 (zwrotny)',
+          'IVA 710 (3COL)','Paczki PERUN (2MS)','Skladowe MinIO (MIN)',
+          'sFTP-ZP NTC MD250 IGM (SFTP)']
+COLNAME = {1:'CCtool wysł.', 2:'CCtool zwalid.', 3:'MinIO', 4:'sFTP/ZP wysł.'}
+
+# ── per-cela: (marker, fill) → DashboardItemStatus ─────────────────────────
+CELL_ENUM = {
+    ('·','0000B050'):'SUCCESS',
+    ('R','0000B050'):'FORCEDSUCCESS',
+    ('W','002E7D32'):'SENTMANUALLY',
+    ('W↑CET','001B5E20'):'SENTMANUALLYAFTERCET',
+    ('?','00C00000'):'ACKNOTRECEIVED',
+    ('!','00C00000'):'FILESIZEBAD',
+    ('·','00BFBFBF'):'UNKNOWN',
+    ('·','00FFFFFF'):'SUCCESS',
+    ('·','007030A0'):'CONN_AFTER_CET',   # fioletowy (domyślnie po CET pozytywnie)
+    ('·','00C00000'):'FAILURE',          # czerwony bez markera (domyślnie błąd)
+    ('·','00000000'):'EXCEEDED',         # czarny
+    ('·','00ED7D31'):'UNKNOWN',          # pomarańczowy — /*?*/ DO POTWIERDZENIA
+    ('?','00BFBFBF'):'ACKNOTRECEIVED',   # szary ? — /*?*/ DO POTWIERDZENIA
+}
+FLAG_COMBO = {('·','00ED7D31'), ('?','00BFBFBF')}   # do oznaczenia /*?*/
+
+def cellkey(c):
+    if c is None: return None
+    if str(c.value) == '—': return None
+    if not (c.fill and c.fill.patternType): return None   # brak wypełnienia = kolumna nieaktywna
+    fill = c.fill.fgColor.rgb
+    if fill is None: return None
+    m = '·' if c.value in (None,'None','') else str(c.value)
+    return (m, fill)
+
+# ── tabela sygnatur wierszy z AC (exact dla 2CCT) ──────────────────────────
+def load_ac_signatures():
+    txt = SAMPLE.read_text(encoding='utf-8')
+    blocks = re.split(r'\n\s*\{\s*\n\s*status:', txt)[1:]
+    enums = [re.findall(r"DashboardItemStatus\.([A-Z_]+)", b) for b in blocks]
+    wb = load_workbook(XLSX)
+    rows = [r for r in wb['AC 831 (2CCT)'].iter_rows(min_row=2) if r[0].value=='FID1-831']
+    sig = {}
+    for i, r in enumerate(rows):
+        key = tuple(cellkey(r[ci]) for ci in (1,2,3,4) if cellkey(r[ci]))
+        if i < len(enums):
+            sig[key] = tuple(enums[i])
+    return sig
+
+AC_SIG = load_ac_signatures()
+
+def row_enums(cells):
+    """cells: lista (colName, cellkey) tylko aktywnych kolumn → lista enumów.
+       Spójnie: enum per-cela dla każdej aktywnej kolumny."""
+    return [CELL_ENUM.get(ck, 'UNKNOWN') for _, ck in cells]
+
+# ── parser pełnej ramki ────────────────────────────────────────────────────
+FRAME_SECTIONS = ['Stan kafelków','Opis stanu kafelków','Procedury awaryjne',
+                  'Kafelek MinIO / sFTP','Opis pliku','Ścieżka pliku',
+                  'Kontakt w przypadku awarii']
+def parse_frame(text):
+    if not text: return {}
+    text = text.replace('\r\n','\n')
+    body = '\n'.join(text.split('\n')[1:])
+    idx = []
+    for sec in FRAME_SECTIONS:
+        for mm in re.finditer(r'(?m)^'+re.escape(sec)+r'\s*$', body):
+            idx.append((mm.start(), mm.end(), sec))
+    idx.sort()
+    rec = {}
+    for i,(s,e,sec) in enumerate(idx):
+        nxt = idx[i+1][0] if i+1 < len(idx) else len(body)
+        rec[sec] = body[e:nxt].strip()
+    return rec
+
+def inline(s):
+    """Zwija wielowierszowy tekst do jednej linii (styl wzoru: bullety przez spacje)."""
+    s = re.sub(r'[ \t]*\n[ \t]*', ' ', str(s or '')).strip()
+    return re.sub(r'\s+', ' ', s)
+
+def q(s):
+    """Escape do literału w pojedynczych cudzysłowach (TS)."""
+    return str(s or '').replace('\\', '\\\\').replace("'", "\\'")
+
+# ── budowa pliku ───────────────────────────────────────────────────────────
+def build():
+    wb = load_workbook(XLSX)
+    # zbierz stany per kod (zachowując kolejność i przypisanie do arkusza)
+    order = []   # lista kodów w kolejności pierwszego wystąpienia
+    states = {}  # kod -> lista (row, sheet)
+    flagged = 0; total_states = 0
+    for shn in SHEETS:
+        for r in wb[shn].iter_rows(min_row=2):
+            if not r[0].value: continue
+            code = str(r[0].value).strip()
+            if code not in states:
+                states[code] = []; order.append(code)
+            states[code].append(r)
+
+    out = []
+    out.append('  private staticHints: Record<string, Hint[]> = {')
+    for ci, code in enumerate(order):
+        out.append(f"    '{code}': [")
+        for r in states[code]:
+            total_states += 1
+            fr = parse_frame(r[5].value)
+            # aktywne kolumny + enumy
+            active = [(COLNAME[c], cellkey(r[c])) for c in (1,2,3,4) if cellkey(r[c])]
+            enums = row_enums(active)
+            out.append('      {')
+            out.append('        status: [')
+            for (cn, ck), en in zip(active, enums):
+                flag = '  /*? potwierdź enum*/' if ck in FLAG_COMBO else ''
+                if ck in FLAG_COMBO: flagged += 1
+                out.append(f"          {{ colName: '{cn}', status: DashboardItemStatus.{en} }},{flag}")
+            # usuń ostatni przecinek w bloku status
+            if out[-1].rstrip().endswith(','):
+                out[-1] = out[-1].rstrip()[:-1] if '/*?' not in out[-1] else out[-1]
+            out.append('        ],')
+            out.append(f"        situationDescription: '{q(inline(fr.get('Opis stanu kafelków','')))}',")
+            out.append(f"        emergencyProcedures: '{q(inline(fr.get('Procedury awaryjne','')))}',")
+            out.append(f"        minioSftp: '{q(inline(fr.get('Kafelek MinIO / sFTP','')))}',")
+            out.append(f"        fileDesc: '{q(inline(fr.get('Opis pliku','')))}',")
+            out.append(f"        filePath: '{q(inline(fr.get('Ścieżka pliku','')))}',")
+            out.append(f"        howto: '{q(inline(fr.get('Kontakt w przypadku awarii','')))}'")
+            out.append('      },')
+        out.append('    ],')
+    out.append('  }')
+    text = '\n'.join(out) + '\n'
+
+    dst = CCM / 'staticHints-IDCC-all.txt'
+    dst.write_text(text, encoding='utf-8')
+    print(f'Zapisano: {dst}')
+    print(f'Kodów (kluczy): {len(order)} | stanów łącznie: {total_states} | '
+          f'oznaczonych /*?*/: {flagged}')
+    return dst
+
+# ── walidacja enumów na AC (musi być 100%) ─────────────────────────────────
+def validate():
+    txt = SAMPLE.read_text(encoding='utf-8')
+    blocks = re.split(r'\n\s*\{\s*\n\s*status:', txt)[1:]
+    exp = [re.findall(r"DashboardItemStatus\.([A-Z_]+)", b) for b in blocks]
+    wb = load_workbook(XLSX)
+    rows = [r for r in wb['AC 831 (2CCT)'].iter_rows(min_row=2) if r[0].value=='FID1-831']
+    ok = bad = 0
+    for i, r in enumerate(rows):
+        active = [(COLNAME[c], cellkey(r[c])) for c in (1,2,3,4) if cellkey(r[c])]
+        got = row_enums(active)
+        if got == exp[i]: ok += 1
+        else:
+            bad += 1
+            if bad <= 5: print(f'  MISMATCH stan {i+1}: exp={exp[i]} got={got}')
+    print(f'Walidacja AC (enumy): {ok}/{ok+bad} zgodnych')
+    return bad == 0
+
+if __name__ == '__main__':
+    print('== walidacja mapowania na wzorze AC ==')
+    validate()
+    print('== generacja ==')
+    build()
