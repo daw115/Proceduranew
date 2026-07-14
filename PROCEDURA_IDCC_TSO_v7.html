@@ -1,125 +1,190 @@
 <!doctype html><html lang="pl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Procedura IDCC TSO v7 — kompletna instrukcja z ekranami</title><style>
-:root{--bg:#fff;--fg:#1a1f29;--mut:#5b6473;--bd:#dfe3ea;--acc:#0a4d8c;--accbg:#eaf2fb;
---ok:#1b8a3a;--okb:#e7f6ec;--warn:#b06f00;--warnb:#fff4e0;--err:#c0271f;--errb:#fdeceb;
---run:#6a3fb0;--runb:#f0eafb;--idle:#6b7280;--idleb:#eef0f3;}
+<title>Procedura IDCC TSO v7 — kompletna instrukcja z ekranami</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+ --paper:#f3f0e7;--panel:#fffdf7;--ink:#1a2230;--fg:#232b38;--mut:#5d6572;
+ --rule:#ded7c7;--rule2:#c9c0ad;--navy:#0f3e63;--acc:#0e5688;--accbg:#e9f1f7;
+ --ok:#1a7f37;--okb:#e6f2e9;--warn:#9a5b00;--warnb:#faf0dc;--err:#b3261e;--errb:#f9e9e7;
+ --run:#5b3fa8;--runb:#efeaf8;--idle:#67707e;--idleb:#edeae2;
+ --yellow:#ffd23f;
+ --sans:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
+ --cond:'IBM Plex Sans Condensed','IBM Plex Sans','Segoe UI',sans-serif;
+ --serif:'IBM Plex Serif',Georgia,serif;
+ --mono:'IBM Plex Mono',ui-monospace,'Courier New',monospace;
+}
 *{box-sizing:border-box}
-body{margin:0;font:15px/1.6 -apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--fg);background:#f5f6f8}
-.wrap{display:flex;max-width:1500px;margin:0 auto;background:var(--bg)}
-nav{position:sticky;top:0;align-self:flex-start;width:265px;height:100vh;overflow:auto;
-border-right:1px solid var(--bd);padding:18px 14px;font-size:13px;background:#fbfcfe}
-nav h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);margin:14px 0 6px}
-nav a{display:block;color:var(--fg);text-decoration:none;padding:3px 6px;border-radius:5px}
-nav a:hover{background:var(--accbg);color:var(--acc)}
-main{flex:1;min-width:0;padding:28px 34px;max-width:1180px}
-h1{font-size:27px;margin:.2em 0}
-h2{font-size:22px;border-bottom:2px solid var(--acc);padding-bottom:5px;margin-top:2.2em;color:var(--acc)}
-h3{font-size:18px;margin-top:1.6em}
-h4{margin:.2em 0}
-.lead{color:var(--mut);font-size:15px}
-.tag{display:inline-block;background:var(--accbg);color:var(--acc);border-radius:20px;
-padding:2px 11px;font-size:12px;font-weight:600;margin-right:6px}
-/* sticker board */
-.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:12px;margin:18px 0}
-.sticker{display:flex;flex-direction:column;gap:4px;background:linear-gradient(160deg,#fffef4,#fff7d9);
-border:1px solid #ecd98a;border-left:5px solid #e0b400;border-radius:10px;padding:12px 13px;
-text-decoration:none;color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.07);transition:.15s}
-.sticker:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(0,0,0,.13)}
-.sticker .ic{font-size:22px}.sticker .ti{font-weight:700;font-size:14px}
-.sticker .de{font-size:12px;color:var(--mut);line-height:1.4}
-.sticker .go{font-size:11px;color:var(--acc);font-weight:600;margin-top:2px}
-.mini{display:inline-block;background:var(--accbg);color:var(--acc);font-size:12px;font-weight:600;
-text-decoration:none;border-radius:6px;padding:2px 9px;margin:0 6px 6px 0;border:1px solid #cfe0f3}
-.stickerbar{display:flex;flex-wrap:wrap;gap:0;margin:.4em 0 1.2em;padding:10px 12px;
-background:#fffdf3;border:1px dashed #e0b400;border-radius:9px}
-.stickerbar b{width:100%;font-size:12px;color:var(--warn);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
-/* status badges */
-.st{display:inline-block;border-radius:5px;padding:1px 8px;font-size:12px;font-weight:600;white-space:nowrap}
+html{scroll-behavior:smooth}
+body{margin:0;font:15px/1.65 var(--sans);color:var(--fg);background:var(--paper);
+background-image:linear-gradient(rgba(15,62,99,.045) 1px,transparent 1px),
+linear-gradient(90deg,rgba(15,62,99,.045) 1px,transparent 1px);background-size:28px 28px}
+::selection{background:var(--yellow);color:var(--ink)}
+:target{animation:hl 2.2s ease-out 1}
+h2:target,h3:target,h4:target,div:target,section:target{scroll-margin-top:24px}
+@keyframes hl{0%{background:#fff3bf;box-shadow:0 0 0 8px #fff3bf}100%{background:transparent;box-shadow:0 0 0 8px transparent}}
+.wrap{display:flex;max-width:1560px;margin:0 auto}
+/* ── nawigacja: panel sterowniczy ── */
+nav{position:sticky;top:0;align-self:flex-start;width:272px;height:100vh;overflow:auto;
+background:linear-gradient(180deg,var(--navy) 0%,var(--ink) 130%);padding:22px 14px 40px;font-size:13px;
+scrollbar-width:thin;scrollbar-color:#3f6b93 transparent}
+nav h2{font:600 11px/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:#8fb3d1;
+margin:0 0 14px 8px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.16)}
+nav a{display:block;color:#dbe7f1;text-decoration:none;padding:5px 9px;border-left:3px solid transparent;
+border-radius:0 5px 5px 0;line-height:1.35}
+nav a:hover{background:rgba(255,255,255,.08);border-left-color:var(--yellow);color:#fff}
+/* ── kolumna główna: karta dokumentu ── */
+main{flex:1;min-width:0;padding:34px 44px 60px;max-width:1200px;background:var(--panel);
+border-left:1px solid var(--rule2);border-right:1px solid var(--rule2);
+box-shadow:0 0 44px rgba(26,34,48,.08)}
+h1{font:700 30px/1.12 var(--cond);text-transform:uppercase;letter-spacing:.015em;color:var(--ink);margin:.25em 0 .1em}
+h2{font:700 21px/1.2 var(--cond);text-transform:uppercase;letter-spacing:.03em;color:var(--ink);
+margin-top:2.6em;padding-bottom:8px;border-bottom:2px solid var(--ink);position:relative}
+h2::after{content:"";position:absolute;left:0;right:0;bottom:-5px;height:1px;background:var(--rule2)}
+h3{font:600 17.5px/1.25 var(--cond);letter-spacing:.01em;color:var(--navy);margin-top:1.7em}
+h4{font:600 15px var(--sans);color:var(--acc);margin:1.15em 0 .35em}
+h5{font:600 13.5px var(--sans);color:var(--ink);margin:.9em 0 .25em}
+code{font:500 .92em var(--mono);background:var(--idleb);border:1px solid var(--rule);
+border-radius:4px;padding:0 5px;color:var(--ink);word-break:break-all}
+a{color:var(--acc)}
+.lead{font:400 16.5px/1.65 var(--serif);color:#454e5c;font-style:italic}
+.lead code,.lead b,.lead strong{font-style:normal}
+.tag{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+background:var(--ink);color:var(--yellow);border-radius:3px;padding:5px 10px;margin-right:10px;vertical-align:3px}
+/* ── chipy skrótów sekcji ── */
+.mini{display:inline-block;font:600 11.5px var(--mono);letter-spacing:.02em;background:var(--panel);
+color:var(--navy);text-decoration:none;border:1px solid var(--rule2);border-bottom-width:2px;
+border-radius:4px;padding:3px 10px;margin:0 6px 6px 0}
+.mini:hover{background:var(--accbg);border-color:var(--acc)}
+.stickerbar{display:flex;flex-wrap:wrap;gap:0;margin:.5em 0 1.3em;padding:10px 12px;
+background:repeating-linear-gradient(90deg,transparent 0 6px,rgba(15,62,99,.03) 6px 12px),var(--paper);
+border:1px solid var(--rule);border-radius:6px}
+.stickerbar b{width:100%;font:600 10.5px var(--mono);letter-spacing:.18em;text-transform:uppercase;
+color:var(--mut);margin-bottom:7px}
+/* ── badge statusów ── */
+.st{display:inline-block;border-radius:4px;padding:1px 8px;font:600 12px var(--sans);white-space:nowrap}
 .st-ok{background:var(--okb);color:var(--ok)}.st-warn{background:var(--warnb);color:var(--warn)}
 .st-err{background:var(--errb);color:var(--err)}.st-run{background:var(--runb);color:var(--run)}
 .st-idle{background:var(--idleb);color:var(--idle)}
-/* file catalog */
+/* ── katalog plików ── */
 .fgrid{display:grid;grid-template-columns:1fr;gap:12px}
-.fcard{border:1px solid var(--bd);border-radius:9px;padding:13px 15px;background:#fff}
-.fcard h4 .code{font-size:12px;background:var(--idleb);color:var(--idle);border-radius:5px;padding:1px 7px;font-weight:600}
-.fcard .meta{display:flex;flex-wrap:wrap;gap:5px 16px;font-size:12.5px;color:var(--mut);margin:6px 0}
+.fcard{border:1px solid var(--rule2);border-top:3px solid var(--navy);border-radius:6px;
+padding:14px 16px;background:var(--panel);box-shadow:0 1px 0 var(--rule)}
+.fcard h4{margin:.1em 0;color:var(--ink);font-family:var(--cond);font-size:16px}
+.fcard h4 .code{font:600 11.5px var(--mono);background:var(--ink);color:#f0ead9;border-radius:3px;
+padding:2px 8px;letter-spacing:.05em;vertical-align:2px}
+.fcard .meta{display:flex;flex-wrap:wrap;gap:5px 18px;font:12.5px var(--mono);color:var(--mut);margin:7px 0}
 .fcard .opis{margin:6px 0}.fcard .path{font-size:13px;color:var(--mut)}
-.sttab{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
-.sttab th,.sttab td{border:1px solid var(--bd);padding:6px 8px;text-align:left;vertical-align:top}
-.sttab th{background:var(--accbg);color:var(--acc)}
+/* ── tabele ── */
+.sttab,.ref table,table.ref{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+.sttab th,.sttab td,.ref th,.ref td,table.ref th,table.ref td{border:1px solid var(--rule2);
+padding:6px 9px;text-align:left;vertical-align:top}
+.sttab th,.ref th,table.ref th{background:var(--ink);color:#efe9da;font:600 11px var(--mono);
+letter-spacing:.1em;text-transform:uppercase;border-color:var(--ink)}
+.sttab tbody tr:nth-child(even) td,.ref tbody tr:nth-child(even) td{background:rgba(15,62,99,.035)}
 .stcol{white-space:normal}
 .tcell{display:inline-flex;flex-direction:column;align-items:center;gap:3px;margin:2px 10px 2px 0;vertical-align:top}
-.tcell .tile{width:30px;height:30px;border:1px solid var(--bd);border-radius:6px;display:block;background:#fafbfc}
-.tcell .tlab{font-size:10.5px;color:var(--mut);max-width:80px;text-align:center;line-height:1.15}
-details{margin:8px 0}summary{cursor:pointer;font-weight:600;color:var(--acc)}
-details.states>summary{font-size:13px}
-/* screenshots */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:10px}
-figure.shot{margin:0;border:1px solid var(--bd);border-radius:8px;overflow:hidden;background:#fff}
-figure.shot img{width:100%;display:block;background:#fafbfc}
-figure.shot figcaption{font-size:12px;color:var(--mut);padding:6px 9px;border-top:1px solid var(--bd)}
-.iconshead{font-size:13px;color:var(--mut);margin:14px 0 6px}
+.tcell .tile{width:30px;height:30px;border:1px solid var(--rule2);border-radius:6px;display:block;background:#fff}
+.tcell .tlab{font:10.5px var(--mono);color:var(--mut);max-width:84px;text-align:center;line-height:1.2}
+details{margin:8px 0}
+summary{cursor:pointer;font:600 13.5px var(--sans);color:var(--acc);padding:7px 10px;
+background:var(--accbg);border:1px solid var(--rule);border-radius:5px;list-style:none}
+summary::before{content:"▸ ";font-family:var(--mono);color:var(--navy)}
+details[open]>summary::before{content:"▾ "}
+details[open]>summary{border-radius:5px 5px 0 0}
+details.states>summary{font-size:12.5px;display:inline-block;padding:3px 10px}
+/* ── screeny ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:12px}
+figure.shot{margin:0;border:1px solid var(--rule2);background:#fff;padding:7px 7px 0;
+box-shadow:0 2px 0 var(--rule),0 6px 16px rgba(26,34,48,.07);transition:transform .18s ease}
+figure.shot:hover{transform:translateY(-3px)}
+figure.shot img{width:100%;display:block;background:#fafbfc;border:1px solid var(--rule)}
+figure.shot figcaption{font:11.5px/1.45 var(--mono);color:var(--mut);padding:7px 4px 9px}
+.iconshead{font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin:16px 0 7px}
 .iconstrip{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
 .iconstrip .icell{display:inline-flex;flex-direction:column;align-items:center;gap:4px;
-border:1px solid var(--bd);border-radius:8px;padding:8px 10px;background:#fff;max-width:150px}
+border:1px solid var(--rule2);border-radius:6px;padding:9px 11px;background:#fff;max-width:150px}
 .iconstrip img{width:auto;height:auto;max-width:130px;max-height:80px}
-.iconstrip small{font-size:10.5px;color:var(--mut);text-align:center;line-height:1.2}
-.step{border-left:3px solid var(--acc);background:var(--accbg);border-radius:0 8px 8px 0;padding:10px 14px;margin:12px 0}
-.step .n{font-weight:700;color:var(--acc)}
+.iconstrip small{font:10px var(--mono);color:var(--mut);text-align:center;line-height:1.25}
+/* ── kroki C.x ── */
+.step{border:1px solid var(--ink);background:var(--panel);border-radius:0 6px 6px 0;
+border-left:6px solid var(--navy);padding:11px 15px;margin:14px 0;box-shadow:3px 3px 0 rgba(15,62,99,.12)}
+.step .n{font:700 12px var(--mono);background:var(--ink);color:var(--yellow);border-radius:3px;padding:2px 8px;margin-right:6px}
 .feat{max-width:560px;margin:10px 0}
 details.gal>summary{margin:6px 0}
-.callout{background:var(--warnb);border:1px solid #e8c97a;border-radius:8px;padding:10px 14px;margin:12px 0;font-size:14px}
-.ref table,table.ref{border-collapse:collapse;width:100%;font-size:13px;margin:8px 0}
-.ref th,.ref td,table.ref th,table.ref td{border:1px solid var(--bd);padding:5px 8px;text-align:left;vertical-align:top}
-.ref th,table.ref th{background:var(--accbg);color:var(--acc)}
-.proc h3{font-size:18px;border-bottom:1px solid var(--bd);padding-bottom:4px;margin-top:1.8em}
-.proc h4{font-size:15px;color:var(--acc);margin:1.1em 0 .3em}
-.proc h5{font-size:13.5px;margin:.8em 0 .2em}
+/* ── callout: taśma ostrzegawcza ── */
+.callout{position:relative;background:var(--warnb);border:1px solid var(--rule2);border-radius:0 6px 6px 0;
+padding:11px 15px 11px 26px;margin:14px 0;font-size:14px;overflow:hidden}
+.callout::before{content:"";position:absolute;left:0;top:0;bottom:0;width:11px;
+background:repeating-linear-gradient(-45deg,var(--yellow) 0 9px,var(--ink) 9px 18px)}
+.note{font-size:13px;color:var(--mut)}
+/* ── referencje md ── */
+.ref h1{font:700 20px var(--cond);text-transform:uppercase;color:var(--ink);border-bottom:2px solid var(--ink);padding-bottom:5px}
+.ref h2{font:650 17px var(--cond);text-transform:none;letter-spacing:0;border-bottom:1px solid var(--rule2)}
+.ref h3{font-size:15px;margin-top:1.2em}
+.proc h3{font-size:18px;border-bottom:1px solid var(--rule2);padding-bottom:5px;margin-top:1.9em}
+.proc h4{font-size:15px;color:var(--acc);margin:1.15em 0 .3em}
+.proc h5{font-size:13.5px;margin:.85em 0 .2em}
 .proc table{display:block;overflow-x:auto;white-space:normal}
-/* karty szablonów maili */
-.mailtpl{border:1px solid var(--bd);border-left:4px solid var(--acc);border-radius:9px;
-padding:12px 15px;margin:14px 0;background:#fff}
-.mailtpl h4{margin:.1em 0 .4em}
+/* ── maile ── */
+.mailtpl{border:1px solid var(--rule2);border-top:4px solid var(--navy);border-radius:6px;
+padding:13px 16px;margin:16px 0;background:var(--panel)}
+.mailtpl h4{margin:.1em 0 .4em;font-family:var(--cond);font-size:16px;color:var(--ink)}
 .mailtpl .when{font-size:13px;color:var(--mut);margin:.2em 0 .6em}
 .mailtpl table{margin:6px 0}
-.mailbody{background:#f7f8fa;border:1px solid var(--bd);border-radius:7px;padding:10px 13px;
-font-size:13px;margin-top:8px}
-.psemark{display:inline-block;background:var(--errb);color:var(--err);font-size:11.5px;
-font-weight:700;border-radius:5px;padding:1px 8px;margin-left:8px;vertical-align:middle}
-.ref h1{font-size:22px;color:var(--acc);border-bottom:2px solid var(--acc)}
-.ref h2{font-size:18px}.ref h3{font-size:15px;margin-top:1.2em}
-@media print{nav{display:none}.wrap{display:block}main{max-width:none;padding:0}
-.sticker:hover{transform:none}details{display:block}details>summary{display:none}
-.grid{grid-template-columns:repeat(2,1fr)}}
-.arch{background:#fafbfc;border:1px solid var(--bd);border-radius:8px;padding:14px 16px;
-font-family:'Courier New',Consolas,monospace;font-size:11.5px;line-height:1.25;overflow-x:auto;
-margin:10px 0;white-space:pre;color:var(--fg)}
-@media(max-width:860px){nav{display:none}main{padding:16px}}
+.mailbody{background:#fbf9f2;border:1px solid var(--rule);border-left:3px solid var(--rule2);
+border-radius:4px;padding:12px 16px;font:13.5px/1.6 var(--serif);margin-top:8px}
+.psemark{display:inline-block;background:var(--errb);color:var(--err);font:700 11px var(--mono);
+border-radius:3px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+/* ── diagram architektury ── */
+.arch{background:var(--ink);border:1px solid var(--ink);border-radius:8px;padding:16px 18px;
+font:11.5px/1.28 var(--mono);overflow-x:auto;margin:12px 0;white-space:pre;color:#cfe3f4;
+box-shadow:inset 0 0 60px rgba(0,0,0,.35)}
+/* ── druk ── */
+@media print{
+ body{background:#fff}
+ nav{display:none}.wrap{display:block}main{max-width:none;padding:0;border:none;box-shadow:none;background:#fff}
+ figure.shot:hover{transform:none}
+ details{display:block}details>summary{display:none}
+ .grid{grid-template-columns:repeat(2,1fr)}
+ .fcard,.mailtpl,.step,.stick{break-inside:avoid}
+}
+@media(max-width:900px){nav{display:none}main{padding:18px;border:none}}
 
 /* v5_2 compat */
-.tbl-wrap{overflow-x:auto} .subhead{font-weight:700;color:var(--acc);margin:.8em 0 .3em}
-.branch{border-left:3px solid var(--bd);padding:6px 12px;margin:8px 0;background:#fafbfc;border-radius:0 6px 6px 0}
-.sdot{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:middle;margin-right:4px}
+.tbl-wrap{overflow-x:auto}
+.subhead{font:600 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--navy);margin:1em 0 .35em}
+.branch{border-left:3px solid var(--rule2);padding:7px 13px;margin:9px 0;background:rgba(15,62,99,.03);border-radius:0 6px 6px 0}
+.sdot{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:middle;margin-right:4px;border:1px solid rgba(0,0,0,.15)}
 .tile-state img{vertical-align:middle}
-.risk-h{border-top:2px solid var(--bd);padding-top:12px;margin-top:1.6em}
+.risk-h{border-top:2px solid var(--ink);padding-top:14px;margin-top:2em;font-family:var(--cond);font-size:17px;text-transform:none;letter-spacing:0}
 .riskbase h5{color:var(--acc)}
-/* stickery */
-.stickgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin:16px 0}
-.stick{background:linear-gradient(160deg,#fffef4,#fff7d9);border:1px solid #ecd98a;border-left:5px solid #e0b400;
-border-radius:10px;padding:12px 15px;box-shadow:0 1px 3px rgba(0,0,0,.07);break-inside:avoid}
-.stick h4{margin:.1em 0 .5em}
+/* ── arkusz naklejek ── */
+.stickgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:26px;margin:26px 4px;padding:6px}
+.stick{position:relative;background:#fffdf2;border:1px solid var(--rule2);border-left:7px solid var(--yellow);
+border-radius:8px;padding:14px 17px 15px;box-shadow:0 3px 10px rgba(26,34,48,.13);
+outline:2px dashed var(--rule2);outline-offset:7px;break-inside:avoid;transition:transform .18s ease,box-shadow .18s ease}
+.stick:nth-child(odd){transform:rotate(-.45deg)}
+.stick:nth-child(even){transform:rotate(.4deg)}
+.stick:hover{transform:rotate(0) translateY(-3px);box-shadow:0 9px 22px rgba(26,34,48,.19)}
+.stick::after{content:"✂";position:absolute;top:-21px;right:2px;font-size:13px;color:var(--rule2);transform:rotate(-90deg)}
+.stick h4{margin:.05em 0 .55em;font:700 15px var(--cond);letter-spacing:.02em;color:var(--ink);
+border-bottom:1px solid var(--rule);padding-bottom:7px}
 .stick ol{margin:0;padding-left:20px}
-.stick li{margin:4px 0;font-size:13.5px;line-height:1.35}
+.stick li{margin:5px 0;font-size:13.5px;line-height:1.4}
+.stick li::marker{font:600 11px var(--mono);color:var(--warn)}
 .stick a{color:var(--fg);text-decoration:none;border-bottom:1px dotted var(--acc)}
-.stick a:hover{color:var(--acc)}
+.stick a:hover{color:var(--acc);border-bottom-style:solid}
 </style></head><body>
 <div class="wrap">
 <nav><h2>Spis treści</h2><a href="#top">Start</a><a href="#sec-cel">1 · Cel i definicje</a><a href="#sec-proces">2 · Proces IDCC (BPD)</a><a href="#sec-harmonogram">3 · Harmonogram HLBP</a><a href="#sec-narzedzia">4 · Narzędzia</a><a href="#sec-legenda">5 · Legenda statusów</a><a href="#sec-katalog">6 · Katalog plików</a><a href="#sec-happyday">7 · Przebieg nominalny</a><a href="#sec-ccm">8 · Czynności w CCM</a><a href="#sec-igm">9 · IGM / TSO DG / CB / GLSK</a><a href="#sec-walidacja">10 · Walidacja FBA</a><a href="#sec-ops">11 · MinIO/Perun/CCCt</a><a href="#sec-kreator">12 · Kreator i AC w ZP</a><a href="#sec-procedury">13 · Procedury P01–P06</a><a href="#sec-ryzyka">14 · Ryzyka R01–R29</a><a href="#sec-mail">15 · Szablony maili</a><a href="#sec-minio">16 · Buckety i kontakty</a><a href="#sec-checklisty">17 · Checklisty dyżurowe</a><a href="#sec-stickery">⭐ STICKERY</a></nav>
 <main id="top">
-<span class="tag">FBA_TSO_IDCC · v7</span>
-<h1>Procedura operacyjna dyspozytora PSE — proces IDCC</h1>
-<h2 style="border:none;margin-top:.2em">Kompletna instrukcja eksploatacyjna TSO (region Core)</h2>
+<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid var(--ink);border-left:8px solid var(--yellow);padding:10px 16px;background:var(--panel);box-shadow:4px 4px 0 rgba(15,62,99,.14)">
+<span class="tag">FBA_TSO_IDCC</span><span class="tag" style="background:var(--navy)">WYDANIE v7</span>
+<span style="font:600 11px var(--mono);letter-spacing:.12em;color:var(--mut)">PSE S.A. · KDM · REGION CORE · OBOWIĄZUJE 24/7</span></div>
+<h1 style="margin-top:.6em">Procedura operacyjna dyspozytora<br>— proces IDCC</h1>
+<p style="font:600 14px var(--cond);text-transform:uppercase;letter-spacing:.14em;color:var(--navy);margin:.1em 0 1em">Kompletna instrukcja eksploatacyjna TSO</p>
 <p class="lead">Jeden dokument: proces wg BPD, harmonogram HLBP, katalog plików i stanów,
 czynności w narzędziach ze zrzutami ekranu, walidacja FBA, ryzyka i procedury backupowe,
 szablony maili, kontakty i checklisty. Na końcu <a href="#sec-stickery"><b>STICKERY</b></a> —
