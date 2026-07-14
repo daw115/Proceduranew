@@ -182,8 +182,12 @@ def v52_slice(start_id, end_id=None, start_h3=None, end_h3=None):
     else:
         i = V52.find(f'<h2 id="{start_id}"')
         j = V52.find(f'<h2 id="{end_id}"') if end_id else V52.find('<h2', i+10)
-        if j == -1: j = V52.find('</main>', i)
+        if j == -1:
+            cands = [V52.find(m, i) for m in ('</main>', '<footer', '</body>', '</html>')]
+            cands = [c for c in cands if c != -1]
+            j = min(cands) if cands else len(V52)
         body = V52[i:j]
+        body = body.replace('</body>', '').replace('</html>', '')
     body = re.sub(r'<h4', '<h5', body); body = re.sub(r'</h4>', '</h5>', body)
     body = re.sub(r'<h3', '<h4', body); body = re.sub(r'</h3>', '</h4>', body)
     body = re.sub(r'<h2 ', '<h3 ', body); body = re.sub(r'</h2>', '</h3>', body)
@@ -865,6 +869,11 @@ Każde ryzyko zgłaszać do: <b>CIZ, WPO, PSE-I (PSE Innowacje)</b>.</footer>
 doc = denumber(doc)
 doc = re.sub(r'Happy\s+Day', 'Stan poprawny / nominalny', doc)
 doc = re.sub(r'(?i)bra\s+diostepu', 'brak dostępu', doc)
+
+# warstwa komentarzy recenzenta (offline, localStorage + eksport JSON/MD)
+_cw = (ROOT/'_comments_widget.html')
+if _cw.exists():
+    doc = doc.replace('</body>', _cw.read_text(encoding='utf-8') + '\n</body>')
 
 # ── walidacja kotwic stickerów ────────────────────────────────────────────────
 ids = set(re.findall(r'id="([^"]+)"', doc))

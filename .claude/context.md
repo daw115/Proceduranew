@@ -106,6 +106,15 @@ Procedura operacyjna obsługi punktu IDCC dla TSO (PSE) + monitorowanie CCM
 - v6 nietknięta. Agenci treściowi padli na limicie sesji — fragmenty zbudowane inline
   (slice v5_2 zamiast przepisywania; autorskie tylko harmonogram/maski/happyday/walidacja).
 
+## v7 — warstwa komentarzy recenzenta (14.07 noc)
+- `_comments_widget.html` wpinany przez generator przed </body> (poza f-stringiem).
+  Offline: tryb komentowania (klik w blok, opcjonalny cytat z zaznaczenia), pinezki numerowane,
+  panel z listą (skok do celu + flash), edycja/usuwanie, localStorage (klucz idcc_v7_comments),
+  eksport/import JSON + eksport Markdown (do przekazania zmian), ukryty w druku.
+- Naprawa v52_slice: fallback końca dokumentu (v5_2 nie ma </main>, ma podwójny </body></html>) —
+  aneks nie wciąga już ogona; defensywne czyszczenie </body>/</html> ze slice'ów.
+- Test funkcjonalny headless Chrome: render() OK, seed 2 komentarzy → panel + pinezki OK.
+
 ## Stan
 Generator staticHints zakończony (80 kodów / 965 stanów po aktualizacji 14.07 — 32 → 29; katalog używa 71).
 Dokument v6 (HTML master, ~1,21 MB) FINALNY po QC tekstowo-wizualnym + feedback Maria Rutkowska:
@@ -146,5 +155,8 @@ Katalog: /Volumes/SSD/CLAUDE_WORK/Procedura
 Katalog: /Volumes/SSD/CLAUDE_WORK/Procedura
 
 ## Sesja: 2026-07-14 22:31:27
+Katalog: /Volumes/SSD/CLAUDE_WORK/Procedura
+
+## Sesja: 2026-07-14 22:46:26
 Katalog: /Volumes/SSD/CLAUDE_WORK/Procedura
 
