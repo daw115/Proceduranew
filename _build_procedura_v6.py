@@ -8,7 +8,7 @@ Warstwy:
 
 Źródła:
   Inwentarz_IDCC.md            — narzędzia N01–N22, legenda, ryzyka U01–U23, procedury P01–P06, buckety, mapa relacji
-  popup_content_IDCC.json      — katalog 126 plików FIDx (opis, ścieżka, źródło, TET/CET, profil)
+  popup_content_IDCC.json      — katalog 78 plików FIDx (opis, ścieżka, źródło, TET/CET, profil)
   CCM/staticHints-IDCC-all.txt — 974 stany / 71 plików (sytuacja + procedury awaryjne)
   screens_manifest.json        — 309 screenów (opis, mapowanie, podpis, jakość)
 """
@@ -17,7 +17,7 @@ from pathlib import Path
 from collections import defaultdict, OrderedDict
 import markdown
 
-ROOT = Path('/Volumes/SSD/CLAUDE_WORK/Procedura')
+ROOT = Path(__file__).parent
 OUT  = ROOT / 'PROCEDURA_IDCC_TSO_v6.html'
 
 def esc(s): return html.escape(str(s or ''))
@@ -186,7 +186,7 @@ STICKERS = [
  ('#proc-mail','📧','Szablony maili','19 szablonów operacyjnych Core ID (EN) + kiedy użyć; oznaczone granice PSE.'),
  ('#sec-narzedzia','🧰','Narzędzia','CCM, Core CC Tool, Perun4V, MinIO, ZP, Connector, Kreatory, sFTP, wsparcie.'),
  ('#sec-legenda','🎨','Legenda statusów','13 kafelków → enum statusu. Kolor + znacznik = sytuacja pliku.'),
- ('#sec-katalog','🗂️','Katalog plików FIDx','126 plików: opis, ścieżka, źródło, TET/CET, profil + warianty stanów.'),
+ ('#sec-katalog','🗂️','Katalog plików FIDx','78 plików: opis, ścieżka, źródło, TET/CET, profil + warianty stanów.'),
  ('#sec-ccm','🖥️','Czynności w CCM','C.1–C.5: pulpit, info, wysyłka przed/po CET, status ręczny, błędy walidacji.'),
  ('#sec-nor','✅','Walidacja domeny — NOR','Tryb normalny DA: schemat decyzyjny, Perun4V, raporty CNEC/LTA.'),
  ('#sec-bup','🛟','Walidacja domeny — BUP','Tryb backup DA: CCA, F320, paczki ZIP, redukcja IVA, RLTA w ZP.'),
@@ -341,21 +341,24 @@ font-weight:700;border-radius:5px;padding:1px 8px;margin-left:8px;vertical-align
 @media print{nav{display:none}.wrap{display:block}main{max-width:none;padding:0}
 .sticker:hover{transform:none}details{display:block}details>summary{display:none}
 .grid{grid-template-columns:repeat(2,1fr)}}
+.arch{background:#fafbfc;border:1px solid var(--bd);border-radius:8px;padding:14px 16px;
+font-family:'Courier New',Consolas,monospace;font-size:11.5px;line-height:1.25;overflow-x:auto;
+margin:10px 0;white-space:pre;color:var(--fg)}
 @media(max-width:860px){nav{display:none}main{padding:16px}}
 """
 
 def legend_section():
     tiles = [
-     ('zielony.png','Sukces (SUCCESS)','Plik wysłany i potwierdzony ACK.'),
-     ('zielony_R.png','Sukces ręczny (FORCEDSUCCESS, „R")','Dyspozytor ustawił status ręcznie.'),
+     ('zielony.png','Sukces (SUCCESS)','Plik wysłany i potwierdzony ACK — przebieg nominalny.'),
+     ('zielony_R.png','Sukces ręczny (FORCEDSUCCESS, „R")','Dyspozytor ustawił status ręcznie po weryfikacji w systemie centralnym.'),
      ('ciemnozielony_W.png','Wysłany ręcznie (SENTMANUALLY, „W")','Wysyłka ręczna z poziomu CCM.'),
      ('W_po_CET.png','Wysłany ręcznie po CET (W↑)','Wysyłka ręczna po Critical End Time.'),
-     ('fioletowy.png','Dostarczone/łączenie po CET (CONN_AFTER_CET)','Dostarczenie po CET — OK.'),
+     ('fioletowy.png','Dostarczone / łączenie po CET (CONN_AFTER_CET)','Dostarczenie po CET — akceptowalne.'),
      ('pomarańczowy.png','Ostrzeżenie (WARNING)','Zbliża się Target End Time.'),
      ('czerwony.png','Błąd / awaria (FAILURE)','Brak wysyłki lub negatywny ACK.'),
-     ('czerwony_q.png','Brak ACK (ACKNOTRECEIVED, „?")','Wysłano, brak potwierdzenia.'),
-     ('czerwony_excl.png','Zły rozmiar pliku (FILESIZEBAD, „!")','Rozmiar poniżej progu.'),
-     ('czarny.png','Przekroczono CET (EXCEEDED)','Minął Critical End Time.'),
+     ('czerwony_q.png','Brak ACK (ACKNOTRECEIVED, „?")','Wysłano, brak potwierdzenia odbioru.'),
+     ('czerwony_excl.png','Zły rozmiar pliku (FILESIZEBAD, „!")','Rozmiar poniżej progu technologicznego.'),
+     ('czarny.png','Przekroczono CET (EXCEEDED)','Minął Critical End Time — wymagana interwencja.'),
      ('szary_q.png','Przetwarzanie (PROCESSRUNNING, „?")','Proces w toku.'),
      ('szary.png','Brak / nieznany (UNKNOWN)','Kolumna nieaktywna / brak danych.'),
      ('puste.png','Puste','Brak pozycji.'),
@@ -382,7 +385,7 @@ def ccm_section():
       ['screens/ccm/ccm-001.png','screens/ccm/ccm-011.png','screens/ccm/ccm-012.png']),
      ('C.2','Identyfikacja wiersza, kolumny i kafelka',
       'Odszukaj wiersz pliku (FIDx-…) i kolumnę kanału (CCTool wysł. / CCTool zwalid. / MinIO / sFTP/ZP). '
-      'Kolor i znacznik kafelka = aktualny status (patrz legenda).',
+      'Kolor i znacznik kafelka = aktualny status (patrz <a href="#sec-legenda">legenda</a>).',
       ['screens/ccm/ccm-015.png']),
      ('C.3','Wyświetlenie informacji o pliku',
       'PPM na kafelku → „Informacje”. Popup pokazuje opis pliku, ścieżkę, TET/CET, kod ACK i ewentualny błąd walidacji.',
@@ -457,11 +460,46 @@ nav_html = ''.join(f'<a href="{h}">{esc(t)}</a>' for t,h in NAV)
 proces_body = f"""
 <p class="lead">IDCC (Intraday Capacity Calculation) — cykliczne, śróddzienne wyznaczanie zdolności przesyłowych
 w regionie Core. PSE jako TSO dostarcza dane wejściowe, monitoruje strumienie plików i interweniuje przy awariach.</p>
+
+<h3>Architektura procesu i przepływ danych</h3>
+<pre class="arch">
+  ┌────────────────────────────────────────────────────────────────────────┐
+  │                        KRAJOWA DYSPOZYCJA MOCY                         │
+  │                                                                        │
+  │  ┌──────────────┐      ┌────────────────────────┐      ┌────────────┐  │
+  │  │  System ZP   │      │ CCM (Pulpit Monitor)   │      │ PLANS /    │  │
+  │  │  (Pliki AC)  │      │ https://ccm.spsm.pse.pl│      │ Kreator    │  │
+  │  └──────┬───────┘      └───────────▲────────────┘      └─────┬──────┘  │
+  │         │                          │                         │         │
+  └─────────┼──────────────────────────┼─────────────────────────┼─────────┘
+            │ (FID1/2-831)             │ (Kody ACK statusu)      │ (IGM/GLSK/CB)
+            ▼                          │                         ▼
+  ┌────────────────────────────────────┴───────────────────────────────────┐
+  │                         Szyna Transportowa CN2                         │
+  └─────────┬────────────────────────────────────────────────────▲─────────┘
+            │                                                    │
+            │ (Transfer ZIP PERUN)                               │ (Raporty DQC)
+            ▼                                                    │
+  ┌──────────────────────────────────────────────────────────────┴─────────┐
+  │                         SYSTEMY CENTRALNE CORE                         │
+  │                                                                        │
+  │  ┌──────────────────────┐   sFTP    ┌───────────────────────────────┐  │
+  │  │  MinIO Repozytorium  ├──────────►│ Perun4V (Walidacja FBA)       │  │
+  │  │  (perun/, cca/)      │◄──────────┤ https://lccv.tscnet.eu        │  │
+  │  └──────────────────────┘           └───────────────────────────────┘  │
+  │                                                                        │
+  │  ┌──────────────────────────────────────────────────────────────────┐  │
+  │  │  Core CC Tool GUI (Message Viewer / Manual Upload)               │  │
+  │  └──────────────────────────────────────────────────────────────────┘  │
+  └────────────────────────────────────────────────────────────────────────┘
+</pre>
+
 <h3>Iteracje procesu</h3>
 <table class="ref"><thead><tr><th>Iteracja</th><th>Charakter</th><th>Zakres</th></tr></thead><tbody>
 <tr><td><b>IDCC(a)</b></td><td>Pełny przebieg centralny + wyznaczanie ATC</td><td>AC, ATC Based Validation, Final NTC</td></tr>
 <tr><td><b>IDCC(b)–(d)</b></td><td>Kolejne iteracje śróddzienne (ID2/ID3C/ID3)</td><td>GLSK, CGM, RefProg, CB, IVA, NTC, paczki PERUN</td></tr>
 </tbody></table>
+
 <h3>Wejścia PSE i bramki czasowe</h3>
 <p>Każdy plik ma <b>TET</b> (Target End Time — cel) i <b>CET</b> (Critical End Time — twardy deadline). Statusy i działania
 zależą od relacji do tych bramek — patrz <a href="#sec-legenda">legenda</a> i <a href="#sec-katalog">katalog plików</a>.</p>
@@ -482,6 +520,9 @@ def load_frag(name):
         h = re.sub(r'(<th[^>]*>)\s*' + re.escape(en) + r'\s*(</th>)', r'\1' + pl + r'\2', h)
     h = h.replace(' ⚑ dotyczy granic PSE</h4>',
                   ' <span class="psemark">⚑ dotyczy granic PSE</span></h4>')
+    # Normalizacja rejestru inżynierskiego
+    h = re.sub(r'Happy\s+Day', 'Stan poprawny / nominalny', h)
+    h = re.sub(r'(?i)bra\s+diostepu', 'brak dostępu', h)
     return h
 
 PROC_SUBNAV = ('<div class="stickerbar"><b>Opis procesu — skok do:</b>'
@@ -508,7 +549,9 @@ doc = f"""<!doctype html><html lang="pl"><head><meta charset="utf-8">
 <nav><h2>Spis treści</h2>{nav_html}</nav>
 <main id="top">
 <span class="tag">FBA_TSO_IDCC · v6</span>
-<h1>Procedura operacyjna dyspozytora PSE — proces IDCC</h1>
+<h1>Specyfikacja Techniczna, Architektura Integracji i Instrukcja Eksploatacyjna</h1>
+<h2>Proces Intraday Capacity Calculation (IDCC) dla Krajowej Dyspozycji Mocy — PSE S.A.</h2>
+<p class="lead"><i>Dokumentacja Techniczno-Eksploatacyjna (DTE) dla operatora systemu przesyłowego w regionie CORE.</i></p>
 <p class="lead">Szczegółowa instrukcja krok-po-kroku z właściwymi zrzutami ekranu. Dwie warstwy:
 <b>karty skrócone</b> (szybki dostęp, hiperłącza) oraz <b>pełny detal</b> wszystkich możliwości i stanów.</p>
 <div id="board"><h2><span class="tag">Tablica</span>Karty skrócone (kliknij → szczegóły)</h2>{sticker_board()}</div>
@@ -526,12 +569,18 @@ doc = f"""<!doctype html><html lang="pl"><head><meta charset="utf-8">
 {section('sec-ryzyka','Ryzyka U01–U23 i kody ACK','12','<div class="ref">'+inw_slice('# 3. Ryzyka','# 4. Procedury','# 3. Ryzyka')+'</div>',[('#sec-procedury','procedury'),('#sec-narzedzia','zgłoszenia')])}
 {section('sec-minio','Buckety MinIO i mapa relacji','13','<div class="ref">'+inw_slice('# 5. Buckety','# 7. TODO','# 5. Buckety')+'</div>',[('#sec-katalog','pliki'),('#sec-narzedzia','MinIO')])}
 <footer style="margin:3em 0 2em;color:var(--mut);font-size:13px;border-top:1px solid var(--bd);padding-top:14px">
-Wygenerowano automatycznie z: Inwentarz_IDCC.md, popup_content_IDCC.json (126 plików),
+Wygenerowano automatycznie z: Inwentarz_IDCC.md, popup_content_IDCC.json (78 plików),
 staticHints-IDCC-all.txt ({sum(len(v) for v in HINTS.values())} stanów), screens_manifest.json (309 ekranów).
 Każde ryzyko zgłaszać do: <b>CIZ, WPO, PSE-I (PSE Innowacje)</b>.</footer>
 </main></div></body></html>"""
 
 doc = denumber(doc)   # usuń widoczne kody Nxx w całym dokumencie, nazwy → hiperłącza
+
+# Normalizacja rejestru inżynierskiego: „Happy Day" → „Stan poprawny / nominalny"
+doc = re.sub(r'Happy\s+Day', 'Stan poprawny / nominalny', doc)
+# Literówki
+doc = re.sub(r'(?i)bra\s+diostepu', 'brak dostępu', doc)
+
 OUT.write_text(doc, encoding='utf-8')
 print('Zapisano:', OUT)
 print('Rozmiar:', OUT.stat().st_size, 'B |', doc.count('<figure'), 'screenów wpiętych |',
