@@ -1,0 +1,230 @@
+<h3 id="proc-intro">Wprowadzenie, słownik i wymagania wstępne</h3>
+
+<h4>Słownik skrótów</h4>
+<p>Poniższa tabela zawiera skróty stosowane w dalszej części dokumentu. Po objaśnieniu skrótu w dalszym tekście używana jest forma skrócona.</p>
+<table class="ref">
+  <thead>
+    <tr><th>Skrót</th><th>Rozwinięcie</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>ATC</td><td>Available Transfer Capacity — dostępna zdolność przesyłowa</td></tr>
+    <tr><td>CB</td><td>Critical Branch — gałąź krytyczna</td></tr>
+    <tr><td>CBCORA</td><td>Critical Branch Critical Outage Remedial Actions — działania zaradcze dla pary gałąź krytyczna / wyłączenie krytyczne</td></tr>
+    <tr><td>CCB</td><td>Change Control Board — komitet ds. kontroli zmian</td></tr>
+    <tr><td>CCC</td><td>Capacity Calculation Coordinator — koordynator obliczania zdolności przesyłowych</td></tr>
+    <tr><td>CCCt</td><td>Core Capacity Calculation Tool — narzędzie obliczania zdolności przesyłowych regionu Core</td></tr>
+    <tr><td>CCM</td><td>Capacity Calculation Methodology — metodyka obliczania zdolności przesyłowych</td></tr>
+    <tr><td>CCR</td><td>Capacity Calculation Region — region obliczania zdolności przesyłowych</td></tr>
+    <tr><td>CSA</td><td>Coordinated Security Analysis — skoordynowana analiza bezpieczeństwa</td></tr>
+    <tr><td>CGM</td><td>Common Grid Model — wspólny model sieci</td></tr>
+    <tr><td>CET</td><td>Critical End Time — krytyczny czas zakończenia</td></tr>
+    <tr><td>CNE</td><td>Critical Network Element — krytyczny element sieci</td></tr>
+    <tr><td>CNEC</td><td>Critical Network Element and Contingency — krytyczny element sieci wraz ze scenariuszem awaryjnym</td></tr>
+    <tr><td>D-2</td><td>Two-Days Ahead — dwa dni naprzód</td></tr>
+    <tr><td>DA</td><td>Day-Ahead — dzień przed dostawą (rynek dnia następnego)</td></tr>
+    <tr><td>DACF</td><td>Day-Ahead Congestion Forecast — prognoza ograniczeń sieciowych dnia następnego</td></tr>
+    <tr><td>EC</td><td>External Constraint — ograniczenie zewnętrzne</td></tr>
+    <tr><td>ECP</td><td>Energy Communication Platform — platforma komunikacji energetycznej</td></tr>
+    <tr><td>FB</td><td>Flow-Based — metoda przepływowa (oparta na przepływach fizycznych)</td></tr>
+    <tr><td>FBMC</td><td>Flow-Based Market Coupling — łączenie rynków metodą przepływową</td></tr>
+    <tr><td>Fmax</td><td>Maksymalny dopuszczalny przepływ na danej gałęzi krytycznej</td></tr>
+    <tr><td>GLSK</td><td>Generation Load Shift Key — klucz przesunięcia generacji/obciążenia</td></tr>
+    <tr><td>ID</td><td>Intraday — rynek dnia bieżącego (śróddzienny)</td></tr>
+    <tr><td>IDCF</td><td>Intraday Congestion Forecast — śróddzienna prognoza ograniczeń sieciowych</td></tr>
+    <tr><td>IGM</td><td>Individual Grid Model — indywidualny model sieci</td></tr>
+    <tr><td>Imax</td><td>Maksymalny prąd na gałęzi krytycznej</td></tr>
+    <tr><td>IVA</td><td>Individual Validation Adjustment — indywidualna korekta walidacyjna</td></tr>
+    <tr><td>JAO</td><td>Joint Allocation Office — Biuro Wspólnej Alokacji</td></tr>
+    <tr><td>MTU</td><td>Market Time Unit — rynkowa jednostka czasu</td></tr>
+    <tr><td>NP</td><td>Net Position — pozycja netto</td></tr>
+    <tr><td>NTC</td><td>Net Transfer Capacity — zdolność przesyłowa netto</td></tr>
+    <tr><td>PST</td><td>Phase Shifting Transformer — transformator przesuwnikowy fazowy</td></tr>
+    <tr><td>PTDF</td><td>Power Transfer Distribution Factor — współczynnik rozpływu mocy</td></tr>
+    <tr><td>RA</td><td>Remedial Action — działanie zaradcze</td></tr>
+    <tr><td>RAM</td><td>Remaining Available Margin — pozostały dostępny margines</td></tr>
+    <tr><td>SDAC</td><td>Single Day-Ahead Coupling — jednolite łączenie rynków dnia następnego</td></tr>
+    <tr><td>SIDC</td><td>Single Intraday Coupling (XBID) — jednolite łączenie rynków śróddziennych</td></tr>
+    <tr><td>TET</td><td>Target End Time — docelowy czas zakończenia</td></tr>
+    <tr><td>TSO</td><td>Transmission System Operator — operator systemu przesyłowego</td></tr>
+  </tbody>
+</table>
+
+<p>Pozostałe pojęcia słownikowe:</p>
+<ul>
+  <li><strong>Alokacja / Alokacja zdolności (Allocation/Capacity Allocation)</strong> — przydział międzystrefowej zdolności przesyłowej (Cross Zonal Capacity) oraz energii. O ile nie wskazano inaczej, zdolność odnosi się do aukcji ukrytej (implicit auction).</li>
+  <li><strong>Plik CB (CB file)</strong> — plik zawierający kombinację monitorowanej gałęzi i wyłączenia krytycznego oraz ewentualnie działania zaradczego dla elementu sieci, który może ograniczać wymianę handlową między obszarami, ponieważ często osiąga swoje fizyczne ograniczenia.</li>
+  <li><strong>Hub</strong> — grupa węzłów (szyn) w określonym regionie, dla której wyznaczane są lokalne ceny węzłowe (LMP) w celu utworzenia jednej referencji cenowej. Stanowi obszar rynkowy (Market Area).</li>
+  <li><strong>Power Transfer Distribution Factor (PTDF)</strong> — współczynniki oparte na stanie wyjściowym sieci; opisują wpływ każdego dodatkowego MW wstrzykniętego w węźle uczestniczącym na przepływ na gałęzi krytycznej.</li>
+  <li><strong>Pozostałości DA (DA Leftovers)</strong> — zdolności dostępne po rozliczeniu rynku DA, które mogą zostać udostępnione na rynek śróddzienny przed ponownym przeliczeniem transgranicznych zdolności śróddziennych w procesie IDCC(a).</li>
+</ul>
+
+<h4>Encje</h4>
+<table class="ref">
+  <thead>
+    <tr><th>Encja</th><th>Opis</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>TSO</td><td>Lokalny operator systemu przesyłowego uczestniczący w Core IDCC, tj.: APG, Elia, HOPS, CEPS, RTE, 50Hertz, Amprion, TenneT TSO GmbH, TransnetBW, MAVIR, CREOS, TenneT B.V, PSE, TRANSELECTRICA, SEPS oraz ELES.</td></tr>
+    <tr><td>RCC</td><td>Regionalne centra koordynacyjne (Regional Coordination Centers) uczestniczące w procesie Core IDCC: Coreso i TSCNet Services.</td></tr>
+    <tr><td>CCC</td><td>Capacity Calculation Coordinator — koordynator obliczania zdolności przesyłowych. Podmiot odpowiedzialny za obsługę zmianową modułów pre-couplingu narzędzia CCCt zgodnie z kalendarzem operacyjnym. Rola tygodniowa współdzielona przez dwa RCC: TSCNet Services (w imieniu APG, HOPS, CEPS, Amprion, TenneT TSO GmbH, TransnetBW, MAVIR, CREOS, TenneT B.V, PSE, TRANSELECTRICA, SEPS i ELES) oraz Coreso (w imieniu Elia, 50Hertz i RTE).</td></tr>
+    <tr><td>ME</td><td>Merging Entity — podmiot scalający, który dokona scalenia wszystkich DACF we wspólny model sieci (CGM). W Core IDCC oznacza stronę odpowiedzialną za dostarczenie CGM i RefProg (programów referencyjnych).</td></tr>
+    <tr><td>JAO</td><td>Joint Allocation Office — realizuje czynności operatora po couplingu w CCCt, aukcje długoterminowe i aukcje cienia (shadow auctions) oraz dystrybuuje przychody z ograniczeń (congestion revenue).</td></tr>
+    <tr><td>CCA</td><td>Change Control Administrator — osoba odpowiedzialna za koordynację zmian wprowadzanych w CCCt.</td></tr>
+    <tr><td>CCB</td><td>Change Control Board — odpowiedzialny za wszystkie zmiany wymagane w systemach.</td></tr>
+    <tr><td>DA IC</td><td>DA Incident Committee — telekonferencja organizowana przez Functional System Operator systemu MC w przypadku, gdy łączenie rynków (Market Coupling) na dzień handlowy D jest zagrożone w D-1.</td></tr>
+    <tr><td>ID IC</td><td>ID Incident Committee — telekonferencja organizowana przez Functional System Operator systemu IDA w przypadku, gdy łączenie rynków na dzień handlowy D jest zagrożone.</td></tr>
+    <tr><td>XBID</td><td>Europejska transgraniczna platforma śróddzienna umożliwiająca ciągłe kojarzenie zleceń składanych przez uczestników rynku w jednej strefie cenowej ze zleceniami składanymi w dowolnej innej strefie w zasięgu rozwiązania XBID, na podstawie zdolności przesyłowych udostępnionych w IDCC.</td></tr>
+  </tbody>
+</table>
+
+<h4>Narzędzia</h4>
+<table class="ref">
+  <thead>
+    <tr><th>Narzędzie</th><th>Opis</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>CCCt</td><td>Core Capacity Calculation Tool — narzędzie obliczania zdolności przesyłowych regionu Core.</td></tr>
+    <tr><td>FBPCM</td><td>Flow-based parameter computation module — moduł obliczania parametrów metody przepływowej, centralna część CCCt.</td></tr>
+    <tr><td>ECP</td><td>Energy Communication Platform — platforma komunikacji energetycznej.</td></tr>
+  </tbody>
+</table>
+
+<h4>Wprowadzenie</h4>
+<p>Niniejszy dokument opisuje codzienne czynności realizowane przez operatorów systemów przesyłowych (TSO) i regionalne centra koordynacyjne (RCC) przy korzystaniu z narzędzia CCCt na potrzeby procesu śróddziennego obliczania zdolności przesyłowych, w tym działania, które RCC muszą podjąć w trybie fallback w odniesieniu do narzędzia zapasowego (Back-Up tool) oraz platformy XBID. Proces opisany w dokumencie koncentruje się na procesie pre-couplingu SIDC (jednolite łączenie rynków śróddziennych).</p>
+<p>Czynności oparte są na sekwencyjnych działaniach, realizowanych przez podmioty lokalne lub podmioty odpowiedzialne za czynności wspólne. Dokument grupuje zbiór procedur, które mogą być stosowane indywidualnie, zależnie od sytuacji napotkanej przez podmiot operacyjny.</p>
+<p>Dokument ma na celu zapewnienie jasnego i pełnego obrazu czynności, aktorów, obsługi sytuacji wyjątkowych i scenariuszy awaryjnych w procesach biznesowych, poprzez wyszczególnienie:</p>
+<ul>
+  <li>szczegółowej sekwencji działań wraz z przypisaną odpowiedzialnością;</li>
+  <li>obsługi sytuacji wyjątkowych (procedur zapasowych i fallback);</li>
+  <li>czasów (w formacie 00:00 – 24:00).</li>
+</ul>
+
+<h4>Struktura dokumentu</h4>
+<p>Dokument zorganizowany jest według czterech ram czasowych rynku śróddziennego, dla których obliczane i dostarczane na platformę XBID są międzystrefowe zdolności przesyłowe. Wprowadzenie nowych obliczeń (lub ram czasowych) na rynku śróddziennym w przyszłości będzie skutkować aktualizacją dokumentu.</p>
+<ul>
+  <li><strong>Rama czasowa IDCC(a):</strong> w jej trakcie następuje dostarczenie zwalidowanych pozostałości DA (DA leftovers) dla IDCZGOT 15:00. Międzystrefowe zdolności przesyłowe są dostarczane na platformę XBID przed godziną 14:45 przez CCCt.</li>
+  <li><strong>Rama czasowa IDCC(b):</strong> międzystrefowe zdolności przesyłowe dostarczane na XBID przez CCCt przed godziną 21:45. Proces opiera się na najlepszych prognozach dostępnych w chwili rozpoczęcia obliczeń.</li>
+  <li><strong>Rama czasowa IDCC(c):</strong> międzystrefowe zdolności przesyłowe dostarczane na XBID przez CCCt przed godziną 04:30 (przebieg prawidłowy, happy flow). Proces opiera się na najlepszych prognozach dostępnych w chwili rozpoczęcia obliczeń.</li>
+  <li><strong>Rama czasowa IDCC(d):</strong> międzystrefowe zdolności przesyłowe dostarczane na XBID przez CCCt przed godziną 09:45. Proces opiera się na najlepszych prognozach dostępnych w chwili rozpoczęcia obliczeń.</li>
+</ul>
+<p>Tabela wszystkich głównych czasów procesu dla ramy IDCC dostępna jest w pliku Excel, do którego odnośnik podano w sekcji 0 („Dokumenty powiązane”). W tym samym pliku Excel zawarte są również wszystkie czasy podprocesów dla kroków opisanych w procedurach operatorskich.</p>
+
+<h4>Notacje czasowe</h4>
+<p>Proces FB oparty jest na trzech notacjach czasowych:</p>
+<ul>
+  <li><strong>Target Start Time</strong> — docelowy czas rozpoczęcia procesu.</li>
+  <li><strong>Target End Time (TET)</strong> — docelowy czas zakończenia procesu i graniczny czas wysłania danych. Czas, po którym — jeśli proces nie został ukończony — należy uruchomić procesy zapasowe (back-up) lub awaryjne (fallback).</li>
+  <li><strong>Critical End Time (CET)</strong> — najpóźniejszy czas, do którego proces musi zostać ukończony w przypadku stosowania trybu fallback lub back-up.</li>
+</ul>
+<p>Dla wszystkich kroków (z wyjątkiem NTC dostarczanych na platformę XBID), jeśli procesy zapasowe (w tym scenariusz fallback) nie powiodą się w tym czasie, narzędzie zapasowe wygeneruje wysokie ujemne NTC (zero capacity fallback — fallback zerowej zdolności).</p>
+<p>Dla NTC dostarczanych na platformę XBID definicja Critical End Time (CET) jest bardziej restrykcyjna: w przypadku nieotrzymania zdolności przez XBID do Critical End Time dany region / połączenie zostanie odłączone (decoupling) i żadne zdolności nie mogą zostać alokowane.</p>
+<p>W razie wystąpienia problemu podczas realizacji procesu można zastosować dwa rodzaje procedur. Procedury back-up i fallback mogą zostać uruchomione wskutek problemów w procesie IDCC(a) lub IDCC(b), a także wskutek opóźnienia w procesie DACC.</p>
+<ul>
+  <li><strong>Procedura zapasowa (back-up)</strong> — o ile:
+    <ul>
+      <li>proces nadal może zostać uruchomiony, lecz w trybie fallback z perspektywy wyniku zdolności (np. domena DA na poziomie RefProg, domena DA na poziomie AAC, …);</li>
+      <li>przewidziany wynik może zostać dostarczony przed Critical End Time, ale może być dostarczony później niż w sytuacji normalnej (po Target End Time).</li>
+    </ul>
+  </li>
+  <li><strong>Procedura awaryjna (fallback)</strong> — jeśli przewidziany wynik nie może zostać dostarczony przed Critical End Time w trybie normalnym ani zapasowym. W takim przypadku wytwarzany jest inny rezultat.</li>
+</ul>
+<p>Jeśli Target End Time nie zostanie dotrzymany, rozwiązanie zapasowe musi zostać znalezione przed odpowiadającym mu Critical End Time. Opóźnienie ukończenia kroku procesu przed Target End Time może zależeć od czynników poza zakresem niniejszego dokumentu; niezależnie od tego, wyzwalacz takiego fallback lub back-up musi być opisany w niniejszym dokumencie lub w odpowiednim dokumencie wymienionym w sekcji 2 („Dokumenty powiązane”).</p>
+<p><strong>Jeśli Critical End Times nie są dotrzymywane, istnieje ryzyko odłączenia (decoupling) rynku dla rozważanego dnia handlowego (BD). Dlatego dotrzymanie Critical End Times jest kluczowe.</strong></p>
+
+<h4>Wymagania wstępne (ogólne)</h4>
+<p>Od Target Start Time do Target End Time operatorzy systemów przesyłowych (TSO) mogą przesyłać aktualizację już wysłanego pliku. Plik jest zapisywany w CCCt z wyższym numerem wersji niż poprzedni: TSO przesyłający zaktualizowany plik odpowiada za nadanie mu wyższego numeru wersji, w przeciwnym razie plik zostanie odrzucony przez CCCt. Do uruchomienia podprocesu wykorzystywany jest ostatni plik prawidłowo odebrany przez CCCt.</p>
+<p>Zasadniczo, w zakresie, w jakim lokalne dostarczanie plików przez TSO do CCCt zawodzi, TSO regionu Core mogą zwrócić się do CCC o dostarczenie plików drogą e-mailową.</p>
+<p>Co do zasady, w scenariuszu przebiegu prawidłowego (happy flow) CCC (Capacity Calculation Coordinator) nie wysyła do TSO żadnego e-maila potwierdzającego, że proces przebiegł zgodnie z zaplanowanymi czasami.</p>
+<p>Nadawca odpowiada za prawidłowy odbiór danych przez odpowiednie strony — dlatego nadawca monitoruje odbiór potwierdzeń ACK i podejmuje działania, jeśli ACK nie zostanie odebrany. W praktyce operator CCCt monitoruje odbiór komunikatów ACK z XBID poprzez interfejs (GUI) w CCCt i podejmuje odpowiednie działania, jeśli komunikaty nie zostaną poprawnie odebrane, jak opisano dalej w dokumencie.</p>
+<p>CCC może ręcznie wczytać dane do CCCt na żądanie lokalnego TSO lub w ramach procesu fallback bądź back-up opisanego w dokumencie, o ile nie zagraża to procesowi śróddziennego obliczania zdolności. Dodatkowo CCC jest uprawniony do ręcznego wczytywania lub pobierania danych z XBID zgodnie z procesami opisanymi dalej. CCC jest uprawniony do działania w imieniu TSO regionu Core w procesach IDCC(a), IDCC(b) i IDCC(c) w zakresie dostarczania wysokich ujemnych NTC, obliczonych AAC oraz obliczonych NTC dla następujących granic Core:</p>
+<table class="ref">
+  <thead>
+    <tr><th>Granica</th><th>Poziom połączenia / granicy</th><th>Możliwi dostarczający TSO MD250 do CCCt Core</th><th>TSO akceptowani przez XBID jako nadawcy danych NTC/AAC na danej granicy</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>50Hertz-PLC</td><td>Połączenie (Interconnector)</td><td>PSE</td><td>50Hertz, PSE</td></tr>
+    <tr><td>DE-AT</td><td>Granica</td><td>APG</td><td>Amprion, APG</td></tr>
+    <tr><td>AMP-ELIA</td><td>Połączenie</td><td>Elia</td><td>Amprion, Elia</td></tr>
+    <tr><td>DE-FR</td><td>Granica</td><td>Amprion</td><td>Amprion, RTE</td></tr>
+    <tr><td>DE-NL</td><td>Granica</td><td>TTN</td><td>TTG, TTN</td></tr>
+    <tr><td>CZ-DE</td><td>Granica</td><td>CEPS</td><td>50Hertz, CEPS</td></tr>
+    <tr><td>CEPS-APG</td><td>Połączenie</td><td>APG</td><td>CEPS, APG</td></tr>
+    <tr><td>CEPS-PLC</td><td>Połączenie</td><td>PSE</td><td>CEPS, PSE</td></tr>
+    <tr><td>ELES-APG</td><td>Połączenie</td><td>APG, ELES</td><td>APG, ELES</td></tr>
+    <tr><td>ELES-HOPS</td><td>Połączenie</td><td>ELES</td><td>ELES, HOPS</td></tr>
+    <tr><td>ELIA-TTN</td><td>Połączenie</td><td>Elia</td><td>Elia, TTN</td></tr>
+    <tr><td>HOPS-MAVIR</td><td>Połączenie</td><td>HOPS</td><td>HOPS, MAVIR</td></tr>
+    <tr><td>MAVIR-APG</td><td>Połączenie</td><td>APG</td><td>APG, MAVIR</td></tr>
+    <tr><td>MAVIR-ELES</td><td>Połączenie</td><td>MAVIR, ELES</td><td>ELES, MAVIR</td></tr>
+    <tr><td>MAVIR-TEL</td><td>Połączenie</td><td>MAVIR</td><td>MAVIR, Transelectrica</td></tr>
+    <tr><td>RTE-ELIA</td><td>Połączenie</td><td>Elia</td><td>Elia, RTE</td></tr>
+    <tr><td>SEPS-CEPS</td><td>Połączenie</td><td>CEPS</td><td>CEPS, SEPS</td></tr>
+    <tr><td>SEPS-MAVIR</td><td>Połączenie</td><td>MAVIR</td><td>MAVIR, SEPS</td></tr>
+    <tr><td>SEPS-PLC</td><td>Połączenie</td><td>PSE</td><td>PSE, SEPS</td></tr>
+  </tbody>
+</table>
+<p>W powyższej tabeli wymieniono TSO dostarczających MD250 oraz TSO akceptowanych przez XBID jako nadawcy danych dla wewnętrznych granic Core. Dla wszystkich kroków niniejszej dokumentacji procesu biznesowego, w których TSO mają wykonać działanie per granica, obowiązują wymienieni wyżej akceptowani przez XBID nadawcy TSO per granica. W e-mailu do TSO lista ta jest dołączana, wraz z pustą kolumną per granica, którą TSO wypełniają wskazaniem skonfigurowanych granic, odpowiadając e-mailem na adres wszystkich odbiorców. Odpowiedzialność za wykonanie działań na granicy pozostaje współdzielona przez TSO po obu stronach granicy.</p>
+<p>Przed Target End Time, jeśli operator lokalnego TSO wie, że prawdopodobne jest opóźnione dostarczenie obowiązkowych danych wejściowych, niezwłocznie poinformuje CCC telefonicznie. Jeśli to opóźnione dostarczenie dotyczy zaktualizowanej wersji już istniejącego pliku, CCC wstrzyma proces do czasu otrzymania nowego pliku danych przesłanego e-mailem przez dany TSO do ręcznego wczytania w CCCt, najpóźniej do Critical End Time. W każdej chwili, jeśli operator lokalnego TSO wie, że nie jest w stanie dostarczyć obowiązkowych danych na czas, TSO powinien niezwłocznie poinformować CCC telefonicznie i potwierdzić to e-mailem, aby z wyprzedzeniem przygotować tryb fallback.</p>
+<p>Niezwłocznie po zidentyfikowaniu problemu z CCCt, CCC musi zadzwonić na helpdesk Unicorn w celu zgłoszenia, po czym helpdesk Unicorn utworzy zgłoszenie (ticket).</p>
+<p>Z uwagi na ograniczony dostępny czas procesy IDCC zaprojektowano tak, aby były jak najbardziej zautomatyzowane. Wdrożono w tym celu kilka warstw automatycznych zastąpień i fallbacków, umożliwiających kontynuację i terminowe zakończenie procesów.</p>
+<p>Wreszcie, jako wymóg wstępny, każda strona (RCC, TSO) odpowiada za zarządzanie i utrzymanie swoich użytkowników we wszystkich systemach (CCCt, XBID, …). Dodatkowo wszystkie strony odpowiadają za utrzymanie własnych połączeń ECP oraz wszelkich innych istotnych połączeń i interfejsów danych.</p>
+
+<h4>Funkcja przekazywania NTC (NTC forwarding)</h4>
+<p>Narzędzie Core Capacity Calculation Tool od wersji 4.0.4 wzwyż obejmuje funkcję przekazywania NTC (NTC forwarding). Funkcja ta umożliwia TSO wykonywanie za pomocą CCCt następujących operacji:</p>
+<ul>
+  <li>dostarczenie NTC do CCCt w celu natychmiastowego przekazania do XBID;</li>
+  <li>dostarczenie ograniczającego NTC (capping NTC) do CCCt w celu ograniczenia (capping) zdolności NTC wysyłanych z CCCt do XBID przy najbliższym zaplanowanym wysłaniu NTC;</li>
+  <li>zdefiniowanie ostatecznego zachowania CCCt w przypadku „Zero Capacity Fallback” (fallbacku zerowej zdolności):
+    <ul>
+      <li>zastosowanie wysokich ujemnych wartości NTC — w tym przypadku NTC zostanie rozdystrybuowane z wartością -99999 dla danej granicy;</li>
+      <li>ponowne użycie wyników NTC z poprzedniego wspólnego procesu IDCC;</li>
+      <li>Uwaga: jeśli TSO nie ma skonfigurowanej opcji wysokiego ujemnego NTC ORAZ brak jest informacji z poprzedniego procesu, generowany jest pusty plik (jedynie z nagłówkiem) — pusta seria czasowa (empty timeseries).</li>
+    </ul>
+  </li>
+</ul>
+<p>W każdym z powyższych przypadków odpowiedzialność za sprawdzenie prawidłowego odbioru plików w CCCt, a następnie w XBID — w przypadku przekazywania NTC, zastosowania ograniczających NTC bądź fallbacku zerowej zdolności — spoczywa na TSO dostarczającym pliki NTC forwarding.</p>
+
+<h4>Dostarczenie pakietu scalonego CGM (CGM Merging Package)</h4>
+<p>Pakiet scalony (merging package) będzie dostarczany przez Coreso do CCCt dla IDCC(b–d). Odpowiednie dane wejściowe dla IDCC(a) będą dostarczane przez DA CCCt.</p>
+<p>Pakiet scalony obejmie następujące dane wejściowe:</p>
+<ul>
+  <li>Modele CGM dla dnia handlowego IDCC, składające się z plików CGM w formacie UCTE dla każdego istotnego znacznika czasu (plik IDx-613):
+    <ul>
+      <li>IDCC(b): 24 znaczniki czasu (TS) (00:30 – 23:30);</li>
+      <li>IDCC(c): 18 znaczników czasu (TS) (06:30 – 23:30);</li>
+      <li>IDCC(d): 12 znaczników czasu (TS) (12:30 – 23:30).</li>
+    </ul>
+  </li>
+  <li>Odpowiedź scalania (plik IDx-615) zawierającą informacje o pakiecie scalonym, w tym o kompletności zbioru CGM — istnieje bowiem możliwość dostarczenia mniejszej liczby CGM niż liczba znaczników czasu w danym procesie IDCC, jeśli CGM dla niektórych godzin są niedostępne i jednocześnie niezastępowalne.</li>
+  <li>Model sieci AAC (pliki IDx-751) zawierający zbiór wymian dwustronnych dla wszystkich granic synchronicznych i wirtualnych hubów, oparty na tych samych informacjach harmonogramowych, których użyto do utworzenia IGM/CGM. Wartości dla wirtualnych hubów pochodzą w tym pliku z CGM.</li>
+  <li>Wartości X-Node (plik IDx-752) zawierające zbiór wymian dwustronnych dla wirtualnych hubów powiązanych z połączeniem wewnętrznym regionu Core (obecnie wyłącznie ALEGrO), z wartościami pobranymi z CGM dostarczonych w pakiecie scalonym.</li>
+</ul>
+<p>Poniżej opisano zasady tworzenia danych dla różnych horyzontów czasowych.</p>
+
+<h4>Modele CGM DACF</h4>
+<p>Prognoza ograniczeń sieciowych dnia następnego (DACF), stosowana również do analizy bezpieczeństwa w D-1, będzie wykorzystywana jako podstawowe dane wejściowe procesu IDCC(b). Plik CGM DACF jest konwersją najnowszych prognozowanych danych sieciowych TSO w ujęciu godzinowym, dostępnych między D-1 18:00 a D-1 20:19, scalanych przez RCC we wspólny model sieci reprezentujący ogólnoeuropejski stan sieci na D-1 20:19 (z trzyminutowym marginesem Target End Time dla narzędzia Core CC wynosi 20:22).</p>
+<p>Coreso łączy różne modele CGM TSCNet i Coreso oraz tworzy łączony plik DACF (Combined DACF). Celem jest uzyskanie możliwie najświeższej aktualizacji na 20:19, uwzględniającej zarówno kosztowne, jak i bezkosztowe działania zaradcze, a tym samym dostarczenie modelu sieci bez ograniczeń lub z ograniczonymi ograniczeniami jako danych wejściowych dla procesu IDCC.</p>
+<p>W przypadku niedostępności łączonego DACF (Combined DACF) jako rozwiązanie zapasowe wykorzystany zostanie DACF Coreso lub TSCNet. Najpierw używany jest DACF Coreso, następnie DACF TSCNet.</p>
+
+<h4>Modele CGM IDCF</h4>
+<p>Śróddzienna prognoza ograniczeń sieciowych (IDCF), stosowana również do analizy bezpieczeństwa w D-1/D, będzie wykorzystywana jako podstawowe dane wejściowe procesu IDCC(c–d). Plik CGM IDCF jest konwersją najnowszych prognozowanych danych sieciowych TSO w ujęciu godzinowym, tworzoną co najmniej raz na godzinę w okresie śróddziennym między D-1 23:30 a D 22:30 dla wszystkich pozostałych znaczników czasu danego dnia, scalaną przez RCC we wspólny model sieci reprezentujący ogólnoeuropejski stan sieci na D. Zarówno Coreso, jak i TSCNet wytwarzają modele CGM IDCF; IDCC PT zdecydował, że w pierwszej kolejności używane będą modele CGM IDCF TSCNet, zastępowane modelami CGM IDCF Coreso w razie ich niedostępności.</p>
+<p>Wykorzystywane są następujące (docelowe) przebiegi IDCF:</p>
+<ul>
+  <li>IDCC(c): 02:15;</li>
+  <li>IDCC(d): 07:15.</li>
+</ul>
+<p>W przypadku niedostępności docelowych CGM z TSCNet i Coreso wykorzystywane są CGM z poprzedniego przebiegu IDCF. Celem jest uzyskanie możliwie najświeższej aktualizacji do końca drugiego kroku gromadzenia danych CGM (CGM Data Gathering), uwzględniającej zarówno kosztowne, jak i bezkosztowe działania zaradcze, a tym samym dostarczenie modelu sieci bez ograniczeń lub z ograniczonymi ograniczeniami jako danych wejściowych dla procesu IDCC.</p>
+<p>Modele IDCF są wytwarzane zgodnie ze wspólnymi liniami czasowymi zarówno przez TSCNet, jak i Coreso. Wspólne skale czasowe oznaczają, że harmonogramy używane przy bilansowaniu IDCF Coreso i TSCNet są identyczne. Ponadto modele IGM wytwarzane przez każdego TSO opierają się na tych samych informacjach harmonogramowych dla danego IDCF. Rysunek 3 poniżej przedstawia czasy IDCF i powiązane informacje harmonogramowe.</p>
+<p><em>Rysunek 3: Ogólny przegląd informacji harmonogramowych zawartych w IGM i CGM IDCF.</em></p>
+<p>Przegląd tworzenia pakietu scalonego dla IDCC(c–d) przedstawiono na rysunku 4.</p>
+
+<h4>Model sieci AAC</h4>
+<p>Model sieci AAC jest tworzony na podstawie wyników rynkowych obejmujących programy wymiany między strefami cenowymi (skonsolidowane w pliku Verification Platform Scheduling, opartym na zagregowanych saldowanych zewnętrznych harmonogramach rynkowych — ANEMS, typ biznesowy B61 — pobieranych przez narzędzie ulokowane w systemie Amprion). Model sieci AAC nie zawiera harmonogramów SO-SO.</p>
+<p>Dla CGM DACF uwzględniane są harmonogramy rynkowe do 16:00, a dla IDCF do HH-1;22.</p>
+<p>Utworzenie modelu sieci AAC skutkuje plikiem xml, który dla każdej granicy wymiany / wirtualnego huba zawiera m.in. następujące informacje:</p>
+<ul>
+  <li>dwie strony uczestniczące w wymianie oraz powiązany kod EIC obu stron;</li>
+  <li>interwał czasowy;</li>
+  <li>ilość wymiany w MW.</li>
+</ul>
+<p>RefProg to zbiór zakładanych pozycji netto per strefa cenowa w modelu sieci AAC. RefProg jest stosowany jako punkt wyjścia dla obliczania zdolności przesyłowej metodą przepływową (Flow-Based) w regionie obliczania zdolności przesyłowych Core. RefProg generowany przez CCCt będzie równy modelowi sieci AAC (IDx-751) dostarczonemu przez Coreso, z wyjątkiem wirtualnych hubów powiązanych z połączeniami wewnętrznymi, dla których użyty zostanie plik Wartości X-Node (IDx-752) — na przykład dla ALEGrO.</p>

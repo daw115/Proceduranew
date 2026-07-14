@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>KreatorIDCF — generowanie GLSK, CBCORA i RA (IDCC c/d/e)</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; max-width: 980px; margin: 0 auto; padding: 16px; background: #f4f5f7; color: #172B4D; line-height: 1.5; }
+  .topbar { background: #1F4E78; color: #fff; padding: 14px 22px; margin: -16px -16px 18px -16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  .topbar h1 { margin: 0; font-size: 1.2em; }
+  .topbar .sub { font-size: 0.82em; opacity: 0.85; margin-top: 3px; }
+  .box { background: #fff; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 14px 20px; margin: 14px 0; }
+  h2 { color: #1F4E78; border-bottom: 2px solid #E3F2FD; padding-bottom: 6px; font-size: 1.05em; }
+  h3 { color: #172B4D; font-size: 0.96em; margin: 18px 0 6px; }
+  .sec-h { background: #1F4E78; color: #fff; font-weight: 800; font-size: 0.82em; letter-spacing: 0.5px; text-transform: uppercase; padding: 6px 12px; border-radius: 3px; margin: 4px 0 8px; }
+  ol { padding-left: 22px; } ol li { margin-bottom: 14px; }
+  .shot { display: block; max-width: 100%; border: 1px solid #DFE1E6; border-radius: 4px; margin: 8px 0; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
+  .shot.small { max-width: 420px; } .shot.med { max-width: 600px; }
+  .note { background: #FFFAE6; border-left: 4px solid #FFC107; padding: 8px 12px; border-radius: 0 3px 3px 0; font-size: 0.9em; margin: 10px 0; }
+  .ok { background: #E3FCEF; border-left: 4px solid #36B37E; padding: 8px 12px; border-radius: 0 3px 3px 0; font-size: 0.9em; margin: 10px 0; }
+  .err { background: #FFEBE6; border-left: 4px solid #DE350B; padding: 8px 12px; border-radius: 0 3px 3px 0; font-size: 0.9em; margin: 10px 0; }
+  code { background: #F4F5F7; padding: 1px 5px; border-radius: 3px; font-family: "SF Mono", Consolas, monospace; font-size: 0.86em; }
+  b, strong { color: #172B4D; }
+  a { color: #0052CC; text-decoration: none; } a:hover { text-decoration: underline; }
+  table { border-collapse: collapse; font-size: 0.88em; margin: 8px 0; }
+  th, td { border: 1px solid #DFE1E6; padding: 5px 9px; text-align: left; } th { background: #F4F5F7; }
+  .stanowisko { display: inline-block; background: #0052CC; color: #fff; padding: 2px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>KreatorIDCF_CGMES — ręczne generowanie i publikacja GLSK + CBCORA + RA</h1>
+  <div class="sub">Procedura backupowa dla IDCC(c) / IDCC(d) / IDCC(e) — gdy auto-skrypt Monitora zgłosi błąd. Źródło: „Procedura INT/RUN dla IDCC(c)", obowiązuje od 2.12.2024.</div>
+</div>
+
+<div class="box">
+<div class="sec-h">Kiedy stosować — sytuacja normalna vs backup</div>
+<p>GLSK (<code>FIDx-607</code>) i CBCORA (<code>FIDx-617</code>) są <b>normalnie wysyłane automatycznie</b> przez skrypt Monitora po utworzeniu modeli IDCF:</p>
+<ul>
+  <li><b>Skrypt 1</b> — generuje i wysyła o <b>00:05</b> w wersji <b>v2</b> (modele z 00:30).</li>
+  <li><b>Skrypt 2</b> — generuje i wysyła o <b>00:50</b> w wersji <b>v3</b> (modele z 01:30).</li>
+  <li><b>v1</b> wysyłana jest ręcznie jako backup dla procesu z dnia poprzedniego.</li>
+</ul>
+<div class="ok"><b>Sytuacja normalna (Monitor):</b> zadanie ma status <b>OK</b> (zielone), w opisie <code>GLSK: 24/24 wysłany | CBCORA: 24/24 wysłany</code> — nie wykonuje się żadnych działań ręcznych.</div>
+<div class="err"><b>Backup (uruchom tę procedurę):</b> zadanie ma status <b>BŁĄD</b> (czerwone), np. <code>GLSK: 24/24 NIE wysłany</code>. Wtedy: <b>odeślij plik LOG</b> i wykonaj ręczną generację w KreatorIDCF (Stanowisko 5), a brak dostarczenia w CCM zgłoś (Stanowisko 6).</div>
+<img class="shot med" src="screens_kreatoridcf/00_monitor_normal.jpg" alt="Aplikacja Monitor — lista zadań (OK / BŁĄD)">
+<p style="font-size:0.85em;color:#6B778C;">Aplikacja <b>Monitor</b> → „Lista zadań". Zielone wiersze <code>FID3C_v2/v3 = OK</code> to sytuacja normalna; czerwony wiersz <code>BŁĄD</code> uruchamia procedurę backupową.</p>
+</div>
+
+<div class="box">
+<div class="sec-h">Cel i narzędzia</div>
+<p>Po utworzeniu modeli IDCF na godz. 00:30 (tworzenie kończy się ok. <b>23:47–23:48</b>) należy wygenerować pliki <b>GLSK</b> i <b>CBCORA</b> i opublikować je przez <b>Connector 2.0</b>. Zadania realizowane na Stanowiskach 5 i 6.</p>
+<table>
+  <tr><th>Narzędzie</th><th>Rola</th></tr>
+  <tr><td><a href="Inwentarz_IDCC.html#N08">KreatorIDCF_CGMES (N08)</a></td><td>generacja GLSK/CBCORA/RA + publikacja (Publikuj Connector)</td></tr>
+  <tr><td>Monitor</td><td>auto-generacja/wysyłka + sygnalizacja OK/BŁĄD</td></tr>
+  <tr><td><a href="Inwentarz_IDCC.html#N01">CCM (N01)</a></td><td>weryfikacja dostarczenia (Stanowisko 6) — pulpit ID3C</td></tr>
+  <tr><td><a href="Inwentarz_IDCC.html#N05">Connector 2.0 (N05)</a></td><td>transport opublikowanych plików do procesu</td></tr>
+</table>
+<div class="note">Środowisko testowe: CCM <code>ccm.spsm-st.pse.pl</code>, MinIO <code>minio-gui-st.pse.pl</code>, CCCt ID3C (instancja Amprion test). Login <code>PSEGuiId</code> (hasło — wg zasad PSE, nie umieszczamy w dokumencie).</div>
+</div>
+
+<div class="box">
+<div class="sec-h"><span class="stanowisko">Stanowisko 5</span> &nbsp; Generacja i publikacja (KreatorIDCF)</div>
+<ol>
+  <li>Gdy aplikacja <b>Monitor</b> powiadomi o pomyślnym utworzeniu modeli IDCF — uruchom <b>KreatorIDCF_CGMES</b>, przejdź do zakładki <b>IDCF(2)</b>, wybierz właściwą zakładkę procesu (<b>FID3C / FID3 / FID3D</b>) i ustaw numer wersji (<b>v.</b>) dla GLSK, CBCORA i RA. Na panelu znajdują się trzy identyczne przyciski: <b>GLSK</b>, <b>CBCORA</b>, <b>RA</b> oraz <b>Publikuj Connector</b>.
+    <img class="shot small" src="screens_kreatoridcf/panel.png" alt="Panel IDCF(2) — przyciski GLSK, CBCORA, RA, Publikuj Connector"></li>
+  <li>Naciśnij <b>GLSK</b>. Program wybierze modele w najnowszych wersjach; w oknie <b>„Wybrane pliki"</b> ustaw <b>„wersja modeli: najnowsza"</b>, zaznacz <b>„wszystkie"</b> i potwierdź <b>OK</b>.
+    <img class="shot med" src="screens_kreatoridcf/03_wybrane_pliki_gsk.png" alt="Okno Wybrane pliki"></li>
+  <li>Powtórz dla <b>CBCORA</b> — ten sam przycisk obok, takie samo okno „Wybrane pliki" (najnowsza + wszystkie → OK).
+    <img class="shot med" src="screens_kreatoridcf/06_wybrane_pliki_cbcora.png" alt="Okno Wybrane pliki — CBCORA"></li>
+  <li>Powtórz dla <b>RA</b> (środki zaradcze) — przycisk <b>RA</b> jest identyczny i znajduje się pod GLSK/CBCORA na tym samym panelu (patrz krok 1). To samo okno „Wybrane pliki".</li>
+  <li>Opublikuj pliki przyciskiem <b>„Publikuj Connector"</b>. W oknie <b>„Pliki do publikacji"</b> zaznacz <b>„Wszystko/nic"</b>, upewnij się, że zaznaczone są wpisy <b>GLSK</b>, <b>CBCORA</b> oraz <b>RA</b> (<code>RA_XML</code> i <code>RA_XLSX</code>) — w sekcji „Wersja plików" są osobne pola <b>Cbcora / GLSK / RA</b> — zweryfikuj wersje i potwierdź <b>OK</b>.
+    <img class="shot med" src="screens_kreatoridcf/okno_publikacji.png" alt="Okno Pliki do publikacji — GLSK / CBCORA / RA"></li>
+  <li>Pojawi się okno postępu wysyłki plików (MinIO / Connector 2.0).
+    <img class="shot small" src="screens_kreatoridcf/okno_postep.png" alt="Okno postępu wysyłki"></li>
+  <li>Po poprawnym zakończeniu w oknie programu wyświetli się log publikacji przez Connector 2.0.
+    <img class="shot med" src="screens_kreatoridcf/log_publikacji.png" alt="Log po publikacji"></li>
+</ol>
+<div class="note"><b>RA (środki zaradcze):</b> KreatorIDCF obsługuje dodatkowy plik <b>RA</b> — przycisk <b>RA</b> jest identyczny i znajduje się pod GLSK/CBCORA, a w oknie publikacji są osobne pozycje <code>RA_XML</code> i <code>RA_XLSX</code> oraz pole wersji <b>RA</b>. RA generuje się i publikuje analogicznie do GLSK/CBCORA. <b>Uwaga:</b> RA (oraz GLSK/CBCORA) — automatycznie wysyła je skrypt <b>Monitora</b>; ręczna procedura w KreatorIDCF jest backupem, gdy Monitor pokaże BŁĄD. <b>Przycisk może być opisany „GLSK" lub „GSK"</b> w zależności od wersji.</div>
+<div class="note" style="background:#EDF6FC;border-color:#1F4E78;"><b>Pełna instrukcja narzędzia:</b> <b>IDCF_InstrUżytk_v5</b> (KreatorIDCF_CGMES) — rozdz. „Tworzenie plików GLSK, CBCORA oraz RA", „Zarządzanie listą procedur FID", „Kopiowanie plików na MinIO". Instrukcja obejmuje też tworzenie modeli IDCF/IGM, konwersję CGMES, weryfikację wg reguły N-1 i konfigurację — KreatorIDCF jest źródłem nie tylko GLSK/CBCORA/RA, ale i modeli IGM/CGM (np. FIDx-620).</div>
+</div>
+
+<div class="box">
+<div class="sec-h"><span class="stanowisko">Stanowisko 6</span> &nbsp; Weryfikacja w CCM</div>
+<ol>
+  <li>Zweryfikuj dostarczenie plików w aplikacji <b>CCM</b> (pulpit ID3C) — kafelki CCtool wysł./zwalid. dla GLSK <code>FIDx-607</code> i CBCORA <code>FIDx-617</code>.
+    <img class="shot med" src="screens_kreatoridcf/11_ccm_weryfikacja.png" alt="Weryfikacja dostarczenia w CCM"></li>
+  <li>W przypadku oznaczenia <b>na czerwono</b> — <b>zgłoś</b> ten fakt (odeślij plik LOG). Odbiorcy zgłoszeń: <a href="Inwentarz_IDCC.html#N18">WPO</a> / <a href="Inwentarz_IDCC.html#N19">CIZ</a> / <a href="Inwentarz_IDCC.html#N20">PSE-I</a>.</li>
+  <li>Wątpliwości dot. procedury — kontakt z dyżurnym WPO.</li>
+</ol>
+</div>
+
+<div class="box" style="font-size:0.82em;color:#6B778C;">
+Powiązane: kafelki GLSK/CBCORA — <a href="Przyklady_FID3C-607_popup.html">FID3C-607</a> · <a href="Przyklady_FID3-607_popup.html">FID3-607</a> · <a href="Przyklady_FID3C-617_popup.html">FID3C-617</a> · <a href="Przyklady_FID3-617_popup.html">FID3-617</a>. Narzędzie: <a href="Inwentarz_IDCC.html#N08">KreatorIDCF_CGMES (N08)</a>.
+</div>
+</body>
+</html>

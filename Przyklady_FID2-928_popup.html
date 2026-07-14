@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>FID2-928 — stany w stylu Confluence</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; max-width: 1400px; margin: 0 auto; padding: 16px; background: #f4f5f7; color: #172B4D; line-height: 1.4; }
+  h1 { color: #1F4E78; border-bottom: 3px solid #1F4E78; padding-bottom: 8px; margin-bottom: 8px; }
+  .topbar { background: #1F4E78; padding: 12px 20px; margin: -16px -16px 16px -16px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+  .topbar button { background: white; color: #1F4E78; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+  .topbar button:hover { background: #E3F2FD; }
+  .header-info { background: white; padding: 12px 20px; border-radius: 4px; margin: 12px 0 24px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-size: 0.92em; }
+  .cat-section { margin: 32px 0 16px 0; }
+  .cat-title { font-size: 1.1em; font-weight: 600; color: #172B4D; margin-bottom: 12px; padding-left: 8px; border-left: 4px solid #1F4E78; }
+  .states-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
+  .popup-card { background: white; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); overflow: hidden; position: relative; border: 1px solid #DFE1E6; }
+  .popup-header { padding: 8px 14px 6px 14px; position: relative; border-top: 4px solid transparent; }
+  .popup-header.cat-A { border-top-color: #43A047; }
+  .popup-header.cat-B { border-top-color: #9E9E9E; }
+  .popup-header.cat-C { border-top-color: #FB8C00; }
+  .popup-header.cat-D { border-top-color: #D32F2F; }
+  .popup-fid { font-size: 1.0em; font-weight: 700; color: #172B4D; margin-top: 4px; }
+  .popup-type { font-size: 0.85em; color: #6B778C; margin-top: 1px; }
+  .popup-close { position: absolute; top: 8px; right: 10px; color: #DE350B; font-size: 1.1em; font-weight: bold; cursor: pointer; background: none; border: none; padding: 0; line-height: 1; }
+  .popup-state-tag { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 0.7em; font-weight: 600; margin-left: 6px; vertical-align: middle; }
+  .popup-state-tag.A { background: #E3FCEF; color: #006644; }
+  .popup-state-tag.B { background: #DFE1E6; color: #42526E; }
+  .popup-state-tag.C { background: #FFF0B3; color: #974F00; }
+  .popup-state-tag.D { background: #FFEBE6; color: #BF2600; }
+  .tile-table { margin: 8px 14px; border-collapse: collapse; }
+  .tile-table th { background: #F4F5F7; color: #42526E; padding: 5px 8px; font-size: 0.72em; font-weight: 600; border: 1px solid #DFE1E6; text-align: center; }
+  .tile-table td { padding: 8px 10px; border: 1px solid #DFE1E6; text-align: center; background: white; }
+  .tile { width: 32px; height: 32px; display: inline-block; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+  .tile-szary { background: #BFBFBF; }
+  .tile-szary-qmark { background: #BFBFBF; color: #42526E; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-szary-qmark::after { content: "?"; }
+  .tile-puste { background: white; border: 1px solid #DFE1E6; }
+  .tile-pomarancz { background: #ED7D31; border: 2px solid #C55A11 !important; box-sizing: border-box; }
+  .tile-czerwony { background: #C00000; }
+  .tile-czerwony-excl { background: #C00000; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-czerwony-excl::after { content: "!"; }
+  .tile-czerwony-qmark { background: #C00000; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-czerwony-qmark::after { content: "?"; }
+  .tile-zielony { background: #00B050; }
+  .tile-zielony-R { background: #00B050; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-zielony-R::after { content: "R"; }
+  .tile-cz-W { background: #2E7D32; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-cz-W::after { content: "W"; }
+  .tile-cz-Wcet { background: #1B5E20; color: white; text-align: center; line-height: 32px; font-weight: bold; font-size: 9px; }
+  .tile-cz-Wcet::after { content: "W po CET"; }
+  .tile-fioletowy { background: #7030A0; }
+  .tile-czarny { background: #000000; }
+  .popup-desc { padding: 8px 14px 4px 14px; font-size: 0.88em; color: #172B4D; }
+  .section-label-mini { margin: 8px 14px 0 14px; font-size: 0.78em; font-weight: 700; color: #6B778C; }
+  .popup-desc[contenteditable="true"] { background: #FAFBFC; border: 1px dashed #DFE1E6; border-radius: 3px; min-height: 40px; }
+  .popup-desc[contenteditable="true"]:focus { background: white; border-color: #0052CC; outline: none; }
+  .popup-details { padding: 4px 14px 8px 14px; }
+  .popup-details details { margin: 4px 0; }
+  .popup-details summary { cursor: pointer; padding: 4px 6px; background: #F4F5F7; border-radius: 3px; font-size: 0.82em; font-weight: 600; color: #42526E; }
+  .popup-details summary:hover { background: #DFE1E6; }
+  .popup-details .editable { background: #FAFBFC; border: 1px dashed #DFE1E6; padding: 6px 10px; margin: 4px 0; border-radius: 3px; font-size: 0.82em; line-height: 1.4; }
+  .popup-details .editable:focus { background: white; border-color: #0052CC; outline: none; }
+  .popup-details .editable.procedures { background: #FFFAE6; border-color: #FFC107; }
+  .popup-details .editable.procedures ol { margin: 4px 0; padding-left: 18px; }
+  .popup-details .editable.procedures ol li { margin-bottom: 4px; }
+  .full-link { margin-top: 6px; padding-top: 5px; border-top: 1px dotted #DFE1E6; font-size: 0.92em; color: #6B778C; }
+  .editable a, .popup-fileinfo a { cursor: pointer; }
+  ul.branch { margin: 4px 0 4px 0; padding-left: 18px; list-style: none; }
+  ul.branch li { margin-bottom: 5px; padding-left: 14px; position: relative; }
+  ul.branch li::before { content: "→"; position: absolute; left: 0; color: #6B778C; }
+  ul.codes { margin: 4px 0; padding-left: 18px; }
+  ul.codes li { margin-bottom: 3px; }
+  ul.codes b { color: #BF2600; }
+  .rfull { font-size: 0.88em; color: #6B778C; }
+  .popup-fileinfo { padding: 6px 14px 2px 14px; border-bottom: 1px solid #F0F0F0; }
+  .section-divider { margin: 8px 14px 2px 14px; font-size: 0.78em; font-weight: 700; color: #1F4E78; text-transform: uppercase; letter-spacing: 0.5px; }
+  .sec-h { margin: 10px 14px 0 14px; padding: 5px 10px; background: #1F4E78; color: #fff; font-weight: 800; font-size: 0.8em; letter-spacing: 0.5px; border-radius: 3px; text-transform: uppercase; }
+  .sec-c { padding: 5px 14px 4px 14px; font-size: 0.86em; color: #172B4D; line-height: 1.45; }
+  .sec-c[contenteditable="true"]:focus { outline: none; background: #FAFBFC; }
+  .sec-c.proc { background: #FFFAE6; border-left: 3px solid #FFC107; margin: 3px 14px 4px 14px; padding: 7px 10px; border-radius: 0 3px 3px 0; }
+  .sec-c.proc ol { margin: 4px 0; padding-left: 18px; }
+  .sec-c.proc ol li { margin-bottom: 4px; }
+  .popup-footer { padding: 8px 14px 12px 14px; border-top: 1px solid #DFE1E6; background: #FAFBFC; }
+  .popup-footer button { background: white; color: #0052CC; border: 1px solid #0052CC; padding: 6px 14px; border-radius: 3px; cursor: pointer; font-weight: 500; font-size: 0.85em; }
+  .popup-footer button:hover { background: #DEEBFF; }
+  a { color: #0052CC; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code { background: #F4F5F7; padding: 1px 4px; border-radius: 3px; font-family: "SF Mono", Consolas, monospace; font-size: 0.85em; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span>FID2-928 (ATC Based Validation (zwrotny), IDCC(b)) — 18 stan(ów) w stylu popupu Confluence</span>
+  <button onclick="downloadHTML()">📥 Pobierz aktualną wersję HTML</button>
+</div>
+<div class="header-info">
+<strong>TET:</strong> 21:40 | <strong>CET:</strong> 22:05 | <strong>Wersja (xlsx):</strong> 1 | <strong>Profil:</strong> 2CCT (CCtool wyśl. + CCtool zwalid.)<br>
+<strong>Plik zwrotny</strong> — generowany centralnie po dostarczeniu paczki PERUN_IDx_ATC. Po CET brak lokalnego fallbacku (HTML §5.4).<br>
+<strong>Procedury awaryjne</strong> = drzewko kroków (co po kolei klikać). Szczegóły + screeny: <a href="Ryzyka_pelna_baza_IDCC.html">Ryzyka R01-R29</a>. Narzędzia/procedury: <a href="Inwentarz_IDCC.html#tools">N01-N22</a> · <a href="Inwentarz_IDCC.html#procedures">P01-P06</a>.
+</div>
+<div class="cat-section">
+<div class="cat-title">⚪ Kategoria B — MONITORING (3 stany)</div>
+<div class="states-grid">
+
+<div class="popup-card">
+  <div class="popup-header cat-B">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag B">Stan 1 · B</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-szary"></div></td><td><div class="tile tile-szary"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Przedwczesne (>30 min do TET). Walidacja ATC jeszcze nie ukończona.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Monitoring — sprawdź w aplikacji CCM postęp walidacji paczki PERUN_IDx_ATC.</strong></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-B">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag B">Stan 2 · B</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-pomarancz"></div></td><td><div class="tile tile-pomarancz"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Zbliża się TET, brak FIDx-928. Walidacja paczki ATC w toku.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li>Rozwiń agregat PERUN_IDx_ATC → zweryfikuj składowe</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>brak składowej</b> → uzupełnij brakującą składową w aplikacji CCM (HTML §5.4)</li><li><b>składowe OK</b> → monitoruj — czekaj na wynik walidacji</li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+</div>
+</div>
+<div class="cat-section">
+<div class="cat-title">🟡 Kategoria C — BACKUP WYMAGANY (8 stanów)</div>
+<div class="states-grid">
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag C">Stan 3 · C</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-czerwony"></div></td><td><div class="tile tile-czerwony"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Zbliża się CET — brak wyniku walidacji ATC. Stan alarmowy.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie (zbliża się CET):</strong><ol><li>Ostatnia szansa: dokończ uzupełnienia paczki ATC w CCM; sprawdź <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> (Message Viewer)</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>plik dotrze</b> → OK — koniec</li><li><b>błąd</b> → odczytaj kod ACK (patrz Stan 6)</li><li><b>brak</b> → zgłoś</li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+</div>
+</div>
+<div class="cat-section">
+<div class="cat-title">🔴 Kategoria D — KRYTYCZNY (2 stany)</div>
+<div class="states-grid">
+
+<div class="popup-card">
+  <div class="popup-header cat-D">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag D">Stan 4 · D</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-czarny"></div></td><td><div class="tile tile-czarny"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Minął CET, brak FIDx-928. KRYTYCZNE — brak lokalnego fallbacku.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie (KRYTYCZNE — minął CET):</strong><ol><li>⛔ STOP — żadnych działań ręcznych. Brak lokalnego fallbacku (HTML §5.4: brak wyniku ATC w czasie → Dyspozytor nie wykonuje dalszych czynności).</li><li>Zgłoś + telefon do <a href="Inwentarz_IDCC.html#N13" target="_blank" contenteditable="false">RCC</a></li></ol><div class="full-link">Szczegóły (opis + screeny): <a href="Ryzyka_pelna_baza_IDCC.html#R04" target="_blank" contenteditable="false">R04</a> &middot; <a href="Ryzyka_pelna_baza_IDCC.html#R18" target="_blank" contenteditable="false">R18</a></div></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+</div>
+</div>
+<div class="cat-section">
+<div class="cat-title">🟢 Kategoria A — STANY OK (5 stanów)</div>
+<div class="states-grid">
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag A">Stan 5 · A</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-zielony"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Happy Day — walidacja ATC zakończona poprawnie, wynik opublikowany.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Brak interwencji — walidacja ATC zakończona poprawnie.</strong></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+</div>
+</div>
+<div class="cat-section">
+<div class="cat-title">🟡 Kategoria C — BACKUP WYMAGANY (8 stanów)</div>
+<div class="states-grid">
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag C">Stan 6 · C</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-czerwony"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Wynik dotarł, ale ACK negatywny (Rejected).</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li><a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> (Message Viewer) → odczytaj kod ACK</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>kod 20 (bramka dla pliku zamknięta)</b> → zgłoś (administrator <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> otwiera bramkę)</li><li><b>kod 21 (błąd procesowy CCCt)</b> → zgłoś — błąd procesu w <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a></li><li><b>kod 30 (rozmiar niezgodny)</b> → patrz Stan 11 (rozmiar)</li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag C">Stan 7 · C</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Wynik dotarł, ACK nie napłynął w czasie (timeout).</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li>Czekaj 5 min → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> (Message Viewer)</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>Processed</b> → oznacz 'R' w CCM</li><li><b>brak >10 min</b> → zgłoś — sprawdź transport zwrotny <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0</a> (<a href="Ryzyka_pelna_baza_IDCC.html#R18" target="_blank" contenteditable="false">R18</a>)</li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag C">Stan 8 · C</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-czarny"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Wynik dotarł, brak ACK do CET.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li>Sprawdź transport zwrotny <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0</a></li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>transport OK, ACK błąd</b> → odczytaj kod ACK (patrz Stan 6)</li><li><b>awaria transportu</b> → zgłoś (<a href="Ryzyka_pelna_baza_IDCC.html#R18" target="_blank" contenteditable="false">R18</a>)</li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+</div>
+</div>
+<div class="cat-section">
+<div class="cat-title">🟢 Kategoria A — STANY OK (5 stanów)</div>
+<div class="states-grid">
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag A">Stan 9 · A</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-fioletowy"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Wynik dotarł, ACK napłynął po CET — pozytywny.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Walidacja opóźniona, ale OK (ACK po CET pozytywny).</strong></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag A">Stan 10 · A</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-zielony-R"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Status nadany ręcznie 'R' (nietypowe dla pliku zwrotnego).</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Brak działań — status nadany ręcznie przez Dyspozytora (nietypowe dla pliku zwrotnego).</strong></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+</div>
+</div>
+<div class="cat-section">
+<div class="cat-title">🟡 Kategoria C — BACKUP WYMAGANY (8 stanów)</div>
+<div class="states-grid">
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag C">Stan 11 · C</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-czerwony-excl"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Niepoprawny rozmiar wyniku FIDx-928.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li>W aplikacji CCM kliknij plik lewym przyciskiem myszy → Informacje → sprawdź rozmiar (pobranie ponownie nie ma sensu — plik zwrotny)</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>zawartość OK mimo rozmiaru</b> → oznacz 'R' w CCM</li><li><b>zawartość niepoprawna</b> → zgłoś + telefon do <a href="Inwentarz_IDCC.html#N13" target="_blank" contenteditable="false">RCC</a></li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag C">Stan 12 · C</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Niepoprawny rozmiar + brak ACK (timeout).</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li><a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> (Message Viewer) → sprawdź status</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>Processed</b> → oznacz 'R' w CCM</li><li><b>brak</b> → zgłoś + telefon do <a href="Inwentarz_IDCC.html#N13" target="_blank" contenteditable="false">RCC</a></li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag C">Stan 13 · C</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-czerwony"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Niepoprawny rozmiar + ACK negatywny.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li><a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> (Message Viewer) → odczytaj kod ACK</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>kod 20 (bramka zamknięta)</b> → zgłoś (administrator <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a>)</li><li><b>kod 30 (rozmiar)</b> → patrz Stan 11</li><li><b>inny</b> → zgłoś + telefon do <a href="Inwentarz_IDCC.html#N13" target="_blank" contenteditable="false">RCC</a></li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+</div>
+</div>
+<div class="cat-section">
+<div class="cat-title">🔴 Kategoria D — KRYTYCZNY (2 stany)</div>
+<div class="states-grid">
+
+<div class="popup-card">
+  <div class="popup-header cat-D">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag D">Stan 14 · D</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-czarny"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Niepoprawny rozmiar + brak ACK do CET. KRYTYCZNE.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie (KRYTYCZNE):</strong><ol><li>⛔ Krytyczne — minął CET, niepoprawny rozmiar i brak ACK.</li><li>Zgłoś + telefon do <a href="Inwentarz_IDCC.html#N13" target="_blank" contenteditable="false">RCC</a></li></ol><div class="full-link">Szczegóły (opis + screeny): <a href="Ryzyka_pelna_baza_IDCC.html#R05" target="_blank" contenteditable="false">R05</a> &middot; <a href="Ryzyka_pelna_baza_IDCC.html#R18" target="_blank" contenteditable="false">R18</a></div></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+</div>
+</div>
+<div class="cat-section">
+<div class="cat-title">🟢 Kategoria A — STANY OK (5 stanów)</div>
+<div class="states-grid">
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag A">Stan 15 · A</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-fioletowy"></div></td><td><div class="tile tile-fioletowy"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">FIDx-928 dostarczony po CET — walidacja OK.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Walidacja zakończona po terminie — OK.</strong></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+</div>
+</div>
+<div class="cat-section">
+<div class="cat-title">⚪ Kategoria B — MONITORING (3 stany)</div>
+<div class="states-grid">
+
+<div class="popup-card">
+  <div class="popup-header cat-B">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag B">Stan 16 · B</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-szary-qmark"></div></td><td><div class="tile tile-puste"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Wysyłka zwrotna trwa (transport Connector 2.0).</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li>Czekaj 5 min (transport zwrotny <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0</a>)</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>zmieniło się na zielony</b> → OK — koniec</li><li><b>brak >10 min</b> → zgłoś (<a href="Ryzyka_pelna_baza_IDCC.html#R18" target="_blank" contenteditable="false">R18</a>)</li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+</div>
+</div>
+<div class="cat-section">
+<div class="cat-title">🟢 Kategoria A — STANY OK (5 stanów)</div>
+<div class="states-grid">
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag A">Stan 17 · A</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-zielony-R"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Status ręczny przyznany (nietypowe dla pliku zwrotnego).</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Brak działań — status ręczny przyznany przez Dyspozytora (nietypowe dla pliku zwrotnego).</strong></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+</div>
+</div>
+<div class="cat-section">
+<div class="cat-title">🟡 Kategoria C — BACKUP WYMAGANY (8 stanów)</div>
+<div class="states-grid">
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID2-928 <span class="popup-state-tag C">Stan 18 · C</span></div>
+    <div class="popup-type">ATC Based Validation (zwrotny)</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-pomarancz"></div></td><td><div class="tile tile-czerwony"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">TET zbliża się, ACK błąd już teraz (błąd paczki ATC).</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li><a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> (Message Viewer) → odczytaj błąd paczki ATC</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>błąd składowej</b> → uzupełnij składową w aplikacji CCM</li><li><b>inny</b> → odczytaj kod ACK (patrz Stan 6)</li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">ATC Based Validation (FID2-928) dla IDCC(b). Plik ZWROTNY — wynik walidacji ATC prowadzonej centralnie w Core CC Tool, publikowany przez CCCt → TSO przez Connector 2.0. NIE jest wysyłany przez TSO.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true">Paczka ATC (PERUN_IDx_ATC) → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> <em>(walidacja ATC)</em> → FIDx-928 → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N01" target="_blank" contenteditable="false">CCM [N01]</a><br><br><b>Plik zwrotny</b> — NIE jest wysyłany przez TSO (Manual Upload nie ma zastosowania).</div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID2_928" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID2-928 ›</a></div>
+</div>
+</div>
+</div>
+
+<script>
+function downloadHTML() {
+  const h = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  const blob = new Blob([h], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = document.title.replace(/[^A-Za-z0-9_-]/g,'_') + '_kopia.html';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+document.querySelectorAll('.popup-close').forEach(b => b.addEventListener('click', e => e.target.closest('.popup-card').style.display='none'));
+document.addEventListener('click', function(e) {
+  const a = e.target.closest('a');
+  if (a && a.getAttribute('href')) { e.preventDefault(); window.open(a.getAttribute('href'), '_blank'); }
+});
+</script>
+</body>
+</html>

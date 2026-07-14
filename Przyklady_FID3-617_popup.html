@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>FID3-617 — stany w stylu Confluence</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; max-width: 1400px; margin: 0 auto; padding: 16px; background: #f4f5f7; color: #172B4D; line-height: 1.4; }
+  h1 { color: #1F4E78; border-bottom: 3px solid #1F4E78; padding-bottom: 8px; margin-bottom: 8px; }
+  .topbar { background: #1F4E78; padding: 12px 20px; margin: -16px -16px 16px -16px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+  .topbar button { background: white; color: #1F4E78; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+  .topbar button:hover { background: #E3F2FD; }
+  .header-info { background: white; padding: 12px 20px; border-radius: 4px; margin: 12px 0 24px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-size: 0.92em; }
+  .cat-section { margin: 32px 0 16px 0; }
+  .cat-title { font-size: 1.1em; font-weight: 600; color: #172B4D; margin-bottom: 12px; padding-left: 8px; border-left: 4px solid #1F4E78; }
+  .states-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
+  .popup-card { background: white; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); overflow: hidden; position: relative; border: 1px solid #DFE1E6; }
+  .popup-header { padding: 8px 14px 6px 14px; position: relative; border-top: 4px solid transparent; }
+  .popup-header.cat-A { border-top-color: #43A047; }
+  .popup-header.cat-B { border-top-color: #9E9E9E; }
+  .popup-header.cat-C { border-top-color: #FB8C00; }
+  .popup-header.cat-D { border-top-color: #D32F2F; }
+  .popup-fid { font-size: 1.0em; font-weight: 700; color: #172B4D; margin-top: 4px; }
+  .popup-type { font-size: 0.85em; color: #6B778C; margin-top: 1px; }
+  .popup-close { position: absolute; top: 8px; right: 10px; color: #DE350B; font-size: 1.1em; font-weight: bold; cursor: pointer; background: none; border: none; padding: 0; line-height: 1; }
+  .popup-state-tag { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 0.7em; font-weight: 600; margin-left: 6px; vertical-align: middle; }
+  .popup-state-tag.A { background: #E3FCEF; color: #006644; }
+  .popup-state-tag.B { background: #DFE1E6; color: #42526E; }
+  .popup-state-tag.C { background: #FFF0B3; color: #974F00; }
+  .popup-state-tag.D { background: #FFEBE6; color: #BF2600; }
+  .tile-table { margin: 8px 14px; border-collapse: collapse; }
+  .tile-table th { background: #F4F5F7; color: #42526E; padding: 5px 8px; font-size: 0.72em; font-weight: 600; border: 1px solid #DFE1E6; text-align: center; }
+  .tile-table td { padding: 8px 10px; border: 1px solid #DFE1E6; text-align: center; background: white; }
+  .tile { width: 32px; height: 32px; display: inline-block; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+  .tile-szary { background: #BFBFBF; }
+  .tile-szary-qmark { background: #BFBFBF; color: #42526E; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-szary-qmark::after { content: "?"; }
+  .tile-puste { background: white; border: 1px solid #DFE1E6; }
+  .tile-pomarancz { background: #ED7D31; border: 2px solid #C55A11 !important; box-sizing: border-box; }
+  .tile-czerwony { background: #C00000; }
+  .tile-czerwony-excl { background: #C00000; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-czerwony-excl::after { content: "!"; }
+  .tile-czerwony-qmark { background: #C00000; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-czerwony-qmark::after { content: "?"; }
+  .tile-zielony { background: #00B050; }
+  .tile-zielony-R { background: #00B050; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-zielony-R::after { content: "R"; }
+  .tile-cz-W { background: #2E7D32; color: white; text-align: center; line-height: 32px; font-weight: bold; }
+  .tile-cz-W::after { content: "W"; }
+  .tile-cz-Wcet { background: #1B5E20; color: white; text-align: center; line-height: 32px; font-weight: bold; font-size: 9px; }
+  .tile-cz-Wcet::after { content: "W po CET"; }
+  .tile-fioletowy { background: #7030A0; }
+  .tile-czarny { background: #000000; }
+  .popup-desc { padding: 8px 14px 4px 14px; font-size: 0.88em; color: #172B4D; }
+  .section-label-mini { margin: 8px 14px 0 14px; font-size: 0.78em; font-weight: 700; color: #6B778C; }
+  .popup-desc[contenteditable="true"] { background: #FAFBFC; border: 1px dashed #DFE1E6; border-radius: 3px; min-height: 40px; }
+  .popup-desc[contenteditable="true"]:focus { background: white; border-color: #0052CC; outline: none; }
+  .popup-details { padding: 4px 14px 8px 14px; }
+  .popup-details details { margin: 4px 0; }
+  .popup-details summary { cursor: pointer; padding: 4px 6px; background: #F4F5F7; border-radius: 3px; font-size: 0.82em; font-weight: 600; color: #42526E; }
+  .popup-details summary:hover { background: #DFE1E6; }
+  .popup-details .editable { background: #FAFBFC; border: 1px dashed #DFE1E6; padding: 6px 10px; margin: 4px 0; border-radius: 3px; font-size: 0.82em; line-height: 1.4; }
+  .popup-details .editable:focus { background: white; border-color: #0052CC; outline: none; }
+  .popup-details .editable.procedures { background: #FFFAE6; border-color: #FFC107; }
+  .popup-details .editable.procedures ol { margin: 4px 0; padding-left: 18px; }
+  .popup-details .editable.procedures ol li { margin-bottom: 4px; }
+  .full-link { margin-top: 6px; padding-top: 5px; border-top: 1px dotted #DFE1E6; font-size: 0.92em; color: #6B778C; }
+  .editable a, .popup-fileinfo a { cursor: pointer; }
+  ul.branch { margin: 4px 0 4px 0; padding-left: 18px; list-style: none; }
+  ul.branch li { margin-bottom: 5px; padding-left: 14px; position: relative; }
+  ul.branch li::before { content: "→"; position: absolute; left: 0; color: #6B778C; }
+  ul.codes { margin: 4px 0; padding-left: 18px; }
+  ul.codes li { margin-bottom: 3px; }
+  ul.codes b { color: #BF2600; }
+  .rfull { font-size: 0.88em; color: #6B778C; }
+  .popup-fileinfo { padding: 6px 14px 2px 14px; border-bottom: 1px solid #F0F0F0; }
+  .section-divider { margin: 8px 14px 2px 14px; font-size: 0.78em; font-weight: 700; color: #1F4E78; text-transform: uppercase; letter-spacing: 0.5px; }
+  .sec-h { margin: 10px 14px 0 14px; padding: 5px 10px; background: #1F4E78; color: #fff; font-weight: 800; font-size: 0.8em; letter-spacing: 0.5px; border-radius: 3px; text-transform: uppercase; }
+  .sec-c { padding: 5px 14px 4px 14px; font-size: 0.86em; color: #172B4D; line-height: 1.45; }
+  .sec-c[contenteditable="true"]:focus { outline: none; background: #FAFBFC; }
+  .sec-c.proc { background: #FFFAE6; border-left: 3px solid #FFC107; margin: 3px 14px 4px 14px; padding: 7px 10px; border-radius: 0 3px 3px 0; }
+  .sec-c.proc ol { margin: 4px 0; padding-left: 18px; }
+  .sec-c.proc ol li { margin-bottom: 4px; }
+  .popup-footer { padding: 8px 14px 12px 14px; border-top: 1px solid #DFE1E6; background: #FAFBFC; }
+  .popup-footer button { background: white; color: #0052CC; border: 1px solid #0052CC; padding: 6px 14px; border-radius: 3px; cursor: pointer; font-weight: 500; font-size: 0.85em; }
+  .popup-footer button:hover { background: #DEEBFF; }
+  a { color: #0052CC; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code { background: #F4F5F7; padding: 1px 4px; border-radius: 3px; font-family: "SF Mono", Consolas, monospace; font-size: 0.85em; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span>FID3-617 (CBCORA, IDCC(d)) — 32 stan(ów) w stylu popupu Confluence</span>
+  <button onclick="downloadHTML()">📥 Pobierz aktualną wersję HTML</button>
+</div>
+<div class="header-info">
+<strong>TET:</strong> 06:20 | <strong>CET:</strong> 07:30 | <strong>Wersja (xlsx):</strong> 3 | <strong>Profil:</strong> 2CCT (CCtool wyśl. + CCtool zwalid.)<br>
+<strong>Normalnie:</strong> automatyczny skrypt Monitora (np. 00:05 v2, 00:50 v3). <strong>Backup:</strong> generacja w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> (przyciski GSK/CBCORA) → <b>Publikuj Connector</b> — <a href="Procedura_KreatorIDCF_GLSK_CBCORA.html">szczegółowa procedura (ze screenami)</a>.<br>
+<strong>Procedury awaryjne</strong> = drzewko kroków (co po kolei klikać). Szczegóły + screeny: <a href="Ryzyka_pelna_baza_IDCC.html">Ryzyka R01-R29</a>. Narzędzia/procedury: <a href="Inwentarz_IDCC.html#tools">N01-N22</a> · <a href="Inwentarz_IDCC.html#procedures">P01-P06</a>.
+</div>
+<div class="cat-section">
+<div class="cat-title">🟢 Kategoria A — STANY OK (20 stanów)</div>
+<div class="states-grid">
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 1 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-zielony"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument wysłany prawidłowo do CCTool, otrzymano potwierdzenie ACK z pozytywnym komunikatem.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Brak działań — proces poprawny.</strong></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 2 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-zielony-R"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument wysłany prawidłowo do CCTool. Dyspozytor ustawił status ręcznie 'R' po weryfikacji w CCTool.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Brak działań.</strong></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 3 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-fioletowy"></div></td><td><div class="tile tile-fioletowy"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument wysłany prawidłowo do CCTool po CET, ACK napłynął po CET z pozytywnym komunikatem.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Brak działań — dostarczone po CET, OK.</strong></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 4 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-zielony-R"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument oznaczony ręcznie jako wysłany prawidłowo do CCTool oraz otrzymanie potwierdzenia ACK.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Brak działań.</strong></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 5 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-zielony"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument prawidłowo wysłany ręcznie z poziomu CCM. Otrzymano potwierdzenie ACK z pozytywnym komunikatem.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Brak działań — wysyłka ręczna wykonana.</strong></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 6 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-puste"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument prawidłowo wysłany ręcznie z poziomu CCM. Trwa oczekiwanie na potwierdzenie ACK — około 2 min.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li>Czekaj 5 min</li><li>OK → ustaw 'R' w CCM</li></ol></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 7 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument wysłany ręcznie z poziomu CCM, ale ACK nie napłynął w żądanym czasie i zbliża się CET.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li><a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> → sprawdź czy plik dotarł (Message Viewer)</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>OK</b> → oznacz 'R' w CCM</li><li><b>błąd</b> → Plik został odrzucony — odczytaj kod błędu z potwierdzenia ACK i zareaguj zależnie od kodu:<ul class="codes"><li><b>kod 20</b> (bramka dla pliku zamknięta) — zgłoś administratorowi <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a></li><li><b>kod 21</b> (wersja nie jest wyższa niż już zapisana) — w źródle podnieś numer wersji i wyślij plik ponownie</li><li><b>kod 30</b> (rozmiar pliku niezgodny) — pobierz poprawny plik i wyślij ponownie</li></ul> <span class="rfull">[<a href="Ryzyka_pelna_baza_IDCC.html#R05" target="_blank" contenteditable="false">R05 — pełny opis</a>]</span></li><li><b>brak</b> → Awaria transportu plików (<a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0</a>). Zgłoś awarię. W międzyczasie wygeneruj plik w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i wyślij go ręcznie przez <a href="Inwentarz_IDCC.html#P01" target="_blank" contenteditable="false">Core CC Tool (Manual Upload)</a>. <span class="rfull">[<a href="Ryzyka_pelna_baza_IDCC.html#R18" target="_blank" contenteditable="false">R18 — pełny opis</a>]</span></li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 8 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-czerwony"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument wysłany ręcznie z poziomu CCM, a otrzymane ACK: (1) zawiera komunikat błędu (najedź kursorem); (2) proces zakończył się błędem — 'Błąd procesu'.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li>Najedź kursorem na status i odczytaj kod ACK</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>kod 20 (bramka dla pliku zamknięta)</b> → zgłoś administratorowi <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a></li><li><b>kod 21 (wersja nie jest wyższa niż zapisana)</b> → wygeneruj kolejną wersję w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i opublikuj (Publikuj Connector)  &middot; <a href="Procedura_KreatorIDCF_GLSK_CBCORA.html" target="_blank" contenteditable="false">szczegółowa procedura (ze screenami)</a></li><li><b>kod 30 (rozmiar pliku niezgodny)</b> → wygeneruj ponownie w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i opublikuj (Publikuj Connector)  &middot; <a href="Procedura_KreatorIDCF_GLSK_CBCORA.html" target="_blank" contenteditable="false">szczegółowa procedura (ze screenami)</a></li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 9 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-fioletowy"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument prawidłowo wysłany ręcznie z poziomu CCM. Otrzymano potwierdzenie ACK z pozytywnym komunikatem po CET.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Brak działań — ręczna + ACK po CET, OK.</strong></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 10 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-czarny"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument prawidłowo wysłany ręcznie z poziomu CCM. Nie otrzymano potwierdzenia ACK — upłynął czas CET.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li><a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> → sprawdź status</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>OK (Processed)</b> → oznacz 'R' w CCM + zgłoś</li><li><b>brak / awaria zwrotna</b> → Awaria transportu plików (<a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0</a>). Zgłoś awarię. W międzyczasie wygeneruj plik w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i wyślij go ręcznie przez <a href="Inwentarz_IDCC.html#P01" target="_blank" contenteditable="false">Core CC Tool (Manual Upload)</a>. <span class="rfull">[<a href="Ryzyka_pelna_baza_IDCC.html#R18" target="_blank" contenteditable="false">R18 — pełny opis</a>]</span></li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 11 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-cz-W"></div></td><td><div class="tile tile-zielony-R"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument prawidłowo wysłany ręcznie z poziomu CCM. Nie otrzymano ACK, Dyspozytor ustawił status 'R' po weryfikacji w CCTool.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Brak działań — decyzja ręczna Dyspozytora.</strong></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 12 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-puste"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument prawidłowo wysłany ręcznie z poziomu CCM po CET. Trwa oczekiwanie na potwierdzenie ACK — około 2 min.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li>Czekaj 2-5 min</li><li>OK → ustaw 'R'</li></ol></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 13 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument wysłany ręcznie z poziomu CCM po CET. Trwa oczekiwanie na potwierdzenie ACK — upłynęło więcej niż 2 minuty.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li><a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> → sprawdź czy plik dotarł (Message Viewer)</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>OK</b> → oznacz 'R' w CCM</li><li><b>błąd</b> → Plik został odrzucony — odczytaj kod błędu z potwierdzenia ACK i zareaguj zależnie od kodu:<ul class="codes"><li><b>kod 20</b> (bramka dla pliku zamknięta) — zgłoś administratorowi <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a></li><li><b>kod 21</b> (wersja nie jest wyższa niż już zapisana) — w źródle podnieś numer wersji i wyślij plik ponownie</li><li><b>kod 30</b> (rozmiar pliku niezgodny) — pobierz poprawny plik i wyślij ponownie</li></ul> <span class="rfull">[<a href="Ryzyka_pelna_baza_IDCC.html#R05" target="_blank" contenteditable="false">R05 — pełny opis</a>]</span></li><li><b>brak</b> → Awaria transportu plików (<a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0</a>). Zgłoś awarię. W międzyczasie wygeneruj plik w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i wyślij go ręcznie przez <a href="Inwentarz_IDCC.html#P01" target="_blank" contenteditable="false">Core CC Tool (Manual Upload)</a>. <span class="rfull">[<a href="Ryzyka_pelna_baza_IDCC.html#R18" target="_blank" contenteditable="false">R18 — pełny opis</a>]</span></li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 14 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-czerwony"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument wysłany ręcznie z poziomu CCM po CET, a otrzymane ACK: (1) komunikat błędu; (2) proces błąd. Typowo kod 20 gateClosed.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li>Najedź kursorem na status i odczytaj kod ACK (typowo kod 20)</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>kod 20 (bramka dla pliku zamknięta)</b> → po CET bramka jest zamknięta → zgłoś</li><li><b>inny kod</b> → Plik został odrzucony — odczytaj kod błędu z potwierdzenia ACK i zareaguj zależnie od kodu:<ul class="codes"><li><b>kod 20</b> (bramka dla pliku zamknięta) — zgłoś administratorowi <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a></li><li><b>kod 21</b> (wersja nie jest wyższa niż już zapisana) — w źródle podnieś numer wersji i wyślij plik ponownie</li><li><b>kod 30</b> (rozmiar pliku niezgodny) — pobierz poprawny plik i wyślij ponownie</li></ul> <span class="rfull">[<a href="Ryzyka_pelna_baza_IDCC.html#R05" target="_blank" contenteditable="false">R05 — pełny opis</a>]</span></li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 15 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-fioletowy"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument prawidłowo wysłany ręcznie z poziomu CCM po CET. Otrzymano potwierdzenie ACK z pozytywnym komunikatem (po CET).</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Brak działań — ręczna + ACK po CET, OK.</strong></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 16 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-cz-Wcet"></div></td><td><div class="tile tile-czarny"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument prawidłowo wysłany ręcznie z poziomu CCM po CET. Nie otrzymano potwierdzenia ACK — upłynął czas CET.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li><a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> → sprawdź status</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>OK (Processed)</b> → oznacz 'R' w CCM + zgłoś</li><li><b>brak / awaria zwrotna</b> → Awaria transportu plików (<a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0</a>). Zgłoś awarię. W międzyczasie wygeneruj plik w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i wyślij go ręcznie przez <a href="Inwentarz_IDCC.html#P01" target="_blank" contenteditable="false">Core CC Tool (Manual Upload)</a>. <span class="rfull">[<a href="Ryzyka_pelna_baza_IDCC.html#R18" target="_blank" contenteditable="false">R18 — pełny opis</a>]</span></li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 17 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-puste"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument oznaczony ręcznie jako wysłany prawidłowo do CCTool. Trwa oczekiwanie na ACK — około 2 min.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li>Czekaj 5 min</li><li>OK → 'R' dla ACK</li></ol></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 18 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument oznaczony ręcznie jako wysłany prawidłowo. Trwa oczekiwanie na ACK — upłynęło więcej niż 2 min.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li>Czekaj 5 min</li><li>OK → 'R' dla ACK</li></ol></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 19 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-zielony-R"></div></td><td><div class="tile tile-czarny"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument oznaczony ręcznie jako wysłany prawidłowo. Nie otrzymano potwierdzenia ACK — upłynął czas CET.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li><a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> → sprawdź status</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>OK (Processed)</b> → utrzymaj 'R'</li><li><b>brak / awaria</b> → Awaria transportu plików (<a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0</a>). Zgłoś awarię. W międzyczasie wygeneruj plik w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i wyślij go ręcznie przez <a href="Inwentarz_IDCC.html#P01" target="_blank" contenteditable="false">Core CC Tool (Manual Upload)</a>. <span class="rfull">[<a href="Ryzyka_pelna_baza_IDCC.html#R18" target="_blank" contenteditable="false">R18 — pełny opis</a>]</span></li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-A">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag A">Stan 20 · A</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-zielony-R"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Wysłany dokument nie spełnia kryterium rozmiaru. ACK nie otrzymano, Dyspozytor ustawił status 'R' po weryfikacji w CCTool.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Brak działań — Dyspozytor zatwierdził zawartość.</strong></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+</div>
+</div>
+<div class="cat-section">
+<div class="cat-title">⚪ Kategoria B — MONITORING (1 stan)</div>
+<div class="states-grid">
+
+<div class="popup-card">
+  <div class="popup-header cat-B">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag B">Stan 21 · B</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-szary"></div></td><td><div class="tile tile-szary"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument jeszcze nie został wysłany do CCTool, ACK nie napłynął. Plik nie wymagany (>30 min do TET).</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Brak działań — czekaj do TET 06:20.</strong></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+</div>
+</div>
+<div class="cat-section">
+<div class="cat-title">🟡 Kategoria C — BACKUP WYMAGANY (10 stanów)</div>
+<div class="states-grid">
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag C">Stan 22 · C</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-czerwony"></div></td><td><div class="tile tile-czerwony"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Zbliża się CET — plik niedostarczony lub błąd wysyłki. Stan alarmowy.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie (alarm):</strong><ol><li><a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> → sprawdź czy plik dotarł do Core CC Tool</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>plik jest, brak ACK</b> → Plik został odrzucony — odczytaj kod błędu z potwierdzenia ACK i zareaguj zależnie od kodu:<ul class="codes"><li><b>kod 20</b> (bramka dla pliku zamknięta) — zgłoś administratorowi <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a></li><li><b>kod 21</b> (wersja nie jest wyższa niż już zapisana) — w źródle podnieś numer wersji i wyślij plik ponownie</li><li><b>kod 30</b> (rozmiar pliku niezgodny) — pobierz poprawny plik i wyślij ponownie</li></ul> <span class="rfull">[<a href="Ryzyka_pelna_baza_IDCC.html#R05" target="_blank" contenteditable="false">R05 — pełny opis</a>]</span></li><li><b>brak pliku (awaria Connector 2.0)</b> → Awaria transportu plików (<a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0</a>). Zgłoś awarię. W międzyczasie wygeneruj plik w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i wyślij go ręcznie przez <a href="Inwentarz_IDCC.html#P01" target="_blank" contenteditable="false">Core CC Tool (Manual Upload)</a>. <span class="rfull">[<a href="Ryzyka_pelna_baza_IDCC.html#R18" target="_blank" contenteditable="false">R18 — pełny opis</a>]</span></li><li><b>brak pliku w źródle</b> → Brak pliku lub wersji w aplikacji źródłowej. Otwórz <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i wygeneruj plik ponownie (kolejna wersja); jeśli aplikacja nie działa — zgłoś. <span class="rfull">[<a href="Ryzyka_pelna_baza_IDCC.html#R20" target="_blank" contenteditable="false">R20 — pełny opis</a>]</span></li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag C">Stan 23 · C</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Wysłany dokument nie spełnia kryterium rozmiaru. Oczekiwanie na ACK — upłynęło więcej niż 2 min.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li>W aplikacji CCM kliknij plik lewym przyciskiem myszy → Informacje → sprawdź rozmiar; pobierz z <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO</a> i rozpakuj</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>zawartość OK mimo rozmiaru</b> → oznacz 'R' (→ Stan 20)</li><li><b>zawartość niepoprawna</b> → Plik został odrzucony — odczytaj kod błędu z potwierdzenia ACK i zareaguj zależnie od kodu:<ul class="codes"><li><b>kod 20</b> (bramka dla pliku zamknięta) — zgłoś administratorowi <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a></li><li><b>kod 21</b> (wersja nie jest wyższa niż już zapisana) — w źródle podnieś numer wersji i wyślij plik ponownie</li><li><b>kod 30</b> (rozmiar pliku niezgodny) — pobierz poprawny plik i wyślij ponownie</li></ul> <span class="rfull">[<a href="Ryzyka_pelna_baza_IDCC.html#R05" target="_blank" contenteditable="false">R05 — pełny opis</a>]</span></li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag C">Stan 24 · C</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-czerwony"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Wysłany dokument nie spełnia kryterium rozmiaru, a ACK ma status czerwony — typowo kod 30.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li>W aplikacji CCM kliknij plik lewym przyciskiem myszy → Informacje → potwierdź rozmiar</li><li>Wygeneruj poprawny plik w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> (kolejna wersja) i opublikuj (Publikuj Connector)  &middot; <a href="Procedura_KreatorIDCF_GLSK_CBCORA.html" target="_blank" contenteditable="false">szczegółowa procedura (ze screenami)</a></li><li>Nadal za mały → zgłoś</li></ol><div class="full-link">Szczegóły (opis + screeny): <a href="Ryzyka_pelna_baza_IDCC.html#R05" target="_blank" contenteditable="false">R05</a> &middot; <a href="Ryzyka_pelna_baza_IDCC.html#R20" target="_blank" contenteditable="false">R20</a></div></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag C">Stan 25 · C</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-fioletowy"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Wysłany dokument nie spełnia kryterium rozmiaru. ACK napłynął po CET z pozytywnym komunikatem. Sprzeczność.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li><a href="Inwentarz_IDCC.html#P04" target="_blank" contenteditable="false">Pobierz z MinIO</a> → rozpakuj → sprawdź zawartość</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>zawartość OK</b> → oznacz 'R' (→ Stan 20); zgłoś</li><li><b>niepoprawna</b> → zgłoś</li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag C">Stan 26 · C</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-czerwony"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument wysłany prawidłowo do CCTool, ale ACK negatywny (Rejected). Kody: 20/21/30.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li>Najedź kursorem na status i odczytaj kod ACK</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>kod 20 (bramka dla pliku zamknięta)</b> → zgłoś (administrator <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> otwiera bramkę); sprawdź proces <code>IDx-AC-FORWARDING</code></li><li><b>kod 21 (wersja nie jest wyższa niż zapisana)</b> → wygeneruj kolejną wersję w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i opublikuj (Publikuj Connector)  &middot; <a href="Procedura_KreatorIDCF_GLSK_CBCORA.html" target="_blank" contenteditable="false">szczegółowa procedura (ze screenami)</a></li><li><b>kod 30 (rozmiar pliku niezgodny)</b> → wygeneruj ponownie w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i opublikuj (Publikuj Connector)  &middot; <a href="Procedura_KreatorIDCF_GLSK_CBCORA.html" target="_blank" contenteditable="false">szczegółowa procedura (ze screenami)</a></li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag C">Stan 27 · C</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-czerwony-qmark"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument wysłany prawidłowo, trwa oczekiwanie na ACK, który nie napłynął w zadanym czasie (>2-3 min).</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li>Czekaj 5 min → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> (⚠ nie wysyłaj ponownie!)</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>Processed</b> → oznacz 'R' + zgłoś</li><li><b>Rejected</b> → patrz Stan 26 (kod ACK)</li><li><b>brak wpisu</b> → Awaria transportu plików (<a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0</a>). Zgłoś awarię. W międzyczasie wygeneruj plik w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i wyślij go ręcznie przez <a href="Inwentarz_IDCC.html#P01" target="_blank" contenteditable="false">Core CC Tool (Manual Upload)</a>. <span class="rfull">[<a href="Ryzyka_pelna_baza_IDCC.html#R18" target="_blank" contenteditable="false">R18 — pełny opis</a>]</span></li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag C">Stan 28 · C</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-zielony"></div></td><td><div class="tile tile-czarny"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument wysłany prawidłowo, ACK nie napłynął do CET.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie:</strong><ol><li><a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> → sprawdź status</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>Processed</b> → oznacz 'R' + zgłoś (→ Stan 2)</li><li><b>Rejected</b> → wyślij ponownie przez <a href="Inwentarz_IDCC.html#P01" target="_blank" contenteditable="false">Core CC Tool (Manual Upload)</a> "po CET"</li><li><b>brak</b> → Awaria transportu plików (<a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0</a>). Zgłoś awarię. W międzyczasie wygeneruj plik w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i wyślij go ręcznie przez <a href="Inwentarz_IDCC.html#P01" target="_blank" contenteditable="false">Core CC Tool (Manual Upload)</a>. <span class="rfull">[<a href="Ryzyka_pelna_baza_IDCC.html#R18" target="_blank" contenteditable="false">R18 — pełny opis</a>]</span> + powiadom <a href="Inwentarz_IDCC.html#N13" target="_blank" contenteditable="false">RCC</a></li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag C">Stan 29 · C</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-czerwony-excl"></div></td><td><div class="tile tile-czarny"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Wysłany dokument nie spełnia kryterium rozmiaru. ACK nie napłynął do CET. Krytyczne.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie (KRYTYCZNE w C):</strong><ol><li>Wygeneruj poprawny plik w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i opublikuj (Publikuj Connector)  &middot; <a href="Procedura_KreatorIDCF_GLSK_CBCORA.html" target="_blank" contenteditable="false">szczegółowa procedura (ze screenami)</a> "po CET" (jeśli bramka otwarta)</li><li>Natychmiast: zgłoś + powiadom <a href="Inwentarz_IDCC.html#N13" target="_blank" contenteditable="false">RCC</a></li></ol><div class="full-link">Szczegóły (opis + screeny): <a href="Ryzyka_pelna_baza_IDCC.html#R05" target="_blank" contenteditable="false">R05</a> &middot; <a href="Ryzyka_pelna_baza_IDCC.html#R18" target="_blank" contenteditable="false">R18</a></div></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag C">Stan 30 · C</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-fioletowy"></div></td><td><div class="tile tile-czerwony"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument zarejestrowany w CCTool po CET (wysyłka pozytywna), ale walidacja zakończona negatywnie — ACK Rejected po CET.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie (po CET):</strong><ol><li>Najedź kursorem na status i odczytaj kod ACK (kontekst: rejestracja po CET)</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>kod 20 (bramka dla pliku zamknięta)</b> → po CET bramka zamknięta → zgłoś + powiadom <a href="Inwentarz_IDCC.html#N13" target="_blank" contenteditable="false">RCC</a></li><li><b>kod 21 (wersja nie jest wyższa niż zapisana)</b> → wygeneruj kolejną wersję w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i opublikuj (Publikuj Connector)  &middot; <a href="Procedura_KreatorIDCF_GLSK_CBCORA.html" target="_blank" contenteditable="false">szczegółowa procedura (ze screenami)</a> (jeśli bramka otwarta)</li><li><b>kod 30 (rozmiar pliku niezgodny)</b> → wygeneruj ponownie w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i opublikuj (Publikuj Connector)  &middot; <a href="Procedura_KreatorIDCF_GLSK_CBCORA.html" target="_blank" contenteditable="false">szczegółowa procedura (ze screenami)</a> (jeśli bramka otwarta)</li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+
+<div class="popup-card">
+  <div class="popup-header cat-C">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag C">Stan 31 · C</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-fioletowy"></div></td><td><div class="tile tile-czarny"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument zarejestrowany w CCTool po CET (wysyłka pozytywna), ale ACK walidacji nie napłynął — plik dostarczony, lecz niezwalidowany.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie (po CET):</strong><ol><li><a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a> → sprawdź status walidacji (plik dostarczony po CET)</li></ol><strong>Jeżeli:</strong><ul class="branch"><li><b>Processed</b> → oznacz 'R' w CCM + zgłoś</li><li><b>Rejected</b> → postępuj jak w Stanie 30 (odczytaj kod ACK)</li><li><b>brak wpisu</b> → Awaria transportu plików (<a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0</a>). Zgłoś awarię. W międzyczasie wygeneruj plik w <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> i wyślij go ręcznie przez <a href="Inwentarz_IDCC.html#P01" target="_blank" contenteditable="false">Core CC Tool (Manual Upload)</a>. <span class="rfull">[<a href="Ryzyka_pelna_baza_IDCC.html#R18" target="_blank" contenteditable="false">R18 — pełny opis</a>]</span> + powiadom <a href="Inwentarz_IDCC.html#N13" target="_blank" contenteditable="false">RCC</a></li></ul></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+</div>
+</div>
+<div class="cat-section">
+<div class="cat-title">🔴 Kategoria D — KRYTYCZNY (1 stan)</div>
+<div class="states-grid">
+
+<div class="popup-card">
+  <div class="popup-header cat-D">
+    <button class="popup-close" title="Zamknij/ukryj">✕</button>
+    <div class="popup-fid">FID3-617 <span class="popup-state-tag D">Stan 32 · D</span></div>
+    <div class="popup-type">CBCORA</div>
+  </div>
+  <div class="sec-h">Stan kafelków</div>
+  <table class="tile-table">
+    <tr><th>CCtool<br>wysł.</th><th>CCtool<br>zwalid.</th></tr>
+    <tr><td><div class="tile tile-czarny"></div></td><td><div class="tile tile-czarny"></div></td></tr>
+  </table>
+  <div class="sec-h">Opis stanu kafelków</div>
+  <div class="sec-c" contenteditable="true">Dokument nie został dostarczony do CCTool, ACK nie napłynął. Minął czas CET. KRYTYCZNE — po CET dograć nie można.</div>
+  <div class="sec-h">Procedury awaryjne</div>
+  <div class="sec-c proc" contenteditable="true"><strong>Postępowanie (KRYTYCZNE — brak naprawy):</strong><ol><li>Telefon do <a href="Inwentarz_IDCC.html#N13" target="_blank" contenteditable="false">RCC</a> + zgłoś (priorytet P1)</li><li>Po CET — brak naprawy. Diagnoza przyczyn: <a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">Kreator</a> &middot; <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0</a> &middot; <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool</a></li></ol><div class="full-link">Szczegóły (opis + screeny): <a href="Ryzyka_pelna_baza_IDCC.html#R04" target="_blank" contenteditable="false">R04</a> &middot; <a href="Ryzyka_pelna_baza_IDCC.html#R18" target="_blank" contenteditable="false">R18</a> &middot; <a href="Ryzyka_pelna_baza_IDCC.html#R20" target="_blank" contenteditable="false">R20</a></div></div>
+  <div class="sec-h">Opis pliku</div>
+  <div class="sec-c" contenteditable="true">CBCORA (Critical Branches / Critical Outages, FID3-617) — dane wejściowe Initial TSO receiving dla IDCC(d). Backup: generacja pliku w aplikacji KreatorIDCF_CGMES.</div>
+  <div class="sec-h">Ścieżka pliku</div>
+  <div class="sec-c" contenteditable="true"><a href="Inwentarz_IDCC.html#N08" target="_blank" contenteditable="false">KreatorIDCF_CGMES</a> → <a href="Inwentarz_IDCC.html#N05" target="_blank" contenteditable="false">Connector 2.0 [N05]</a> → <a href="Inwentarz_IDCC.html#N02" target="_blank" contenteditable="false">Core CC Tool [N02]</a> → <a href="Inwentarz_IDCC.html#N04" target="_blank" contenteditable="false">MinIO [N04]</a></div>
+  <div class="sec-h">Kontakt w przypadku awarii</div>
+  <div class="sec-c" contenteditable="true"><strong>Każde ryzyko należy zgłosić do:</strong> <a href="Inwentarz_IDCC.html#N19" target="_blank" contenteditable="false">CIZ</a>, <a href="Inwentarz_IDCC.html#N18" target="_blank" contenteditable="false">WPO</a>, <a href="Inwentarz_IDCC.html#N20" target="_blank" contenteditable="false">PSE-I</a> (PSE Innowacje).</div>
+  <div class="sec-more" style="margin-top:6px;padding-top:6px;border-top:1px dashed #DFE1E6;"><a href="/assets/info.pdf#FID3_617" target="_blank" style="color:#0052CC;font-weight:600;font-size:0.9em;text-decoration:none;">więcej o FID3-617 ›</a></div>
+</div>
+</div>
+</div>
+
+<script>
+function downloadHTML() {
+  const h = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  const blob = new Blob([h], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = document.title.replace(/[^A-Za-z0-9_-]/g,'_') + '_kopia.html';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+document.querySelectorAll('.popup-close').forEach(b => b.addEventListener('click', e => e.target.closest('.popup-card').style.display='none'));
+document.addEventListener('click', function(e) {
+  const a = e.target.closest('a');
+  if (a && a.getAttribute('href')) { e.preventDefault(); window.open(a.getAttribute('href'), '_blank'); }
+});
+</script>
+</body>
+</html>
