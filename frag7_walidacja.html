@@ -1,10 +1,11 @@
 <h3 id="walidacja">Walidacja domeny FBA (DA/LTA) — przebieg operacyjny</h3>
-<p>Walidacja domeny Day-Ahead i LTA w Perun4V; wynikiem jest wartość <strong>IVA</strong>
-na przeciążonych CNEC-ach (plik <strong>F310</strong>). Procedura obowiązuje codziennie.
-Źródła: FBA_TSO_NOR_03 v0.21 (tryb normalny) i FBA_TSO_BUP_03 <strong>v0.32</strong>
-z 05.01.2026 (tryb backup; zmiana przepływu <strong>F109 → F308</strong>).
-Odpowiednikiem dla iteracji śróddziennych jest walidacja IVA w procesie IDCC —
-patrz <a href="#happyday">przebieg nominalny</a>.</p>
+<ul class="compact-list">
+  <li><strong>Zakres:</strong> walidacja domeny Day-Ahead i LTA w Perun4V.</li>
+  <li><strong>Wynik:</strong> IVA na przeciążonych CNEC — plik <strong>F310</strong>.</li>
+  <li><strong>Tryb normalny:</strong> FBA_TSO_NOR_03 v0.21.</li>
+  <li><strong>Tryb backup:</strong> FBA_TSO_BUP_03 <strong>v0.32</strong> z 05.01.2026; zmiana przepływu <strong>F109 → F308</strong>.</li>
+  <li><strong>IDCC:</strong> odpowiednikiem jest Individual Validation — patrz <a href="#happyday">przebieg nominalny</a>.</li>
+</ul>
 
 <h4 id="wal-iva">IVA — definicja i przesłanki</h4>
 <ul>
@@ -42,14 +43,14 @@ awaria Connector 2.0, brak dostępu do MinIO). Kroki:</p>
 </ol>
 
 <h4 id="wal-bledy">Typowe błędy i reakcje</h4>
-<table class="ref">
+<table class="ref action-table">
   <thead><tr><th>Błąd</th><th>Reakcja</th></tr></thead>
   <tbody>
-    <tr><td>Niezgodne daty paczki ZIP i obliczenia (TSCNET)</td><td>Sprawdź BD w nazwie paczki i w oknie Perun4V; popraw datę / przygotuj paczkę ponownie.</td></tr>
-    <tr><td>Brak plików w paczce (np. F110/F112/F308)</td><td>Uzupełnij brakujące pliki z CCCt (Message Viewer) i spakuj ponownie.</td></tr>
-    <tr><td><strong>ERR-I</strong> — część TS niepoliczona</td><td>Zanotuj Failed TS (Status → Details); czekaj na IVA BACKUP v2+ — patrz <a href="#hd-erri">ERR-I</a>.</td></tr>
-    <tr><td><strong>Process failed</strong> — brak wyniku</td><td>IVA BACKUP v1 → CCCt; brak BACKUP → telefon do CCC — patrz <a href="#hd-pf">Process failed</a>.</td></tr>
-    <tr><td>F310 odrzucone mimo ACK (Rejected)</td><td>Odczytaj kod błędu w Message Viewer; sprawdź wersję pliku (musi być wyższa niż zapisana) i wyślij ponownie.</td></tr>
-    <tr><td>Brak raportu CCA / LTA_CURTAILMENT</td><td>Sprawdź MinIO <code>cca/DA_FBCC/out/&lt;BD&gt;</code>; brak → zgłoś (Ryzyko 26/29).</td></tr>
+    <tr><td>Niezgodne daty paczki ZIP i obliczenia (TSCNET)</td><td><ul class="cell-list"><li>Sprawdź BD w nazwie paczki i w oknie Perun4V.</li><li>Popraw datę albo przygotuj paczkę ponownie.</li></ul></td></tr>
+    <tr><td>Brak plików w paczce (np. F110/F112/F308)</td><td><ul class="cell-list"><li>Uzupełnij brakujące pliki z CCCt przez Message Viewer.</li><li>Spakuj paczkę ponownie.</li></ul></td></tr>
+    <tr><td><strong>ERR-I</strong> — część TS niepoliczona</td><td><ul class="cell-list"><li>Zanotuj Failed TS: Status → Details.</li><li>Czekaj na IVA BACKUP v2+ — patrz <a href="#hd-erri">ERR-I</a>.</li></ul></td></tr>
+    <tr><td><strong>Process failed</strong> — brak wyniku</td><td><ul class="cell-list"><li>Wyślij IVA BACKUP v1 do CCCt.</li><li>Jeżeli BACKUP jest niedostępny, zadzwoń do operatora procesu Capacity Calculation — patrz <a href="#hd-pf">Process failed</a>.</li></ul></td></tr>
+    <tr><td>F310 odrzucone mimo ACK (Rejected)</td><td><ul class="cell-list"><li>Odczytaj kod błędu w Message Viewer.</li><li>Sprawdź wersję pliku — musi być wyższa niż zapisana.</li><li>Wyślij plik ponownie.</li></ul></td></tr>
+    <tr><td>Brak raportu CCA / LTA_CURTAILMENT</td><td><ul class="cell-list"><li>Sprawdź MinIO <code>cca/DA_FBCC/out/&lt;BD&gt;</code>.</li><li>Jeżeli raportu nie ma, zgłoś Ryzyko 26/29.</li></ul></td></tr>
   </tbody>
 </table>

@@ -1,8 +1,10 @@
 <h3 id="happyday">Przebieg nominalny (stan poprawny) — krok po kroku</h3>
-<p>Operacyjna esencja dyżuru wg Procedury skróconej v4.1 i QuickRef (HLBP CCCt 4.2 v1).
-Warunki wstępne: Initial FB Computation zakończony (potwierdzenie CCC), otwarty pulpit
-„IDCC FB Pulpit dyspozytorski" w CCM, dostęp do skrzynki <code>kdm6@pse.pl</code>,
-aktywny login w Perun4V.</p>
+<ul class="compact-list">
+  <li><strong>Initial FB Computation:</strong> zakończony i potwierdzony przez operatora procesu Capacity Calculation.</li>
+  <li><strong>CCM:</strong> otwarty „IDCC FB Pulpit dyspozytorski”.</li>
+  <li><strong>E-mail:</strong> dostęp do skrzynki <code>kdm6@pse.pl</code>.</li>
+  <li><strong>Perun4V:</strong> aktywny login.</li>
+</ul>
 
 <h4 id="hd-6krokow">Sześć kroków iteracji IDCC(b)/(c)/(d)</h4>
 <ol>
@@ -15,12 +17,15 @@ aktywny login w Perun4V.</p>
 </ol>
 
 <h4 id="hd-a">IDCC(a) — monitoring FID1-928 (bez Perun4V)</h4>
-<p>W IDCC(a) nie ma paczki Perun ani IVA FBA — PSE monitoruje wyłącznie plik zwrotny
-<strong>FID1-928</strong> w CCM. Wersja v1 (~10:00 D-1) zawiera wartości zerowe (fallback);
-po SDAC narzędzie CCA sprawdza CNEC-e PL i publikowana jest wersja v2 z wynikiem walidacji ATC.</p>
+<ul class="compact-list">
+  <li><strong>Zakres PSE:</strong> monitoring pliku zwrotnego <strong>FID1-928</strong> w CCM.</li>
+  <li><strong>Poza zakresem:</strong> w IDCC(a) nie występują paczka Perun ani IVA FBA.</li>
+  <li><strong>Wersja v1:</strong> około 10:00 D-1; wartości zerowe używane jako fallback.</li>
+  <li><strong>Wersja v2:</strong> wynik ATC Based Validation publikowany po sprawdzeniu CNEC PL przez CCA.</li>
+</ul>
 <ol>
   <li><strong>A.1.</strong> CCM: wiersz „ATC Based Validation (FID1-928)". Po <strong>13:15 D-1</strong> wersja <strong>v2</strong> zielona (v1 = wartości zerowe).</li>
-  <li><strong>A.2.</strong> Brak v2 po <strong>14:30 D-1</strong> → sprawdź MinIO (<code>cca/ID_FBCC/out/BD</code>) → poinformuj telefonicznie CCC.</li>
+  <li><strong>A.2.</strong> Brak v2 po <strong>14:30 D-1</strong> → sprawdź MinIO (<code>cca/ID_FBCC/out/BD</code>) → poinformuj telefonicznie operatora procesu Capacity Calculation.</li>
 </ol>
 
 <h4 id="hd-iva-backup">IVA BACKUP — zasady</h4>
@@ -29,7 +34,7 @@ po SDAC narzędzie CCA sprawdza CNEC-e PL i publikowana jest wersja v2 z wynikie
   <li>Sygnał na pulpicie: <strong>zielony kafelek z pulsującą czerwoną otoczką</strong>.</li>
   <li>Wysyłka: PPM → „Wyślij do CCTool" → opis → Tak. Wersja BACKUP musi być <strong>wyższa</strong> niż IVA z Perun (blokada dla tej samej lub niższej).</li>
   <li><strong>ERR-I</strong> (część TS niepoliczona): czekaj na <strong>v2+</strong> — NIE wysyłaj v1!</li>
-  <li><strong>Process failed</strong> (0 TS): wyślij <strong>v1</strong>; jeśli BACKUP niedostępny (kafelek szary) — telefon do CCC natychmiast. <strong>W IDCC nie ma fallbacku 20% Fmax.</strong></li>
+  <li><strong>Process failed</strong> (0 TS): wyślij <strong>v1</strong>; jeśli BACKUP jest niedostępny (kafelek szary), natychmiast zadzwoń do operatora procesu Capacity Calculation. <strong>W IDCC nie ma fallbacku 20% Fmax.</strong></li>
 </ul>
 
 <h4 id="hd-erri">ERR-I — błędy na wybranych TS</h4>
@@ -44,7 +49,7 @@ po SDAC narzędzie CCA sprawdza CNEC-e PL i publikowana jest wersja v2 z wynikie
 <ol>
   <li>Sprawdź e-mail <code>kdm6</code> i CCM. Czy IVA BACKUP dostępna (zielona/fioletowa)?</li>
   <li>Tak → PPM → „Wyślij do CCTool" → opis: „Process failed – v1" → Tak. CCtool zwalid. zielony.</li>
-  <li>Nie (kafelek szary) → poinformuj CCC natychmiast telefonicznie. Brak fallbacku 20% Fmax — brak dalszych działań PSE.</li>
+  <li>Nie (kafelek szary) → poinformuj natychmiast telefonicznie operatora procesu Capacity Calculation. Brak fallbacku 20% Fmax — brak dalszych działań PSE.</li>
 </ol>
 
 <h4 id="hd-b1">B1 — Brak transferu SFTP (&gt;30 min od „sFTP wysł.")</h4>
@@ -78,11 +83,11 @@ po SDAC narzędzie CCA sprawdza CNEC-e PL i publikowana jest wersja v2 z wynikie
 </ol>
 
 <h4 id="hd-inne">Pozostałe scenariusze awaryjne</h4>
-<table class="ref">
+<table class="ref action-table">
   <thead><tr><th>Problem</th><th>Postępowanie</th><th>Eskalacja</th></tr></thead>
   <tbody>
-    <tr><td>Perun4V niedostępny</td><td>IVA BACKUP v1 → CCTool. Brak BACKUP → telefon do CCC (brak 20% Fmax!)</td><td>CCC, USY</td></tr>
-    <tr><td>Wyłączenie awaryjne elementu sieci</td><td>Perun4V: Configurations → Additional NEC/outage → obliczenia → IVA w wyższej wersji</td><td>CCC</td></tr>
-    <tr><td>Kill procesu przez CCC</td><td>Nie podejmuj działań — czekaj na instrukcje CCC</td><td>CCC</td></tr>
+    <tr><td>Perun4V niedostępny</td><td><ul class="cell-list"><li>Wyślij IVA BACKUP v1 do Core CC Tool.</li><li>Jeżeli BACKUP jest niedostępny, zadzwoń do operatora procesu Capacity Calculation.</li><li>Nie stosuj fallbacku 20% Fmax.</li></ul></td><td><ul class="cell-list"><li>Operator procesu Capacity Calculation</li><li>Helpdesk CCC</li></ul></td></tr>
+    <tr><td>Wyłączenie awaryjne elementu sieci</td><td><ul class="cell-list"><li>Perun4V: Configurations → Additional NEC/outage.</li><li>Uruchom obliczenia.</li><li>Wyślij IVA w wyższej wersji.</li></ul></td><td><ul class="cell-list"><li>Operator procesu Capacity Calculation</li></ul></td></tr>
+    <tr><td>Kill procesu przez operatora procesu Capacity Calculation</td><td><ul class="cell-list"><li>Nie podejmuj działań.</li><li>Czekaj na instrukcję operatora procesu Capacity Calculation.</li></ul></td><td><ul class="cell-list"><li>Operator procesu Capacity Calculation</li></ul></td></tr>
   </tbody>
 </table>

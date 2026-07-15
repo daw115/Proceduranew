@@ -416,6 +416,21 @@ a{color:var(--acc)}
 .lead code,.lead b,.lead strong{font-style:normal}
 .compact-list{margin:.45em 0;padding-left:1.35em}
 .compact-list>li{margin:.42em 0}
+.sub-list{margin:.35em 0 .15em;padding-left:1.35em}
+.sub-list>li{margin:.28em 0}
+.cell-list{margin:0;padding-left:1.2em}
+.cell-list>li{margin:.22em 0}
+.action-table td:nth-last-child(2){min-width:280px}
+.deadline-critical{color:var(--err)!important;font-weight:850!important;background:var(--errb);border-radius:3px;padding:0 .22em}
+.deadline-rule{margin:16px 0;padding:0 16px 14px;border:1px solid #d8a44f;border-left:7px solid #d18c00;border-radius:7px;background:linear-gradient(105deg,var(--warnb),#fff 72%);box-shadow:0 2px 8px rgba(154,91,0,.08)}
+.deadline-rule h4{margin:0 -16px 12px;padding:9px 14px;color:var(--ink);background:rgba(255,210,63,.32);border-bottom:1px solid #e2c784}
+.deadline-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.deadline-tet,.deadline-cet{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:10px 12px;border-radius:6px;background:#fff;border:1px solid var(--rule2)}
+.deadline-tet>strong,.deadline-cet>strong{font:850 14px var(--mono);padding:2px 7px;border-radius:4px}
+.deadline-tet>strong{color:var(--warn);background:var(--warnb)}
+.deadline-cet{border-color:#dfa39f;background:var(--errb)}
+.deadline-cet>strong{color:#fff;background:var(--err)}
+.deadline-cet>span{color:#761912;font-weight:650}
 .scope-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
 .scope-yes,.scope-no{display:inline-block;border-radius:4px;padding:2px 8px;font:700 11px var(--mono)}
 .scope-yes{color:var(--ok);background:var(--okb);border:1px solid #acd0b5}
@@ -545,9 +560,22 @@ border-radius:4px;padding:12px 16px;font:13.5px/1.6 var(--serif);margin-top:8px}
 .psemark{display:inline-block;background:var(--errb);color:var(--err);font:700 11px var(--mono);
 border-radius:3px;padding:2px 8px;margin-left:8px;vertical-align:middle}
 /* ── diagram architektury ── */
-.arch{background:var(--ink);border:1px solid var(--ink);border-radius:8px;padding:16px 18px;
-font:11.5px/1.28 var(--mono);overflow-x:auto;margin:12px 0;white-space:pre;color:#cfe3f4;
-box-shadow:inset 0 0 60px rgba(0,0,0,.35)}
+.architecture-flow{margin:14px 0;padding:16px;border:1px solid var(--rule2);border-radius:9px;background:linear-gradient(160deg,#f7fafc,#edf4f8);box-shadow:0 3px 12px rgba(15,62,99,.08)}
+.architecture-layer{padding:12px;border:1px solid var(--rule2);border-radius:7px;background:#fff}
+.architecture-layer h4{margin:0 0 10px;color:var(--ink);text-align:center;font:750 13px var(--cond);letter-spacing:.08em;text-transform:uppercase}
+.architecture-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.architecture-tool{min-height:74px;padding:10px;border:1px solid #b8ccdc;border-top:4px solid var(--acc);border-radius:6px;background:var(--accbg);text-align:center}
+.architecture-tool strong{display:block;color:var(--navy);font:750 14px var(--cond)}
+.architecture-tool span{display:block;margin-top:4px;color:var(--mut);font-size:11.5px;line-height:1.35}
+.architecture-external .architecture-tools{grid-template-columns:repeat(2,minmax(0,1fr));max-width:720px;margin:0 auto}
+.architecture-external .architecture-tool{border-top-color:var(--run);background:var(--runb)}
+.architecture-external .architecture-tool strong{color:var(--run)}
+.connector-hub{max-width:620px;margin:0 auto;padding:12px 18px;border:2px solid var(--navy);border-radius:7px;background:var(--navy);color:#fff;text-align:center;box-shadow:0 4px 0 rgba(15,62,99,.16)}
+.connector-hub strong{display:block;font:800 17px var(--cond)}
+.connector-hub span{display:block;color:#cfe3f4;font-size:12px}
+.architecture-arrows{display:grid;grid-template-columns:repeat(4,1fr);max-width:900px;margin:2px auto;text-align:center;color:var(--acc);font:900 24px/1 var(--mono)}
+.architecture-arrows-external{grid-template-columns:repeat(2,1fr);max-width:560px;color:var(--run)}
+.architecture-note{margin:12px 0 0;padding:9px 12px;border-left:4px solid var(--acc);background:#fff;color:var(--navy);font-weight:650}
 /* ── okładka i narzędzia dokumentu ── */
 .hero{position:relative;overflow:hidden;margin:0 0 28px;padding:28px 30px 26px;color:#fff;
 background:linear-gradient(125deg,var(--ink),var(--navy) 58%,#0b6b79);border-radius:10px;
@@ -600,9 +628,9 @@ section>h2{background:linear-gradient(90deg,rgba(15,62,99,.07),transparent 72%);
  figure.shot img{width:auto;height:auto;max-width:100%;max-height:225mm;margin:0 auto;object-fit:contain}
  .fcard,.mailtpl,.step,.stick,.quickcard{break-inside:avoid}
 }
-@media(max-width:1100px){.quickgrid,.semantic-key{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1100px){.quickgrid,.semantic-key{grid-template-columns:repeat(2,minmax(0,1fr))}.architecture-tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:900px){nav{display:none}main{padding:18px;border:none}.doc-tools{top:4px}}
-@media(max-width:560px){.quickgrid,.semantic-key{grid-template-columns:1fr}.hero{padding:22px 20px}.hero h1{font-size:28px}.caption-size{grid-column:2;white-space:normal}.caption-text{grid-column:2}.caption-label{grid-row:1 / span 2}}
+@media(max-width:560px){.quickgrid,.semantic-key,.deadline-grid,.architecture-tools,.architecture-external .architecture-tools{grid-template-columns:1fr}.architecture-arrows{grid-template-columns:1fr}.architecture-arrows span:not(:first-child){display:none}.hero{padding:22px 20px}.hero h1{font-size:28px}.caption-size{grid-column:2;white-space:normal}.caption-text{grid-column:2}.caption-label{grid-row:1 / span 2}}
 """
 
 def legend_section():
@@ -728,37 +756,28 @@ proces_body = f"""
 </ul>
 
 <h3>Architektura procesu i przepływ danych</h3>
-<pre class="arch">
-  ┌────────────────────────────────────────────────────────────────────────┐
-  │                        KRAJOWA DYSPOZYCJA MOCY                         │
-  │                                                                        │
-  │  ┌──────────────┐      ┌────────────────────────┐      ┌────────────┐  │
-  │  │  System ZP   │      │ CCM (Pulpit Monitor)   │      │ PLANS /    │  │
-  │  │  (Pliki AC)  │      │ https://ccm.spsm.pse.pl│      │ Kreator    │  │
-  │  └──────┬───────┘      └───────────▲────────────┘      └─────┬──────┘  │
-  │         │                          │                         │         │
-  └─────────┼──────────────────────────┼─────────────────────────┼─────────┘
-            │ (FID1/2-831)             │ (Kody ACK statusu)      │ (IGM/GLSK/CB)
-            ▼                          │                         ▼
-  ┌────────────────────────────────────┴───────────────────────────────────┐
-  │                         Szyna Transportowa CN2                         │
-  └─────────┬────────────────────────────────────────────────────▲─────────┘
-            │                                                    │
-            │ (Transfer ZIP PERUN)                               │ (Raporty DQC)
-            ▼                                                    │
-  ┌──────────────────────────────────────────────────────────────┴─────────┐
-  │                         SYSTEMY CENTRALNE CORE                         │
-  │                                                                        │
-  │  ┌──────────────────────┐   sFTP    ┌───────────────────────────────┐  │
-  │  │  MinIO Repozytorium  ├──────────►│ Perun4V (Walidacja FBA)       │  │
-  │  │  (perun/, cca/)      │◄──────────┤ https://lccv.tscnet.eu        │  │
-  │  └──────────────────────┘           └───────────────────────────────┘  │
-  │                                                                        │
-  │  ┌──────────────────────────────────────────────────────────────────┐  │
-  │  │  Core CC Tool GUI (Message Viewer / Manual Upload)               │  │
-  │  └──────────────────────────────────────────────────────────────────┘  │
-  └────────────────────────────────────────────────────────────────────────┘
-</pre>
+<div class="architecture-flow" role="img" aria-label="Dwukierunkowy przepływ plików między narzędziami KDM, Connector 2.0 oraz systemami zewnętrznymi">
+  <div class="architecture-layer architecture-kdm">
+    <h4>KDM — narzędzia PSE</h4>
+    <div class="architecture-tools">
+      <div class="architecture-tool"><strong>ZP</strong><span>AC</span></div>
+      <div class="architecture-tool"><strong>CCM</strong><span>monitorowanie i obsługa plików</span></div>
+      <div class="architecture-tool"><strong>PLANS / Kreator</strong><span>IGM, GLSK, CBCORA, RA</span></div>
+      <div class="architecture-tool"><strong>MinIO</strong><span>paczki i raporty</span></div>
+    </div>
+  </div>
+  <div class="architecture-arrows" aria-hidden="true"><span>↕</span><span>↕</span><span>↕</span><span>↕</span></div>
+  <div class="connector-hub"><strong>Connector 2.0</strong><span>dwukierunkowe wysyłanie i odbieranie plików</span></div>
+  <div class="architecture-arrows architecture-arrows-external" aria-hidden="true"><span>↕</span><span>↕</span></div>
+  <div class="architecture-layer architecture-external">
+    <h4>Systemy zewnętrzne</h4>
+    <div class="architecture-tools">
+      <div class="architecture-tool"><strong>Perun4V + sFTP</strong><span>Individual Validation, IVA i raporty</span></div>
+      <div class="architecture-tool"><strong>Core CC Tool</strong><span>pliki procesu, ACK i wyniki</span></div>
+    </div>
+  </div>
+  <p class="architecture-note"><strong>Przebieg standardowy:</strong> pliki wysyłane i odbierane automatycznie między PSE a systemami zewnętrznymi przechodzą przez Connector 2.0, który obsługuje oba systemy zewnętrzne. <strong>Tryb awaryjny:</strong> procedura dopuszcza ręczne pobranie lub Manual Upload bezpośrednio w Core CC Tool przez Message Viewer.</p>
+</div>
 
 <h3>Iteracje procesu</h3>
 <table class="ref"><thead><tr><th>Iteracja</th><th>Charakter</th><th>Zakres</th></tr></thead><tbody>
@@ -769,7 +788,7 @@ proces_body = f"""
 <h3>Wejścia PSE i bramki czasowe</h3>
 <ul class="compact-list">
   <li><strong>TET:</strong> docelowy termin zakończenia.</li>
-  <li><strong>Po przekroczeniu TET:</strong> poinformuj operatora procesu Capacity Calculation, uzgodnij przedłużenie do CET i zastosuj właściwy fallback lub backup.</li>
+  <li><strong>Po przekroczeniu TET:</strong> poinformuj operatora procesu Capacity Calculation, uzgodnij przedłużenie do <strong class="deadline-critical">CET</strong> i zastosuj fallback lub backup wskazany dla danego zdarzenia.</li>
   <li><strong>Szczegóły:</strong> <a href="#sec-legenda">legenda statusów</a> i <a href="#sec-katalog">katalog plików</a>.</li>
 </ul>
 """
@@ -844,9 +863,11 @@ ops_body = v52_slice('s8','s9')
 
 kreator_body = kreator_section() + '<h3 id="aczp">AC w ZP (FIDx-831)</h3>' + aczp_section()
 
-ryzyka_body = ('<p class="lead">Pełna baza 29 ryzyk operacyjnych (R01–R29). Każde ryzyko zawiera '
- 'wpływ, szczegółową procedurę działania oraz skrót decyzyjny. Wymagane kanały zgłoszeń: '
- 'CIZ, WPO i PSE-I; wszystkie informacje potrzebne do reakcji znajdują się w tej sekcji.</p>'
+ryzyka_body = ('<ul class="compact-list">'
+ '<li><strong>Zakres:</strong> 29 ryzyk operacyjnych R01–R29.</li>'
+ '<li><strong>Każde ryzyko:</strong> wpływ, procedura działania i skrót decyzyjny.</li>'
+ '<li><strong>Zgłoszenie:</strong> CIZ, WPO i PSE-I.</li>'
+ '</ul>'
  + '<div class="ref riskbase">' + RYZ_HTML + '</div>'
  + '<details class="gal"><summary>Mapowanie U-kodów (U01–U23) i tabela kodów ACK</summary><div class="ref">'
  + inw_slice('# 3. Ryzyka', '# 4. Procedury', '# 3. Ryzyka') + '</div></details>')
@@ -856,9 +877,9 @@ kontakty_body = '''<h3 id="kontakty">Kontakty operacyjne</h3>
 <table class="ref">
   <thead><tr><th>Podmiot / narzędzie</th><th>E-mail / kanał</th><th>Telefon</th><th>Zakres</th></tr></thead>
   <tbody>
-    <tr><td><strong>TSCNET (CCC)</strong></td><td>operator@tscnet.eu</td><td>+49 89 45554 201</td><td>Operator CCCt — decyzje backup/kill</td></tr>
-    <tr><td><strong>Coreso (CCC)</strong></td><td>day-ahead.engineer@coreso.eu</td><td>+32 2 743 21 10</td><td>Principal contact, scalanie CGM</td></tr>
-    <tr><td><strong>USY IDCC</strong></td><td>idcc.helpdesk@unicorn.com</td><td>+420 221 400 540</td><td>Helpdesk CCCt (GUI, pliki, obliczenia)</td></tr>
+    <tr><td><strong>TSCNET — operator procesu Capacity Calculation</strong></td><td>operator@tscnet.eu</td><td>+49 89 45554 201</td><td>Obsługa CCCt; decyzje backup/kill</td></tr>
+    <tr><td><strong>Coreso — Merging Entity</strong></td><td>day-ahead.engineer@coreso.eu</td><td>+32 2 743 21 10</td><td>Scalanie CGM i merging package</td></tr>
+    <tr><td><strong>Helpdesk CCC</strong></td><td>idcc.helpdesk@unicorn.com</td><td>+420 221 400 540</td><td>CCCt: GUI, pliki i obliczenia</td></tr>
     <tr><td><strong>USY ECP/EDX</strong></td><td>global-ecp@unicorn.com</td><td>+420 221 400 902</td><td>Kanał ECP/EDX</td></tr>
     <tr><td><strong>Raport CCA</strong></td><td>kdm6@pse.pl</td><td>—</td><td>Skrzynka raportów walidacji</td></tr>
     <tr><td><strong>PSE Innowacje</strong></td><td>zgłoszenie przez CIZ/WPO</td><td>—</td><td>Connector 2.0, SFTP, MinIO</td></tr>
@@ -888,7 +909,7 @@ STICKER_STEPS = [
  ]),
  ('👁 Monitorowanie IDCC(a)', [
    ('Monitoruj FID1-928: v2 zielona po 13:15 D-1', '#hd-a'),
-   ('Brak v2 po 14:30 → MinIO cca/… → telefon do CCC', '#hd-a'),
+   ('Brak v2 po 14:30 → MinIO cca/… → telefon do operatora procesu', '#hd-a'),
    ('Pilnuj AC (FID1-831) z ZP i finalnych NTC (FID1-921)', '#aczp'),
    ('Kroki PSE w iteracji (a) wg BPD', '#proc-a'),
  ]),
@@ -1032,12 +1053,12 @@ Wszystkie instrukcje, kontakty i materiały ekranowe potrzebne do realizacji opi
 Każde ryzyko zgłaszać do: <b>CIZ, WPO, PSE-I (PSE Innowacje)</b>.</footer>
 <script>
 const semanticPatterns = {{
-  danger: /KRYTYCZNE|STOP|brak (?:ACK|potwierdzenia odbioru|pliku|wyniku)|brak dostępu|awaria|błąd procesu|negatywn(?:y|e) (?:ACK|potwierdzenie odbioru)|plik niezwalidowany|niepoprawn[yae]|niezgodn[yae]|niedostarczon[yae]|timeout|odrzucon[yae]|Rejected|Process failed|przekroczono (?:CET|krytyczny termin zakończenia)|minął (?:CET|krytyczny termin zakończenia)|nie wysyłaj/giu,
+  danger: /CET|KRYTYCZNE|STOP|brak (?:ACK|potwierdzenia odbioru|pliku|wyniku)|brak dostępu|awaria|błąd procesu|negatywn(?:y|e) (?:ACK|potwierdzenie odbioru)|plik niezwalidowany|niepoprawn[yae]|niezgodn[yae]|niedostarczon[yae]|timeout|odrzucon[yae]|Rejected|Process failed|przekroczono (?:CET|krytyczny termin zakończenia)|minął (?:CET|krytyczny termin zakończenia)|nie wysyłaj/giu,
   warning: /UWAGA|OSTRZEŻENIE|zbliża się (?:TET|CET|docelowy termin zakończenia|krytyczny termin zakończenia)|ERR-I|po (?:CET|krytycznym terminie zakończenia)|tryb backupowy|IVA BACKUP|fallback/giu,
   success: /PRAWIDŁOWO|SUKCES|SUCCESSFUL|proces poprawny|stan prawidłowy|brak działań|potwierdzon[ey] (?:ACK|potwierdzenie odbioru)|Processed/giu,
   action: /ZGŁOŚ|ZADZWOŃ|SPRAWDŹ|POWIADOM|WYŚLIJ(?: PLIK)? RĘCZNIE|POBIERZ(?: POPRAWNY)? PLIK|ODCZYTAJ KOD (?:ACK|potwierdzenia odbioru)|USTAW STATUS|URUCHOM(?: PONOWNIE)? OBLICZENIA|PRZEJDŹ DO SCENARIUSZA|ESKALACJA/giu
 }};
-const semanticPattern = /KRYTYCZNE|STOP|brak (?:ACK|potwierdzenia odbioru|pliku|wyniku)|brak dostępu|awaria|błąd procesu|negatywn(?:y|e) (?:ACK|potwierdzenie odbioru)|plik niezwalidowany|niepoprawn[yae]|niezgodn[yae]|niedostarczon[yae]|timeout|odrzucon[yae]|Rejected|Process failed|przekroczono (?:CET|krytyczny termin zakończenia)|minął (?:CET|krytyczny termin zakończenia)|nie wysyłaj|UWAGA|OSTRZEŻENIE|zbliża się (?:TET|CET|docelowy termin zakończenia|krytyczny termin zakończenia)|ERR-I|po (?:CET|krytycznym terminie zakończenia)|tryb backupowy|IVA BACKUP|fallback|PRAWIDŁOWO|SUKCES|SUCCESSFUL|proces poprawny|stan prawidłowy|brak działań|potwierdzon[ey] (?:ACK|potwierdzenie odbioru)|Processed|ZGŁOŚ|ZADZWOŃ|SPRAWDŹ|POWIADOM|WYŚLIJ(?: PLIK)? RĘCZNIE|POBIERZ(?: POPRAWNY)? PLIK|ODCZYTAJ KOD (?:ACK|potwierdzenia odbioru)|USTAW STATUS|URUCHOM(?: PONOWNIE)? OBLICZENIA|PRZEJDŹ DO SCENARIUSZA|ESKALACJA/giu;
+const semanticPattern = /CET|KRYTYCZNE|STOP|brak (?:ACK|potwierdzenia odbioru|pliku|wyniku)|brak dostępu|awaria|błąd procesu|negatywn(?:y|e) (?:ACK|potwierdzenie odbioru)|plik niezwalidowany|niepoprawn[yae]|niezgodn[yae]|niedostarczon[yae]|timeout|odrzucon[yae]|Rejected|Process failed|przekroczono (?:CET|krytyczny termin zakończenia)|minął (?:CET|krytyczny termin zakończenia)|nie wysyłaj|UWAGA|OSTRZEŻENIE|zbliża się (?:TET|CET|docelowy termin zakończenia|krytyczny termin zakończenia)|ERR-I|po (?:CET|krytycznym terminie zakończenia)|tryb backupowy|IVA BACKUP|fallback|PRAWIDŁOWO|SUKCES|SUCCESSFUL|proces poprawny|stan prawidłowy|brak działań|potwierdzon[ey] (?:ACK|potwierdzenie odbioru)|Processed|ZGŁOŚ|ZADZWOŃ|SPRAWDŹ|POWIADOM|WYŚLIJ(?: PLIK)? RĘCZNIE|POBIERZ(?: POPRAWNY)? PLIK|ODCZYTAJ KOD (?:ACK|potwierdzenia odbioru)|USTAW STATUS|URUCHOM(?: PONOWNIE)? OBLICZENIA|PRZEJDŹ DO SCENARIUSZA|ESKALACJA/giu;
 function semanticClass(text) {{
   for (const [name, pattern] of Object.entries(semanticPatterns)) {{
     pattern.lastIndex = 0;
@@ -1048,7 +1069,7 @@ function semanticClass(text) {{
 function applySemanticHighlights() {{
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {{
     acceptNode(node) {{
-      if (!node.nodeValue.trim() || node.parentElement.closest('script,style,code,pre,.signal,.screen-dialog')) return NodeFilter.FILTER_REJECT;
+      if (!node.nodeValue.trim() || node.parentElement.closest('script,style,code,pre,.signal,.deadline-critical,.screen-dialog')) return NodeFilter.FILTER_REJECT;
       semanticPattern.lastIndex = 0;
       return semanticPattern.test(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
     }}
@@ -1265,6 +1286,18 @@ doc = re.sub(r'href="Karta_ryzyk_IDCC\.md#([^"]+)"', r'href="#\1"', doc)
 doc = doc.replace('href="Karta_ryzyk_IDCC.md"', 'href="#sec-ryzyka"')
 doc = doc.replace('Karta_ryzyk_IDCC.md', 'baza ryzyk w tej procedurze')
 
+# Czytelne role operacyjne w całej procedurze; szablony maili pozostają bez zmian.
+doc = doc.replace('telefon do CCC', 'telefon do operatora procesu Capacity Calculation')
+doc = doc.replace('Telefon do CCC', 'Telefon do operatora procesu Capacity Calculation')
+doc = doc.replace('poinformuj telefonicznie CCC', 'poinformuj telefonicznie operatora procesu Capacity Calculation')
+doc = doc.replace('poinformuj CCC', 'poinformuj operatora procesu Capacity Calculation')
+doc = doc.replace('czekaj na instrukcje CCC', 'czekaj na instrukcję operatora procesu Capacity Calculation')
+doc = doc.replace('USY/CCC', 'Helpdesk CCC')
+doc = doc.replace('przekazuje wejścia', 'wysyła pliki wejściowe')
+doc = doc.replace('potwierdza obecność danych do CCC', 'potwierdza obecność danych operatorowi procesu Capacity Calculation')
+doc = doc.replace('potwierdza obecność AAC do CCC', 'potwierdza obecność AAC operatorowi procesu Capacity Calculation')
+doc = doc.replace('potwierdzają wynik do CCC', 'potwierdzają wynik operatorowi procesu Capacity Calculation')
+
 def preserve_operational_naming(text):
     """Zachowuje angielskie nazwy procesów i skróty; rozwija tylko polskie oznaczenia redakcyjne."""
     text = re.sub(r'(?<!Ryzyko )\bR(\d{2})\b', r'Ryzyko R\1', text)
@@ -1440,7 +1473,7 @@ legacy_labels = [
     '<strong>ATC</strong> (ang. <em>Available Transfer Capacity</em>)',
     '<strong>CCCt</strong> (ang. <em>Core Capacity Calculation Tool</em>)',
     '<strong>TET</strong> (ang. <em>Target End Time</em>)',
-    '<strong>CET</strong> (ang. <em>Critical End Time</em>)',
+    '<strong class="deadline-critical">CET</strong> (ang. <em>Critical End Time</em>)',
     '<strong>GLSK</strong> (ang. <em>Generation and Load Shift Keys</em>)',
     'BUP DA',
     'NOR DA',
@@ -1477,6 +1510,24 @@ required_editorial_patterns = [
     '<span class="scope-no">nie dotyczy IDCC(a)</span>',
     '<th>FID</th><th>Definicja pliku</th>',
     '<p class="definition">',
+    '<div class="deadline-rule">',
+    '<strong class="deadline-critical">CET</strong>',
+    '<div class="architecture-flow"',
+    '<h4>KDM — narzędzia PSE</h4>',
+    '<strong>Connector 2.0</strong>',
+    '<h4>Systemy zewnętrzne</h4>',
+    '<strong>Perun4V + sFTP</strong>',
+    '<strong>Core CC Tool</strong>',
+    '<ul class="cell-list">',
+    'PSE nie wysyła plików merged w tym kroku',
+    'brak odrębnego progu opóźnienia',
+    '<strong>Helpdesk CCC</strong>',
+    '<strong>Przebieg standardowy:</strong>',
+    '<strong>Tryb awaryjny:</strong>',
+    'Manual Upload bezpośrednio w Core CC Tool przez Message Viewer',
+    'PSE wysyła wymagane AAC do XBID',
+    '<code>ID2_5</code>',
+    '<code>ID3C_5</code> / <code>ID3_5</code>',
 ]
 missing_editorial_patterns = [pattern for pattern in required_editorial_patterns if pattern not in doc]
 assert not missing_editorial_patterns, (
@@ -1492,10 +1543,30 @@ forbidden_editorial_patterns = [
     'Notacja czasów w tabeli poniżej',
     'Kompletna, samowystarczalna instrukcja eksploatacyjna TSO',
     'Generation Load Shift Key',
+    'Zakres: dane PSE, walidacja, pliki i granice',
+    'przekazuje wejścia przez Message Viewer',
+    'PSE informuje USY/CCC',
+    'progu late',
+    'NTC do XBID — target / late',
+    'ponowna wysyłka IGM wyłącznie',
+    'poprawienie i ponowne wysłanie odrzuconego pliku',
+    'PSE/TSO wgrywa obliczone AAC do XBID',
+    'Szyna Transportowa CN2',
+    'SYSTEMY CENTRALNE CORE',
+    'telefon do CCC',
+    'TSCNET (CCC)',
+    'Coreso (CCC)',
+    'Wszystkie pliki wysyłane i odbierane między PSE a systemami zewnętrznymi przechodzą przez Connector 2.0',
+    'PSE dostarcza wymagane pliki do XBID',
 ]
 found_editorial_patterns = [pattern for pattern in forbidden_editorial_patterns if pattern in doc]
 assert not found_editorial_patterns, (
     f"Pozostały elementy wskazane do usunięcia: {found_editorial_patterns}")
+
+assert doc.count('<ul class="cell-list">') >= 25, (
+    'Wieloetapowe działania w tabelach nie zostały zapisane punktami')
+assert doc.count('class="architecture-tool"') == 6, (
+    'Schemat musi zawierać cztery narzędzia KDM i dwa systemy zewnętrzne')
 
 assert doc.count('(ang. <em>') >= 20, (
     'Angielskie rozwinięcia terminów słownikowych nie zostały zapisane kursywą')

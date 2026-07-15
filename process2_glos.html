@@ -20,8 +20,8 @@
     <tr><td><strong>IDCF</strong> (ang. <em>Intraday Congestion Forecast</em>)</td><td>Prognoza ograniczeń sieciowych przygotowywana dla rynku intraday.</td></tr>
     <tr><td><strong>MCP</strong> (ang. <em>Market Coupling Process</em>)</td><td>Proces łączenia rynków wykorzystujący udostępnione zdolności przesyłowe.</td></tr>
     <tr><td><strong>CCCt</strong> (ang. <em>Core Capacity Calculation Tool</em>)</td><td>Centralne narzędzie regionu Core do realizacji procesu Capacity Calculation.</td></tr>
-    <tr><td><strong>TET</strong> (ang. <em>Target End Time</em>)</td><td>Docelowy termin zakończenia danego kroku lub dostarczenia pliku.</td></tr>
-    <tr><td><strong>CET</strong> (ang. <em>Critical End Time</em>)</td><td>Końcowy termin zakończenia danego kroku, do którego można przedłużyć realizację po uzgodnieniu z operatorem procesu Capacity Calculation.</td></tr>
+    <tr><td><strong>TET</strong> (ang. <em>Target End Time</em>)</td><td>Docelowy termin zakończenia kroku lub dostarczenia pliku. Jeżeli dotrzymanie TET jest zagrożone, PSE informuje operatora procesu Capacity Calculation i uzgadnia dalsze działanie.</td></tr>
+    <tr><td><strong class="deadline-critical">CET</strong> (ang. <em>Critical End Time</em>)</td><td>Krytyczny, najpóźniejszy termin zakończenia kroku po uzgodnionym przedłużeniu. Przed CET należy zakończyć działanie albo uruchomić fallback lub backup wskazany dla danego kroku.</td></tr>
     <tr><td><strong>GLSK</strong> (ang. <em>Generation and Load Shift Keys</em>)</td><td>Klucz określający rozdział zmiany net position na jednostki wytwórcze i odbiorcze.</td></tr>
     <tr><td><strong>CB</strong> (ang. <em>Critical Branch</em>) / <strong>CNEC</strong> (ang. <em>Critical Network Element and Contingency</em>)</td><td>Element sieci lub para element–contingency uwzględniana w obliczeniach i walidacji domeny.</td></tr>
   </tbody>
@@ -38,7 +38,18 @@
   <li><strong>AC (FIDx-831)</strong> — plik ograniczeń alokacyjnych dla PuTo.</li>
   <li><strong>NTC (FIDx-921)</strong> — monitorowanie finalnych NTC.</li>
 </ul>
-<p class="note"><strong>TET</strong> oznacza docelowy termin zakończenia. Jeżeli dotrzymanie TET nie jest możliwe, należy poinformować operatora procesu Capacity Calculation, uzgodnić przedłużenie do <strong>CET</strong> i zastosować właściwy fallback lub backup wskazany w procedurze.</p>
+<div class="deadline-rule">
+  <h4>TET i CET — zasada operacyjna</h4>
+  <div class="deadline-grid">
+    <div class="deadline-tet"><strong>TET</strong><span>Docelowy termin zakończenia kroku lub dostarczenia pliku.</span></div>
+    <div class="deadline-cet"><strong>CET</strong><span>Krytyczny, najpóźniejszy termin zakończenia po uzgodnionym przedłużeniu.</span></div>
+  </div>
+  <ol class="compact-list">
+    <li>Jeżeli dotrzymanie TET jest zagrożone, poinformuj operatora procesu Capacity Calculation.</li>
+    <li>Uzgodnij przedłużenie do <strong class="deadline-critical">CET</strong>.</li>
+    <li>Zakończ krok albo zastosuj fallback lub backup wskazany dla danego zdarzenia.</li>
+  </ol>
+</div>
 
 <table class="ref file-summary">
   <thead><tr><th>FID</th><th>Definicja pliku</th><th>Źródło</th><th>Iteracja</th><th>TET / CET</th></tr></thead>
