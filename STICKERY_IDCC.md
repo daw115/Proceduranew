@@ -19,7 +19,7 @@ Każdy krok linkuje do pełnej procedury `PROCEDURA_IDCC_TSO_v7.html`.
 ## 👁 Monitorowanie IDCC(a)
 
 1. [Monitoruj FID1-928: v2 zielona po 13:15 D-1](PROCEDURA_IDCC_TSO_v7.html#hd-a)
-1. [Brak v2 po 14:30 → MinIO cca/… → telefon do CCC](PROCEDURA_IDCC_TSO_v7.html#hd-a)
+1. [Brak v2 po 14:30 → MinIO cca/… → telefon do operatora procesu](PROCEDURA_IDCC_TSO_v7.html#hd-a)
 1. [Pilnuj AC (FID1-831) z ZP i finalnych NTC (FID1-921)](PROCEDURA_IDCC_TSO_v7.html#aczp)
 1. [Kroki PSE w iteracji (a) wg BPD](PROCEDURA_IDCC_TSO_v7.html#proc-a)
 
