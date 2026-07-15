@@ -338,7 +338,7 @@ def file_card(f):
             f'<span><b>CET:</b> {esc(f.get("critical_end_time"))}</span>'
             f'<span><b>Źródło:</b> {linkify_refs(f.get("zrodlo"))}</span>'
             f'<span><b>Wersja:</b> {esc(f.get("wersja"))}</span></div>')
-    body = (f'<p class="opis">{esc(f.get("opis_pliku"))}</p>'
+    body = (f'<p class="definition">{esc(f.get("opis_pliku"))}</p>'
             f'<p class="path"><b>Ścieżka:</b> {linkify_refs(f.get("sciezka_pliku"))}</p>')
     st_html = ''
     if states:
@@ -414,6 +414,17 @@ border-radius:4px;padding:0 5px;color:var(--ink);word-break:break-all}
 a{color:var(--acc)}
 .lead{font:400 16.5px/1.65 var(--serif);color:#454e5c;font-style:italic}
 .lead code,.lead b,.lead strong{font-style:normal}
+.compact-list{margin:.45em 0;padding-left:1.35em}
+.compact-list>li{margin:.42em 0}
+.scope-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.scope-yes,.scope-no{display:inline-block;border-radius:4px;padding:2px 8px;font:700 11px var(--mono)}
+.scope-yes{color:var(--ok);background:var(--okb);border:1px solid #acd0b5}
+.scope-no{color:var(--err);background:var(--errb);border:1px solid #e0aaa6}
+.glossary td:first-child{width:38%;white-space:normal}
+.glossary td:first-child em{color:var(--mut)}
+.file-summary td:first-child{width:62px;text-align:center;font:700 12px var(--mono)}
+.term-name{font-weight:700;color:var(--ink)}
+.definition{margin:6px 0}.definition::before{content:"Definicja · ";font:700 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
 .tag{display:inline-block;font:600 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
 background:var(--ink);color:var(--yellow);border-radius:3px;padding:5px 10px;margin-right:10px;vertical-align:3px}
 /* ── chipy skrótów sekcji ── */
@@ -666,7 +677,7 @@ def domena_section(area, title, intro):
     return ''.join(s)
 
 def fid607_section():
-    s = ['<p class="lead">Plik GLSK (Generation Load Shift Keys, FIDx-607) — 32 udokumentowane stany kafelka '
+    s = ['<p class="lead">Plik GLSK (Generation and Load Shift Keys, FIDx-607) — 32 udokumentowane stany kafelka '
          '(para lewy×prawy kanał): sukces, przetwarzanie, oczekiwanie, błędy oraz wysyłka ręczna.</p>']
     s.append(gallery('fid607','GLSK 607 — stany kafelka'))
     return ''.join(s)
@@ -710,8 +721,11 @@ NAV = [('Start','#top'),('Tablica kart','#board'),
 nav_html = ''.join(f'<a href="{h}">{esc(t)}</a>' for t,h in NAV)
 
 proces_body = f"""
-<p class="lead">IDCC (Intraday Capacity Calculation) — cykliczne, śróddzienne wyznaczanie zdolności przesyłowych
-w regionie Core. PSE jako TSO dostarcza dane wejściowe, monitoruje strumienie plików i interweniuje przy awariach.</p>
+<ul class="compact-list">
+  <li><strong>Proces:</strong> IDCC (<em>Intraday Capacity Calculation</em>) w regionie Core.</li>
+  <li><strong>Rola PSE:</strong> TSO.</li>
+  <li><strong>Działania:</strong> dostarczanie danych wejściowych, monitorowanie plików i reakcja na zdarzenia awaryjne.</li>
+</ul>
 
 <h3>Architektura procesu i przepływ danych</h3>
 <pre class="arch">
@@ -753,8 +767,11 @@ w regionie Core. PSE jako TSO dostarcza dane wejściowe, monitoruje strumienie p
 </tbody></table>
 
 <h3>Wejścia PSE i bramki czasowe</h3>
-<p>Każdy plik ma <b>TET</b> (Target End Time — cel) i <b>CET</b> (Critical End Time — twardy deadline). Statusy i działania
-zależą od relacji do tych bramek — patrz <a href="#sec-legenda">legenda</a> i <a href="#sec-katalog">katalog plików</a>.</p>
+<ul class="compact-list">
+  <li><strong>TET:</strong> docelowy termin zakończenia.</li>
+  <li><strong>Po przekroczeniu TET:</strong> poinformuj operatora procesu Capacity Calculation, uzgodnij przedłużenie do CET i zastosuj właściwy fallback lub backup.</li>
+  <li><strong>Szczegóły:</strong> <a href="#sec-legenda">legenda statusów</a> i <a href="#sec-katalog">katalog plików</a>.</li>
+</ul>
 """
 
 # pełny opis procesu (na podstawie Core IDCC BPD v5.0 + perspektywa PSE z v5_2) — fragmenty z agentów
@@ -788,15 +805,13 @@ NAV = [('Start','#top'),
  ('17 · Checklisty dyżurowe','#sec-checklisty'),('⭐ STICKERY','#sec-stickery')]
 nav_html = ''.join(f'<a href="{h}">{esc(t)}</a>' for t,h in NAV)
 
-cel_body = ('<p class="lead">Procedura operacyjna dyspozytora PSE dla procesu Intraday Capacity '
- 'Calculation (IDCC) w regionie Core. Dokument obejmuje pełny zakres czynności TSO: dostarczanie '
- 'danych wejściowych, monitorowanie na pulpicie CCM, walidację indywidualną (IVA), działania '
- 'backupowe i eskalację. Wszystkie obowiązujące w tym zakresie instrukcje, scenariusze, kontakty '
- 'i materiały ekranowe zostały włączone bezpośrednio do niniejszego dokumentu. Obowiązuje '
- 'całodobowo, 7 dni w tygodniu.</p>'
- '<div class="callout"><b>Zasada generalna:</b> przy zdarzeniu wykraczającym poza normalny przebieg '
- 'wykonuj kolejne czynności opisane w tej procedurze; przy prawdopodobnym niedotrzymaniu Target '
- 'End Time powiadom CCC i przejdź do odpowiedniego scenariusza backupowego.</div>'
+cel_body = ('<p>Procedura określa czynności operatora PSE w procesie IDCC w regionie Core.</p>'
+ '<ul class="compact-list">'
+ '<li>dostarczanie danych wejściowych,</li>'
+ '<li>monitorowanie procesu w CCM,</li>'
+ '<li>przeprowadzenie procesu weryfikacji wyznaczonych zdolności przesyłowych (IVA),</li>'
+ '<li>realizacja działań backupowych.</li>'
+ '</ul>'
  + load_frag('process2_glos.html'))
 
 proces_body2 = proces_body + load_frag('process2_a.html') + load_frag('process2_bcd.html')
@@ -968,7 +983,6 @@ border-bottom:1px solid var(--rule);padding-bottom:7px}}
 <header class="hero">
   <div class="eyebrow">FBA_TSO_IDCC · PSE S.A. · KDM · REGION CORE</div>
   <h1>Procedura operacyjna dyspozytora — proces IDCC</h1>
-  <p class="subtitle">Kompletna, samowystarczalna instrukcja eksploatacyjna TSO: proces, terminy, czynności w narzędziach, scenariusze awaryjne, kontakty i materiały ekranowe.</p>
   <div class="hero-meta"><span>WYDANIE v7</span><span>OBOWIĄZUJE 24/7</span><span>18 SEKCJI</span><span>309 ZASOBÓW EKRANOWYCH</span><span>TRYB OFFLINE</span></div>
 </header>
 <div class="doc-tools" aria-label="Narzędzia dokumentu">
@@ -990,7 +1004,6 @@ border-bottom:1px solid var(--rule);padding-bottom:7px}}
   <div class="key-item key-danger"><span class="key-dot"></span><span><b>CZERWONY · ZAGROŻENIE</b>działaj i eskaluj</span></div>
   <div class="key-item key-action"><span class="key-dot"></span><span><b>NIEBIESKI · DZIAŁANIE</b>krok operatora</span></div>
 </div>
-<p class="lead"><b>Najpierw kolor i screen, potem szczegóły.</b> Galerie operacyjne są rozwinięte; kliknij ekran, aby go powiększyć. Tabele wariantów pozostają zwinięte, aby nie zasłaniały głównego przebiegu.</p>
 {section('sec-cel','Cel, zakres i definicje','1',cel_body,[('#sec-proces','proces'),('#sec-harmonogram','harmonogram')])}
 {section('sec-proces','Proces IDCC — kroki istotne dla PSE','2',proces_body2,[('#sec-katalog','katalog plików'),('#sec-harmonogram','harmonogram')])}
 {section('sec-harmonogram','Harmonogram operacyjny (CCCt)','3',load_frag7('frag7_harmonogram.html'),[('#sec-happyday','przebieg nominalny'),('#sec-katalog','TET/CET plików')])}
@@ -1216,6 +1229,9 @@ doc = doc.replace('w BPD', 'w opisie procesu')
 doc = doc.replace('z BPD', 'z opisu procesu')
 doc = doc.replace('BPD', 'opis procesu')
 doc = doc.replace('Core ID CCM 6th RfA', 'zasady monitorowania CCM')
+# Ujednolicenie widocznego rozwinięcia GLSK zgodnie z nazewnictwem operacyjnym.
+doc = doc.replace('Generation Load Shift Keys', 'Generation and Load Shift Keys')
+doc = doc.replace('Generation Load Shift Key', 'Generation and Load Shift Keys')
 doc = doc.replace('Harmonogram harmonogram operacyjny (CCCt 4.2) — bramki czasowe',
                   'Harmonogram operacyjny — bramki czasowe')
 doc = doc.replace(
@@ -1416,16 +1432,16 @@ legacy_labels = [
     '10 · Walidacja FBA',
     '11 · MinIO/Perun/CCCt',
     '12 · Kreator i AC w ZP',
-    '<td>IVA</td><td>Individual Validation Adjustment</td>',
-    '<td>CGM</td><td>Common Grid Model',
-    '<td>IGM</td><td>Individual Grid Model',
-    '<td>AAC</td><td>Already Allocated Capacity</td>',
-    '<td>NTC</td><td>Net Transfer Capacity</td>',
-    '<td>ATC</td><td>Available Transfer Capacity</td>',
-    '<td>CCCt</td><td>Core Capacity Calculation Tool</td>',
-    '<td>TET</td><td>Target End Time',
-    '<td>CET</td><td>Critical End Time',
-    '<td>GLSK</td><td>Generation Load Shift Key</td>',
+    '<strong>IVA</strong> (ang. <em>Individual Validation Adjustment</em>)',
+    '<strong>CGM</strong> (ang. <em>Common Grid Model</em>)',
+    '<strong>IGM</strong> (ang. <em>Individual Grid Model</em>)',
+    '<strong>AAC</strong> (ang. <em>Already Allocated Capacity</em>)',
+    '<strong>NTC</strong> (ang. <em>Net Transfer Capacity</em>)',
+    '<strong>ATC</strong> (ang. <em>Available Transfer Capacity</em>)',
+    '<strong>CCCt</strong> (ang. <em>Core Capacity Calculation Tool</em>)',
+    '<strong>TET</strong> (ang. <em>Target End Time</em>)',
+    '<strong>CET</strong> (ang. <em>Critical End Time</em>)',
+    '<strong>GLSK</strong> (ang. <em>Generation and Load Shift Keys</em>)',
     'BUP DA',
     'NOR DA',
     'FBA_TSO_NOR_03',
@@ -1449,6 +1465,40 @@ forbidden_label_translations = [
 found_label_translations = [term for term in forbidden_label_translations if term in doc]
 assert not found_label_translations, (
     f"Angielskie nazwy lub skróty zostały przetłumaczone: {found_label_translations}")
+
+required_editorial_patterns = [
+    '<h3 id="proc-pse">Słownik</h3>',
+    '<th>Termin</th><th>Definicja</th>',
+    '<h4>Pliki dostarczane przez TSO</h4>',
+    '<span class="scope-yes">IDCC(b)</span>',
+    '<span class="scope-yes">IDCC(c)</span>',
+    '<span class="scope-yes">IDCC(d)</span>',
+    '<span class="scope-yes">IDCC(e)</span>',
+    '<span class="scope-no">nie dotyczy IDCC(a)</span>',
+    '<th>FID</th><th>Definicja pliku</th>',
+    '<p class="definition">',
+]
+missing_editorial_patterns = [pattern for pattern in required_editorial_patterns if pattern not in doc]
+assert not missing_editorial_patterns, (
+    f"Brak wymaganych elementów zwięzłego stylu: {missing_editorial_patterns}")
+
+forbidden_editorial_patterns = [
+    'Najpierw kolor i screen',
+    'Zasada generalna',
+    'PSE — skróty, zakres i pliki wejściowe',
+    '<h4>Skróty i pojęcia</h4>',
+    '<h4>Zakres PSE i bramki czasowe</h4>',
+    '<h4>Kluczowe pliki PSE per iteracja</h4>',
+    'Notacja czasów w tabeli poniżej',
+    'Kompletna, samowystarczalna instrukcja eksploatacyjna TSO',
+    'Generation Load Shift Key',
+]
+found_editorial_patterns = [pattern for pattern in forbidden_editorial_patterns if pattern in doc]
+assert not found_editorial_patterns, (
+    f"Pozostały elementy wskazane do usunięcia: {found_editorial_patterns}")
+
+assert doc.count('(ang. <em>') >= 20, (
+    'Angielskie rozwinięcia terminów słownikowych nie zostały zapisane kursywą')
 
 source_when = re.findall(
     r'<p class="when">.*?</p>',

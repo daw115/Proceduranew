@@ -1,81 +1,115 @@
-<h3 id="proc-bcd">IDCC(b)–(d) — wspólny przebieg, kroki istotne dla PSE</h3>
+<h3 id="proc-bcd">IDCC(b)–(d) — wspólny przebieg</h3>
 
-<p>Procesy <strong>IDCC(b)</strong> (ID2), <strong>IDCC(c)</strong> (ID3C) i <strong>IDCC(d)</strong> (ID3) mają identyczną strukturę pod-procesów. Różnią się jedynie liczbą timestampów (TS), godzinami (TET/CET), prefiksem kodów FID (FID2 / FID3C / FID3) i kodami fallback (ID2_x / ID3C_x / ID3_x). Poniżej opisano przebieg <strong>raz</strong>, z zaznaczeniem różnic. PSE występuje jako <strong>TSO</strong>. Pominięto kroki czysto centralne (CCC/Coreso/FBPCM) bez działania PSE.</p>
+<ul class="compact-list">
+  <li><strong>Wspólna struktura:</strong> IDCC(b) (ID2), IDCC(c) (ID3C) i IDCC(d) (ID3).</li>
+  <li><strong>Różnice:</strong> liczba timestampów, TET/CET, prefiksy FID oraz kody fallback.</li>
+  <li><strong>Rola PSE:</strong> TSO dostarczający dane, wykonujący Individual Validation i monitorujący wyniki.</li>
+  <li><strong>Poza zakresem:</strong> kroki centralne CCC/RCC/FBPCM niewymagające działania PSE.</li>
+</ul>
 
 <h4>Różnice między iteracjami</h4>
 <table class="ref">
-  <thead>
-    <tr><th>Iteracja</th><th>Prefiks FID</th><th>Liczba TS</th><th>Deadline AAC (start)</th><th>NTC do XBID — target / late</th><th>Po opóźnieniu</th><th>Kody fallback</th></tr>
-  </thead>
+  <thead><tr><th>Iteracja</th><th>Prefiks FID</th><th>Liczba TS</th><th>AAC — start</th><th>NTC do XBID — target / late</th><th>Po opóźnieniu</th><th>Kody fallback</th></tr></thead>
   <tbody>
-    <tr><td>IDCC(b) / ID2</td><td>FID2-###</td><td>24</td><td>~20:00 (D-1)</td><td>21:45 / po 21:55</td><td>restart po IDA2, NTC &lt; 22:30</td><td>ID2_1 – ID2_25</td></tr>
-    <tr><td>IDCC(c) / ID3C</td><td>FID3C-###</td><td>18</td><td>02:00 (D-0)</td><td>(brak osobnego progu late w BPD)</td><td>—</td><td>ID3C_1 – ID3C_23</td></tr>
-    <tr><td>IDCC(d) / ID3</td><td>FID3-###</td><td>12</td><td>07:00 (D-0)</td><td>09:45 / po 09:55</td><td>restart po IDA3, NTC &lt; 10:30</td><td>ID3_1 – ID3_25</td></tr>
+    <tr><td>IDCC(b) / ID2</td><td>FID2-###</td><td>24</td><td>~20:00 (D-1)</td><td>21:45 / po 21:55</td><td>restart po IDA2; NTC &lt; 22:30</td><td>ID2_1–ID2_25</td></tr>
+    <tr><td>IDCC(c) / ID3C</td><td>FID3C-###</td><td>18</td><td>02:00 (D)</td><td>brak osobnego progu late</td><td>—</td><td>ID3C_1–ID3C_23</td></tr>
+    <tr><td>IDCC(d) / ID3</td><td>FID3-###</td><td>12</td><td>07:00 (D)</td><td>09:45 / po 09:55</td><td>restart po IDA3; NTC &lt; 10:30</td><td>ID3_1–ID3_25</td></tr>
   </tbody>
 </table>
-<p><em>Kody FID poniżej podano w wariancie FID2-### (ID2). Dla ID3C/ID3 podstaw prefiks FID3C-### / FID3-### przy tym samym numerze (np. GLSK = FID2-607 / FID3C-607 / FID3-607).</em></p>
+<p class="note">Numery plików pozostają wspólne. Prefiks zależy od iteracji: FID2-### / FID3C-### / FID3-###, np. GLSK: FID2-607 / FID3C-607 / FID3-607.</p>
 
 <h4>TSO Data Gathering</h4>
-<p>PSE wysyła komplet danych wejściowych dla swojego obszaru. Podstawą jest paczka AAC z XBID (MD830). Pliki PSE z Kreatora IDCF/DACF:</p>
-<ul>
-  <li><strong>GLSK</strong> — Generation and Load Shift Keys, klucze rozdziału generacji/obciążenia strefy PL — <strong>FID2-607</strong>.</li>
-  <li><strong>CBCORA</strong> — Critical Branches &amp; Outages + Remedial Actions (lista CNEC PSE z wyłączeniami) — <strong>FID2-617</strong>.</li>
-  <li><strong>CGM/IGM</strong> — 24 indywidualne modele sieci (DACF_IGM_UCT), eksport TSO Data Preparation → Coreso (scalenie do CGM <strong>FID2-620</strong>).</li>
-  <li><strong>RefProg</strong> — program referencyjny wyznaczany centralnie z AAC grid model, dystrybuowany do PSE — <strong>FID2-632</strong>.</li>
-  <li><strong>External Constraints (EC)</strong> — PSE może nałożyć ograniczenia na pozycję netto strefy PL (export/import wg wzorów art. 10 ID CCM); funkcja allocation constraints w ID CCt jest niedostępna.</li>
-  <li><strong>RA / RA Settings, aktualizacje TOPO</strong> — środki zaradcze i zmiany topologii IGM.</li>
+<ul class="compact-list">
+  <li><strong>Wejście:</strong> AAC z XBID (MD830).</li>
+  <li><strong>GLSK (FIDx-607):</strong> Generation and Load Shift Keys dla strefy PL.</li>
+  <li><strong>CBCORA (FIDx-617):</strong> Critical Branches, outages i RA dla CNEC PSE.</li>
+  <li><strong>IGM:</strong> modele DACF_IGM_UCT; PSE / TSO Data Preparation → serwer Swissgrid → TSCNET (RCC odpowiedzialny za PSE); TSCNET tworzy CGM (FIDx-620), a Coreso jako Merging Entity przekazuje merging package do CCCt. IDCC(b) używa Combined DACF; IDCC(c)–(d) używają TSCNET IDCF.</li>
+  <li><strong>RefProg (FIDx-632):</strong> wynik centralny przekazywany do PSE.</li>
+  <li><strong>External Constraints:</strong> ograniczenia net position strefy PL zgodne z art. 10 ID CCM.</li>
+  <li><strong>RA / RA Settings / TOPO:</strong> środki zaradcze i aktualizacje topologii IGM.</li>
+  <li><strong>Kanał:</strong> ECP/EDX albo GUI CCCt; CBCORA w XML lub XLSX przez konwerter.</li>
+  <li><strong>Uwaga:</strong> słownik CO w GUI synchronizowany z DACC do IDCC o D-1 15:00.</li>
 </ul>
-<p>Pliki przekazywane są przez ECP/EDX lub GUI CCt. Słownik CO aktualizowany w GUI (uwaga: synchronizacja DACC→IDCC o D-1 15:00). Format CB: XML lub XLSX przez konwerter CBCORA.</p>
 
-<h4>CGM Data Gathering (pierwszy/drugi/trzeci)</h4>
-<p>Krok centralny Coreso (scalenie IGM→CGM). Dla PSE istotne: paczka merging jest dostarczana <strong>3× dla ID2</strong>, <strong>2× dla ID3C/ID3</strong>; PSE otrzymuje dystrybucję CGM/RefProg/DA Domain. Działania PSE tylko gdy fallback wymaga ponownej wysyłki IGM.</p>
+<h4>CGM Data Gathering</h4>
+<ul class="compact-list">
+  <li><strong>Działanie RCC:</strong> scalenie IGM do CGM.</li>
+  <li><strong>Dystrybucja:</strong> CGM, RefProg i DA Domain do PSE.</li>
+  <li><strong>Liczba paczek:</strong> 3 dla IDCC(b); 2 dla IDCC(c) i IDCC(d).</li>
+  <li><strong>Działanie PSE:</strong> ponowna wysyłka IGM wyłącznie po uruchomieniu właściwego fallbacku.</li>
+</ul>
 
 <h4>RefProg Computation</h4>
-<p>Krok centralny. PSE odbiera wyniki RefProg (<strong>FID2-632</strong>) — wykorzystywane dalej w IVA i jako punkt startowy domeny.</p>
+<ul class="compact-list">
+  <li><strong>Wynik:</strong> RefProg (FIDx-632).</li>
+  <li><strong>Zastosowanie:</strong> wejście do IVA i punkt startowy domeny.</li>
+  <li><strong>Działanie PSE:</strong> odbiór i kontrola dostępności pliku.</li>
+</ul>
 
-<h4>TSO data merging</h4>
-<p>CCt scala dane wszystkich TSO i odsyła scalone pliki do PSE: Merged GLSK (<strong>FID2-610</strong>), Merged EC, Merged CB, Merged RA Settings, Merged AAC. PSE może <strong>poprawić i ponownie wysłać</strong> swoje pliki po Data Quality Check (raporty DQC: <strong>FID2-659</strong> dla CGM). Indywidualne przefiltrowane CB PSE: <strong>FID2-665</strong>; Real GLSK: <strong>FID2-657</strong>.</p>
+<h4>TSO Data Merging</h4>
+<ul class="compact-list">
+  <li><strong>Wyniki scalania:</strong> Merged GLSK (FIDx-610), Merged External Constraints, Merged CB, Merged RA Settings i Merged AAC.</li>
+  <li><strong>Kontrola:</strong> Data Quality Check; raport CGM (FIDx-659).</li>
+  <li><strong>Działanie PSE:</strong> poprawienie i ponowne wysłanie odrzuconego pliku.</li>
+  <li><strong>Pliki dodatkowe:</strong> indywidualne przefiltrowane CB (FIDx-665) i Real GLSK (FIDx-657).</li>
+</ul>
 
-<h4>Export CGM at AAC / Initial flow-based computation</h4>
-<p>Kroki centralne (FBPCM). PSE odbiera wyniki: Initial FB Domain (<strong>FID2-645</strong>), wierzchołki domeny (Vertices, <strong>FID2-701</strong>), Initial Intraday ATC (<strong>FID2-882</strong>) — wejście do walidacji.</p>
+<h4>Export CGM at AAC / Initial Flow-Based Computation</h4>
+<ul class="compact-list">
+  <li><strong>Działanie centralne:</strong> obliczenia FBPCM.</li>
+  <li><strong>Wyniki dla PSE:</strong> Initial FB Domain (FIDx-645), Vertices (FIDx-701) i Initial Intraday ATC (FIDx-882).</li>
+  <li><strong>Zastosowanie:</strong> wejście do Individual Validation.</li>
+</ul>
 
 <h4>Individual Validation (IVA — Perun4V)</h4>
-<p><strong>Kluczowy krok PSE.</strong> PSE samodzielnie waliduje wynik initial FB pod kątem bezpieczeństwa swojego obszaru i ewentualnie koryguje domenę:</p>
-<ul>
-  <li>Wejście: zagregowana paczka <strong>PERUN_ID2</strong> do Perun4V (składowe: Merged GLSK 610, CGM 620, RefProg 632, Initial FB Domain 645, Real GLSK 657, CB 665, Vertices 701, Initial ATC 882, RA).</li>
-  <li><strong>Walidacja CNEC-based:</strong> PSE zmniejsza RAM własnych CNEC, zapisuje korekty + uzasadnienie w pliku <strong>IVA (FID2-710)</strong> z Perun4V → CCt. IVA stosowane na finalnej domenie FB.</li>
-  <li><strong>Walidacja ATC-based:</strong> PSE ustawia maksymalne ATC na własnych granicach zorientowanych (niższa wartość wygrywa, gdy oba TSO podają wartość).</li>
-  <li>Okno walidacji ID2: <strong>40 min</strong> (TET 21:30 / CET 22:06). Backup IVA generuje CCA (<strong>FID2-710</strong>, wariant backup) gdy IVA podstawowe brakuje/jest niezgodne.</li>
-  <li>Raporty z Perun (RAP_PERUN_ID2) — informacyjne.</li>
+<ul class="compact-list">
+  <li><strong>Cel:</strong> weryfikacja bezpieczeństwa Initial FB Domain dla obszaru PSE.</li>
+  <li><strong>Wejście:</strong> paczka PERUN_IDx: Merged GLSK 610, CGM 620, RefProg 632, Initial FB Domain 645, Real GLSK 657, CB 665, Vertices 701, Initial ATC 882 i RA.</li>
+  <li><strong>CNEC-based:</strong> korekta RAM własnych CNEC wraz z uzasadnieniem w <strong>IVA (FIDx-710)</strong>; Perun4V → CCCt.</li>
+  <li><strong>ATC-based:</strong> maksymalne ATC dla zorientowanych granic PSE; obowiązuje niższa wartość przekazana przez TSO.</li>
+  <li><strong>Termin IDCC(b):</strong> okno 40 min; TET 21:30; CET 22:06.</li>
+  <li><strong>IVA BACKUP:</strong> CCA generuje FIDx-710, gdy IVA nie zostanie dostarczone albo jest niezgodne.</li>
+  <li><strong>Raport:</strong> RAP_PERUN_IDx — informacyjny.</li>
 </ul>
 
 <h4>Final FB Computation</h4>
-<p>Krok centralny — initial FB aktualizowane o IVA PSE; PSE może też zaktualizować EC. PSE odbiera wyniki i Fallback Report.</p>
+<ul class="compact-list">
+  <li><strong>Działanie centralne:</strong> uwzględnienie IVA w Final FB Domain.</li>
+  <li><strong>Działanie PSE:</strong> możliwość aktualizacji External Constraints.</li>
+  <li><strong>Wynik:</strong> Final FB Domain i Fallback Report.</li>
+</ul>
 
-<h4>ID ATC Extraction (wyniki NTC do XBID)</h4>
-<p>Wyznaczenie ATC/NTC na bazie najnowszych AAC. PSE odbiera ATC/NTC dla swoich granic (<strong>FID2-921</strong> = Final NTC, <strong>FID2-922</strong> = ATC). <strong>Współodpowiedzialność PSE:</strong> przy ręcznej wysyłce NTC do XBID (sFTP) lub problemie z ACK — TSO po obu stronach granicy sprawdzają poprawność zdolności na swojej granicy. Opóźnienia: patrz tabela różnic (ID2 21:45/21:55; ID3 09:45/09:55).</p>
+<h4>ID ATC Extraction</h4>
+<ul class="compact-list">
+  <li><strong>Wynik:</strong> Final NTC (FIDx-921) i ATC (FIDx-922) dla granic PSE.</li>
+  <li><strong>Kontrola:</strong> przy ręcznej wysyłce przez sFTP lub problemie z ACK TSO po obu stronach granicy sprawdzają zdolności.</li>
+  <li><strong>Terminy:</strong> IDCC(b) 21:45 / 21:55; IDCC(d) 09:45 / 09:55.</li>
+  <li><strong>Działanie PSE:</strong> monitorowanie finalnych NTC oraz potwierdzenie wyniku do CCC, jeżeli wymaga tego fallback.</li>
+</ul>
 
 <h4>Export CGM at AAC / Nodal PTDF / Translate Domain to AAC / Net Positions / Distribute Inputs</h4>
-<p>Kroki centralne (FBPCM). PSE odbiera produkty: CGM at AAC, GLSK Nodal PTDFs (<strong>FID2-935</strong>), AAC FB Domain (<strong>FID2-936</strong>), DQC (990), logi. Brak aktywnego działania PSE poza odbiorem.</p>
+<ul class="compact-list">
+  <li><strong>Działanie centralne:</strong> obliczenia FBPCM i dystrybucja wyników.</li>
+  <li><strong>Wyniki dla PSE:</strong> CGM at AAC, GLSK Nodal PTDFs (FIDx-935), AAC FB Domain (FIDx-936), DQC (FIDx-990) i logi.</li>
+  <li><strong>Działanie PSE:</strong> odbiór i monitorowanie; brak czynności ręcznej w przebiegu nominalnym.</li>
+</ul>
 
 <h4>Fallbacki istotne dla PSE / TSO</h4>
 <table class="ref">
-  <thead>
-    <tr><th>Kod</th><th>Iteracja (krok)</th><th>Sytuacja</th><th>Działanie PSE / TSO</th><th>Mail #</th></tr>
-  </thead>
+  <thead><tr><th>Kod</th><th>Krok</th><th>Sytuacja</th><th>Działanie PSE / TSO</th><th>Mail #</th></tr></thead>
   <tbody>
-    <tr><td>ID2_4 / ID3C_4 / ID3_4</td><td>TSO Data Gathering</td><td>Brak policzonych AAC z IDCC(a)</td><td>PSE dostarcza AAC do XBID lokalnym narzędziem przed deadline (ID2 20:00 / ID3C 02:00 / ID3 07:00) i potwierdza CCC obecność AAC w XBID</td><td>—</td></tr>
-    <tr><td>ID2_6 / ID3C_6 / ID3_6</td><td>TSO data merging</td><td>Brak obowiązkowego pliku wejściowego</td><td>CCC dzwoni do PSE z prośbą o dostarczenie pliku przed CET; PSE dosyła</td><td>4</td></tr>
-    <tr><td>ID2_7 / ID3C_7 / ID3_7</td><td>TSO data merging</td><td>Brak/błędny indywidualny GLSK PSE</td><td>PSE proponuje strategię zastąpienia (replacement) lub poprawia; w razie braku — BD blocked, proces z Fallback Domain</td><td>3</td></tr>
-    <tr><td>ID2_8 / ID3C_8 / ID3_8</td><td>TSO data merging</td><td>Brak/błędny indywidualny EC PSE</td><td>PSE proponuje zastąpienie / poprawia; inaczej Fallback Domain</td><td>3</td></tr>
-    <tr><td>ID2_9 / ID3C_9 / ID3_9</td><td>TSO data merging</td><td>Brak/błędny indywidualny plik CB PSE</td><td>PSE proponuje zastąpienie / poprawia; inaczej Fallback Domain</td><td>3</td></tr>
-    <tr><td>ID2_11 / ID3C_11 / ID3_11</td><td>Initial FB computation</td><td>Fallback zastosowany dla części TS</td><td>PSE otrzymuje mail z listą TS objętych fallbackiem — bez działań, przyjąć do wiadomości</td><td>5</td></tr>
-    <tr><td>ID2_13 / ID3C_13 / ID3_13</td><td>Final FB computation</td><td>Fallback zastosowany dla części TS</td><td>PSE otrzymuje mail z listą TS objętych fallbackiem — bez działań, przyjąć do wiadomości</td><td>5</td></tr>
-    <tr><td>ID2_15 / ID3_15</td><td>ID ATC Extraction</td><td>NTC po targecie (ID2 21:45 / ID3 09:45)</td><td>PSE otrzymuje informację; do rynku publikowany jest UMM</td><td>ID2: 24,22 / ID3: 23,22</td></tr>
-    <tr><td>ID2_16 / ID3_16</td><td>ID ATC Extraction</td><td>NTC po 21:55 / 09:55 — opóźnienie po IDA2/IDA3</td><td>PSE otrzymuje informację; publikowany jest UMM o opóźnieniu zdolności</td><td>32,33</td></tr>
-    <tr><td>ID2_17 / ID3C_15 / ID3_17</td><td>ID ATC Extraction</td><td>Nieudana ekstrakcja ATC</td><td>PSE otrzymuje informację mailem; publikowany jest UMM</td><td>ID2: 2,27 / ID3C: 2,28 / ID3: 2,29</td></tr>
-    <tr><td>ID2_19 / ID3C_17 / ID3_19</td><td>ID ATC Extraction</td><td>Brak/negatywny ACK dla NTC (921)</td><td>Współodpowiedzialność PSE: TSO po obu stronach granicy weryfikują poprawność zdolności w XBID i potwierdzają do CCC</td><td>12,7</td></tr>
-    <tr><td>ID2_23 / ID3C_21 / ID3_23</td><td>Cały proces</td><td>ID CCt niedostępny w CET dowolnego kroku</td><td>PSE otrzymuje informację mailem o awarii; publikowany jest UMM</td><td>ID2: 2,27 / ID3C: 2,28 / ID3: 2,29</td></tr>
-    <tr><td>ID2_24 / ID3C_22 / ID3_24</td><td>Cały proces</td><td>Problem EDX/ECP TSO↔CCt</td><td>Operator PSE zgłasza do USY/CCC i <strong>ręcznie wgrywa dane</strong> do CCt (Message Viewer) lub przesyła pliki do CCC mailem</td><td>—</td></tr>
+    <tr><td>ID2_4 / ID3C_4 / ID3_4</td><td>TSO Data Gathering</td><td>Brak AAC z IDCC(a)</td><td>PSE dostarcza AAC do XBID lokalnym narzędziem przed terminem: IDCC(b) 20:00 / IDCC(c) 02:00 / IDCC(d) 07:00; potwierdza obecność AAC do CCC</td><td>—</td></tr>
+    <tr><td>ID2_6 / ID3C_6 / ID3_6</td><td>TSO Data Merging</td><td>Brak pliku MANDATORY</td><td>CCC kontaktuje się z PSE; PSE dostarcza plik przed CET</td><td>4</td></tr>
+    <tr><td>ID2_7 / ID3C_7 / ID3_7</td><td>TSO Data Merging</td><td>Brak lub błąd GLSK PSE</td><td>PSE poprawia plik albo proponuje replacement; przy braku rozwiązania proces używa Fallback Domain</td><td>3</td></tr>
+    <tr><td>ID2_8 / ID3C_8 / ID3_8</td><td>TSO Data Merging</td><td>Brak lub błąd External Constraints PSE</td><td>PSE poprawia plik albo proponuje replacement; przy braku rozwiązania proces używa Fallback Domain</td><td>3</td></tr>
+    <tr><td>ID2_9 / ID3C_9 / ID3_9</td><td>TSO Data Merging</td><td>Brak lub błąd CB PSE</td><td>PSE poprawia plik albo proponuje replacement; przy braku rozwiązania proces używa Fallback Domain</td><td>3</td></tr>
+    <tr><td>ID2_11 / ID3C_11 / ID3_11</td><td>Initial FB Computation</td><td>Fallback dla części TS</td><td>PSE przyjmuje do wiadomości mail z listą TS</td><td>5</td></tr>
+    <tr><td>ID2_13 / ID3C_13 / ID3_13</td><td>Final FB Computation</td><td>Fallback dla części TS</td><td>PSE przyjmuje do wiadomości mail z listą TS</td><td>5</td></tr>
+    <tr><td>ID2_15 / ID3_15</td><td>ID ATC Extraction</td><td>NTC po targecie: IDCC(b) 21:45 / IDCC(d) 09:45</td><td>PSE monitoruje informację; publikowany jest UMM</td><td>ID2: 24,22 / ID3: 23,22</td></tr>
+    <tr><td>ID2_16 / ID3_16</td><td>ID ATC Extraction</td><td>NTC po 21:55 / 09:55</td><td>PSE monitoruje informację; publikowany jest UMM o opóźnieniu</td><td>32,33</td></tr>
+    <tr><td>ID2_17 / ID3C_15 / ID3_17</td><td>ID ATC Extraction</td><td>Nieudana ekstrakcja ATC</td><td>PSE monitoruje informację mailową; publikowany jest UMM</td><td>ID2: 2,27 / ID3C: 2,28 / ID3: 2,29</td></tr>
+    <tr><td>ID2_19 / ID3C_17 / ID3_19</td><td>ID ATC Extraction</td><td>Brak lub negatywny ACK dla NTC (FIDx-921)</td><td>TSO po obu stronach granicy weryfikują zdolności w XBID i potwierdzają wynik do CCC</td><td>12,7</td></tr>
+    <tr><td>ID2_23 / ID3C_21 / ID3_23</td><td>Cały proces</td><td>CCCt niedostępny w CET</td><td>PSE monitoruje informację mailową o awarii; publikowany jest UMM</td><td>ID2: 2,27 / ID3C: 2,28 / ID3: 2,29</td></tr>
+    <tr><td>ID2_24 / ID3C_22 / ID3_24</td><td>Cały proces</td><td>Problem EDX/ECP TSO↔CCCt</td><td>Operator PSE zgłasza problem do USY/CCC i przekazuje dane przez Message Viewer albo mailem</td><td>—</td></tr>
   </tbody>
 </table>
