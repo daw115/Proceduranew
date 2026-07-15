@@ -61,10 +61,6 @@ for _m in MAN:
 assert not _invalid_image_dimensions, (
     f'Nie można odczytać naturalnych wymiarów obrazów: {_invalid_image_dimensions[:10]}')
 
-def is_micro(m):
-    """Wycinek pojedynczej ikony/przycisku — pokazywany w pasku ikon, nie jako figura."""
-    w, h = m.get('_wh', (9999, 9999))
-    return w < 140 and h < 140
 def area_of(f):
     if f.startswith('screens/ccm'):       return 'ccm'
     if f.startswith('screens/bup'):        return 'bup'
@@ -105,20 +101,11 @@ def gallery(area, title, intro='', only=None, exclude=None):
     if only:    items = [m for m in items if m['file'] in only]
     if exclude: items = [m for m in items if m['file'] not in exclude]
     if not items: return ''
-    shots = [m for m in items if not is_micro(m)]
-    icons = [m for m in items if is_micro(m)]
+    shots = items
     figs = ''.join(img(m['file']) for m in shots)
-    strip = ''
-    if icons:
-        cells = ''.join(
-            f'<span class="icell" title="{esc(m.get("caption") or m.get("shows") or "")}">'
-            f'<img src="{asset_uri(m["file"])}" alt="{esc(m.get("caption") or "")}" data-source="{esc(m["file"])}">'
-            f'<small>{esc((m.get("caption") or "")[:60])}</small></span>' for m in icons)
-        strip = (f'<p class="iconshead">Elementy interfejsu (ikony i przyciski, rozmiar rzeczywisty):</p>'
-                 f'<div class="iconstrip">{cells}</div>')
     return (f'<details class="gal screen-gallery" open><summary>{esc(title)} — {len(shots)} ekranów'
-            f'{f" + {len(icons)} ikon" if icons else ""} · kliknij ekran, aby powiększyć</summary>'
-            f'{("<p>"+esc(intro)+"</p>") if intro else ""}<div class="grid">{figs}</div>{strip}</details>')
+            f' · kliknij ekran, aby powiększyć</summary>'
+            f'{("<p>"+esc(intro)+"</p>") if intro else ""}<div class="grid">{figs}</div></details>')
 
 def featured(file):
     """Pojedynczy wyróżniony screen w kroku (jeśli istnieje)."""
@@ -510,12 +497,6 @@ figure.shot figcaption{display:grid;grid-template-columns:auto 1fr auto;align-it
 .caption-label{display:inline-block;padding:2px 7px;border-radius:3px;background:var(--accbg);color:var(--acc);
 font:800 10px var(--mono);letter-spacing:.07em;text-transform:uppercase;white-space:nowrap}
 .caption-text{font:650 12.5px/1.45 var(--sans);text-align:left}.caption-size{font:500 10.5px/1.4 var(--mono);color:var(--mut);white-space:nowrap}
-.iconshead{font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin:16px 0 7px}
-.iconstrip{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
-.iconstrip .icell{display:inline-flex;flex-direction:column;align-items:center;gap:4px;
-border:1px solid var(--rule2);border-radius:6px;padding:9px 11px;background:#fff;max-width:150px}
-.iconstrip img{width:auto;height:auto;max-width:130px;max-height:80px}
-.iconstrip small{font:10px var(--mono);color:var(--mut);text-align:center;line-height:1.25}
 /* ── kroki C.x ── */
 .step{border:1px solid var(--ink);background:var(--panel);border-radius:0 6px 6px 0;
 border-left:6px solid var(--navy);padding:11px 15px;margin:14px 0;box-shadow:3px 3px 0 rgba(15,62,99,.12)}
@@ -1154,8 +1135,6 @@ for old, new in {
     'PDF: Instrukcja Użytkownika obsługującego proces ID': 'Ekran instruktażowy obsługi procesu ID',
     'CCM Instrukcja Użytkownika': 'instrukcja obsługi CCM',
     'Core CC Tool Operator Manual 4.1': 'instrukcja obsługi Core CC Tool',
-    'FBA_TSO_NOR_03 v0.21': 'instrukcja walidacji w trybie normalnym',
-    'FBA_TSO_BUP_03 v0.32': 'instrukcja walidacji w trybie backupowym',
     'PROCEDURA_IDCC_TSO_v5_2': 'wcześniejszy materiał operacyjny',
 }.items():
     doc = doc.replace(old, new)
@@ -1186,7 +1165,8 @@ doc = re.sub(
     '<td>Brak czynności dyspozytora</td></tr>', doc, flags=re.S)
 doc = re.sub(
     r'<code>\\\\uo-data\\ZUO\\Pion_UOD\\Wydzial_DP\\MODELE\\5_DYSP\\FBA\\Pliki wejściowe do DA FBA\\rrrMMdd\\PERUN\\</code>\s*<em>\(BUP DA\)</em>\s*<em>\(❓ analogiczna ścieżka dla IDCC — do weryfikacji\)</em>',
-    lambda _: r'<code>\\uo-data\ZUO\Pion_UOD\Wydzial_DP\MODELE\5_DYSP\FBA\Pliki wejściowe do ID FBA\rrrMMdd\PERUN\</code>',
+    lambda _: (r'<code>\\uo-data\ZUO\Pion_UOD\Wydzial_DP\MODELE\5_DYSP\FBA\Pliki wejściowe do ID FBA\rrrMMdd\PERUN\</code> '
+               r'<em>(BUP DA)</em>'),
     doc)
 
 # Nazwy i numery stron materiałów źródłowych są zbędne — właściwe instrukcje i ekrany
@@ -1209,18 +1189,17 @@ doc = doc.replace('między draftem harmonogram operacyjny a wartościami operacy
                   'między wartościami pomocniczymi a tabelą zbiorczą')
 doc = doc.replace('Procedury skróconej v4.1', 'niniejszej procedury')
 doc = doc.replace('instrukcji v4.1', 'tabeli wartości operacyjnych')
-doc = re.sub(r'FBA_TSO_BUP_03\s*<strong>v0\.32</strong>\s*z 05\.01\.2026',
-             'instrukcja walidacji w trybie backupowym opisana poniżej', doc)
+# Zachowaj techniczną nazwę instrukcji FBA_TSO_BUP_03 oraz jej wersję.
 doc = doc.replace('Pełna instrukcja narzędzia: IDCF_InstrUżytk_v5',
                   'Pełna instrukcja narzędzia znajduje się w <a href="#sec-kreator">sekcji Kreator IDCF</a>')
 doc = re.sub(r'<li><strong>Pełna instrukcja narzędzia:</strong>\s*<code>IDCF_InstrUżytk_v5</code>.*?</li>',
              '<li><strong>Instrukcja narzędzia:</strong> wykonaj kroki i skorzystaj z ekranów w '
              '<a href="#sec-kreator">sekcji Kreator IDCF i AC w ZP</a>.</li>', doc, flags=re.S)
-doc = re.sub(r'<em>tryb backupowy Rys\. dla Ryzyka 9 \(\)</em>',
-             '<a href="#sec-walidacja">Ekrany Perun4V znajdują się w sekcji Walidacja FBA</a>', doc)
+doc = re.sub(r'<em>BUP DA Rys\. dla Ryzyka 9 \(\)</em>',
+             '<a href="#sec-walidacja">Ekrany BUP DA w Perun4V znajdują się w sekcji Walidacja FBA</a>', doc)
 doc = doc.replace('Dla pełnych kart ryzyk patrz rozdział 9.',
                   'Pełne karty ryzyk znajdują się w <a href="#sec-ryzyka">sekcji Ryzyka R01–R29</a>.')
-doc = doc.replace('BUP DA', 'tryb backupowy').replace('NOR DA', 'tryb normalny')
+# BUP DA i NOR DA są technicznymi nazwami trybów i pozostają bez zmian.
 doc = re.sub(r'HTML\s*§\s*[\d.]+(?:\s*R\d+)?', 'odpowiednia sekcja tej procedury', doc)
 doc = re.sub(r'\bRys\.\s*\d+(?:[–-]\d+)?', 'ekran w tej procedurze', doc)
 doc = re.sub(r',?\s*str\.\s*\d+(?:[–-]\d+)?', '', doc)
@@ -1255,8 +1234,8 @@ doc = doc.replace('szczegółowe timingi w źródle harmonogram operacyjny.',
 doc = doc.replace('Korekty względem draftu harmonogram operacyjny', 'Obowiązujące wartości operacyjne')
 doc = doc.replace('między draftem harmonogram operacyjny a wartościami operacyjnymi',
                   'między wartościami pomocniczymi a tabelą zbiorczą')
-doc = re.sub(r'<em>tryb backupowy Rys\. dla Ryzyka 9 \(\)</em>',
-             '<a href="#sec-walidacja">Ekrany Perun4V znajdują się w sekcji Walidacja FBA</a>', doc)
+doc = re.sub(r'<em>BUP DA Rys\. dla Ryzyka 9 \(\)</em>',
+             '<a href="#sec-walidacja">Ekrany BUP DA w Perun4V znajdują się w sekcji Walidacja FBA</a>', doc)
 # Ujednolicenie historycznych kotwic ze scalonych fragmentów.
 doc = re.sub(r'href="#r(\d{2})"', lambda m: f'href="#R{m.group(1)}"', doc)
 doc = doc.replace('href="#s3"', 'href="#sec-proces"')
@@ -1270,307 +1249,20 @@ doc = re.sub(r'href="Karta_ryzyk_IDCC\.md#([^"]+)"', r'href="#\1"', doc)
 doc = doc.replace('href="Karta_ryzyk_IDCC.md"', 'href="#sec-ryzyka"')
 doc = doc.replace('Karta_ryzyk_IDCC.md', 'baza ryzyk w tej procedurze')
 
-# Rozwinięcie skrótów redakcyjnych w widocznej treści. Kody plików, ścieżki,
-# formaty techniczne i gotowe treści wiadomości pozostają bez zmian.
-FULL_TERM_PATTERNS = [
-    (r'\bPPM\b', 'prawy przycisk myszy'),
-    (r'\bLPM\b', 'lewy przycisk myszy'),
-    (r'\bTET\b', 'docelowy termin zakończenia'),
-    (r'\bCET\b', 'krytyczny termin zakończenia'),
-    (r'\bACK\b', 'potwierdzenie odbioru'),
-    (r'\bTSO\b', 'operator systemu przesyłowego'),
-    (r'\bCCCt\b|\bCCTool\b', 'Core Capacity Calculation Tool'),
-    (r'\bCCC\b', 'regionalne centrum koordynacyjne'),
-    (r'\bRCC\b', 'regionalne centrum koordynacyjne'),
-    (r'\bCCM\b(?!\.spsm)', 'pulpit monitorowania'),
-    (r'\bFBA\b', 'walidacja przepływowa'),
-    (r'\bIVA\b', 'korekta walidacyjna'),
-    (r'\bBUP\b', 'tryb awaryjny'),
-    (r'\bNOR\b', 'tryb normalny'),
-    (r'\bIDCC\b', 'wyznaczanie zdolności śróddziennych'),
-    (r'\bGLSK\b', 'klucze przesunięć generacji i obciążenia'),
-    (r'\bCBCORA\b', 'krytyczne gałęzie, krytyczne wyłączenia i środki zaradcze'),
-    (r'\bIGM\b', 'indywidualny model sieci'),
-    (r'\bCGM\b', 'wspólny model sieci'),
-    (r'\bRA\b', 'środki zaradcze'),
-    (r'\bATC\b', 'dostępna zdolność przesyłowa'),
-    (r'\bNTC\b', 'zdolność przesyłowa netto'),
-    (r'\bAACs?\b', 'już przydzielone zdolności przesyłowe'),
-    (r'\bsFTP\b', 'bezpieczny serwer wymiany plików'),
-    (r'\bZP\b', 'aplikacja Zdolności Przesyłowe'),
-    (r'\bCN2\b', 'Connector 2.0'),
-    (r'\bKDM\b', 'Krajowa Dyspozycja Mocy'),
-]
-
-def expand_full_terms(text):
-    # Najpierw rozwija zwroty zależne od przypadka, aby zachować naturalny język.
-    contextual = [
-        (r'\bTET\s*/\s*CET\b', 'docelowy i krytyczny termin zakończenia'),
-        (r'\bprzed\s+TET\b', 'przed docelowym terminem zakończenia'),
-        (r'\bdo\s+TET\b', 'do docelowego terminu zakończenia'),
-        (r'\bpo\s+TET\b', 'po docelowym terminie zakończenia'),
-        (r'\bprzed\s+CET\b', 'przed krytycznym terminem zakończenia'),
-        (r'\bdo\s+CET\b', 'do krytycznego terminu zakończenia'),
-        (r'\bpo\s+CET\b', 'po krytycznym terminie zakończenia'),
-        (r'\bminął\s+(?:czas\s+)?CET\b', 'minął krytyczny termin zakończenia'),
-        (r'\bprzekroczono\s+CET\b', 'przekroczono krytyczny termin zakończenia'),
-        (r'\bzbliża się\s+TET\b', 'zbliża się docelowy termin zakończenia'),
-        (r'\bzbliża się\s+CET\b', 'zbliża się krytyczny termin zakończenia'),
-        (r'\bnie otrzymano\s+ACK\b', 'nie otrzymano potwierdzenia odbioru'),
-        (r'\botrzymano\s+ACK\b', 'otrzymano potwierdzenie odbioru'),
-        (r'\bACK\s+nie napłynął\b', 'potwierdzenie odbioru nie napłynęło'),
-        (r'\bACK\s+napłynął\b', 'potwierdzenie odbioru napłynęło'),
-        (r'\bbrak\s+ACK\b', 'brak potwierdzenia odbioru'),
-        (r'\bnegatywny\s+ACK\b|\bACK\s+negatywny\b', 'negatywne potwierdzenie odbioru'),
-        (r'\bpozytywny\s+ACK\b|\bACK\s+pozytywny\b', 'pozytywne potwierdzenie odbioru'),
-        (r'\bpotwierdzenie\s+ACK\b', 'potwierdzenie odbioru'),
-        (r'\bpotwierdzenia\s+ACK\b', 'potwierdzenia odbioru'),
-        (r'\bpotwierdzenia?\s*\(ACK\)\b',
-         lambda m: 'potwierdzenia odbioru' if m.group(0).lower().startswith('potwierdzenia') else 'potwierdzenie odbioru'),
-        (r'\bmimo\s+ACK\b', 'mimo potwierdzenia odbioru'),
-        (r'\boczekiwanie\s+na\s+ACK\b', 'oczekiwanie na potwierdzenie odbioru'),
-        (r'\bkod\s+ACK\b', 'kod potwierdzenia odbioru'),
-        (r'\bstatus\s+ACK\b', 'status potwierdzenia odbioru'),
-
-        # Nazwy procesu i ról — pełna nazwa w poprawnym przypadku.
-        (r'\b(proces(?:u|em|ie)?)\s+IDCC\b', r'\1 wyznaczania zdolności śróddziennych'),
-        (r'\b(procedur(?:a|y|ze|ę|ą))\s+IDCC\b', r'\1 wyznaczania zdolności śróddziennych'),
-        (r'\b(pulpit(?:u|em|cie|y|ów|ami|ach)?)\s+IDCC\b', r'\1 procesu wyznaczania zdolności śróddziennych'),
-        (r'\b(plik(?:u|i|ów|ami|ach)?)\s+IDCC\b', r'\1 procesu wyznaczania zdolności śróddziennych'),
-        (r'\bprocesu\s+CORE\s+IDCC\b', 'procesu wyznaczania zdolności śróddziennych CORE'),
-        (r'\b(model(?:u|em|e|ach)?)\s+IDCC\b', r'\1 procesu wyznaczania zdolności śróddziennych'),
-        (r'\b(wynik(?:u|i|ów|ami|ach)?)\s+IDCC\b', r'\1 wyznaczania zdolności śróddziennych'),
-        (r'\bmonitorowanie\s+IDCC\b', 'monitorowanie procesu wyznaczania zdolności śróddziennych'),
-        (r'\bkatalog operacyjny\s+IDCC\b', 'katalog operacyjny procesu wyznaczania zdolności śróddziennych'),
-        (r'\bdla\s+IDCC\b', 'dla procesu wyznaczania zdolności śróddziennych'),
-        (r'\bw\s+IDCC\b', 'w procesie wyznaczania zdolności śróddziennych'),
-        (r'\bz\s+IDCC\b', 'z procesu wyznaczania zdolności śróddziennych'),
-        (r'\bTSO\s+(muszą|mają|są proszeni)\b', r'operatorzy systemów przesyłowych \1'),
-        (r'\bze strony\s+TSO\b', 'ze strony operatorów systemów przesyłowych'),
-        (r'\boperator(a|owi|em|ze)?\s+CCC\b',
-         lambda m: 'operator' + (m.group(1) or '') + ' regionalnego centrum koordynacyjnego'),
-        (r'\bTSO\s+Data Gathering\b|\bTSO\s+DG\b', 'gromadzenie danych operatora systemu przesyłowego'),
-        (r'\bjeden z\s+TSO\b', 'jeden z operatorów systemu przesyłowego'),
-        (r'\bprzez\s+TSO\b', 'przez operatora systemu przesyłowego'),
-        (r'\bdla\s+TSO\b', 'dla operatora systemu przesyłowego'),
-        (r'\bze strony\s+TSO\b', 'ze strony operatora systemu przesyłowego'),
-        (r'\bz\s+TSO\b', 'z operatorem systemu przesyłowego'),
-        (r'\bw\s+TSO\b', 'u operatora systemu przesyłowego'),
-
-        # Systemy centralne i pulpity operatorskie.
-        (r'\bdo\s+CCC\b', 'do regionalnego centrum koordynacyjnego'),
-        (r'\bod\s+CCC\b', 'od regionalnego centrum koordynacyjnego'),
-        (r'\bpo stronie\s+CCC\b', 'po stronie regionalnego centrum koordynacyjnego'),
-        (r'\binstrukcje\s+CCC\b', 'instrukcje regionalnego centrum koordynacyjnego'),
-        (r'\b(?:kontakt|uzgodnieni[eu]|potwierdzanie)\s+z\s+CCC\b',
-         lambda m: m.group(0).rsplit(' ', 1)[0] + ' regionalnym centrum koordynacyjnym'),
-        (r'\bz\s+CCC\b', 'z regionalnym centrum koordynacyjnym'),
-        (r'\bprzez\s+CCC\b', 'przez regionalne centrum koordynacyjne'),
-        (r'\bz poziomu aplikacji\s+CCM\b', 'z poziomu pulpitu monitorowania'),
-        (r'\bw pulpicie\s+CCM\b', 'na pulpicie monitorowania'),
-        (r'\bbez\s+CCM\b', 'bez pulpitu monitorowania'),
-        (r'\bz poziomu\s+CCM\b', 'z poziomu pulpitu monitorowania'),
-        (r'\bw aplikacji\s+CCM\b', 'na pulpicie monitorowania'),
-        (r'\baplikacja\s+CCM\b', 'pulpit monitorowania'),
-        (r'\baplikacji\s+CCM\b', 'pulpitu monitorowania'),
-        (r'\baplikację\s+CCM\b', 'pulpit monitorowania'),
-        (r'\baplikacją\s+CCM\b', 'pulpitem monitorowania'),
-        (r'\b(?:w|we)\s+CCM\b', 'na pulpicie monitorowania'),
-        (r'\bz\s+CCM\b', 'z pulpitu monitorowania'),
-        (r'\bdo\s+CCM\b', 'do pulpitu monitorowania'),
-        (r'\bdla\s+CCM\b', 'dla pulpitu monitorowania'),
-        (r'\bprzez\s+CCM\b', 'przez pulpit monitorowania'),
-
-        # Walidacja przepływowa i korekta walidacyjna.
-        (r'\b(walidacj(?:a|i|ę|ą))\s+FBA\b',
-         lambda m: m.group(1) + (' przepływowej' if m.group(1).lower() == 'walidacji' else ' przepływową' if m.group(1).lower() in ('walidację', 'walidacją') else ' przepływowa')),
-        (r'\b(proces(?:u|em|ie)?)\s+FBA\b', r'\1 walidacji przepływowej'),
-        (r'\b(ręczne uruchomienie obliczeń|uruchomienie obliczeń|brak obliczeń)\s+FBA\b',
-         r'\1 walidacji przepływowej'),
-        (r'\b(wynik(?:u|i|ów|ami|ach)?)\s+FBA\b', r'\1 walidacji przepływowej'),
-        (r'\b(?:od|dla)\s+FBA\b', lambda m: m.group(0).split()[0] + ' walidacji przepływowej'),
-        (r'\bDefinicja\s+IVA\b', 'Definicja korekty walidacyjnej'),
-        (r'\b(dokument(?:u|em|y|ów|ami|ach)?|plik(?:u|iem|i|ów|ami|ach)?|wiersz(?:a|em|e|y|ów|ami|ach)?|kafelek|kafelka|status|wersja|brak)\s+IVA\b',
-         r'\1 korekty walidacyjnej'),
-        (r'\b(wysyłka|wysyłki|wysyłkę|wysyłką|walidacja|walidacji)\s+IVA\b', r'\1 korekty walidacyjnej'),
-        (r'\b(generuje|wysyła|pozyskać|zweryfikować|pobierz|wyślij|porównaj)\s+IVA\b', r'\1 korektę walidacyjną'),
-        (r'\bna\s+IVA\b', 'na korektę walidacyjną'),
-        (r'\bz\s+IVA\b', 'z korektą walidacyjną'),
-        (r'\bw\s+IVA\b', 'w korekcie walidacyjnej'),
-        (r'\bo\s+IVA\b', 'o korekcie walidacyjnej'),
-        (r'\bdla\s+IVA\b', 'dla korekty walidacyjnej'),
-        (r'\bwalidacja\s+BUP\b', 'walidacja w trybie awaryjnym'),
-        (r'\bwalidacja\s+NOR\b', 'walidacja w trybie normalnym'),
-        (r'\btryb(?: backupowy| backup)?\s+BUP\b', 'tryb awaryjny'),
-        (r'\bw\s+BUP\b', 'w trybie awaryjnym'),
-        (r'\bdla\s+BUP\b', 'dla trybu awaryjnego'),
-        (r'\bw\s+NOR\b', 'w trybie normalnym'),
-        (r'\bdla\s+NOR\b', 'dla trybu normalnego'),
-
-        # Modele, dane wejściowe i zdolności przesyłowe.
-        (r'\b24\s+plików\s+GLSK\b', '24 pliki kluczy przesunięć generacji i obciążenia'),
-        (r'\bbrak\s+GLSK\b', 'brak kluczy przesunięć generacji i obciążenia'),
-        (r'\b(pliki?|wiersz|opis pliku|generowanie)\s+GLSK\b', r'\1 kluczy przesunięć generacji i obciążenia'),
-        (r'\bz\s+GLSK\b', 'z kluczami przesunięć generacji i obciążenia'),
-        (r'\bdla\s+GLSK\b', 'dla kluczy przesunięć generacji i obciążenia'),
-        (r'\bplik\s+CBCORA\b', 'plik krytycznych gałęzi, krytycznych wyłączeń i środków zaradczych'),
-        (r'\bgenerowanie\s+CBCORA\b', 'generowanie danych o krytycznych gałęziach, krytycznych wyłączeniach i środkach zaradczych'),
-        (r'\bgeneruje modele\s+IGM\s*/\s*CGM\b',
-         'generuje indywidualne i wspólne modele sieci'),
-        (r'\b24\s+modele\s+IGM\b', '24 indywidualne modele sieci'),
-        (r'\b(dostarczenie|brak|wysyłka|wysyłki|generator|wersja)\s+IGM\b', r'\1 indywidualnego modelu sieci'),
-        (r'\b(?:24\s+)?IGM\b', lambda m: '24 indywidualne modele sieci' if m.group(0).strip().startswith('24') else 'indywidualny model sieci'),
-        (r'\bpodstawą do utworzenia\s+CGM\b', 'podstawą do utworzenia wspólnego modelu sieci'),
-        (r'\bmodel\s+CGM\b', 'wspólny model sieci'),
-        (r'\bdo\s+CGM\b', 'do wspólnego modelu sieci'),
-        (r'\bw\s+CGM\b', 'we wspólnym modelu sieci'),
-        (r'\bdla\s+CGM\b', 'dla wspólnego modelu sieci'),
-        (r'\bwybór\s+RA\b', 'wybór środków zaradczych'),
-        (r'\bATC\s+Based Validation\b', 'walidacja oparta na dostępnej zdolności przesyłowej'),
-        (r'\bwyznaczanie\s+ATC\b', 'wyznaczanie dostępnej zdolności przesyłowej'),
-        (r'\b(walidacj(?:a|i|ę|ą))\s+ATC\b', r'\1 dostępnej zdolności przesyłowej'),
-        (r'\bpaczka\s+ATC\b', 'paczka danych dostępnej zdolności przesyłowej'),
-        (r'\b(wynik(?:u|i|ów)?|wiersz|błąd)\s+ATC\b', r'\1 dostępnej zdolności przesyłowej'),
-        (r'\bz\s+ATC\s+i\s+sFTP\b', 'z obsługą dostępnej zdolności przesyłowej i bezpiecznego serwera wymiany plików'),
-        (r'\bz\s+ATC\b', 'z dostępną zdolnością przesyłową'),
-        (r'\bdla\s+ATC\b', 'dla dostępnej zdolności przesyłowej'),
-        (r'\b(wynik(?:u|i|ów)?|publikacja)\s+NTC\b', r'\1 zdolności przesyłowej netto'),
-        (r'\btabela\s+NTC\b', 'tabela zdolności przesyłowej netto'),
-        (r'\bNTC\s*/\s*High Neg\.\s*NTC\b',
-         'zdolności przesyłowe netto i wysokie ujemne zdolności przesyłowe netto'),
-        (r'\bdla\s+NTC\b', 'dla zdolności przesyłowej netto'),
-        (r'\bbrak\s+AACs?\b', 'brak danych o już przydzielonych zdolnościach przesyłowych'),
-        (r'\b(dostarcza|wgrywa|uploaduje|potwierdza obecność)\s+AACs?\b',
-         r'\1 dane o już przydzielonych zdolnościach przesyłowych'),
-        (r'\bz\s+AACs?\b', 'z już przydzielonymi zdolnościami przesyłowymi'),
-        (r'\bdla\s+AACs?\b', 'dla już przydzielonych zdolności przesyłowych'),
-        (r'\bz\s+sFTP\b', 'z bezpiecznego serwera wymiany plików'),
-        (r'\bprzez\s+sFTP\b', 'przez bezpieczny serwer wymiany plików'),
-
-        # Aplikacja Zdolności Przesyłowe i dyspozycja mocy.
-        (r'\baplikacja\s+ZP\b', 'aplikacja Zdolności Przesyłowe'),
-        (r'\bbez\s+ZP\b', 'bez aplikacji Zdolności Przesyłowe'),
-        (r'\baplikacji\s+ZP\b', 'aplikacji Zdolności Przesyłowe'),
-        (r'\baplikację\s+ZP\b', 'aplikację Zdolności Przesyłowe'),
-        (r'\baplikacją\s+ZP\b', 'aplikacją Zdolności Przesyłowe'),
-        (r'\bw\s+ZP\b', 'w aplikacji Zdolności Przesyłowe'),
-        (r'\bz\s+ZP\b', 'z aplikacji Zdolności Przesyłowe'),
-        (r'\bdo\s+ZP\b', 'do aplikacji Zdolności Przesyłowe'),
-        (r'\botwórz\s+ZP\b', 'otwórz aplikację Zdolności Przesyłowe'),
-        (r'\bawaria\s+ZP\b', 'awaria aplikacji Zdolności Przesyłowe'),
-        (r'\bdo\s+KDM\b', 'do Krajowej Dyspozycji Mocy'),
-        (r'\bz\s+KDM\b', 'z Krajowej Dyspozycji Mocy'),
-    ]
-    for pattern, replacement in contextual:
-        text = re.sub(pattern, replacement, text, flags=re.I)
+def preserve_operational_naming(text):
+    """Zachowuje angielskie nazwy procesów i skróty; rozwija tylko polskie oznaczenia redakcyjne."""
     text = re.sub(r'(?<!Ryzyko )\bR(\d{2})\b', r'Ryzyko R\1', text)
     text = re.sub(r'(?<!Procedura )\bP(\d{2})\b', r'Procedura P\1', text)
     text = re.sub(r'(?<!Ryzyko pomocnicze )\bU(\d{2})\b', r'Ryzyko pomocnicze U\1', text)
-    for pattern, replacement in FULL_TERM_PATTERNS:
-        text = re.sub(pattern, replacement, text, flags=re.I)
-    # Porządkuje zakresy i miejsca, które już zawierały pełny rzeczownik.
+    text = re.sub(r'\bPPM\b', 'prawy przycisk myszy', text, flags=re.I)
+    text = re.sub(r'\bLPM\b', 'lewy przycisk myszy', text, flags=re.I)
     text = re.sub(r'Ryzyka\s+Ryzyko\s+R(\d{2})[–-]Ryzyko\s+R(\d{2})', r'Ryzyka R\1–R\2', text)
     text = re.sub(r'Ryzyko\s+R(\d{2})[–-]Ryzyko\s+R(\d{2})', r'Ryzyka R\1–R\2', text)
     text = re.sub(r'Procedury\s+Procedura\s+P(\d{2})[–-]Procedura\s+P(\d{2})', r'Procedury P\1–P\2', text)
     text = re.sub(r'Procedura\s+P(\d{2})[–-]Procedura\s+P(\d{2})', r'Procedury P\1–P\2', text)
-    text = text.replace('Ryzyko Ryzyko ', 'Ryzyko ').replace('Procedura Procedura ', 'Procedura ')
-    text = text.replace('potwierdzenie potwierdzenie odbioru', 'potwierdzenie odbioru')
-    text = text.replace('potwierdzenia potwierdzenie odbioru', 'potwierdzenia odbioru')
-    text = text.replace('czas krytyczny termin zakończenia', 'krytyczny termin zakończenia')
-    return text
+    return text.replace('Ryzyko Ryzyko ', 'Ryzyko ').replace('Procedura Procedura ', 'Procedura ')
 
-def fix_expanded_grammar(text):
-    """Koryguje przypadki gramatyczne także wtedy, gdy frazę rozdziela znacznik HTML."""
-    gap = r'(\s*(?:<[^>]+>\s*)*)'
-    corrections = [
-        (r'\bdo' + gap + r'regionalne centrum koordynacyjne\b',
-         r'do\1regionalnego centrum koordynacyjnego'),
-        (r'\bod' + gap + r'regionalne centrum koordynacyjne\b',
-         r'od\1regionalnego centrum koordynacyjnego'),
-        (r'\btelefon' + gap + r'regionalne centrum koordynacyjne\b',
-         r'telefon do\1regionalnego centrum koordynacyjnego'),
-        (r'\binstrukcje' + gap + r'regionalne centrum koordynacyjne\b',
-         r'instrukcje\1regionalnego centrum koordynacyjnego'),
-        (r'\bregionalne centrum koordynacyjne' + gap + r'regionalne centrum koordynacyjne\b',
-         r'\1regionalne centrum koordynacyjne'),
-        (r'\bw' + gap + r'pulpit monitorowania\b', r'na\1pulpicie monitorowania'),
-        (r'\bbez' + gap + r'pulpit monitorowania\b', r'bez\1pulpitu monitorowania'),
-        (r'\bw pulpicie' + gap + r'pulpit monitorowania\b', r'na\1pulpicie monitorowania'),
-        (r'\bbrak' + gap + r'pulpit monitorowania\b', r'brak\1pulpitu monitorowania'),
-        (r'\bpulpit' + gap + r'pulpit monitorowania\b', r'\1pulpit monitorowania'),
-        (r'\b([Dd]ostarczenie)' + gap + r'indywidualny model sieci\b',
-         r'\1\2indywidualnego modelu sieci'),
-        (r'\bpliku' + gap + r'wyznaczanie zdolności śróddziennych\b',
-         r'pliku\1procesu wyznaczania zdolności śróddziennych'),
-        (r'\bplików' + gap + r'wyznaczanie zdolności śróddziennych\b',
-         r'plików\1procesu wyznaczania zdolności śróddziennych'),
-        (r'\b[Bb]ez' + gap + r'aplikacja Zdolności Przesyłowe\b',
-         lambda m: ('Bez' if m.group(0)[0].isupper() else 'bez') +
-                   m.group(1) + 'aplikacji Zdolności Przesyłowe'),
-        (r'\bwyznaczanie' + gap + r'dostępna zdolność przesyłowa\b',
-         r'wyznaczanie\1dostępnej zdolności przesyłowej'),
-        (r'\bkorekta walidacyjna' + gap + r'walidacja przepływowa\b',
-         r'korekta\1walidacji przepływowej'),
-        (r'\bpliku' + gap + r'korekta walidacyjna\b', r'pliku\1korekty walidacyjnej'),
-        (r'\bna' + gap + r'korekta walidacyjna\b', r'na\1korektę walidacyjną'),
-        (r'\bmodelu' + gap + r'wspólny model sieci\b', r'\1wspólnego modelu sieci'),
-        (r'\bmodele' + gap + r'indywidualny model sieci\s*/\s*wspólny model sieci\b',
-         r'indywidualne i wspólne\1modele sieci'),
-        (r'\bmodele' + gap + r'indywidualny model sieci\b', r'indywidualne\1modele sieci'),
-        (r'\b24\s+plików' + gap + r'klucze przesunięć generacji i obciążenia\b',
-         r'24\1pliki kluczy przesunięć generacji i obciążenia'),
-        (r'\b(pliku|plików|kafelka)' + gap + r'klucze przesunięć generacji i obciążenia\b',
-         r'\1\2kluczy przesunięć generacji i obciążenia'),
-        (r'\bpliki' + gap + r'klucze przesunięć generacji i obciążenia\b',
-         r'pliki\1kluczy przesunięć generacji i obciążenia'),
-        (r'\btabela' + gap + r'dostępna zdolność przesyłowa\b',
-         r'tabela\1dostępnej zdolności przesyłowej'),
-        (r'\bobliczeń' + gap + r'już przydzielone zdolności przesyłowe\b',
-         r'obliczeń\1już przydzielonych zdolności przesyłowych'),
-        (r'\bdo' + gap + r'zdolność przesyłowa netto\b', r'do\1zdolności przesyłowej netto'),
-        (r'\bbrak' + gap + r'zdolność przesyłowa netto\b', r'brak\1zdolności przesyłowej netto'),
-    ]
-    for pattern, replacement in corrections:
-        text = re.sub(pattern, replacement, text, flags=re.I)
-    return text
-
-def rewrite_mail_when(html_doc):
-    """Redaguje polskie opisy użycia szablonów, nie zmieniając gotowych wiadomości."""
-    descriptions = [
-        'Gdy w narzędziu Core Capacity Calculation Tool wystąpi krytyczny problem i operator musi zgłosić go do zespołu wsparcia Core.',
-        'Gdy proces w Core Capacity Calculation Tool zakończy się niepowodzeniem przed krytycznym terminem zakończenia i operatorzy systemów przesyłowych muszą dostarczyć zdolności przesyłowe za pomocą narzędzi lokalnych do XBID.',
-        'Gdy przed krytycznym terminem zakończenia brakuje obowiązkowego pliku wejściowego i strona odpowiedzialna zastępuje brakujące dane danymi z innej doby handlowej, aby utrzymać proces.',
-        'Gdy przy docelowym terminie zakończenia brakuje pliku wejściowego i nie można go zastąpić; bez pliku obliczenia przejdą w tryb awaryjny.',
-        'Gdy krok obliczeniowy w Core Capacity Calculation Tool zakończył się z użyciem danych zastępczych dla wskazanych godzin doby.',
-        'Gdy operator regionalnego centrum koordynacyjnego jest niedostępny i obsługę Core Capacity Calculation Tool przejmuje strona zapasowa.',
-        'Gdy zdolności przesyłowe netto i wysokie ujemne zdolności przesyłowe netto wysłano do XBID przez bezpieczny serwer wymiany plików po awarii podstawowego kanału ECP; operatorzy systemów przesyłowych muszą sprawdzić ich obecność w XBID.',
-        'Gdy zerowe i już przydzielone zdolności przesyłowe wysłano do XBID przez bezpieczny serwer wymiany plików po awarii podstawowego kanału ECP; wiadomość nie wymaga działania operatorów systemów przesyłowych.',
-        'Gdy z powodu niedostępności narzędzia obliczeniowego Core dla rynku dnia następnego pliki wejściowe procesu wyznaczania zdolności śróddziennych są tworzone ręcznie w narzędziach zapasowych Core i JAO SEC Tool.',
-        'Gdy brakuje potwierdzenia odbioru danych o już przydzielonych zdolnościach przesyłowych z XBID; odbiór sprawdzono w interfejsie XBID, potwierdzenie wprowadzono ręcznie, a operatorzy systemów przesyłowych muszą zweryfikować dane na swoich granicach.',
-        'Gdy bieżący krok procesu wyznaczania zdolności śróddziennych jest opóźniony i wpływa na kolejny krok; wiadomość nie wymaga działania operatorów systemów przesyłowych.',
-        'Gdy wystąpiły problemy z potwierdzeniem odbioru zerowych lub już przydzielonych zdolności przesyłowych albo zdolności przesyłowych netto; przekazanie do XBID sprawdzono ręcznie, a operatorzy systemów przesyłowych muszą zweryfikować dane na swoich granicach.',
-        'Gdy z powodu problemów łączności XBID z Core Capacity Calculation Tool dane o już przydzielonych zdolnościach przesyłowych (TAR) są dostarczane ręcznie przez bezpieczny serwer wymiany plików; brak naprawy grozi awarią iteracji ID2.',
-        'Gdy JAO utworzy pliki MCR narzędziem SEC Tool i wgra je do procesu wyznaczania zdolności śróddziennych Core.',
-        'Gdy połączona prognoza przeciążeń sieci Coreso i TSCNET nie powstała i użyto prognozy indywidualnej jednego z tych podmiotów.',
-        'Gdy połączona prognoza przeciążeń sieci nie powstała i nie można jej zastąpić prognozą Coreso ani TSCNET; narzędzie obliczeniowe zastosowało automatyczne dane zastępcze z domeny dnia następnego.',
-        'Gdy nie udało się dostarczyć modelu sieci już przydzielonych zdolności przesyłowych do iteracji IDCC(b); narzędzie obliczeniowe zastosowało automatyczne dane zastępcze z domeny dnia następnego.',
-        'Gdy z powodu niedostępności narzędzia Core dla rynku dnia następnego brakuje indywidualnych plików wejściowych procesu wyznaczania zdolności śróddziennych; operatorzy systemów przesyłowych muszą ręcznie dostarczyć je do Core Capacity Calculation Tool.',
-        'Gdy częściowe rozdzielenie jednolitego łączenia rynków dnia następnego wymaga od operatorów systemów przesyłowych dostarczenia plików MD-250 do Core Capacity Calculation Tool dla rozłączonych granic w terminach 15:43 i 17:24.',
-    ]
-    index = 0
-    def replace(match):
-        nonlocal index
-        if index >= len(descriptions):
-            raise AssertionError('Więcej opisów Kiedy niż przygotowanych redakcji')
-        result = f'<p class="when"><b>Kiedy:</b> {descriptions[index]}</p>'
-        index += 1
-        return result
-    html_doc = re.sub(r'<p class="when">.*?</p>', replace, html_doc, flags=re.I | re.S)
-    assert index == len(descriptions), (
-        f'Niekompletna redakcja opisów Kiedy: {index}/{len(descriptions)}')
-    return html_doc
-
-def expand_visible_terms(html_doc):
+def preserve_visible_operational_terms(html_doc):
     protected = []
     block_pattern = re.compile(
         r'<(?P<tag>code|pre|script|style)\b[^>]*>.*?</(?P=tag)>|'
@@ -1591,17 +1283,15 @@ def expand_visible_terms(html_doc):
         return f'__PROTECTED_TEXT_{len(protected) - 1}__'
     work = block_pattern.sub(protect, html_doc)
     parts = re.split(r'(<[^>]+>)', work)
-    work = ''.join(part if part.startswith('<') else expand_full_terms(part) for part in parts)
+    work = ''.join(part if part.startswith('<') else preserve_operational_naming(part) for part in parts)
     work = re.sub(
         r'\b(alt|aria-label)="([^"]*)"',
-        lambda m: f'{m.group(1)}="{expand_full_terms(m.group(2))}"', work)
-    work = fix_expanded_grammar(work)
+        lambda m: f'{m.group(1)}="{preserve_operational_naming(m.group(2))}"', work)
     for index, block in enumerate(protected):
         work = work.replace(f'__PROTECTED_TEXT_{index}__', block)
     return work
 
-doc = rewrite_mail_when(doc)
-doc = expand_visible_terms(doc)
+doc = preserve_visible_operational_terms(doc)
 
 def _restore_asset(match):
     return f'src="{_embedded_sources[int(match.group(1))]}"'
@@ -1707,7 +1397,7 @@ banned_references = ['Core_Operational_Contact_List.xlsx', 'AC manuall ZP.docx',
                      'PROCEDURA_IDCC_TSO_v5_2', 'QuickRef', 'Operator Manual',
                      'Inwentarz_IDCC.md', 'Karta_ryzyk_IDCC.md', 'Confluence', 'BPD',
                      'CCM Instrukcja', 'IDCC_bcd', 'IDCF_InstrUżytk', 'Procedury skróconej',
-                     'FBA_TSO_BUP', 'BUP DA', 'NOR DA', 'HTML §', 'Rys. dla Ryzyka',
+                     'HTML §', 'Rys. dla Ryzyka',
                      'Procedura_KreatorIDCF_GLSK_CBCORA.html', 'Przyklady_FID1-831.md',
                      'PDF Dyspozytora', 'draft timings', 'Status: DRAFT', 'Na podstawie:']
 found_references = [term for term in banned_references if term.lower() in visible_doc.lower()]
@@ -1718,30 +1408,54 @@ unresolved_markers = ['❓', 'TODO', 'do uzupełnienia', 'czy dozwolone',
 found_unresolved = [term for term in unresolved_markers if term.lower() in visible_doc.lower()]
 assert not found_unresolved, f"Pozostały nierozstrzygnięte kroki: {found_unresolved}"
 
-awkward_expansions = [
-    'Proces wyznaczanie zdolności śróddziennych',
-    'plików wyznaczanie zdolności śróddziennych',
-    'wyznaczanie dostępna zdolność przesyłowa',
-    'Walidacja walidacja przepływowa',
-    'korekta walidacyjna walidacja przepływowa',
-    'do regionalne centrum koordynacyjne',
-    'instrukcje regionalne centrum koordynacyjne',
-    'w pulpit monitorowania',
-    'bez pulpit monitorowania',
-    'w pulpicie pulpit monitorowania',
-    'aplikacji aplikacja Zdolności Przesyłowe',
-    'Bez aplikacja Zdolności Przesyłowe',
-    'Dostarczenie indywidualny model sieci',
-    'modelu wspólny model sieci',
-    'brak obliczeń walidacja przepływowa',
-    '24 plików klucze przesunięć generacji i obciążenia',
-    'modele indywidualny model sieci',
-    'Definicja korekta walidacyjna',
-    'odrzucone mimo potwierdzenie odbioru',
-    'tabela zdolność przesyłowa netto',
+legacy_labels = [
+    'Procedura IDCC TSO v7',
+    '2 · Proces IDCC',
+    '8 · Czynności w CCM',
+    '9 · IGM / TSO DG / CB / GLSK',
+    '10 · Walidacja FBA',
+    '11 · MinIO/Perun/CCCt',
+    '12 · Kreator i AC w ZP',
+    '<td>IVA</td><td>Individual Validation Adjustment</td>',
+    '<td>CGM</td><td>Common Grid Model',
+    '<td>IGM</td><td>Individual Grid Model',
+    '<td>AAC</td><td>Already Allocated Capacity</td>',
+    '<td>NTC</td><td>Net Transfer Capacity</td>',
+    '<td>ATC</td><td>Available Transfer Capacity</td>',
+    '<td>CCCt</td><td>Core Capacity Calculation Tool</td>',
+    '<td>TET</td><td>Target End Time',
+    '<td>CET</td><td>Critical End Time',
+    '<td>GLSK</td><td>Generation Load Shift Key</td>',
+    'BUP DA',
+    'NOR DA',
+    'FBA_TSO_NOR_03',
+    'FBA_TSO_BUP_03',
 ]
-found_awkward = [term for term in awkward_expansions if term.lower() in visible_doc.lower()]
-assert not found_awkward, f"Nienaturalne rozwinięcia nazw: {found_awkward}"
+missing_legacy_labels = [label for label in legacy_labels if label not in doc]
+assert not missing_legacy_labels, (
+    f"Nie przywrócono dawnego angielskiego nazewnictwa: {missing_legacy_labels}")
+
+forbidden_label_translations = [
+    '<title>Procedura wyznaczania zdolności śróddziennych',
+    '2 · Proces wyznaczania zdolności śróddziennych',
+    '8 · Czynności na pulpicie monitorowania',
+    '10 · Walidacja przepływowa',
+    '<td>korekta walidacyjna</td><td>Individual Validation Adjustment</td>',
+    '<td>wspólny model sieci</td><td>Common Grid Model',
+    '<td>indywidualny model sieci</td><td>Individual Grid Model',
+    '<td>zdolność przesyłowa netto</td><td>Net Transfer Capacity</td>',
+    '<td>dostępna zdolność przesyłowa</td><td>Available Transfer Capacity</td>',
+]
+found_label_translations = [term for term in forbidden_label_translations if term in doc]
+assert not found_label_translations, (
+    f"Angielskie nazwy lub skróty zostały przetłumaczone: {found_label_translations}")
+
+source_when = re.findall(
+    r'<p class="when">.*?</p>',
+    (ROOT / 'process2_mail.html').read_text(encoding='utf-8'), re.I | re.S)
+output_when = re.findall(r'<p class="when">.*?</p>', doc, re.I | re.S)
+assert output_when == source_when, (
+    'Opisy użycia szablonów wiadomości nie zachowują dawnego nazewnictwa')
 
 damaged_filename_terms = re.findall(
     r'[\w./-]+[-_](?:wyznaczanie zdolności śróddziennych|pulpit monitorowania|'
