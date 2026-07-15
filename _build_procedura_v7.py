@@ -46,13 +46,20 @@ def asset_uri(file):
 MAN = json.load(open(ROOT/'screens_manifest.json', encoding='utf-8'))
 try:
     from PIL import Image
-    for _m in MAN:
-        try:
-            with Image.open(ROOT/_m['file']) as _im: _m['_wh'] = _im.size
-        except Exception:
-            _m['_wh'] = (0, 0)
-except ImportError:
-    for _m in MAN: _m['_wh'] = (9999, 9999)
+except ImportError as exc:
+    raise RuntimeError('Generator wymaga pakietu Pillow do odczytu naturalnych wymiarów obrazów') from exc
+
+_invalid_image_dimensions = []
+for _m in MAN:
+    try:
+        with Image.open(ROOT/_m['file']) as _im:
+            _m['_wh'] = _im.size
+        if not all(isinstance(value, int) and value > 0 for value in _m['_wh']):
+            raise ValueError(f'nieprawidłowy rozmiar {_m["_wh"]}')
+    except Exception as exc:
+        _invalid_image_dimensions.append((_m.get('file', '?'), str(exc)))
+assert not _invalid_image_dimensions, (
+    f'Nie można odczytać naturalnych wymiarów obrazów: {_invalid_image_dimensions[:10]}')
 
 def is_micro(m):
     """Wycinek pojedynczej ikony/przycisku — pokazywany w pasku ikon, nie jako figura."""
@@ -81,12 +88,17 @@ def is_good(m):
     return True
 
 def img(file, cap=None, cls='shot'):
-    """Osadza obraz bezpośrednio w HTML jako data URI wraz z podpisem."""
+    """Osadza obraz w pełnych proporcjach, z naturalnym rozmiarem i czytelnym podpisem."""
     m = BYFILE.get(file, {})
     cap = cap or m.get('caption') or m.get('shows') or ''
-    return (f'<figure class="{cls}"><img loading="lazy" src="{asset_uri(file)}" alt="{esc(cap)}" '
-            f'data-source="{esc(file)}" tabindex="0" role="button" aria-label="Powiększ ekran: {esc(cap)}">'
-            f'<figcaption>{esc(cap)}</figcaption></figure>')
+    width, height = m.get('_wh', (0, 0))
+    size_attrs = f' width="{width}" height="{height}"' if width and height else ''
+    size_style = f' style="--screen-width:{width}px"' if width else ''
+    size_note = f'<span class="caption-size">Oryginalny rozmiar: {width} × {height} pikseli</span>' if width and height else ''
+    return (f'<figure class="{cls}"{size_style}><img loading="lazy" src="{asset_uri(file)}" alt="{esc(cap)}" '
+            f'data-source="{esc(file)}"{size_attrs} tabindex="0" role="button" aria-label="Powiększ zrzut ekranu: {esc(cap)}">'
+            f'<figcaption><span class="caption-label">Zrzut ekranu</span>'
+            f'<span class="caption-text">{esc(cap)}</span>{size_note}</figcaption></figure>')
 
 def gallery(area, title, intro='', only=None, exclude=None):
     items = [m for m in SCR.get(area,[]) if is_good(m)]
@@ -485,14 +497,19 @@ summary::before{content:"▸ ";font-family:var(--mono);color:var(--navy)}
 details[open]>summary::before{content:"▾ "}
 details[open]>summary{border-radius:5px 5px 0 0}
 details.states>summary{font-size:12.5px;display:inline-block;padding:3px 10px}
-/* ── screeny: duże, dominujące karty ── */
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:18px;margin:14px 0 4px}
-figure.shot{margin:0;border:1px solid var(--rule2);border-top:4px solid var(--acc);border-radius:7px;background:#fff;padding:8px 8px 0;
+/* ── zrzuty ekranu: naturalny rozmiar, pełne proporcje, bez kadrowania ── */
+.grid{display:flex;flex-direction:column;align-items:stretch;gap:22px;margin:16px 0 6px}
+figure.shot{width:min(100%,calc(var(--screen-width,100%) + 18px));max-width:100%;align-self:center;margin:0 auto;
+border:1px solid var(--rule2);border-top:4px solid var(--acc);border-radius:7px;background:#fff;padding:8px 8px 0;
 box-shadow:0 2px 0 var(--rule),0 7px 18px rgba(26,34,48,.09);transition:transform .18s ease,box-shadow .18s ease}
 figure.shot:hover{transform:translateY(-3px);box-shadow:0 3px 0 var(--rule),0 12px 26px rgba(26,34,48,.15)}
-figure.shot img{width:100%;display:block;background:#fafbfc;border:1px solid var(--rule);cursor:zoom-in}
+figure.shot img{display:block;width:auto;height:auto;max-width:100%;max-height:none;margin:0 auto;background:#fafbfc;
+border:1px solid var(--rule);object-fit:initial;cursor:zoom-in}
 figure.shot img:focus-visible{outline:4px solid var(--yellow);outline-offset:3px;border-color:var(--navy)}
-figure.shot figcaption{font:600 11.5px/1.4 var(--sans);color:#4e5968;padding:8px 5px 10px}
+figure.shot figcaption{display:grid;grid-template-columns:auto 1fr auto;align-items:start;gap:8px 12px;padding:9px 5px 11px;color:#4e5968}
+.caption-label{display:inline-block;padding:2px 7px;border-radius:3px;background:var(--accbg);color:var(--acc);
+font:800 10px var(--mono);letter-spacing:.07em;text-transform:uppercase;white-space:nowrap}
+.caption-text{font:650 12.5px/1.45 var(--sans);text-align:left}.caption-size{font:500 10.5px/1.4 var(--mono);color:var(--mut);white-space:nowrap}
 .iconshead{font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin:16px 0 7px}
 .iconstrip{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
 .iconstrip .icell{display:inline-flex;flex-direction:column;align-items:center;gap:4px;
@@ -571,14 +588,14 @@ padding:6px 10px;font:600 11.5px var(--sans);cursor:pointer}.doc-tools button:ho
 border-radius:999px;font:700 10.5px var(--mono)}
 section{position:relative;padding-top:4px}
 section>h2{background:linear-gradient(90deg,rgba(15,62,99,.07),transparent 72%);padding:11px 12px 11px 0}
-figure.shot img{max-height:760px;object-fit:contain}
-/* ── powiększanie screenów ── */
+/* ── powiększanie zrzutów ekranu ── */
 .screen-dialog{width:min(96vw,1500px);max-width:none;height:min(94vh,1000px);border:0;border-radius:10px;padding:48px 18px 16px;background:#101722;color:#fff;box-shadow:0 25px 80px rgba(0,0,0,.55)}
 .screen-dialog::backdrop{background:rgba(5,12,20,.82);backdrop-filter:blur(4px)}
 .screen-dialog img{width:100%;height:calc(100% - 48px);object-fit:contain;display:block}
 .screen-dialog p{margin:8px 48px 0 4px;color:#dbe7f1;font:600 13px var(--sans)}
 .screen-dialog button{position:absolute;right:14px;top:10px;width:34px;height:34px;border:1px solid #617083;border-radius:50%;background:#1d2a3b;color:#fff;font-size:22px;cursor:pointer}
 /* ── druk ── */
+@page{size:A4;margin:12mm}
 @media print{
  body{background:#fff}
  nav,.doc-tools,.screen-dialog{display:none!important}.wrap{display:block}main{max-width:none;padding:0;border:none;box-shadow:none;background:#fff}
@@ -586,12 +603,14 @@ figure.shot img{max-height:760px;object-fit:contain}
  figure.shot:hover{transform:none}
  .signal,.state-row,.state-label,.semantic-key,.legend-card,.risk-h,.callout,.quickcard{-webkit-print-color-adjust:exact;print-color-adjust:exact}
  details{display:block}details>summary{display:none}
- .grid{grid-template-columns:repeat(2,1fr)}
+ .grid{display:flex;flex-direction:column}
+ figure.shot{width:min(100%,calc(var(--screen-width,100%) + 18px));break-inside:avoid;page-break-inside:avoid}
+ figure.shot img{width:auto;height:auto;max-width:100%;max-height:225mm;margin:0 auto;object-fit:contain}
  .fcard,.mailtpl,.step,.stick,.quickcard{break-inside:avoid}
 }
 @media(max-width:1100px){.quickgrid,.semantic-key{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:900px){nav{display:none}main{padding:18px;border:none}.doc-tools{top:4px}}
-@media(max-width:560px){.quickgrid,.semantic-key{grid-template-columns:1fr}.hero{padding:22px 20px}.hero h1{font-size:28px}.grid{grid-template-columns:1fr}}
+@media(max-width:560px){.quickgrid,.semantic-key{grid-template-columns:1fr}.hero{padding:22px 20px}.hero h1{font-size:28px}.caption-size{grid-column:2;white-space:normal}.caption-text{grid-column:2}.caption-label{grid-row:1 / span 2}}
 """
 
 def legend_section():
@@ -770,8 +789,6 @@ def load_frag(name):
     h = p.read_text(encoding='utf-8')
     for en, pl in TH_PL.items():   # ujednolić nagłówki tabel na polski
         h = re.sub(r'(<th[^>]*>)\s*' + re.escape(en) + r'\s*(</th>)', r'\1' + pl + r'\2', h)
-    h = h.replace(' ⚑ dotyczy granic PSE</h4>',
-                  ' <span class="psemark">⚑ dotyczy granic PSE</span></h4>')
     # Normalizacja rejestru inżynierskiego
     h = re.sub(r'Happy\s+Day', 'Stan poprawny / nominalny', h)
     h = re.sub(r'(?i)bra\s+diostepu', 'brak dostępu', h)
@@ -1021,12 +1038,12 @@ Wszystkie instrukcje, kontakty i materiały ekranowe potrzebne do realizacji opi
 Każde ryzyko zgłaszać do: <b>CIZ, WPO, PSE-I (PSE Innowacje)</b>.</footer>
 <script>
 const semanticPatterns = {{
-  danger: /KRYTYCZNE|STOP|brak (?:ACK|pliku|wyniku)|brak dostępu|awaria|błąd procesu|negatywny ACK|plik niezwalidowany|niepoprawn[yae]|niezgodn[yae]|niedostarczon[yae]|timeout|odrzucon[yae]|Rejected|Process failed|przekroczono CET|minął CET|nie wysyłaj/giu,
-  warning: /UWAGA|OSTRZEŻENIE|zbliża się (?:TET|CET)|ERR-I|po CET|tryb backupowy|IVA BACKUP|fallback/giu,
-  success: /PRAWIDŁOWO|SUKCES|SUCCESSFUL|proces poprawny|stan prawidłowy|brak działań|potwierdzony ACK|Processed/giu,
-  action: /ZGŁOŚ|ZADZWOŃ|SPRAWDŹ|POWIADOM|WYŚLIJ(?: PLIK)? RĘCZNIE|POBIERZ(?: POPRAWNY)? PLIK|ODCZYTAJ KOD ACK|USTAW STATUS|URUCHOM(?: PONOWNIE)? OBLICZENIA|PRZEJDŹ DO SCENARIUSZA|ESKALACJA/giu
+  danger: /KRYTYCZNE|STOP|brak (?:ACK|potwierdzenia odbioru|pliku|wyniku)|brak dostępu|awaria|błąd procesu|negatywn(?:y|e) (?:ACK|potwierdzenie odbioru)|plik niezwalidowany|niepoprawn[yae]|niezgodn[yae]|niedostarczon[yae]|timeout|odrzucon[yae]|Rejected|Process failed|przekroczono (?:CET|krytyczny termin zakończenia)|minął (?:CET|krytyczny termin zakończenia)|nie wysyłaj/giu,
+  warning: /UWAGA|OSTRZEŻENIE|zbliża się (?:TET|CET|docelowy termin zakończenia|krytyczny termin zakończenia)|ERR-I|po (?:CET|krytycznym terminie zakończenia)|tryb backupowy|IVA BACKUP|fallback/giu,
+  success: /PRAWIDŁOWO|SUKCES|SUCCESSFUL|proces poprawny|stan prawidłowy|brak działań|potwierdzon[ey] (?:ACK|potwierdzenie odbioru)|Processed/giu,
+  action: /ZGŁOŚ|ZADZWOŃ|SPRAWDŹ|POWIADOM|WYŚLIJ(?: PLIK)? RĘCZNIE|POBIERZ(?: POPRAWNY)? PLIK|ODCZYTAJ KOD (?:ACK|potwierdzenia odbioru)|USTAW STATUS|URUCHOM(?: PONOWNIE)? OBLICZENIA|PRZEJDŹ DO SCENARIUSZA|ESKALACJA/giu
 }};
-const semanticPattern = /KRYTYCZNE|STOP|brak (?:ACK|pliku|wyniku)|brak dostępu|awaria|błąd procesu|negatywny ACK|plik niezwalidowany|niepoprawn[yae]|niezgodn[yae]|niedostarczon[yae]|timeout|odrzucon[yae]|Rejected|Process failed|przekroczono CET|minął CET|nie wysyłaj|UWAGA|OSTRZEŻENIE|zbliża się (?:TET|CET)|ERR-I|po CET|tryb backupowy|IVA BACKUP|fallback|PRAWIDŁOWO|SUKCES|SUCCESSFUL|proces poprawny|stan prawidłowy|brak działań|potwierdzony ACK|Processed|ZGŁOŚ|ZADZWOŃ|SPRAWDŹ|POWIADOM|WYŚLIJ(?: PLIK)? RĘCZNIE|POBIERZ(?: POPRAWNY)? PLIK|ODCZYTAJ KOD ACK|USTAW STATUS|URUCHOM(?: PONOWNIE)? OBLICZENIA|PRZEJDŹ DO SCENARIUSZA|ESKALACJA/giu;
+const semanticPattern = /KRYTYCZNE|STOP|brak (?:ACK|potwierdzenia odbioru|pliku|wyniku)|brak dostępu|awaria|błąd procesu|negatywn(?:y|e) (?:ACK|potwierdzenie odbioru)|plik niezwalidowany|niepoprawn[yae]|niezgodn[yae]|niedostarczon[yae]|timeout|odrzucon[yae]|Rejected|Process failed|przekroczono (?:CET|krytyczny termin zakończenia)|minął (?:CET|krytyczny termin zakończenia)|nie wysyłaj|UWAGA|OSTRZEŻENIE|zbliża się (?:TET|CET|docelowy termin zakończenia|krytyczny termin zakończenia)|ERR-I|po (?:CET|krytycznym terminie zakończenia)|tryb backupowy|IVA BACKUP|fallback|PRAWIDŁOWO|SUKCES|SUCCESSFUL|proces poprawny|stan prawidłowy|brak działań|potwierdzon[ey] (?:ACK|potwierdzenie odbioru)|Processed|ZGŁOŚ|ZADZWOŃ|SPRAWDŹ|POWIADOM|WYŚLIJ(?: PLIK)? RĘCZNIE|POBIERZ(?: POPRAWNY)? PLIK|ODCZYTAJ KOD (?:ACK|potwierdzenia odbioru)|USTAW STATUS|URUCHOM(?: PONOWNIE)? OBLICZENIA|PRZEJDŹ DO SCENARIUSZA|ESKALACJA/giu;
 function semanticClass(text) {{
   for (const [name, pattern] of Object.entries(semanticPatterns)) {{
     pattern.lastIndex = 0;
@@ -1253,6 +1270,339 @@ doc = re.sub(r'href="Karta_ryzyk_IDCC\.md#([^"]+)"', r'href="#\1"', doc)
 doc = doc.replace('href="Karta_ryzyk_IDCC.md"', 'href="#sec-ryzyka"')
 doc = doc.replace('Karta_ryzyk_IDCC.md', 'baza ryzyk w tej procedurze')
 
+# Rozwinięcie skrótów redakcyjnych w widocznej treści. Kody plików, ścieżki,
+# formaty techniczne i gotowe treści wiadomości pozostają bez zmian.
+FULL_TERM_PATTERNS = [
+    (r'\bPPM\b', 'prawy przycisk myszy'),
+    (r'\bLPM\b', 'lewy przycisk myszy'),
+    (r'\bTET\b', 'docelowy termin zakończenia'),
+    (r'\bCET\b', 'krytyczny termin zakończenia'),
+    (r'\bACK\b', 'potwierdzenie odbioru'),
+    (r'\bTSO\b', 'operator systemu przesyłowego'),
+    (r'\bCCCt\b|\bCCTool\b', 'Core Capacity Calculation Tool'),
+    (r'\bCCC\b', 'regionalne centrum koordynacyjne'),
+    (r'\bRCC\b', 'regionalne centrum koordynacyjne'),
+    (r'\bCCM\b(?!\.spsm)', 'pulpit monitorowania'),
+    (r'\bFBA\b', 'walidacja przepływowa'),
+    (r'\bIVA\b', 'korekta walidacyjna'),
+    (r'\bBUP\b', 'tryb awaryjny'),
+    (r'\bNOR\b', 'tryb normalny'),
+    (r'\bIDCC\b', 'wyznaczanie zdolności śróddziennych'),
+    (r'\bGLSK\b', 'klucze przesunięć generacji i obciążenia'),
+    (r'\bCBCORA\b', 'krytyczne gałęzie, krytyczne wyłączenia i środki zaradcze'),
+    (r'\bIGM\b', 'indywidualny model sieci'),
+    (r'\bCGM\b', 'wspólny model sieci'),
+    (r'\bRA\b', 'środki zaradcze'),
+    (r'\bATC\b', 'dostępna zdolność przesyłowa'),
+    (r'\bNTC\b', 'zdolność przesyłowa netto'),
+    (r'\bAACs?\b', 'już przydzielone zdolności przesyłowe'),
+    (r'\bsFTP\b', 'bezpieczny serwer wymiany plików'),
+    (r'\bZP\b', 'aplikacja Zdolności Przesyłowe'),
+    (r'\bCN2\b', 'Connector 2.0'),
+    (r'\bKDM\b', 'Krajowa Dyspozycja Mocy'),
+]
+
+def expand_full_terms(text):
+    # Najpierw rozwija zwroty zależne od przypadka, aby zachować naturalny język.
+    contextual = [
+        (r'\bTET\s*/\s*CET\b', 'docelowy i krytyczny termin zakończenia'),
+        (r'\bprzed\s+TET\b', 'przed docelowym terminem zakończenia'),
+        (r'\bdo\s+TET\b', 'do docelowego terminu zakończenia'),
+        (r'\bpo\s+TET\b', 'po docelowym terminie zakończenia'),
+        (r'\bprzed\s+CET\b', 'przed krytycznym terminem zakończenia'),
+        (r'\bdo\s+CET\b', 'do krytycznego terminu zakończenia'),
+        (r'\bpo\s+CET\b', 'po krytycznym terminie zakończenia'),
+        (r'\bminął\s+(?:czas\s+)?CET\b', 'minął krytyczny termin zakończenia'),
+        (r'\bprzekroczono\s+CET\b', 'przekroczono krytyczny termin zakończenia'),
+        (r'\bzbliża się\s+TET\b', 'zbliża się docelowy termin zakończenia'),
+        (r'\bzbliża się\s+CET\b', 'zbliża się krytyczny termin zakończenia'),
+        (r'\bnie otrzymano\s+ACK\b', 'nie otrzymano potwierdzenia odbioru'),
+        (r'\botrzymano\s+ACK\b', 'otrzymano potwierdzenie odbioru'),
+        (r'\bACK\s+nie napłynął\b', 'potwierdzenie odbioru nie napłynęło'),
+        (r'\bACK\s+napłynął\b', 'potwierdzenie odbioru napłynęło'),
+        (r'\bbrak\s+ACK\b', 'brak potwierdzenia odbioru'),
+        (r'\bnegatywny\s+ACK\b|\bACK\s+negatywny\b', 'negatywne potwierdzenie odbioru'),
+        (r'\bpozytywny\s+ACK\b|\bACK\s+pozytywny\b', 'pozytywne potwierdzenie odbioru'),
+        (r'\bpotwierdzenie\s+ACK\b', 'potwierdzenie odbioru'),
+        (r'\bpotwierdzenia\s+ACK\b', 'potwierdzenia odbioru'),
+        (r'\bpotwierdzenia?\s*\(ACK\)\b',
+         lambda m: 'potwierdzenia odbioru' if m.group(0).lower().startswith('potwierdzenia') else 'potwierdzenie odbioru'),
+        (r'\bmimo\s+ACK\b', 'mimo potwierdzenia odbioru'),
+        (r'\boczekiwanie\s+na\s+ACK\b', 'oczekiwanie na potwierdzenie odbioru'),
+        (r'\bkod\s+ACK\b', 'kod potwierdzenia odbioru'),
+        (r'\bstatus\s+ACK\b', 'status potwierdzenia odbioru'),
+
+        # Nazwy procesu i ról — pełna nazwa w poprawnym przypadku.
+        (r'\b(proces(?:u|em|ie)?)\s+IDCC\b', r'\1 wyznaczania zdolności śróddziennych'),
+        (r'\b(procedur(?:a|y|ze|ę|ą))\s+IDCC\b', r'\1 wyznaczania zdolności śróddziennych'),
+        (r'\b(pulpit(?:u|em|cie|y|ów|ami|ach)?)\s+IDCC\b', r'\1 procesu wyznaczania zdolności śróddziennych'),
+        (r'\b(plik(?:u|i|ów|ami|ach)?)\s+IDCC\b', r'\1 procesu wyznaczania zdolności śróddziennych'),
+        (r'\bprocesu\s+CORE\s+IDCC\b', 'procesu wyznaczania zdolności śróddziennych CORE'),
+        (r'\b(model(?:u|em|e|ach)?)\s+IDCC\b', r'\1 procesu wyznaczania zdolności śróddziennych'),
+        (r'\b(wynik(?:u|i|ów|ami|ach)?)\s+IDCC\b', r'\1 wyznaczania zdolności śróddziennych'),
+        (r'\bmonitorowanie\s+IDCC\b', 'monitorowanie procesu wyznaczania zdolności śróddziennych'),
+        (r'\bkatalog operacyjny\s+IDCC\b', 'katalog operacyjny procesu wyznaczania zdolności śróddziennych'),
+        (r'\bdla\s+IDCC\b', 'dla procesu wyznaczania zdolności śróddziennych'),
+        (r'\bw\s+IDCC\b', 'w procesie wyznaczania zdolności śróddziennych'),
+        (r'\bz\s+IDCC\b', 'z procesu wyznaczania zdolności śróddziennych'),
+        (r'\bTSO\s+(muszą|mają|są proszeni)\b', r'operatorzy systemów przesyłowych \1'),
+        (r'\bze strony\s+TSO\b', 'ze strony operatorów systemów przesyłowych'),
+        (r'\boperator(a|owi|em|ze)?\s+CCC\b',
+         lambda m: 'operator' + (m.group(1) or '') + ' regionalnego centrum koordynacyjnego'),
+        (r'\bTSO\s+Data Gathering\b|\bTSO\s+DG\b', 'gromadzenie danych operatora systemu przesyłowego'),
+        (r'\bjeden z\s+TSO\b', 'jeden z operatorów systemu przesyłowego'),
+        (r'\bprzez\s+TSO\b', 'przez operatora systemu przesyłowego'),
+        (r'\bdla\s+TSO\b', 'dla operatora systemu przesyłowego'),
+        (r'\bze strony\s+TSO\b', 'ze strony operatora systemu przesyłowego'),
+        (r'\bz\s+TSO\b', 'z operatorem systemu przesyłowego'),
+        (r'\bw\s+TSO\b', 'u operatora systemu przesyłowego'),
+
+        # Systemy centralne i pulpity operatorskie.
+        (r'\bdo\s+CCC\b', 'do regionalnego centrum koordynacyjnego'),
+        (r'\bod\s+CCC\b', 'od regionalnego centrum koordynacyjnego'),
+        (r'\bpo stronie\s+CCC\b', 'po stronie regionalnego centrum koordynacyjnego'),
+        (r'\binstrukcje\s+CCC\b', 'instrukcje regionalnego centrum koordynacyjnego'),
+        (r'\b(?:kontakt|uzgodnieni[eu]|potwierdzanie)\s+z\s+CCC\b',
+         lambda m: m.group(0).rsplit(' ', 1)[0] + ' regionalnym centrum koordynacyjnym'),
+        (r'\bz\s+CCC\b', 'z regionalnym centrum koordynacyjnym'),
+        (r'\bprzez\s+CCC\b', 'przez regionalne centrum koordynacyjne'),
+        (r'\bz poziomu aplikacji\s+CCM\b', 'z poziomu pulpitu monitorowania'),
+        (r'\bw pulpicie\s+CCM\b', 'na pulpicie monitorowania'),
+        (r'\bbez\s+CCM\b', 'bez pulpitu monitorowania'),
+        (r'\bz poziomu\s+CCM\b', 'z poziomu pulpitu monitorowania'),
+        (r'\bw aplikacji\s+CCM\b', 'na pulpicie monitorowania'),
+        (r'\baplikacja\s+CCM\b', 'pulpit monitorowania'),
+        (r'\baplikacji\s+CCM\b', 'pulpitu monitorowania'),
+        (r'\baplikację\s+CCM\b', 'pulpit monitorowania'),
+        (r'\baplikacją\s+CCM\b', 'pulpitem monitorowania'),
+        (r'\b(?:w|we)\s+CCM\b', 'na pulpicie monitorowania'),
+        (r'\bz\s+CCM\b', 'z pulpitu monitorowania'),
+        (r'\bdo\s+CCM\b', 'do pulpitu monitorowania'),
+        (r'\bdla\s+CCM\b', 'dla pulpitu monitorowania'),
+        (r'\bprzez\s+CCM\b', 'przez pulpit monitorowania'),
+
+        # Walidacja przepływowa i korekta walidacyjna.
+        (r'\b(walidacj(?:a|i|ę|ą))\s+FBA\b',
+         lambda m: m.group(1) + (' przepływowej' if m.group(1).lower() == 'walidacji' else ' przepływową' if m.group(1).lower() in ('walidację', 'walidacją') else ' przepływowa')),
+        (r'\b(proces(?:u|em|ie)?)\s+FBA\b', r'\1 walidacji przepływowej'),
+        (r'\b(ręczne uruchomienie obliczeń|uruchomienie obliczeń|brak obliczeń)\s+FBA\b',
+         r'\1 walidacji przepływowej'),
+        (r'\b(wynik(?:u|i|ów|ami|ach)?)\s+FBA\b', r'\1 walidacji przepływowej'),
+        (r'\b(?:od|dla)\s+FBA\b', lambda m: m.group(0).split()[0] + ' walidacji przepływowej'),
+        (r'\bDefinicja\s+IVA\b', 'Definicja korekty walidacyjnej'),
+        (r'\b(dokument(?:u|em|y|ów|ami|ach)?|plik(?:u|iem|i|ów|ami|ach)?|wiersz(?:a|em|e|y|ów|ami|ach)?|kafelek|kafelka|status|wersja|brak)\s+IVA\b',
+         r'\1 korekty walidacyjnej'),
+        (r'\b(wysyłka|wysyłki|wysyłkę|wysyłką|walidacja|walidacji)\s+IVA\b', r'\1 korekty walidacyjnej'),
+        (r'\b(generuje|wysyła|pozyskać|zweryfikować|pobierz|wyślij|porównaj)\s+IVA\b', r'\1 korektę walidacyjną'),
+        (r'\bna\s+IVA\b', 'na korektę walidacyjną'),
+        (r'\bz\s+IVA\b', 'z korektą walidacyjną'),
+        (r'\bw\s+IVA\b', 'w korekcie walidacyjnej'),
+        (r'\bo\s+IVA\b', 'o korekcie walidacyjnej'),
+        (r'\bdla\s+IVA\b', 'dla korekty walidacyjnej'),
+        (r'\bwalidacja\s+BUP\b', 'walidacja w trybie awaryjnym'),
+        (r'\bwalidacja\s+NOR\b', 'walidacja w trybie normalnym'),
+        (r'\btryb(?: backupowy| backup)?\s+BUP\b', 'tryb awaryjny'),
+        (r'\bw\s+BUP\b', 'w trybie awaryjnym'),
+        (r'\bdla\s+BUP\b', 'dla trybu awaryjnego'),
+        (r'\bw\s+NOR\b', 'w trybie normalnym'),
+        (r'\bdla\s+NOR\b', 'dla trybu normalnego'),
+
+        # Modele, dane wejściowe i zdolności przesyłowe.
+        (r'\b24\s+plików\s+GLSK\b', '24 pliki kluczy przesunięć generacji i obciążenia'),
+        (r'\bbrak\s+GLSK\b', 'brak kluczy przesunięć generacji i obciążenia'),
+        (r'\b(pliki?|wiersz|opis pliku|generowanie)\s+GLSK\b', r'\1 kluczy przesunięć generacji i obciążenia'),
+        (r'\bz\s+GLSK\b', 'z kluczami przesunięć generacji i obciążenia'),
+        (r'\bdla\s+GLSK\b', 'dla kluczy przesunięć generacji i obciążenia'),
+        (r'\bplik\s+CBCORA\b', 'plik krytycznych gałęzi, krytycznych wyłączeń i środków zaradczych'),
+        (r'\bgenerowanie\s+CBCORA\b', 'generowanie danych o krytycznych gałęziach, krytycznych wyłączeniach i środkach zaradczych'),
+        (r'\bgeneruje modele\s+IGM\s*/\s*CGM\b',
+         'generuje indywidualne i wspólne modele sieci'),
+        (r'\b24\s+modele\s+IGM\b', '24 indywidualne modele sieci'),
+        (r'\b(dostarczenie|brak|wysyłka|wysyłki|generator|wersja)\s+IGM\b', r'\1 indywidualnego modelu sieci'),
+        (r'\b(?:24\s+)?IGM\b', lambda m: '24 indywidualne modele sieci' if m.group(0).strip().startswith('24') else 'indywidualny model sieci'),
+        (r'\bpodstawą do utworzenia\s+CGM\b', 'podstawą do utworzenia wspólnego modelu sieci'),
+        (r'\bmodel\s+CGM\b', 'wspólny model sieci'),
+        (r'\bdo\s+CGM\b', 'do wspólnego modelu sieci'),
+        (r'\bw\s+CGM\b', 'we wspólnym modelu sieci'),
+        (r'\bdla\s+CGM\b', 'dla wspólnego modelu sieci'),
+        (r'\bwybór\s+RA\b', 'wybór środków zaradczych'),
+        (r'\bATC\s+Based Validation\b', 'walidacja oparta na dostępnej zdolności przesyłowej'),
+        (r'\bwyznaczanie\s+ATC\b', 'wyznaczanie dostępnej zdolności przesyłowej'),
+        (r'\b(walidacj(?:a|i|ę|ą))\s+ATC\b', r'\1 dostępnej zdolności przesyłowej'),
+        (r'\bpaczka\s+ATC\b', 'paczka danych dostępnej zdolności przesyłowej'),
+        (r'\b(wynik(?:u|i|ów)?|wiersz|błąd)\s+ATC\b', r'\1 dostępnej zdolności przesyłowej'),
+        (r'\bz\s+ATC\s+i\s+sFTP\b', 'z obsługą dostępnej zdolności przesyłowej i bezpiecznego serwera wymiany plików'),
+        (r'\bz\s+ATC\b', 'z dostępną zdolnością przesyłową'),
+        (r'\bdla\s+ATC\b', 'dla dostępnej zdolności przesyłowej'),
+        (r'\b(wynik(?:u|i|ów)?|publikacja)\s+NTC\b', r'\1 zdolności przesyłowej netto'),
+        (r'\btabela\s+NTC\b', 'tabela zdolności przesyłowej netto'),
+        (r'\bNTC\s*/\s*High Neg\.\s*NTC\b',
+         'zdolności przesyłowe netto i wysokie ujemne zdolności przesyłowe netto'),
+        (r'\bdla\s+NTC\b', 'dla zdolności przesyłowej netto'),
+        (r'\bbrak\s+AACs?\b', 'brak danych o już przydzielonych zdolnościach przesyłowych'),
+        (r'\b(dostarcza|wgrywa|uploaduje|potwierdza obecność)\s+AACs?\b',
+         r'\1 dane o już przydzielonych zdolnościach przesyłowych'),
+        (r'\bz\s+AACs?\b', 'z już przydzielonymi zdolnościami przesyłowymi'),
+        (r'\bdla\s+AACs?\b', 'dla już przydzielonych zdolności przesyłowych'),
+        (r'\bz\s+sFTP\b', 'z bezpiecznego serwera wymiany plików'),
+        (r'\bprzez\s+sFTP\b', 'przez bezpieczny serwer wymiany plików'),
+
+        # Aplikacja Zdolności Przesyłowe i dyspozycja mocy.
+        (r'\baplikacja\s+ZP\b', 'aplikacja Zdolności Przesyłowe'),
+        (r'\bbez\s+ZP\b', 'bez aplikacji Zdolności Przesyłowe'),
+        (r'\baplikacji\s+ZP\b', 'aplikacji Zdolności Przesyłowe'),
+        (r'\baplikację\s+ZP\b', 'aplikację Zdolności Przesyłowe'),
+        (r'\baplikacją\s+ZP\b', 'aplikacją Zdolności Przesyłowe'),
+        (r'\bw\s+ZP\b', 'w aplikacji Zdolności Przesyłowe'),
+        (r'\bz\s+ZP\b', 'z aplikacji Zdolności Przesyłowe'),
+        (r'\bdo\s+ZP\b', 'do aplikacji Zdolności Przesyłowe'),
+        (r'\botwórz\s+ZP\b', 'otwórz aplikację Zdolności Przesyłowe'),
+        (r'\bawaria\s+ZP\b', 'awaria aplikacji Zdolności Przesyłowe'),
+        (r'\bdo\s+KDM\b', 'do Krajowej Dyspozycji Mocy'),
+        (r'\bz\s+KDM\b', 'z Krajowej Dyspozycji Mocy'),
+    ]
+    for pattern, replacement in contextual:
+        text = re.sub(pattern, replacement, text, flags=re.I)
+    text = re.sub(r'(?<!Ryzyko )\bR(\d{2})\b', r'Ryzyko R\1', text)
+    text = re.sub(r'(?<!Procedura )\bP(\d{2})\b', r'Procedura P\1', text)
+    text = re.sub(r'(?<!Ryzyko pomocnicze )\bU(\d{2})\b', r'Ryzyko pomocnicze U\1', text)
+    for pattern, replacement in FULL_TERM_PATTERNS:
+        text = re.sub(pattern, replacement, text, flags=re.I)
+    # Porządkuje zakresy i miejsca, które już zawierały pełny rzeczownik.
+    text = re.sub(r'Ryzyka\s+Ryzyko\s+R(\d{2})[–-]Ryzyko\s+R(\d{2})', r'Ryzyka R\1–R\2', text)
+    text = re.sub(r'Ryzyko\s+R(\d{2})[–-]Ryzyko\s+R(\d{2})', r'Ryzyka R\1–R\2', text)
+    text = re.sub(r'Procedury\s+Procedura\s+P(\d{2})[–-]Procedura\s+P(\d{2})', r'Procedury P\1–P\2', text)
+    text = re.sub(r'Procedura\s+P(\d{2})[–-]Procedura\s+P(\d{2})', r'Procedury P\1–P\2', text)
+    text = text.replace('Ryzyko Ryzyko ', 'Ryzyko ').replace('Procedura Procedura ', 'Procedura ')
+    text = text.replace('potwierdzenie potwierdzenie odbioru', 'potwierdzenie odbioru')
+    text = text.replace('potwierdzenia potwierdzenie odbioru', 'potwierdzenia odbioru')
+    text = text.replace('czas krytyczny termin zakończenia', 'krytyczny termin zakończenia')
+    return text
+
+def fix_expanded_grammar(text):
+    """Koryguje przypadki gramatyczne także wtedy, gdy frazę rozdziela znacznik HTML."""
+    gap = r'(\s*(?:<[^>]+>\s*)*)'
+    corrections = [
+        (r'\bdo' + gap + r'regionalne centrum koordynacyjne\b',
+         r'do\1regionalnego centrum koordynacyjnego'),
+        (r'\bod' + gap + r'regionalne centrum koordynacyjne\b',
+         r'od\1regionalnego centrum koordynacyjnego'),
+        (r'\btelefon' + gap + r'regionalne centrum koordynacyjne\b',
+         r'telefon do\1regionalnego centrum koordynacyjnego'),
+        (r'\binstrukcje' + gap + r'regionalne centrum koordynacyjne\b',
+         r'instrukcje\1regionalnego centrum koordynacyjnego'),
+        (r'\bregionalne centrum koordynacyjne' + gap + r'regionalne centrum koordynacyjne\b',
+         r'\1regionalne centrum koordynacyjne'),
+        (r'\bw' + gap + r'pulpit monitorowania\b', r'na\1pulpicie monitorowania'),
+        (r'\bbez' + gap + r'pulpit monitorowania\b', r'bez\1pulpitu monitorowania'),
+        (r'\bw pulpicie' + gap + r'pulpit monitorowania\b', r'na\1pulpicie monitorowania'),
+        (r'\bbrak' + gap + r'pulpit monitorowania\b', r'brak\1pulpitu monitorowania'),
+        (r'\bpulpit' + gap + r'pulpit monitorowania\b', r'\1pulpit monitorowania'),
+        (r'\b([Dd]ostarczenie)' + gap + r'indywidualny model sieci\b',
+         r'\1\2indywidualnego modelu sieci'),
+        (r'\bpliku' + gap + r'wyznaczanie zdolności śróddziennych\b',
+         r'pliku\1procesu wyznaczania zdolności śróddziennych'),
+        (r'\bplików' + gap + r'wyznaczanie zdolności śróddziennych\b',
+         r'plików\1procesu wyznaczania zdolności śróddziennych'),
+        (r'\b[Bb]ez' + gap + r'aplikacja Zdolności Przesyłowe\b',
+         lambda m: ('Bez' if m.group(0)[0].isupper() else 'bez') +
+                   m.group(1) + 'aplikacji Zdolności Przesyłowe'),
+        (r'\bwyznaczanie' + gap + r'dostępna zdolność przesyłowa\b',
+         r'wyznaczanie\1dostępnej zdolności przesyłowej'),
+        (r'\bkorekta walidacyjna' + gap + r'walidacja przepływowa\b',
+         r'korekta\1walidacji przepływowej'),
+        (r'\bpliku' + gap + r'korekta walidacyjna\b', r'pliku\1korekty walidacyjnej'),
+        (r'\bna' + gap + r'korekta walidacyjna\b', r'na\1korektę walidacyjną'),
+        (r'\bmodelu' + gap + r'wspólny model sieci\b', r'\1wspólnego modelu sieci'),
+        (r'\bmodele' + gap + r'indywidualny model sieci\s*/\s*wspólny model sieci\b',
+         r'indywidualne i wspólne\1modele sieci'),
+        (r'\bmodele' + gap + r'indywidualny model sieci\b', r'indywidualne\1modele sieci'),
+        (r'\b24\s+plików' + gap + r'klucze przesunięć generacji i obciążenia\b',
+         r'24\1pliki kluczy przesunięć generacji i obciążenia'),
+        (r'\b(pliku|plików|kafelka)' + gap + r'klucze przesunięć generacji i obciążenia\b',
+         r'\1\2kluczy przesunięć generacji i obciążenia'),
+        (r'\bpliki' + gap + r'klucze przesunięć generacji i obciążenia\b',
+         r'pliki\1kluczy przesunięć generacji i obciążenia'),
+        (r'\btabela' + gap + r'dostępna zdolność przesyłowa\b',
+         r'tabela\1dostępnej zdolności przesyłowej'),
+        (r'\bobliczeń' + gap + r'już przydzielone zdolności przesyłowe\b',
+         r'obliczeń\1już przydzielonych zdolności przesyłowych'),
+        (r'\bdo' + gap + r'zdolność przesyłowa netto\b', r'do\1zdolności przesyłowej netto'),
+        (r'\bbrak' + gap + r'zdolność przesyłowa netto\b', r'brak\1zdolności przesyłowej netto'),
+    ]
+    for pattern, replacement in corrections:
+        text = re.sub(pattern, replacement, text, flags=re.I)
+    return text
+
+def rewrite_mail_when(html_doc):
+    """Redaguje polskie opisy użycia szablonów, nie zmieniając gotowych wiadomości."""
+    descriptions = [
+        'Gdy w narzędziu Core Capacity Calculation Tool wystąpi krytyczny problem i operator musi zgłosić go do zespołu wsparcia Core.',
+        'Gdy proces w Core Capacity Calculation Tool zakończy się niepowodzeniem przed krytycznym terminem zakończenia i operatorzy systemów przesyłowych muszą dostarczyć zdolności przesyłowe za pomocą narzędzi lokalnych do XBID.',
+        'Gdy przed krytycznym terminem zakończenia brakuje obowiązkowego pliku wejściowego i strona odpowiedzialna zastępuje brakujące dane danymi z innej doby handlowej, aby utrzymać proces.',
+        'Gdy przy docelowym terminie zakończenia brakuje pliku wejściowego i nie można go zastąpić; bez pliku obliczenia przejdą w tryb awaryjny.',
+        'Gdy krok obliczeniowy w Core Capacity Calculation Tool zakończył się z użyciem danych zastępczych dla wskazanych godzin doby.',
+        'Gdy operator regionalnego centrum koordynacyjnego jest niedostępny i obsługę Core Capacity Calculation Tool przejmuje strona zapasowa.',
+        'Gdy zdolności przesyłowe netto i wysokie ujemne zdolności przesyłowe netto wysłano do XBID przez bezpieczny serwer wymiany plików po awarii podstawowego kanału ECP; operatorzy systemów przesyłowych muszą sprawdzić ich obecność w XBID.',
+        'Gdy zerowe i już przydzielone zdolności przesyłowe wysłano do XBID przez bezpieczny serwer wymiany plików po awarii podstawowego kanału ECP; wiadomość nie wymaga działania operatorów systemów przesyłowych.',
+        'Gdy z powodu niedostępności narzędzia obliczeniowego Core dla rynku dnia następnego pliki wejściowe procesu wyznaczania zdolności śróddziennych są tworzone ręcznie w narzędziach zapasowych Core i JAO SEC Tool.',
+        'Gdy brakuje potwierdzenia odbioru danych o już przydzielonych zdolnościach przesyłowych z XBID; odbiór sprawdzono w interfejsie XBID, potwierdzenie wprowadzono ręcznie, a operatorzy systemów przesyłowych muszą zweryfikować dane na swoich granicach.',
+        'Gdy bieżący krok procesu wyznaczania zdolności śróddziennych jest opóźniony i wpływa na kolejny krok; wiadomość nie wymaga działania operatorów systemów przesyłowych.',
+        'Gdy wystąpiły problemy z potwierdzeniem odbioru zerowych lub już przydzielonych zdolności przesyłowych albo zdolności przesyłowych netto; przekazanie do XBID sprawdzono ręcznie, a operatorzy systemów przesyłowych muszą zweryfikować dane na swoich granicach.',
+        'Gdy z powodu problemów łączności XBID z Core Capacity Calculation Tool dane o już przydzielonych zdolnościach przesyłowych (TAR) są dostarczane ręcznie przez bezpieczny serwer wymiany plików; brak naprawy grozi awarią iteracji ID2.',
+        'Gdy JAO utworzy pliki MCR narzędziem SEC Tool i wgra je do procesu wyznaczania zdolności śróddziennych Core.',
+        'Gdy połączona prognoza przeciążeń sieci Coreso i TSCNET nie powstała i użyto prognozy indywidualnej jednego z tych podmiotów.',
+        'Gdy połączona prognoza przeciążeń sieci nie powstała i nie można jej zastąpić prognozą Coreso ani TSCNET; narzędzie obliczeniowe zastosowało automatyczne dane zastępcze z domeny dnia następnego.',
+        'Gdy nie udało się dostarczyć modelu sieci już przydzielonych zdolności przesyłowych do iteracji IDCC(b); narzędzie obliczeniowe zastosowało automatyczne dane zastępcze z domeny dnia następnego.',
+        'Gdy z powodu niedostępności narzędzia Core dla rynku dnia następnego brakuje indywidualnych plików wejściowych procesu wyznaczania zdolności śróddziennych; operatorzy systemów przesyłowych muszą ręcznie dostarczyć je do Core Capacity Calculation Tool.',
+        'Gdy częściowe rozdzielenie jednolitego łączenia rynków dnia następnego wymaga od operatorów systemów przesyłowych dostarczenia plików MD-250 do Core Capacity Calculation Tool dla rozłączonych granic w terminach 15:43 i 17:24.',
+    ]
+    index = 0
+    def replace(match):
+        nonlocal index
+        if index >= len(descriptions):
+            raise AssertionError('Więcej opisów Kiedy niż przygotowanych redakcji')
+        result = f'<p class="when"><b>Kiedy:</b> {descriptions[index]}</p>'
+        index += 1
+        return result
+    html_doc = re.sub(r'<p class="when">.*?</p>', replace, html_doc, flags=re.I | re.S)
+    assert index == len(descriptions), (
+        f'Niekompletna redakcja opisów Kiedy: {index}/{len(descriptions)}')
+    return html_doc
+
+def expand_visible_terms(html_doc):
+    protected = []
+    block_pattern = re.compile(
+        r'<(?P<tag>code|pre|script|style)\b[^>]*>.*?</(?P=tag)>|'
+        r'<(?P<special_tag>[a-z][\w:-]*)\b[^>]*class="[^"]*\b(?:mailbody|path)\b[^"]*"[^>]*>'
+        r'.*?</(?P=special_tag)>|'
+        r'<h4>\s*\d{2}\s+—.*?</h4>|'
+        r'<table\b[^>]*class="[^"]*\bref\b[^"]*"[^>]*>'
+        r'(?:(?!</table>).)*?<th>Subject</th>(?:(?!</table>).)*?</table>|'
+        r'https?://[^\s<>"\']+|'
+        r'\b[\w.+-]+@[\w.-]+\.[a-z]{2,}\b|'
+        r'(?<![\w./-])[\w./-]+\.(?:xml|zip|json|csv|xlsx?|docx?|pdf|html?|md|txt)\b|'
+        r'\bIDCC\s+\(do 3C\)\s+z\s+ATC\s+i\s+SFTP(?:\s+Pulpit dyspozytorski)?\b|'
+        r'\bIDCC\s+FB(?:\s+Pulpit dyspozytorski)?\b|'
+        r'\bIDCC\([a-e]\)(?:\s*[–-]\s*(?:IDCC)?\([a-e]\))?',
+        re.I | re.S)
+    def protect(match):
+        protected.append(match.group(0))
+        return f'__PROTECTED_TEXT_{len(protected) - 1}__'
+    work = block_pattern.sub(protect, html_doc)
+    parts = re.split(r'(<[^>]+>)', work)
+    work = ''.join(part if part.startswith('<') else expand_full_terms(part) for part in parts)
+    work = re.sub(
+        r'\b(alt|aria-label)="([^"]*)"',
+        lambda m: f'{m.group(1)}="{expand_full_terms(m.group(2))}"', work)
+    work = fix_expanded_grammar(work)
+    for index, block in enumerate(protected):
+        work = work.replace(f'__PROTECTED_TEXT_{index}__', block)
+    return work
+
+doc = rewrite_mail_when(doc)
+doc = expand_visible_terms(doc)
+
 def _restore_asset(match):
     return f'src="{_embedded_sources[int(match.group(1))]}"'
 doc = re.sub(r'src="__EMBEDDED_ASSET_(\d+)__"', _restore_asset, doc)
@@ -1292,9 +1642,67 @@ embedded_manifest = set(re.findall(r'data-source="([^"]+)"', doc))
 missing_screens = sorted({m['file'] for m in MAN} - embedded_manifest)
 assert not missing_screens, f"Screeny z manifestu nieobecne w procedurze: {missing_screens}"
 
+shot_figures = re.findall(r'<figure class="shot"[^>]*>.*?</figure>', doc, re.I | re.S)
+assert shot_figures, "Brak pełnowymiarowych figur ze zrzutami ekranu"
+
+def _valid_shot_figure(figure):
+    source_match = re.search(r'data-source="([^"]+)"', figure, re.I)
+    dimensions_match = re.search(
+        r'<img\b[^>]*\bwidth="(\d+)"[^>]*\bheight="(\d+)"', figure, re.I)
+    caption_match = re.search(
+        r'<span class="caption-text">(.*?)</span>', figure, re.I | re.S)
+    if not source_match or not dimensions_match or not caption_match:
+        return False
+    source = html.unescape(source_match.group(1))
+    expected = BYFILE.get(source, {}).get('_wh')
+    actual = tuple(map(int, dimensions_match.groups()))
+    caption = html.unescape(re.sub(r'<[^>]+>', ' ', caption_match.group(1))).strip()
+    if not expected or actual != expected or not caption:
+        return False
+    width, height = expected
+    return (f'style="--screen-width:{width}px"' in figure
+            and 'class="caption-label">Zrzut ekranu</span>' in figure
+            and 'class="caption-size">'
+                f'Oryginalny rozmiar: {width} × {height} pikseli</span>' in figure)
+
+invalid_shot_figures = [
+    index for index, figure in enumerate(shot_figures, 1) if not _valid_shot_figure(figure)
+]
+assert not invalid_shot_figures, (
+    f"Figury bez wiarygodnych naturalnych wymiarów lub pełnego podpisu: "
+    f"{invalid_shot_figures[:10]}")
+
+shot_css_rules = [
+    re.sub(r'\s+', '', rule.lower())
+    for rule in re.findall(r'figure\.shot img\{([^}]+)\}', doc, re.I | re.S)
+]
+assert shot_css_rules, "Brak reguły CSS dla pełnowymiarowych zrzutów ekranu"
+screen_shot_css = shot_css_rules[0]
+required_screen_css = ('width:auto', 'height:auto', 'max-width:100%', 'max-height:none',
+                       'margin:0auto', 'object-fit:initial')
+missing_screen_css = [
+    declaration for declaration in required_screen_css if declaration not in screen_shot_css
+]
+assert not missing_screen_css, (
+    f"Brak ekranowych reguł zachowania proporcji zrzutów: {missing_screen_css}")
+assert all('object-fit:cover' not in rule for rule in shot_css_rules), (
+    "Pełnowymiarowe zrzuty ekranu nie mogą używać kadrującego object-fit: cover")
+all_styles = '\n'.join(re.findall(r'<style\b[^>]*>(.*?)</style>', doc, re.I | re.S))
+assert not re.search(r'object-fit\s*:\s*cover\b', all_styles, re.I), (
+    "Arkusz stylów nie może zawierać kadrującego object-fit: cover")
+print_shot_css = [
+    rule for rule in shot_css_rules[1:]
+    if all(declaration in rule for declaration in (
+        'width:auto', 'height:auto', 'max-width:100%', 'max-height:225mm',
+        'margin:0auto', 'object-fit:contain'))
+]
+assert print_shot_css, (
+    "Brak niekadrującej reguły druku mieszczącej wysoki zrzut na stronie A4")
+
 visible_doc = re.sub(r'src="data:[^"]+"', 'src="[embedded]"', doc, flags=re.I)
 visible_doc = re.sub(r'<(?:style|script)\b.*?</(?:style|script)>', ' ', visible_doc, flags=re.I | re.S)
 visible_doc = html.unescape(re.sub(r'<[^>]+>', ' ', visible_doc))
+visible_doc = re.sub(r'\s+', ' ', visible_doc)
 banned_references = ['Core_Operational_Contact_List.xlsx', 'AC manuall ZP.docx',
                      'PROCEDURA_IDCC_TSO_v5_2', 'QuickRef', 'Operator Manual',
                      'Inwentarz_IDCC.md', 'Karta_ryzyk_IDCC.md', 'Confluence', 'BPD',
@@ -1309,6 +1717,39 @@ unresolved_markers = ['❓', 'TODO', 'do uzupełnienia', 'czy dozwolone',
                       'jakie narzędzie konkretnie', 'do dopytania']
 found_unresolved = [term for term in unresolved_markers if term.lower() in visible_doc.lower()]
 assert not found_unresolved, f"Pozostały nierozstrzygnięte kroki: {found_unresolved}"
+
+awkward_expansions = [
+    'Proces wyznaczanie zdolności śróddziennych',
+    'plików wyznaczanie zdolności śróddziennych',
+    'wyznaczanie dostępna zdolność przesyłowa',
+    'Walidacja walidacja przepływowa',
+    'korekta walidacyjna walidacja przepływowa',
+    'do regionalne centrum koordynacyjne',
+    'instrukcje regionalne centrum koordynacyjne',
+    'w pulpit monitorowania',
+    'bez pulpit monitorowania',
+    'w pulpicie pulpit monitorowania',
+    'aplikacji aplikacja Zdolności Przesyłowe',
+    'Bez aplikacja Zdolności Przesyłowe',
+    'Dostarczenie indywidualny model sieci',
+    'modelu wspólny model sieci',
+    'brak obliczeń walidacja przepływowa',
+    '24 plików klucze przesunięć generacji i obciążenia',
+    'modele indywidualny model sieci',
+    'Definicja korekta walidacyjna',
+    'odrzucone mimo potwierdzenie odbioru',
+    'tabela zdolność przesyłowa netto',
+]
+found_awkward = [term for term in awkward_expansions if term.lower() in visible_doc.lower()]
+assert not found_awkward, f"Nienaturalne rozwinięcia nazw: {found_awkward}"
+
+damaged_filename_terms = re.findall(
+    r'[\w./-]+[-_](?:wyznaczanie zdolności śróddziennych|pulpit monitorowania|'
+    r'aplikacja Zdolności Przesyłowe|dostępna zdolność przesyłowa)'
+    r'(?:[-_.][^\s<"]*)?', doc, re.I)
+assert not damaged_filename_terms, (
+    f"Pełna nazwa została błędnie wstawiona do nazwy technicznej: "
+    f"{damaged_filename_terms[:10]}")
 
 OUT.write_text(doc, encoding='utf-8')
 print('Zapisano:', OUT)
