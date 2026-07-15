@@ -1,55 +1,66 @@
-<h3 id="proc-pse">PSE — skróty, zakres i pliki wejściowe</h3>
+<h3 id="proc-pse">Słownik</h3>
 
-<h4>Skróty i pojęcia</h4>
-<table class="ref">
-  <thead><tr><th>Skrót</th><th>Rozwinięcie</th></tr></thead>
+<table class="ref glossary">
+  <thead><tr><th>Termin</th><th>Definicja</th></tr></thead>
   <tbody>
-    <tr><td>IVA</td><td>Individual Validation Adjustment</td></tr>
-    <tr><td>RAM</td><td>Remaining Available Margin</td></tr>
-    <tr><td>FRM</td><td>Flow Reliability Margin</td></tr>
-    <tr><td>Fmax</td><td>Maximum allowable flow on a critical branch</td></tr>
-    <tr><td>CGM</td><td>Common Grid Model (scalony model sieci)</td></tr>
-    <tr><td>IGM</td><td>Individual Grid Model (model PSE)</td></tr>
-    <tr><td>AAC</td><td>Already Allocated Capacity</td></tr>
-    <tr><td>NTC</td><td>Net Transfer Capacity</td></tr>
-    <tr><td>ATC</td><td>Available Transfer Capacity</td></tr>
-    <tr><td>PTDF</td><td>Power Transfer Distribution Factor</td></tr>
-    <tr><td>RefProg</td><td>Reference Program (założone net positions per strefa)</td></tr>
-    <tr><td>SAR</td><td>Security Analysis Result</td></tr>
-    <tr><td>CGMES</td><td>Common Grid Model Exchange Standard</td></tr>
-    <tr><td>DACF</td><td>Day-Ahead Congestion Forecast</td></tr>
-    <tr><td>IDCF</td><td>Intraday Congestion Forecast</td></tr>
-    <tr><td>MCP</td><td>Market Coupling Process</td></tr>
-    <tr><td>CCCt</td><td>Core Capacity Calculation Tool</td></tr>
-    <tr><td>TET</td><td>Target End Time (limit wysłania danych)</td></tr>
-    <tr><td>CET</td><td>Critical End Time (ostateczny termin; ryzyko decouplingu)</td></tr>
-    <tr><td>GLSK</td><td>Generation Load Shift Key</td></tr>
-    <tr><td>CB / CNEC</td><td>Critical Branch / Critical Network Element and Contingency</td></tr>
+    <tr><td><strong>IVA</strong> (ang. <em>Individual Validation Adjustment</em>)</td><td>Korekta domeny FBA wykonywana przez TSO po weryfikacji wyznaczonych zdolności przesyłowych.</td></tr>
+    <tr><td><strong>RAM</strong> (ang. <em>Remaining Available Margin</em>)</td><td>Margines dostępny na CNEC dla wymiany transgranicznej po uwzględnieniu wymaganych składników obliczeń.</td></tr>
+    <tr><td><strong>FRM</strong> (ang. <em>Flow Reliability Margin</em>)</td><td>Margines niezawodności przepływu uwzględniający niepewności modelowania i prognoz.</td></tr>
+    <tr><td><strong>Fmax</strong> (ang. <em>Maximum Allowable Flow</em>)</td><td>Maksymalny dopuszczalny przepływ na Critical Branch.</td></tr>
+    <tr><td><strong>CGM</strong> (ang. <em>Common Grid Model</em>)</td><td>Model sieci utworzony przez RCC po scaleniu IGM przekazanych przez TSO.</td></tr>
+    <tr><td><strong>IGM</strong> (ang. <em>Individual Grid Model</em>)</td><td>Model sieci obszaru TSO przekazywany do RCC na potrzeby utworzenia CGM.</td></tr>
+    <tr><td><strong>AAC</strong> (ang. <em>Already Allocated Capacity</em>)</td><td>Zdolność przesyłowa przydzielona przed rozpoczęciem danego procesu obliczeniowego.</td></tr>
+    <tr><td><strong>NTC</strong> (ang. <em>Net Transfer Capacity</em>)</td><td>Wynikowa zdolność przesyłowa netto dla granicy obszarów rynkowych.</td></tr>
+    <tr><td><strong>ATC</strong> (ang. <em>Available Transfer Capacity</em>)</td><td>Zdolność przesyłowa dostępna do dalszego przydziału.</td></tr>
+    <tr><td><strong>PTDF</strong> (ang. <em>Power Transfer Distribution Factor</em>)</td><td>Współczynnik określający wpływ zmiany net position na przepływ przez element sieci.</td></tr>
+    <tr><td><strong>RefProg</strong> (ang. <em>Reference Program</em>)</td><td>Zestaw referencyjnych net positions wykorzystywany w obliczeniach domeny.</td></tr>
+    <tr><td><strong>SAR</strong> (ang. <em>Security Analysis Result</em>)</td><td>Wynik analizy bezpieczeństwa sieci.</td></tr>
+    <tr><td><strong>CGMES</strong> (ang. <em>Common Grid Model Exchange Standard</em>)</td><td>Standard wymiany danych modeli sieci wykorzystywany do przekazywania IGM i CGM.</td></tr>
+    <tr><td><strong>DACF</strong> (ang. <em>Day-Ahead Congestion Forecast</em>)</td><td>Prognoza ograniczeń sieciowych przygotowywana dla rynku day-ahead.</td></tr>
+    <tr><td><strong>IDCF</strong> (ang. <em>Intraday Congestion Forecast</em>)</td><td>Prognoza ograniczeń sieciowych przygotowywana dla rynku intraday.</td></tr>
+    <tr><td><strong>MCP</strong> (ang. <em>Market Coupling Process</em>)</td><td>Proces łączenia rynków wykorzystujący udostępnione zdolności przesyłowe.</td></tr>
+    <tr><td><strong>CCCt</strong> (ang. <em>Core Capacity Calculation Tool</em>)</td><td>Centralne narzędzie regionu Core do realizacji procesu Capacity Calculation.</td></tr>
+    <tr><td><strong>TET</strong> (ang. <em>Target End Time</em>)</td><td>Docelowy termin zakończenia kroku lub dostarczenia pliku. Jeżeli dotrzymanie TET jest zagrożone, PSE informuje operatora procesu Capacity Calculation i uzgadnia dalsze działanie.</td></tr>
+    <tr><td><strong class="deadline-critical">CET</strong> (ang. <em>Critical End Time</em>)</td><td>Krytyczny, najpóźniejszy termin zakończenia kroku po uzgodnionym przedłużeniu. Przed CET należy zakończyć działanie albo uruchomić fallback lub backup wskazany dla danego kroku.</td></tr>
+    <tr><td><strong>GLSK</strong> (ang. <em>Generation and Load Shift Keys</em>)</td><td>Klucz określający rozdział zmiany net position na jednostki wytwórcze i odbiorcze.</td></tr>
+    <tr><td><strong>CB</strong> (ang. <em>Critical Branch</em>) / <strong>CNEC</strong> (ang. <em>Critical Network Element and Contingency</em>)</td><td>Element sieci lub para element–contingency uwzględniana w obliczeniach i walidacji domeny.</td></tr>
   </tbody>
 </table>
 
-<h4>Zakres PSE i bramki czasowe</h4>
-<ul>
-  <li>Dostarczenie <strong>IGM</strong> do RCC (serwer Swissgrid → TSCNET) przed target run DACF/IDCF — tylko IDCC(b)–(d); IDCC(a) tego nie wymaga.</li>
-  <li>Dostarczenie <strong>CB (FIDx-617)</strong> i <strong>GLSK (FIDx-607)</strong> do CCCt w fazie TSO Data Gathering (oba MANDATORY).</li>
-  <li>Walidacja FBA w Perun4V (publikacja <strong>IVA, FIDx-710</strong>) oraz monitoring walidacji ATC (FIDx-928) i IVA BACKUP.</li>
-  <li>Publikacja <strong>AC (FIDx-831)</strong> do PuTo jako wynik procesu; monitoring finalnych <strong>NTC (FIDx-921)</strong>.</li>
-  <li><strong>TET</strong> = limit wysłania pliku; po jego przekroczeniu uruchamiany jest backup. <strong>CET</strong> = termin ostateczny — niedotrzymanie grozi decouplingiem rynku dla danej doby.</li>
-  <li>Notacja czasów w tabeli poniżej: <code>TET / CET</code> (godzina lokalna).</li>
+<h4>Pliki dostarczane przez TSO</h4>
+<ul class="compact-list">
+  <li><strong>IGM do RCC</strong> — PSE / TSO Data Preparation → serwer Swissgrid → TSCNET (RCC odpowiedzialny za PSE); przed target run DACF/IDCF.
+    <span class="scope-list"><span class="scope-yes">IDCC(b)</span><span class="scope-yes">IDCC(c)</span><span class="scope-yes">IDCC(d)</span><span class="scope-yes">IDCC(e)</span><span class="scope-no">nie dotyczy IDCC(a)</span></span>
+  </li>
+  <li><strong>CB (FIDx-617)</strong> i <strong>GLSK (FIDx-607)</strong> — do CCCt w fazie <em>TSO Data Gathering</em>; oba pliki są MANDATORY.</li>
+  <li><strong>IVA (FIDx-710)</strong> — wynik Individual Validation w Perun4V.</li>
+  <li><strong>ATC Based Validation (FIDx-928)</strong> i <strong>IVA BACKUP</strong> — monitorowanie procesu i plików wynikowych.</li>
+  <li><strong>AC (FIDx-831)</strong> — plik ograniczeń alokacyjnych dla PuTo.</li>
+  <li><strong>NTC (FIDx-921)</strong> — monitorowanie finalnych NTC.</li>
 </ul>
+<div class="deadline-rule">
+  <h4>TET i CET — zasada operacyjna</h4>
+  <div class="deadline-grid">
+    <div class="deadline-tet"><strong>TET</strong><span>Docelowy termin zakończenia kroku lub dostarczenia pliku.</span></div>
+    <div class="deadline-cet"><strong>CET</strong><span>Krytyczny, najpóźniejszy termin zakończenia po uzgodnionym przedłużeniu.</span></div>
+  </div>
+  <ol class="compact-list">
+    <li>Jeżeli dotrzymanie TET jest zagrożone, poinformuj operatora procesu Capacity Calculation.</li>
+    <li>Uzgodnij przedłużenie do <strong class="deadline-critical">CET</strong>.</li>
+    <li>Zakończ krok albo zastosuj fallback lub backup wskazany dla danego zdarzenia.</li>
+  </ol>
+</div>
 
-<h4>Kluczowe pliki PSE per iteracja</h4>
-<table class="ref">
-  <thead><tr><th>Plik (FIDx)</th><th>Co to</th><th>Źródło</th><th>Iteracja</th><th>TET / CET</th></tr></thead>
+<table class="ref file-summary">
+  <thead><tr><th>FID</th><th>Definicja pliku</th><th>Źródło</th><th>Iteracja</th><th>TET / CET</th></tr></thead>
   <tbody>
-    <tr><td>CB / CBCORA (-617)</td><td>Critical Branches — CNEC-y PSE</td><td>Kreator (N07/N08)</td><td>(b)/(c)/(d)</td><td>20:00/20:19 · 00:00/00:56 · 06:20/07:30</td></tr>
-    <tr><td>GLSK (-607)</td><td>Generation Load Shift Keys strefy PL</td><td>Kreator (N07/N08)</td><td>(b)/(c)/(d)</td><td>20:00/20:19 · 00:00/00:56 · 06:20/07:30</td></tr>
-    <tr><td>IGM/CGM DACF (-620)</td><td>Merged DACF/IDCF Common Grid Model</td><td>proces Core / Kreator</td><td>(b)/(c)/(d)</td><td>20:40/21:05 · 02:40/03:30 · 08:30/09:05</td></tr>
-    <tr><td>RefProg (-632)</td><td>Reference Program — net positions</td><td>proces Core</td><td>(b)/(c)/(d)</td><td>20:40/21:05 · 02:40/03:30 · 08:30/09:05</td></tr>
-    <tr><td>IVA (-710)</td><td>Individual Validation Adjustment (FBA)</td><td>Perun4V (N03) / CCA backup (N09)</td><td>(b)/(c)/(d)</td><td>21:30/22:06 · 04:00/04:36 · 09:30/10:06</td></tr>
-    <tr><td>ATC validation (-928)</td><td>ATC Based Validation</td><td>Core CC Tool (N02)</td><td>(a)/(b)/(c)/(d)</td><td>13:40/14:20 · 21:40/22:05 · 03:10/03:50 · 08:45/09:20</td></tr>
-    <tr><td>AC (-831)</td><td>Allocation Constraints → PuTo</td><td>ZP (N06)</td><td>(a)/(b)/(c)/(d)</td><td>13:50/14:45 · 21:45/21:55 · 04:15/04:25 · 08:40/09:25</td></tr>
-    <tr><td>Final NTC (-921)</td><td>Finalne wyniki NTC z IDCC</td><td>proces Core</td><td>(a)/(b)/(c)/(d)</td><td>14:45/14:55 · 21:45/21:49 · 04:15/04:30 · 09:20/09:45</td></tr>
+    <tr><td>617</td><td><strong>CBCORA</strong> — Critical Branches, CNEC, outages i RA przekazywane przez PSE.</td><td>Kreator (N07/N08)</td><td>IDCC(b)/(c)/(d)</td><td>20:00/20:19 · 00:00/00:56 · 06:20/07:30</td></tr>
+    <tr><td>607</td><td><strong>GLSK</strong> — Generation and Load Shift Keys dla strefy PL.</td><td>Kreator (N07/N08)</td><td>IDCC(b)/(c)/(d)</td><td>20:00/20:19 · 00:00/00:56 · 06:20/07:30</td></tr>
+    <tr><td>620</td><td><strong>CGM</strong> — CGM utworzony z IGM dla DACF/IDCF.</td><td>proces Core / Kreator</td><td>IDCC(b)/(c)/(d)</td><td>20:40/21:05 · 02:40/03:30 · 08:30/09:05</td></tr>
+    <tr><td>632</td><td><strong>RefProg</strong> — Reference Program zawierający net positions.</td><td>proces Core</td><td>IDCC(b)/(c)/(d)</td><td>20:40/21:05 · 02:40/03:30 · 08:30/09:05</td></tr>
+    <tr><td>710</td><td><strong>IVA</strong> — wynik Individual Validation; także wariant IVA BACKUP.</td><td>Perun4V (N03) / CCA backup (N09)</td><td>IDCC(b)/(c)/(d)</td><td>21:30/22:06 · 04:00/04:36 · 09:30/10:06</td></tr>
+    <tr><td>928</td><td><strong>ATC Based Validation</strong> — wynik centralnej walidacji ATC.</td><td>Core CC Tool (N02)</td><td>IDCC(a)/(b)/(c)/(d)</td><td>13:40/14:20 · 21:40/22:05 · 03:10/03:50 · 08:45/09:20</td></tr>
+    <tr><td>831</td><td><strong>AC</strong> — Allocation Constraints wyznaczone przez PSE.</td><td>ZP (N06)</td><td>IDCC(a)/(b)/(c)/(d)</td><td>13:50/14:45 · 21:45/21:55 · 04:15/04:25 · 08:40/09:25</td></tr>
+    <tr><td>921</td><td><strong>NTC</strong> — finalne NTC z procesu IDCC.</td><td>proces Core</td><td>IDCC(a)/(b)/(c)/(d)</td><td>14:45/14:55 · 21:45/21:49 · 04:15/04:30 · 09:20/09:45</td></tr>
   </tbody>
 </table>
-<p class="note">Prefiks kodu = iteracja: <code>FID1</code>=IDCC(a), <code>FID2</code>=IDCC(b), <code>FID3C</code>=IDCC(c), <code>FID3</code>=IDCC(d).</p>
