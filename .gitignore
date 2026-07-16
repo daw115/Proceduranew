@@ -6,3 +6,13 @@ Procedura (1).zip
 tmp_*
 *.pyc
 .claude/worktrees/
+
+# Artefakty budowane przez skrypty (regenerowalne — nie wersjonujemy)
+output/
+PROCEDURA_IDCC_TSO_v7.html
+PROCEDURA_IDCC_TSO_v7-final.html
+STICKERY_IDCC-final.md
+PROCEDURA_IDCC_TSO_v5_2.docx
+PROCEDURA_IDCC_TSO_v5_2.pdf
+PROCEDURA_IDCC_TSO_v5_2_EDYTOR.html
+PROCEDURA_IDCC_TSO_v6.html
