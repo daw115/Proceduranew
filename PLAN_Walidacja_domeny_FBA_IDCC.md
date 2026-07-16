@@ -21,6 +21,7 @@
    - [A.3. Mapowanie ryzyk BUP_03 → BUP_04 (los każdego ryzyka)](#a3-ryzyka)
 3. [Część B — wpisanie w Core IDCC FB BPD](#czesc-b)
 4. [Lista TODO / do potwierdzenia](#todo)
+5. [Stan wykonania i plan dalszego działania](#roadmapa)
 
 ---
 
@@ -213,4 +214,40 @@ Struktura BPD: rozdziały per iteracja (IDCC(a); IDCC(b); IDCC(c)/(d) przez odwo
 | 6 | Czy narzędzie stand-alone (odpowiednik fbc_lta_vertices.exe) występuje w procesie ID; jeżeli nie — potwierdzić usunięcie ryzyka 14 | PSE-I |
 | 7 | Spodziewane prawidłowe wielkości plików paczki PERUN_IDx na MinIO (do ryzyka „błędna paczka") | PSE-I |
 | ~~8~~ | ~~Dostarczenie pliku „Core IDCC Flow Based Business Process Documentation (3).docx" → wykonać weryfikację B.5~~ — **wykonane 16.07.2026** (plik = v5.0; wyniki w B.5) | — |
-| 9 | W NOR_04 rozdzielić mechanizmy okna IVA: IDCC(a) — gwarancja min. 25 min (pauza/wznowienie, ID1_16); IDCC(b)–(d) — przesunięcie całego 40-minutowego okna przez CCCt | redakcja NOR_04 |
+| ~~9~~ | ~~W NOR_04 rozdzielić mechanizmy okna IVA: IDCC(a) — gwarancja min. 25 min (pauza/wznowienie, ID1_16); IDCC(b)–(d) — przesunięcie całego 40-minutowego okna przez CCCt~~ — **wykonane 16.07.2026** (draft HTML §1.4 i §4.16) | — |
+
+---
+
+<a id="roadmapa"></a>
+## 5. Stan wykonania i plan dalszego działania
+
+### 5.1. Stan wykonania (16.07.2026)
+
+| # | Krok | Status |
+|---|---|---|
+| 1 | Konspekt `PLAN_Walidacja_domeny_FBA_IDCC.md` (Część A + B + mapowanie DA→IDCC + TODO) | ✅ wykonane — [PR #7](https://github.com/daw115/Proceduranew/pull/7) |
+| 2 | Weryfikacja z plikiem „(3).docx" (= Core IDCC BPD v5.0, 02-03-2026) | ✅ wykonane — wyniki w [B.5](#b5-punkt-weryfikacji-z-3docx) |
+| 3 | Ekstrakcja treści operacyjnych z „CCM_Instrukcja_Użytkownika_Dyspozytora_ID v2.6" (24.03.2026): statusy kafelków, wysyłka przed/po CET, wyjątki FIDx-710_ATC i raportów `*_Validation_Reports.zip`, wysyłka IVA BACKUP w horyzoncie ID, status ręczny „R", komunikaty walidacyjne, doba monitorowana pulpitu ID | ✅ wykonane |
+| 4 | **Draft procedury w HTML:** `FBA_TSO_IDCC_Walidacja_domeny_v0.1.html` — NOR_04 + BUP_04 w jednym dokumencie: rozdz. 1 Wstęp, rozdz. 2 Przegląd, rozdz. 3 NOR (przebieg automatyczny, paczka PERUN_IDx, monitorowanie CCM/Perun4V/e-mail, IDCC(a), IDCC(e)), rozdz. 4 BUP (§4.1–4.18), rozdz. 5 mapowanie do BPD, załączniki A–C | ✅ wykonane — [PR #7](https://github.com/daw115/Proceduranew/pull/7) |
+
+### 5.2. Plan dalszego działania (roadmapa v0.1 → 1.0)
+
+**Etap 1 — uzupełnienie treści draftu (v0.2):**
+1. Zastąpić placeholdery `[RYSUNEK 1–8]` zrzutami ekranu: pulpit „IDCC FB Pulpit dyspozytorski" (obszar Individual Validation), okno Perun4V z procesem IDx, formatka wysyłki backup IVA, menu kontekstowe kafelka CCM. Źródła w repo: `Pulpit IDCC CCM.docx`, `Pulpit_IDCC_CCM_opisy_kafelkow.xlsx`, `screens_manifest_*.json`.
+2. Rozstrzygnąć TODO #1–#7 z rozdziału 4 (blokujące finalizację): maski paczek sFTP i skład AGR_PERUN_IDx per iteracja (PSE-I), nazwa kroku View Results dla ID (WPO/CORESO), wykonalność re-runu Perun4V w oknie 40 min (WPO), ścieżki katalogów sieciowych (WPO), minimalne wielkości plików (PSE-I).
+3. Dopisać w `Karta_ryzyk_IDCC.md` / `Inwentarz_IDCC.md` odnośniki zwrotne do sekcji §4.x procedury (dwukierunkowe linkowanie U## ↔ BUP_04).
+
+**Etap 2 — recenzja (v0.3):**
+4. Przegląd merytoryczny WPO + dyspozytorzy (czytelność kroków, zgodność z praktyką stanowiska VI).
+5. Weryfikacja terminów TET/CET z aktualnym arkuszem HLBP (jedyne źródło prawdy) oraz z nowszą wersją BPD, jeżeli zostanie opublikowana (>5.0).
+6. Naniesienie uwag, podbicie wersji dokumentu HTML.
+
+**Etap 3 — formalizacja (v1.0):**
+7. Decyzja właściciela procedur: numeracja (NOR_04/BUP_04 czy inna) i podział — jeden dokument czy para NOR+BUP (TODO #2).
+8. Konwersja HTML → DOCX w układzie procedur DA (metryka, „Zatwierdzono", historia wersji) — jako baza istniejący skrypt `_build_docx.py`.
+9. Obieg zatwierdzenia (tabela „Zatwierdzono"), status Draft → Final.
+10. Opcjonalnie: włączenie rozdziału walidacji IDCC do zbiorczej procedury `PROCEDURA_IDCC_TSO_v7` (fragment w konwencji `frag7_walidacja.html`, build przez `_build_procedura_v7.py`).
+
+**Poza zakresem (odnotowane):**
+- Dopisanie odwołania do procedury lokalnej PSE w §5.7/§6.7/§7.7/§8.7 BPD — wymaga ścieżki Core CCB, nie edycji lokalnej.
+- IDCC(e) — aktywacja placeholdera dopiero po operacyjnym uruchomieniu iteracji (HLBP „IDCCe Option A/B").
