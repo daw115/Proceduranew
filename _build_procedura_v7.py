@@ -20,6 +20,20 @@ import markdown
 ROOT = Path(__file__).parent
 OUT  = ROOT / 'PROCEDURA_IDCC_TSO_v7.html'
 
+# Metryka wydania roboczego. Pola formalne pozostają jawnie puste, ponieważ
+# materiały źródłowe nie wskazują autora, zatwierdzającego ani dat zatwierdzenia.
+DOC_META = {
+    'working_id': 'PROCEDURA_IDCC_TSO_v7',
+    'formal_code': '—',
+    'version': '7',
+    'date': '—',
+    'status': '☒ Draft ☐ Final',
+    'document_type': 'Połączony dokument roboczy NOR/BUP',
+    'author': '—',
+    'approver': '—',
+    'approval_date': '—',
+}
+
 
 def esc(s): return html.escape(str(s or ''))
 
@@ -44,6 +58,9 @@ def asset_uri(file):
 
 # ── 1. screeny: manifest → grupy obszarów ─────────────────────────────────
 MAN = json.load(open(ROOT/'screens_manifest.json', encoding='utf-8'))
+FIGURE_NUMBERS = {item['file']: index for index, item in enumerate(MAN, 1)}
+assert len(MAN) == 309 and len(FIGURE_NUMBERS) == len(MAN), (
+    'Manifest musi zawierać 309 unikalnych plików ekranowych')
 try:
     from PIL import Image
 except ImportError as exc:
@@ -84,16 +101,19 @@ def is_good(m):
     return True
 
 def img(file, cap=None, cls='shot'):
-    """Osadza obraz w pełnych proporcjach, z naturalnym rozmiarem i czytelnym podpisem."""
+    """Osadza obraz z numerem stabilnym względem kolejności screens_manifest.json."""
     m = BYFILE.get(file, {})
     cap = cap or m.get('caption') or m.get('shows') or ''
+    number = FIGURE_NUMBERS.get(file)
+    if number is None:
+        raise KeyError(f'Brak numeru rysunku dla zasobu: {file}')
     width, height = m.get('_wh', (0, 0))
     size_attrs = f' width="{width}" height="{height}"' if width and height else ''
     size_style = f' style="--screen-width:{width}px"' if width else ''
     size_note = f'<span class="caption-size">Oryginalny rozmiar: {width} × {height} pikseli</span>' if width and height else ''
-    return (f'<figure class="{cls}"{size_style}><img loading="lazy" src="{asset_uri(file)}" alt="{esc(cap)}" '
-            f'data-source="{esc(file)}"{size_attrs} tabindex="0" role="button" aria-label="Powiększ zrzut ekranu: {esc(cap)}">'
-            f'<figcaption><span class="caption-label">Zrzut ekranu</span>'
+    return (f'<figure class="{cls}" data-figure-number="{number}"{size_style}><img loading="lazy" src="{asset_uri(file)}" alt="{esc(cap)}" '
+            f'data-source="{esc(file)}"{size_attrs} tabindex="0" role="button" aria-label="Powiększ rysunek {number}: {esc(cap)}">'
+            f'<figcaption><span class="caption-label">Rysunek {number}</span>'
             f'<span class="caption-text">{esc(cap)}</span>{size_note}</figcaption></figure>')
 
 def gallery(area, title, intro='', only=None, exclude=None):
@@ -297,7 +317,7 @@ def denumber(h):
 
 # ── 5. STICKERY (karty skrócone) ──────────────────────────────────────────
 STICKERS = [
- ('#sec-proces','📘','Proces IDCC','Kroki istotne dla PSE: IDCC(a) i wspólnie (b)–(d), pliki FIDx, fallbacki.'),
+ ('#sec-proces','📘','Proces IDCC','Kroki istotne dla PSE: IDCC(a) i wspólnie (b)–(d), pliki FIDx, automatyczne fallbacki i działania backupowe.'),
  ('#proc-mail','📧','Szablony maili','19 szablonów operacyjnych Core ID (EN) + kiedy użyć; oznaczone granice PSE.'),
  ('#sec-narzedzia','🧰','Narzędzia','CCM, Core CC Tool, Perun4V, MinIO, ZP, Connector, Kreatory, sFTP, wsparcie.'),
  ('#sec-legenda','🎨','Legenda statusów','13 kafelków → enum statusu. Kolor + znacznik = sytuacja pliku.'),
@@ -421,7 +441,29 @@ a{color:var(--acc)}
 .cell-list{margin:0;padding-left:1.2em}
 .cell-list>li{margin:.22em 0}
 .action-table td:nth-last-child(2){min-width:280px}
+.deadline-target{display:inline-block;color:var(--warn)!important;font-weight:850!important;background:var(--warnb);border:1px solid #e2c784;border-radius:3px;padding:0 .25em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 .deadline-critical{color:var(--err)!important;font-weight:850!important;background:var(--errb);border-radius:3px;padding:0 .22em}
+.process-note-muted{margin:10px 0 14px;padding:10px 13px;border:1px solid var(--rule2);border-left:4px solid #9aa1aa;border-radius:5px;background:#f1f2f3;color:#535c67;font-size:13.5px}
+.flow-diagram{display:grid;align-items:stretch;gap:8px;margin:13px 0;padding:14px;border:1px solid var(--rule2);border-radius:8px;background:linear-gradient(145deg,#f5f7f8,#eef2f4)}
+.flow-three{grid-template-columns:minmax(145px,1fr) auto minmax(145px,1fr) auto minmax(145px,1fr)}
+.flow-four{grid-template-columns:minmax(125px,1fr) auto minmax(125px,1fr) auto minmax(125px,1fr) auto minmax(125px,1fr)}
+.flow-node{display:flex;flex-direction:column;justify-content:center;min-height:72px;padding:10px 12px;border:1px solid #bac6cf;border-top:4px solid var(--acc);border-radius:6px;background:#fff;text-align:center}
+.flow-node strong{color:var(--navy);font:750 13.5px var(--cond)}.flow-node span{margin-top:4px;color:var(--mut);font-size:11.5px;line-height:1.35}
+.flow-node-hub{border-top-color:var(--run);background:var(--runb)}.flow-node-hub strong{color:var(--run)}
+.flow-arrow{align-self:center;color:var(--acc);font:900 22px var(--mono)}.flow-caption{text-align:center;color:var(--mut);font-size:12.5px}
+.input-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0 18px}
+.input-card{padding:12px 14px;border:1px solid var(--rule2);border-top:4px solid var(--acc);border-radius:7px;background:#fff}
+.input-card-wide{grid-column:1 / -1}.input-card-warning{border-top-color:#d18c00;background:linear-gradient(135deg,var(--warnb),#fff 72%)}
+.input-card h5{margin:.1em 0 .55em;color:var(--navy);font:750 14px var(--cond)}
+.input-stage{margin:18px 0 28px;padding:18px 20px;border:1px solid var(--rule2);border-top:5px solid var(--navy);border-radius:8px;background:#fff;box-shadow:0 3px 12px rgba(26,34,48,.06)}
+.input-stage>h3:first-child{margin-top:0;padding-bottom:7px;border-bottom:1px solid var(--rule2)}
+.input-stage .box{margin:12px 0;padding:11px 14px;border-radius:6px;background:#f3f5f6;border-left:5px solid #9aa5ae}
+.input-stage .box-warn{background:var(--warnb);border-left-color:#d18c00}.input-stage .box-info{background:var(--accbg);border-left-color:var(--acc)}
+.mode-legend{padding:10px 12px;border:1px solid var(--rule2);border-radius:6px;background:#f5f6f7;color:var(--mut)}
+.mode-badge{display:inline-block;border-radius:4px;padding:2px 7px;font:800 10.5px var(--mono);letter-spacing:.045em;white-space:nowrap;vertical-align:1px}
+.mode-auto{color:var(--run);background:var(--runb);border:1px solid #b8ace0}.mode-backup{color:var(--err);background:var(--errb);border:1px solid #dda6a2}.mode-process{color:var(--idle);background:var(--idleb);border:1px solid #c9c4b8}
+.mandatory-note{display:inline-block;color:#761912;background:var(--errb);border:1px solid #dda6a2;border-radius:4px;padding:3px 7px;font-weight:850}
+.file-timings td:nth-child(n+4){white-space:nowrap}.file-timings th:nth-child(n+4),.file-timings td:nth-child(n+4){text-align:center}
 .deadline-rule{margin:16px 0;padding:0 16px 14px;border:1px solid #d8a44f;border-left:7px solid #d18c00;border-radius:7px;background:linear-gradient(105deg,var(--warnb),#fff 72%);box-shadow:0 2px 8px rgba(154,91,0,.08)}
 .deadline-rule h4{margin:0 -16px 12px;padding:9px 14px;color:var(--ink);background:rgba(255,210,63,.32);border-bottom:1px solid #e2c784}
 .deadline-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -483,6 +525,9 @@ padding:2px 8px;letter-spacing:.05em;vertical-align:2px}
 .legend-danger{border-top-color:var(--err)!important;background:linear-gradient(90deg,var(--errb),#fff 55%)}
 .legend-neutral{border-top-color:var(--idle)!important}
 /* ── tabele ── */
+table caption{caption-side:top;text-align:left;padding:7px 9px 6px;color:var(--ink);font:650 12.5px/1.35 var(--sans);background:#f1eee5;border:1px solid var(--rule2);border-bottom:0}
+.mailtpl table[data-table-number]::before{content:"Tabela " attr(data-table-number) ". Szablon wiadomości operacyjnej";display:table-caption;caption-side:top;text-align:left;padding:7px 9px 6px;color:var(--ink);font:650 12.5px/1.35 var(--sans);background:#f1eee5;border:1px solid var(--rule2);border-bottom:0}
+.table-label{font:800 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin-right:6px}
 .sttab,.ref table,table.ref{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
 .sttab th,.sttab td,.ref th,.ref td,table.ref th,table.ref td{border:1px solid var(--rule2);
 padding:6px 9px;text-align:left;vertical-align:top}
@@ -577,7 +622,29 @@ border-radius:3px;padding:2px 8px;margin-left:8px;vertical-align:middle}
 .architecture-arrows-external{grid-template-columns:repeat(2,1fr);max-width:560px;color:var(--run)}
 .architecture-note{margin:12px 0 0;padding:9px 12px;border-left:4px solid var(--acc);background:#fff;color:var(--navy);font-weight:650}
 /* ── okładka i narzędzia dokumentu ── */
-.hero{position:relative;overflow:hidden;margin:0 0 28px;padding:28px 30px 26px;color:#fff;
+.cover-sheet{margin-bottom:28px}
+.cover-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.cover-block{border:1px solid var(--rule2);border-radius:7px;background:#fff;overflow:hidden}
+.cover-block-wide{grid-column:1 / -1}
+.cover-block h2{margin:0;padding:9px 12px;border:0;background:var(--ink);color:#fff;font:750 13px var(--cond);letter-spacing:.07em;text-transform:uppercase}
+.cover-block h2::after{display:none}
+.cover-block table{margin:0;border:0}
+.cover-block table caption{display:none}
+.cover-block td,.cover-block th{padding:7px 10px;border:1px solid var(--rule);vertical-align:top}
+.cover-block th{width:34%;background:#f1eee5;color:var(--ink);font:750 11px var(--mono);letter-spacing:.04em;text-transform:uppercase;text-align:left}
+.cover-note{margin:0;padding:9px 12px;color:var(--mut);font-size:12.5px;background:#fbf9f2}
+.draft-banner{margin:14px 0 0;padding:10px 13px;border:2px solid var(--err);color:var(--err);background:var(--errb);font:800 12px var(--mono);letter-spacing:.08em;text-align:center;text-transform:uppercase}
+.general-clause{margin-top:14px;padding:13px 16px;border:1px solid #d8a44f;border-left:7px solid #d18c00;border-radius:6px;background:var(--warnb)}
+.general-clause h2{margin:0 0 7px;padding:0;border:0;color:var(--ink);font:750 14px var(--cond);text-transform:uppercase}
+.general-clause h2::after{display:none}
+.formal-toc{margin:26px 0;padding:18px 20px;border:1px solid var(--rule2);border-radius:7px;background:#fff}
+.formal-toc h2{margin:0 0 10px}
+.formal-toc ol{columns:2;column-gap:34px;padding-left:1.8em}
+.formal-toc li{break-inside:avoid;margin:.38em 0}
+.formal-toc a{text-decoration:none}
+.intro-block{margin:12px 0 18px;padding:12px 15px;border-left:4px solid var(--navy);background:rgba(15,62,99,.045)}
+.intro-block h3{margin:.15em 0 .55em}
+.hero{position:relative;overflow:hidden;margin:0 0 18px;padding:28px 30px 26px;color:#fff;
 background:linear-gradient(125deg,var(--ink),var(--navy) 58%,#0b6b79);border-radius:10px;
 box-shadow:0 12px 30px rgba(15,62,99,.22)}
 .hero::after{content:"";position:absolute;width:270px;height:270px;right:-90px;top:-120px;
@@ -620,6 +687,8 @@ section>h2{background:linear-gradient(90deg,rgba(15,62,99,.07),transparent 72%);
  body{background:#fff}
  nav,.doc-tools,.screen-dialog{display:none!important}.wrap{display:block}main{max-width:none;padding:0;border:none;box-shadow:none;background:#fff}
  .hero{box-shadow:none;print-color-adjust:exact}.quickgrid{grid-template-columns:repeat(2,1fr)}
+ .cover-sheet{break-after:page;page-break-after:always}.cover-meta-grid{grid-template-columns:1fr 1fr}.formal-toc{break-after:page;page-break-after:always}.formal-toc ol{columns:2}
+ table caption{print-color-adjust:exact;-webkit-print-color-adjust:exact}
  figure.shot:hover{transform:none}
  .signal,.state-row,.state-label,.semantic-key,.legend-card,.risk-h,.callout,.quickcard{-webkit-print-color-adjust:exact;print-color-adjust:exact}
  details{display:block}details>summary{display:none}
@@ -628,9 +697,10 @@ section>h2{background:linear-gradient(90deg,rgba(15,62,99,.07),transparent 72%);
  figure.shot img{width:auto;height:auto;max-width:100%;max-height:225mm;margin:0 auto;object-fit:contain}
  .fcard,.mailtpl,.step,.stick,.quickcard{break-inside:avoid}
 }
-@media(max-width:1100px){.quickgrid,.semantic-key{grid-template-columns:repeat(2,minmax(0,1fr))}.architecture-tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1100px){.quickgrid,.semantic-key{grid-template-columns:repeat(2,minmax(0,1fr))}.architecture-tools{grid-template-columns:repeat(2,minmax(0,1fr))}.input-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:900px){nav{display:none}main{padding:18px;border:none}.doc-tools{top:4px}}
-@media(max-width:560px){.quickgrid,.semantic-key,.deadline-grid,.architecture-tools,.architecture-external .architecture-tools{grid-template-columns:1fr}.architecture-arrows{grid-template-columns:1fr}.architecture-arrows span:not(:first-child){display:none}.hero{padding:22px 20px}.hero h1{font-size:28px}.caption-size{grid-column:2;white-space:normal}.caption-text{grid-column:2}.caption-label{grid-row:1 / span 2}}
+@media(max-width:700px){.cover-meta-grid{grid-template-columns:1fr}.cover-block-wide{grid-column:auto}.formal-toc ol{columns:1}}
+@media(max-width:560px){.quickgrid,.semantic-key,.deadline-grid,.architecture-tools,.architecture-external .architecture-tools,.input-card-grid{grid-template-columns:1fr}.architecture-arrows{grid-template-columns:1fr}.architecture-arrows span:not(:first-child){display:none}.flow-three,.flow-four{grid-template-columns:1fr}.flow-arrow{transform:rotate(90deg)}.hero{padding:22px 20px}.hero h1{font-size:28px}.caption-size{grid-column:2;white-space:normal}.caption-text{grid-column:2}.caption-label{grid-row:1 / span 2}}
 """
 
 def legend_section():
@@ -739,14 +809,8 @@ def section(id_, title, tag, body, stickers=None):
         bar = f'<div class="stickerbar"><b>Skrót / powiązane</b>{chips}</div>'
     return (f'<section id="{id_}"><h2><span class="tag">{esc(tag)}</span>{esc(title)}</h2>{bar}{body}</section>')
 
-# nawigacja
-NAV = [('Start','#top'),('Tablica kart','#board'),
- ('1 · Proces IDCC','#sec-proces'),('2 · Narzędzia','#sec-narzedzia'),('3 · Legenda statusów','#sec-legenda'),
- ('4 · Katalog plików','#sec-katalog'),('5 · Czynności w CCM','#sec-ccm'),
- ('6 · Walidacja NOR','#sec-nor'),('7 · Walidacja BUP','#sec-bup'),('8 · GLSK 607','#sec-fid607'),
- ('9 · Kreator IDCF','#sec-kreator'),('10 · AC w ZP','#sec-aczp'),
- ('11 · Procedury','#sec-procedury'),('12 · Ryzyka','#sec-ryzyka'),('13 · MinIO / relacje','#sec-minio')]
-nav_html = ''.join(f'<a href="{h}">{esc(t)}</a>' for t,h in NAV)
+# Nawigacja i treść powstają z jednego rejestru SECTIONS zdefiniowanego po
+# zbudowaniu wszystkich sekcji. Dzięki temu numeracja i spis treści nie rozchodzą się.
 
 proces_body = f"""
 <ul class="compact-list">
@@ -788,7 +852,7 @@ proces_body = f"""
 <h3>Wejścia PSE i bramki czasowe</h3>
 <ul class="compact-list">
   <li><strong>TET:</strong> docelowy termin zakończenia.</li>
-  <li><strong>Po przekroczeniu TET:</strong> poinformuj operatora procesu Capacity Calculation, uzgodnij przedłużenie do <strong class="deadline-critical">CET</strong> i zastosuj fallback lub backup wskazany dla danego zdarzenia.</li>
+  <li><strong>Po przekroczeniu TET:</strong> należy poinformować operatora procesu Capacity Calculation, uzgodnić możliwość zakończenia kroku do <strong class="deadline-critical">CET</strong> i zastosować właściwe działanie opisane dla danego zdarzenia: automatyczny fallback, działanie backupowe albo działanie procesowe.</li>
   <li><strong>Szczegóły:</strong> <a href="#sec-legenda">legenda statusów</a> i <a href="#sec-katalog">katalog plików</a>.</li>
 </ul>
 """
@@ -812,26 +876,29 @@ def load_frag(name):
     return h
 
 # ══════════════════════════ MONTAŻ DOKUMENTU v7 ══════════════════════════════
-NAV = [('Start','#top'),
- ('1 · Cel i definicje','#sec-cel'),('2 · Proces IDCC','#sec-proces'),
- ('3 · Harmonogram operacyjny','#sec-harmonogram'),('4 · Narzędzia','#sec-narzedzia'),
- ('5 · Legenda statusów','#sec-legenda'),('6 · Katalog plików','#sec-katalog'),
- ('7 · Przebieg nominalny','#sec-happyday'),('8 · Czynności w CCM','#sec-ccm'),
- ('9 · IGM / TSO DG / CB / GLSK','#sec-igm'),('10 · Walidacja FBA','#sec-walidacja'),
- ('11 · MinIO/Perun/CCCt','#sec-ops'),('12 · Kreator i AC w ZP','#sec-kreator'),
- ('13 · Procedury P01–P06','#sec-procedury'),('14 · Ryzyka R01–R29','#sec-ryzyka'),
- ('15 · Szablony maili','#sec-mail'),('16 · Buckety i kontakty','#sec-minio'),
- ('17 · Checklisty dyżurowe','#sec-checklisty'),('⭐ STICKERY','#sec-stickery')]
-nav_html = ''.join(f'<a href="{h}">{esc(t)}</a>' for t,h in NAV)
-
-cel_body = ('<p>Procedura określa czynności operatora PSE w procesie IDCC w regionie Core.</p>'
- '<ul class="compact-list">'
- '<li>dostarczanie danych wejściowych,</li>'
- '<li>monitorowanie procesu w CCM,</li>'
- '<li>przeprowadzenie procesu weryfikacji wyznaczonych zdolności przesyłowych (IVA),</li>'
- '<li>realizacja działań backupowych.</li>'
- '</ul>'
- + load_frag('process2_glos.html'))
+# Sekcja 1 zachowuje historyczną kotwicę sec-cel i formalną strukturę
+# 1.1–1.2 wymaganą dla procedury dyspozytorskiej.
+cel_body = f'''
+<div class="intro-block" id="intro-summary">
+<h3>1.1 Podsumowanie i cel</h3>
+<p>Niniejsza procedura określa czynności, które należy wykonać po stronie PSE w roli TSO podczas realizacji procesu IDCC w regionie Core.</p>
+<ul class="compact-list">
+  <li>należy dostarczać wymagane dane wejściowe;</li>
+  <li>należy monitorować proces i stany plików w CCM;</li>
+  <li>należy przeprowadzić Individual Validation (IVA) wyznaczonych zdolności przesyłowych;</li>
+  <li>w razie zdarzenia nienominalnego należy zastosować właściwe działanie i powiadomienie.</li>
+</ul>
+<p><strong>Cały proces IDCC jest procesem automatycznym, jednak nadal wymaga kontroli i nadzoru po stronie dyspozytora.</strong></p>
+</div>
+<div class="intro-block" id="intro-governance">
+<h3>1.2 Zakres czynności</h3>
+<table class="ref"><thead><tr><th>Obszar</th><th>Zakres</th></tr></thead><tbody>
+<tr><td><strong>Zakres działań</strong></td><td>Operator procesu Capacity Calculation koordynuje przebieg centralny. Dyspozytor PSE wykonuje i monitoruje czynności przypisane TSO. Coreso pełni rolę Merging Entity w etapach scalania danych.</td></tr>
+<tr><td><strong>Czynności PSE</strong></td><td>Dostarczanie danych wejściowych, monitoring, walidacja, obsługa plików, działania ręczne oraz reakcja na zdarzenia związane z procesem IDCC.</td></tr>
+</tbody></table>
+</div>
+{load_frag('process2_glos.html')}
+'''
 
 proces_body2 = proces_body + load_frag('process2_a.html') + load_frag('process2_bcd.html')
 
@@ -852,7 +919,45 @@ ccm_ext = _inject_ids(ccm_ext, [('7M.1.','ccm-tryby'),('7M.3.','ccm-profile'),('
  ('7M.12.','ccm-c6plus'),('7M.13.','ccm-uprawnienia'),('7M.14.','ccm-awarie')])
 ccm_body = ccm_section() + '<h3 id="ccm-ext">Rozszerzenia CCM (katalog 7M)</h3>' + ccm_ext
 
-igm_body = (v52_slice('s4a','s4b') + v52_slice('s4b','s4c') + v52_slice('s4c','s4d') + v52_slice('s4d','s5'))
+def prepare_input_stage(body):
+    """Formatuje odziedziczone sekcje danych wejściowych i rozróżnia tryby reakcji."""
+    body = re.sub(r'<hr class="section-divider">', '', body)
+    body = body.replace('4A.3. Fallback przy braku CGM',
+                        '4A.3. Automatyczny fallback przy braku CGM')
+    body = body.replace(
+        '<p>Jeżeli Combined DACF nie jest dostępny (IDCC(b)), stosuje się następującą kolejność fallbacku:</p>',
+        '<p class="mode-legend"><span class="mode-badge mode-auto">FALLBACK AUTOMATYCZNY</span> '
+        'jest wykonywany przez system centralny i nie wymaga reakcji dyspozytora PSE. '
+        'Przed jego uruchomieniem wykorzystywane są kolejne dostępne warianty danych procesowych:</p>')
+    body = body.replace(
+        '<li><strong>Coreso DACF</strong> — jeżeli dostępny, używany jako backup;</li>',
+        '<li><strong>Coreso DACF</strong> — pierwszy dostępny wariant danych procesowych;</li>')
+    body = body.replace(
+        '<li><strong>TSCNET DACF</strong> — jeżeli Coreso DACF niedostępny;</li>',
+        '<li><strong>TSCNET DACF</strong> — kolejny wariant, jeżeli Coreso DACF jest niedostępny;</li>')
+    body = body.replace(
+        '<li><strong>Automatyczny fallback CCCt</strong> — jeżeli żaden CGM nie jest dostępny, CCCt używa ostatniego dostępnego CGM lub DA Domain jako fallback.</li>',
+        '<li><span class="mode-badge mode-auto">FALLBACK AUTOMATYCZNY</span> — jeżeli żaden CGM nie jest dostępny, CCCt automatycznie używa ostatniego dostępnego CGM albo DA Domain.</li>')
+    body = body.replace(
+        '<p>Dla IDCC(c–d): jeżeli TSCNET IDCF z target run nie jest dostępny, używany jest CGM z poprzedniego IDCF run.</p>',
+        '<p>Dla IDCC(c)–(d), jeżeli TSCNET IDCF z target run nie jest dostępny, CCCt automatycznie wykorzystuje CGM z poprzedniego IDCF run.</p>')
+    body = body.replace(
+        'Po zamknięciu bramki TSO Data Gathering CCCt dystrybuuje <strong>Merged CB</strong> — PSE sprawdza poprawność scalenia.',
+        'Po zamknięciu bramki TSO Data Gathering CCCt dystrybuuje <strong>Merged CB</strong>; w tym kroku nie jest wymagana ręczna czynność PSE.')
+    body = body.replace(
+        'Po zamknięciu bramki CCCt dystrybuuje <strong>Merged GLSK</strong> — PSE sprawdza poprawność scalenia.',
+        'Po zamknięciu bramki CCCt dystrybuuje <strong>Merged GLSK</strong>; w tym kroku nie jest wymagana ręczna czynność PSE.')
+    body = re.sub(
+        r'<span style="color:var\(--pse-red\);font-weight:700;">MANDATORY</span>',
+        '<strong class="mandatory-note">UWAGA: MANDATORY</strong>', body)
+    return f'<div class="input-stage">{body}</div>'
+
+igm_body = ''.join([
+    prepare_input_stage(v52_slice('s4a','s4b')),
+    prepare_input_stage(v52_slice('s4b','s4c')),
+    prepare_input_stage(v52_slice('s4c','s4d')),
+    prepare_input_stage(v52_slice('s4d','s5')),
+])
 
 walidacja_body = (load_frag7('frag7_walidacja.html')
  + '<h4>Ekrany — tryb normalny (NOR)</h4>' + gallery('nor','Walidacja NOR')
@@ -948,11 +1053,11 @@ STICKER_STEPS = [
    ('Wygeneruj i wyślij GLSK (FIDx-607)', '#s4d'),
    ('Publikacja z Kreatora IDCF (GLSK/CBCORA/RA)', '#sec-kreator'),
  ]),
- ('📣 Komunikacja i eskalacja', [
+ ('📣 Komunikacja i reakcja', [
    ('Wybierz właściwy szablon maila Core ID', '#proc-mail'),
    ('Telefony i adresy: CCC / USY / kdm6', '#kontakty'),
    ('Znajdź ryzyko i skrót działania (R01–R29)', '#sec-ryzyka'),
-   ('Fallbacki iteracji (b)–(d) wg BPD', '#proc-bcd'),
+   ('Automatyczne fallbacki i działania backupowe iteracji (b)–(d)', '#proc-bcd'),
  ]),
 ]
 
@@ -964,6 +1069,111 @@ def stickery_section_html():
     return ('<p class="lead">Karty skrócone do druku/naklejenia: wyłącznie krótkie kroki działania. '
             'Każdy krok jest hiperłączem do właściwego miejsca w pełnej procedurze powyżej.</p>'
             f'<div class="stickgrid">{cards}</div>')
+
+def anchored_mail_templates():
+    """Dodaje kotwice do przykładów maili bez zmiany treści źródłowych szablonów."""
+    source = load_frag('process2_mail.html')
+    return re.sub(
+        r'(?=<div class="mailtpl">\s*<h4>(\d{2})\s+—)',
+        lambda match: f'<span class="mail-anchor" id="mail-{match.group(1)}"></span>',
+        source)
+
+
+MAIL_TEMPLATES_HTML = anchored_mail_templates()
+
+# Jeden rejestr jest źródłem numeracji rozdziałów, spisu treści i treści dokumentu.
+# Identyfikatory historyczne pozostają bez zmian, aby zachować wszystkie odsyłacze.
+SECTIONS = [
+    ('sec-cel', 'Wstęp', cel_body,
+     [('#sec-igm', 'dane wejściowe'), ('#sec-proces', 'przegląd procesu')]),
+    ('sec-igm', 'Dane wejściowe', igm_body,
+     [('#sec-kreator', 'Kreator IDCF'), ('#sec-katalog', 'katalog plików')]),
+    ('sec-narzedzia', 'Narzędzia i protokoły komunikacyjne', '<div class="ref">'+TOOLS_HTML+'</div>',
+     [('#sec-ops', 'obsługa MinIO/Perun/CCCt'), ('#sec-ryzyka', 'ryzyka')]),
+    ('sec-checklisty', 'Warunki wstępne i checklisty dyżurowe', checklisty_body,
+     [('#sec-happyday', 'przebieg nominalny'), ('#sec-stickery', 'szybkie kroki')]),
+    ('sec-proces', 'Przegląd procesu IDCC — kroki istotne dla PSE', proces_body2,
+     [('#sec-katalog', 'katalog plików'), ('#sec-harmonogram', 'harmonogram')]),
+    ('sec-harmonogram', 'Harmonogram operacyjny (CCCt)', load_frag7('frag7_harmonogram.html'),
+     [('#sec-happyday', 'przebieg nominalny'), ('#sec-katalog', 'TET/CET plików')]),
+    ('sec-happyday', 'Przebieg nominalny i scenariusze backupowe', happyday_body,
+     [('#sec-harmonogram', 'harmonogram'), ('#sec-walidacja', 'walidacja')]),
+    ('sec-ccm', 'Monitoring i czynności w CCM (C.1–C.12 + katalog 7M)', ccm_body,
+     [('#sec-legenda', 'legenda statusów'), ('#sec-ryzyka', 'ryzyka')]),
+    ('sec-legenda', 'Legenda statusów kafelków', legend_section(),
+     [('#sec-ccm', 'monitoring w CCM'), ('#sec-katalog', 'stany plików')]),
+    ('sec-katalog', 'Katalog plików FIDx — opisy, stany i maski', katalog_body,
+     [('#sec-legenda', 'legenda'), ('#sec-ccm', 'obsługa w CCM')]),
+    ('sec-walidacja', 'Walidacja domeny FBA (NOR / BUP / GLSK)', walidacja_body,
+     [('#sec-happyday', 'scenariusze B1–B4'), ('#sec-ops', 'Perun4V')]),
+    ('sec-ops', 'Obsługa MinIO, Perun4V i Core CC Tool', ops_body,
+     [('#sec-narzedzia', 'narzędzia'), ('#sec-procedury', 'procedury')]),
+    ('sec-kreator', 'Kreator IDCF i AC w ZP', kreator_body,
+     [('#sec-igm', 'CB/GLSK'), ('#sec-katalog', 'FIDx-831')]),
+    ('sec-procedury', 'Procedury P01–P06', '<div class="ref">'+inw_slice('# 4. Procedury','# 5. Buckety','# 4. Procedury')+'</div>',
+     [('#sec-ryzyka', 'ryzyka'), ('#sec-ccm', 'CCM')]),
+    ('sec-ryzyka', 'Ryzyka R01–R29, U-kody i kody ACK', ryzyka_body,
+     [('#sec-procedury', 'procedury'), ('#sec-mail', 'szablony wiadomości')]),
+    ('sec-mail', 'Szablony wiadomości operacyjnych (Core ID)', '<div class="proc">'+MAIL_TEMPLATES_HTML+'</div>',
+     [('#kontakty', 'kontakty'), ('#sec-ryzyka', 'ryzyka')]),
+    ('sec-minio', 'Buckety MinIO, mapa relacji i kontakty', minio_body,
+     [('#sec-katalog', 'pliki'), ('#sec-narzedzia', 'MinIO')]),
+    ('sec-stickery', 'STICKERY — szybkie kroki działania', stickery_section_html(),
+     [('#top', 'początek dokumentu')]),
+]
+
+nav_html = ''.join(
+    ['<a href="#top">Strona tytułowa</a>', '<a href="#toc">Spis treści</a>'] +
+    [f'<a href="#{id_}">{index} · {esc(title)}</a>'
+     for index, (id_, title, _, _) in enumerate(SECTIONS, 1)])
+toc_html = ('<section class="formal-toc" id="toc"><h2>Spis treści</h2><ol>' +
+            ''.join(f'<li><a href="#{id_}">{esc(title)}</a></li>'
+                    for id_, title, _, _ in SECTIONS) + '</ol></section>')
+sections_html = ''.join(
+    section(id_, title, str(index), body, stickers)
+    for index, (id_, title, body, stickers) in enumerate(SECTIONS, 1))
+
+cover_html = f'''
+<div class="cover-sheet" aria-label="Strona tytułowa i metryka dokumentu">
+<header class="hero">
+  <div class="eyebrow">FBA_TSO_IDCC · PSE S.A. · KDM · REGION CORE</div>
+  <h1>Procedura operacyjna dyspozytora — proces IDCC</h1>
+  <p class="subtitle">{esc(DOC_META['document_type'])}</p>
+  <div class="hero-meta"><span>ID ROBOCZY: {esc(DOC_META['working_id'])}</span><span>WERSJA: {esc(DOC_META['version'])}</span><span>{esc(DOC_META['status'])}</span><span>309 ZASOBÓW EKRANOWYCH</span><span>TRYB OFFLINE</span></div>
+</header>
+<div class="draft-banner">Dokument roboczy — niezatwierdzony do formalnego wydania</div>
+<div class="cover-meta-grid">
+  <div class="cover-block cover-block-wide">
+    <h2>Metryka dokumentu</h2>
+    <table><tbody>
+      <tr><th>Identyfikator roboczy</th><td>{esc(DOC_META['working_id'])}</td><th>Typ</th><td>{esc(DOC_META['document_type'])}</td></tr>
+      <tr><th>Formalny kod NOR/BUP</th><td>{esc(DOC_META['formal_code'])}</td><th>Data (DD/MM/YYYY)</th><td>{esc(DOC_META['date'])}</td></tr>
+      <tr><th>Wersja robocza</th><td>{esc(DOC_META['version'])}</td><th>Status</th><td><strong>{esc(DOC_META['status'])}</strong></td></tr>
+    </tbody></table>
+    <p class="cover-note">Brak formalnego kodu pary NOR/BUP i daty wydania w przekazanych materiałach. Pola pozostawiono jawnie nieuzupełnione.</p>
+  </div>
+  <div class="cover-block">
+    <h2>Zatwierdzono</h2>
+    <table><tbody>
+      <tr><th>Opracował</th><td>{esc(DOC_META['author'])}</td></tr>
+      <tr><th>Zatwierdził</th><td>{esc(DOC_META['approver'])}</td></tr>
+      <tr><th>Data zatwierdzenia</th><td>{esc(DOC_META['approval_date'])}</td></tr>
+    </tbody></table>
+    <p class="cover-note">Pola wymagają uzupełnienia przez właściciela dokumentu przed nadaniem statusu Final.</p>
+  </div>
+  <div class="cover-block">
+    <h2>Poprzednie wersje</h2>
+    <table><thead><tr><th>Wersja</th><th>Data</th><th>Zakres zmian</th></tr></thead><tbody>
+      <tr><td>—</td><td>—</td><td>Brak zatwierdzonej historii wersji w przekazanych materiałach.</td></tr>
+    </tbody></table>
+    <p class="cover-note">Wersja 7 jest roboczym identyfikatorem bieżącego, scalonego opracowania.</p>
+  </div>
+</div>
+<div class="general-clause">
+  <h2>Klauzula ogólna dla przebiegu NOR</h2>
+  <p>Jako generalną zasadę przyjęto – w przypadku pojawienia się zdarzenia wykraczającego poza normalny przebieg procedury użytkownik wykonuje kolejne czynności zgodnie z częścią backupową niniejszego połączonego dokumentu roboczego, w szczególności sekcjami <a href="#sec-happyday">„Przebieg nominalny i scenariusze backupowe”</a>, <a href="#sec-procedury">„Procedury P01–P06”</a> oraz <a href="#sec-ryzyka">„Ryzyka R01–R29”</a>.</p>
+</div>
+</div>'''
 
 doc = f"""<!doctype html><html lang="pl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -1001,11 +1211,8 @@ border-bottom:1px solid var(--rule);padding-bottom:7px}}
 <div class="wrap">
 <nav><h2>Spis treści</h2>{nav_html}</nav>
 <main id="top">
-<header class="hero">
-  <div class="eyebrow">FBA_TSO_IDCC · PSE S.A. · KDM · REGION CORE</div>
-  <h1>Procedura operacyjna dyspozytora — proces IDCC</h1>
-  <div class="hero-meta"><span>WYDANIE v7</span><span>OBOWIĄZUJE 24/7</span><span>18 SEKCJI</span><span>309 ZASOBÓW EKRANOWYCH</span><span>TRYB OFFLINE</span></div>
-</header>
+{cover_html}
+{toc_html}
 <div class="doc-tools" aria-label="Narzędzia dokumentu">
   <span class="tool-label">Widok</span><span class="offline-badge">● jeden plik · offline</span>
   <button type="button" onclick="showScreenMode()">Ekrany + główne kroki</button>
@@ -1016,33 +1223,16 @@ border-bottom:1px solid var(--rule);padding-bottom:7px}}
 <div class="quickgrid" aria-label="Szybki start">
   <a class="quickcard action" href="#sec-checklisty"><span class="qicon">✓</span><b>Start dyżuru</b><small>Checklista, dostęp i właściwa doba.</small></a>
   <a class="quickcard success" href="#sec-happyday"><span class="qicon">●</span><b>Przebieg prawidłowy</b><small>6 kroków i zielone punkty kontrolne.</small></a>
-  <a class="quickcard emergency" href="#sec-ryzyka"><span class="qicon">!</span><b>Zagrożenie / awaria</b><small>Reakcja, backup i eskalacja.</small></a>
+  <a class="quickcard emergency" href="#sec-ryzyka"><span class="qicon">!</span><b>Zagrożenie / awaria</b><small>Reakcja, działanie backupowe i powiadomienie.</small></a>
   <a class="quickcard warning" href="#sec-stickery"><span class="qicon">↗</span><b>41 szybkich działań</b><small>Skrót → pełny krok i ekran.</small></a>
 </div>
 <div class="semantic-key" aria-label="Znaczenie kolorów">
   <div class="key-item key-success"><span class="key-dot"></span><span><b>ZIELONY · PRAWIDŁOWO</b>monitoruj, bez interwencji</span></div>
   <div class="key-item key-warning"><span class="key-dot"></span><span><b>ŻÓŁTY · UWAGA</b>termin lub stan przejściowy</span></div>
-  <div class="key-item key-danger"><span class="key-dot"></span><span><b>CZERWONY · ZAGROŻENIE</b>działaj i eskaluj</span></div>
+  <div class="key-item key-danger"><span class="key-dot"></span><span><b>CZERWONY · ZAGROŻENIE</b>należy działać i powiadomić właściwą rolę</span></div>
   <div class="key-item key-action"><span class="key-dot"></span><span><b>NIEBIESKI · DZIAŁANIE</b>krok operatora</span></div>
 </div>
-{section('sec-cel','Cel, zakres i definicje','1',cel_body,[('#sec-proces','proces'),('#sec-harmonogram','harmonogram')])}
-{section('sec-proces','Proces IDCC — kroki istotne dla PSE','2',proces_body2,[('#sec-katalog','katalog plików'),('#sec-harmonogram','harmonogram')])}
-{section('sec-harmonogram','Harmonogram operacyjny (CCCt)','3',load_frag7('frag7_harmonogram.html'),[('#sec-happyday','przebieg nominalny'),('#sec-katalog','TET/CET plików')])}
-{section('sec-narzedzia','Narzędzia','4','<div class="ref">'+TOOLS_HTML+'</div>',[('#sec-ops','obsługa MinIO/Perun/CCCt'),('#sec-ryzyka','ryzyka')])}
-{section('sec-legenda','Legenda statusów kafelków','5',legend_section(),[('#sec-ccm','czynności w CCM'),('#sec-katalog','stany plików')])}
-{section('sec-katalog','Katalog plików FIDx — opisy, stany, maski','6',katalog_body,[('#sec-legenda','legenda'),('#sec-ccm','obsługa w CCM')])}
-{section('sec-happyday','Przebieg nominalny i scenariusze backupowe','7',happyday_body,[('#sec-harmonogram','harmonogram'),('#sec-walidacja','walidacja')])}
-{section('sec-ccm','Czynności w CCM (C.1–C.12 + katalog 7M)','8',ccm_body,[('#sec-legenda','legenda'),('#sec-ryzyka','ryzyka')])}
-{section('sec-igm','Dane wejściowe PSE — IGM, TSO Data Gathering, CB, GLSK','9',igm_body,[('#sec-kreator','Kreator IDCF'),('#sec-katalog','katalog')])}
-{section('sec-walidacja','Walidacja domeny FBA (NOR / BUP / GLSK)','10',walidacja_body,[('#sec-happyday','scenariusze B1–B4'),('#sec-ops','Perun4V')])}
-{section('sec-ops','Obsługa MinIO, Perun4V i Core CC Tool','11',ops_body,[('#sec-narzedzia','narzędzia'),('#sec-procedury','procedury')])}
-{section('sec-kreator','Kreator IDCF i AC w ZP','12',kreator_body,[('#sec-igm','CB/GLSK'),('#sec-katalog','FID2-831')])}
-{section('sec-procedury','Procedury P01–P06','13','<div class="ref">'+inw_slice('# 4. Procedury','# 5. Buckety','# 4. Procedury')+'</div>',[('#sec-ryzyka','ryzyka'),('#sec-ccm','CCM')])}
-{section('sec-ryzyka','Ryzyka R01–R29, U-kody i kody ACK','14',ryzyka_body,[('#sec-procedury','procedury'),('#sec-mail','szablony maili')])}
-{section('sec-mail','Szablony maili operacyjnych (Core ID)','15','<div class="proc">'+load_frag('process2_mail.html')+'</div>',[('#kontakty','kontakty'),('#sec-ryzyka','ryzyka')])}
-{section('sec-minio','Buckety MinIO, mapa relacji i kontakty','16',minio_body,[('#sec-katalog','pliki'),('#sec-narzedzia','MinIO')])}
-{section('sec-checklisty','Checklisty dyżurowe','17',checklisty_body,[('#sec-happyday','przebieg nominalny'),('#sec-stickery','stickery')])}
-{section('sec-stickery','⭐ STICKERY — szybkie kroki działania','18',stickery_section_html(),[('#top','początek dokumentu')])}
+{sections_html}
 <dialog id="screen-dialog" class="screen-dialog" aria-label="Powiększony zrzut ekranu">
   <button type="button" aria-label="Zamknij powiększenie">×</button><img alt=""><p></p>
 </dialog>
@@ -1056,9 +1246,9 @@ const semanticPatterns = {{
   danger: /CET|KRYTYCZNE|STOP|brak (?:ACK|potwierdzenia odbioru|pliku|wyniku)|brak dostępu|awaria|błąd procesu|negatywn(?:y|e) (?:ACK|potwierdzenie odbioru)|plik niezwalidowany|niepoprawn[yae]|niezgodn[yae]|niedostarczon[yae]|timeout|odrzucon[yae]|Rejected|Process failed|przekroczono (?:CET|krytyczny termin zakończenia)|minął (?:CET|krytyczny termin zakończenia)|nie wysyłaj/giu,
   warning: /UWAGA|OSTRZEŻENIE|zbliża się (?:TET|CET|docelowy termin zakończenia|krytyczny termin zakończenia)|ERR-I|po (?:CET|krytycznym terminie zakończenia)|tryb backupowy|IVA BACKUP|fallback/giu,
   success: /PRAWIDŁOWO|SUKCES|SUCCESSFUL|proces poprawny|stan prawidłowy|brak działań|potwierdzon[ey] (?:ACK|potwierdzenie odbioru)|Processed/giu,
-  action: /ZGŁOŚ|ZADZWOŃ|SPRAWDŹ|POWIADOM|WYŚLIJ(?: PLIK)? RĘCZNIE|POBIERZ(?: POPRAWNY)? PLIK|ODCZYTAJ KOD (?:ACK|potwierdzenia odbioru)|USTAW STATUS|URUCHOM(?: PONOWNIE)? OBLICZENIA|PRZEJDŹ DO SCENARIUSZA|ESKALACJA/giu
+  action: /ZGŁOŚ|ZADZWOŃ|SPRAWDŹ|POWIADOM|WYŚLIJ(?: PLIK)? RĘCZNIE|POBIERZ(?: POPRAWNY)? PLIK|ODCZYTAJ KOD (?:ACK|potwierdzenia odbioru)|USTAW STATUS|URUCHOM(?: PONOWNIE)? OBLICZENIA|PRZEJDŹ DO SCENARIUSZA/giu
 }};
-const semanticPattern = /CET|KRYTYCZNE|STOP|brak (?:ACK|potwierdzenia odbioru|pliku|wyniku)|brak dostępu|awaria|błąd procesu|negatywn(?:y|e) (?:ACK|potwierdzenie odbioru)|plik niezwalidowany|niepoprawn[yae]|niezgodn[yae]|niedostarczon[yae]|timeout|odrzucon[yae]|Rejected|Process failed|przekroczono (?:CET|krytyczny termin zakończenia)|minął (?:CET|krytyczny termin zakończenia)|nie wysyłaj|UWAGA|OSTRZEŻENIE|zbliża się (?:TET|CET|docelowy termin zakończenia|krytyczny termin zakończenia)|ERR-I|po (?:CET|krytycznym terminie zakończenia)|tryb backupowy|IVA BACKUP|fallback|PRAWIDŁOWO|SUKCES|SUCCESSFUL|proces poprawny|stan prawidłowy|brak działań|potwierdzon[ey] (?:ACK|potwierdzenie odbioru)|Processed|ZGŁOŚ|ZADZWOŃ|SPRAWDŹ|POWIADOM|WYŚLIJ(?: PLIK)? RĘCZNIE|POBIERZ(?: POPRAWNY)? PLIK|ODCZYTAJ KOD (?:ACK|potwierdzenia odbioru)|USTAW STATUS|URUCHOM(?: PONOWNIE)? OBLICZENIA|PRZEJDŹ DO SCENARIUSZA|ESKALACJA/giu;
+const semanticPattern = /CET|KRYTYCZNE|STOP|brak (?:ACK|potwierdzenia odbioru|pliku|wyniku)|brak dostępu|awaria|błąd procesu|negatywn(?:y|e) (?:ACK|potwierdzenie odbioru)|plik niezwalidowany|niepoprawn[yae]|niezgodn[yae]|niedostarczon[yae]|timeout|odrzucon[yae]|Rejected|Process failed|przekroczono (?:CET|krytyczny termin zakończenia)|minął (?:CET|krytyczny termin zakończenia)|nie wysyłaj|UWAGA|OSTRZEŻENIE|zbliża się (?:TET|CET|docelowy termin zakończenia|krytyczny termin zakończenia)|ERR-I|po (?:CET|krytycznym terminie zakończenia)|tryb backupowy|IVA BACKUP|fallback|PRAWIDŁOWO|SUKCES|SUCCESSFUL|proces poprawny|stan prawidłowy|brak działań|potwierdzon[ey] (?:ACK|potwierdzenie odbioru)|Processed|ZGŁOŚ|ZADZWOŃ|SPRAWDŹ|POWIADOM|WYŚLIJ(?: PLIK)? RĘCZNIE|POBIERZ(?: POPRAWNY)? PLIK|ODCZYTAJ KOD (?:ACK|potwierdzenia odbioru)|USTAW STATUS|URUCHOM(?: PONOWNIE)? OBLICZENIA|PRZEJDŹ DO SCENARIUSZA/giu;
 function semanticClass(text) {{
   for (const [name, pattern] of Object.entries(semanticPatterns)) {{
     pattern.lastIndex = 0;
@@ -1069,7 +1259,7 @@ function semanticClass(text) {{
 function applySemanticHighlights() {{
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {{
     acceptNode(node) {{
-      if (!node.nodeValue.trim() || node.parentElement.closest('script,style,code,pre,.signal,.deadline-critical,.screen-dialog')) return NodeFilter.FILTER_REJECT;
+      if (!node.nodeValue.trim() || node.parentElement.closest('script,style,code,pre,.signal,.deadline-critical,.deadline-target,.screen-dialog')) return NodeFilter.FILTER_REJECT;
       semanticPattern.lastIndex = 0;
       return semanticPattern.test(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
     }}
@@ -1145,6 +1335,10 @@ window.addEventListener('beforeprint', openDetailsForPrint);
 window.addEventListener('afterprint', restoreDetailsAfterPrint);
 </script>
 </main></div></body></html>"""
+
+# Fragmenty archiwalne mogą zawierać wcięte puste wiersze; wynik ma przechodzić
+# kontrolę whitespace bez modyfikowania widocznej treści.
+doc = re.sub(r'[ \t]+(?=\n)', '', doc)
 
 # Chroń osadzone dane binarne przed normalizacją tekstu i linków. Zwykłe zamiany
 # napisów mogłyby przypadkowo trafić w ciąg base64 i uszkodzić obraz.
@@ -1342,6 +1536,249 @@ def preserve_visible_operational_terms(html_doc):
 
 doc = preserve_visible_operational_terms(doc)
 
+
+def formalize_procedural_language(segment):
+    """Nadaje instrukcjom formę „należy”, chroniąc kody, ścieżki i nazwy poleceń UI."""
+    protected = []
+    block_re = re.compile(
+        r'<(?P<tag>code|pre|script|style)\b[^>]*>.*?</(?P=tag)>|'
+        r'<(?P<ui_tag>strong|b)\b[^>]*>\s*'
+        r'(?:Wyślij(?: po CET| do CCTool)?|Status ręczny|Ustaw status ręcznie|'
+        r'Przywróć poprzedni status|Informacje|Pobierz(?: XML)?|Nowa wersja|'
+        r'Manual Upload|Upload file|Apply|Local Login|Message Viewer)\s*</(?P=ui_tag)>|'
+        r'<(?P<special>[a-z][\w:-]*)\b[^>]*class="[^"]*\b(?:mailbody|path)\b[^"]*"[^>]*>'
+        r'.*?</(?P=special)>|'
+        r'(?P<ui>(?:prawy|lewy) przycisk myszy'
+        r'(?:\s+na\s+[^<→\n]{1,100})?\s*→\s*'
+        r'(?:Wyślij(?: po CET| do CCTool)?|Status ręczny|Ustaw status ręcznie|'
+        r'Przywróć poprzedni status|Informacje|Pobierz(?: XML)?))',
+        re.I | re.S)
+
+    def protect(match):
+        protected.append(match.group(0))
+        return f'__FORMAL_BLOCK_{len(protected) - 1}__'
+
+    work = block_re.sub(protect, segment)
+
+    # Powtarzalne sekwencje wieloczasownikowe są redagowane jako całe zdania.
+    work = re.sub(
+        r'\bpobierz/wygeneruj\s+(?:plik\s+)?ręcznie ze źródła i wgraj(?: ręcznie)?\s+'
+        r'przez Manual Upload \(GUI Core CC Tool\)\s*/\s*wyślij z CCM(?: \(Wyślij\))?',
+        'plik należy pobrać lub wygenerować ręcznie ze źródła, a następnie wgrać przez '
+        'Manual Upload (GUI Core CC Tool) lub wysłać z CCM',
+        work, flags=re.I)
+    work = re.sub(
+        r'\bpobierz/wygeneruj ręcznie i wgraj przez Manual Upload \(GUI Core CC Tool\)',
+        'plik należy pobrać lub wygenerować ręcznie, a następnie wgrać przez '
+        'Manual Upload (GUI Core CC Tool)',
+        work, flags=re.I)
+    work = re.sub(
+        r'\bOtwórz aplikacji ZP,\s*przejdź do bilansu i sprawdź wersję pliku:',
+        'Należy otworzyć aplikację ZP, przejść do bilansu i sprawdzić wersję pliku:',
+        work, flags=re.I)
+    work = re.sub(
+        r'\bUstaw\s*/\s*przywróć status ręczny R\b',
+        'Należy ustawić lub przywrócić status ręczny R', work, flags=re.I)
+
+    replacements = {
+        'sprawdź': 'należy sprawdzić', 'pobierz': 'należy pobrać',
+        'wyślij': 'należy wysłać', 'wybierz': 'należy wybrać',
+        'zgłoś': 'należy zgłosić', 'otwórz': 'należy otworzyć',
+        'ustaw': 'należy ustawić', 'kliknij': 'należy kliknąć',
+        'monitoruj': 'należy monitorować', 'zadzwoń': 'należy zadzwonić',
+        'poinformuj': 'należy poinformować', 'potwierdź': 'należy potwierdzić',
+        'zweryfikuj': 'należy zweryfikować', 'uruchom': 'należy uruchomić',
+        'przejdź': 'należy przejść', 'odczytaj': 'należy odczytać',
+        'wczytaj': 'należy wczytać', 'spróbuj': 'należy spróbować',
+        'wykorzystaj': 'należy wykorzystać', 'wykonaj': 'należy wykonać',
+        'czekaj': 'należy odczekać', 'oceń': 'należy ocenić',
+        'wgraj': 'należy wgrać', 'wygeneruj': 'należy wygenerować',
+        'popraw': 'należy poprawić', 'ponów': 'należy ponowić',
+        'zapisz': 'należy zapisać', 'porównaj': 'należy porównać',
+        'skontaktuj': 'należy skontaktować', 'odśwież': 'należy odświeżyć',
+        'zaloguj': 'należy zalogować', 'upewnij': 'należy upewnić',
+        'użyj': 'należy użyć', 'rozwiń': 'należy rozwinąć',
+        'zidentyfikuj': 'należy zidentyfikować', 'wprowadź': 'należy wprowadzić',
+        'zaznacz': 'należy zaznaczyć', 'przeciągnij': 'należy przeciągnąć',
+        'dodaj': 'należy dodać', 'usuń': 'należy usunąć',
+        'cofnij': 'należy cofnąć', 'odnotuj': 'należy odnotować',
+        'eskaluj': 'należy eskalować', 'zastosuj': 'należy zastosować',
+    }
+    parts = re.split(r'(<[^>]+>)', work)
+    pattern = re.compile(
+        r'(?P<prefix>^\s*|[.!?;:]\s+|→\s*)'
+        r'(?P<verb>' + '|'.join(map(re.escape, replacements)) + r')\b',
+        re.I)
+
+    def replace_verb(match):
+        replacement = replacements[match.group('verb').lower()]
+        if match.group('verb')[0].isupper():
+            replacement = replacement[0].upper() + replacement[1:]
+        return match.group('prefix') + replacement
+
+    work = ''.join(
+        part if part.startswith('<') else pattern.sub(replace_verb, part)
+        for part in parts)
+    for index, block in enumerate(protected):
+        work = work.replace(f'__FORMAL_BLOCK_{index}__', block)
+    return work
+
+
+# Szablony wiadomości są materiałem normatywnym w języku angielskim i nie podlegają
+# redakcji; forma „należy” obejmuje pozostałe sekcje proceduralne.
+_formal_mail_start = doc.find('<section id="sec-mail">')
+_formal_mail_end = doc.find('</section>', _formal_mail_start) + len('</section>')
+doc = (formalize_procedural_language(doc[:_formal_mail_start])
+       + doc[_formal_mail_start:_formal_mail_end]
+       + formalize_procedural_language(doc[_formal_mail_end:]))
+
+
+def normalize_operational_terms(segment):
+    """Zastępuje nieprecyzyjne określenie eskalacji reakcją lub powiadomieniem."""
+    segment = re.sub(
+        r'\bwymaga eskalacji do\b',
+        'wymaga powiadomienia', segment, flags=re.I)
+    segment = re.sub(
+        r'\bEskalacja\b',
+        lambda match: 'Powiadomienie' if match.group(0)[0].isupper() else 'powiadomienie',
+        segment, flags=re.I)
+    segment = re.sub(
+        r'\bAAC Fallback\s+—',
+        'Działanie backupowe AAC —', segment, flags=re.I)
+    segment = re.sub(
+        r'\bAAC Fallback\b',
+        'działanie backupowe AAC', segment, flags=re.I)
+    segment = re.sub(
+        r'\bfallback gdy walidacja zawiodła\b',
+        'działanie backupowe po niepowodzeniu walidacji', segment, flags=re.I)
+    segment = re.sub(
+        r'\b(?:przez lokalne narzędzie|przez narzędzie lokalne)\b',
+        'przez ZP', segment, flags=re.I)
+    return segment
+
+
+# Szablony wiadomości są chronione także przed normalizacją terminologii.
+_terms_mail_start = doc.find('<section id="sec-mail">')
+_terms_mail_end = doc.find('</section>', _terms_mail_start) + len('</section>')
+doc = (normalize_operational_terms(doc[:_terms_mail_start])
+       + doc[_terms_mail_start:_terms_mail_end]
+       + normalize_operational_terms(doc[_terms_mail_end:]))
+
+
+def highlight_tet(segment):
+    """Oznacza każde widoczne TET wraz z godziną kolorem pomarańczowym."""
+    protected = []
+    block_re = re.compile(
+        r'<(?P<tag>code|pre|script|style)\b[^>]*>.*?</(?P=tag)>|'
+        r'<(?P<marked>[a-z][\w:-]*)\b[^>]*class="[^"]*\bdeadline-target\b[^"]*"[^>]*>'
+        r'.*?</(?P=marked)>',
+        re.I | re.S)
+
+    def protect(match):
+        protected.append(match.group(0))
+        return f'__TET_BLOCK_{len(protected) - 1}__'
+
+    work = block_re.sub(protect, segment)
+    parts = re.split(r'(<[^>]+>)', work)
+    work = ''.join(
+        part if part.startswith('<') else re.sub(
+            r'\bTET(?:\s+\d{1,2}:\d{2})?',
+            lambda match: f'<span class="deadline-target">{match.group(0)}</span>',
+            part)
+        for part in parts)
+    for index, block in enumerate(protected):
+        work = work.replace(f'__TET_BLOCK_{index}__', block)
+    return work
+
+
+# Treść normatywna szablonów wiadomości pozostaje bez zmian.
+_tet_mail_start = doc.find('<section id="sec-mail">')
+_tet_mail_end = doc.find('</section>', _tet_mail_start) + len('</section>')
+doc = (highlight_tet(doc[:_tet_mail_start])
+       + doc[_tet_mail_start:_tet_mail_end]
+       + highlight_tet(doc[_tet_mail_end:]))
+
+
+def _heading_text(markup):
+    """Zwraca krótki, widoczny tytuł najbliższej sekcji do podpisu tabeli."""
+    text = html.unescape(re.sub(r'<[^>]+>', ' ', markup))
+    text = re.sub(r'\s+', ' ', text).strip()
+    text = re.sub(r'^\d+\s+', '', text)
+    return text or 'Zestawienie danych operacyjnych'
+
+
+def _number_table_segment(segment, start_number=1):
+    """Numeruje tabele i nadaje stabilny klucz oparty na sekcji i indeksie lokalnym."""
+    token_re = re.compile(
+        r'(?P<section><section\b[^>]*\bid="([^"]+)"[^>]*>)|'
+        r'(?P<heading><h[2-5]\b[^>]*>.*?</h[2-5]>)|'
+        r'(?P<table><table\b[^>]*>)',
+        re.I | re.S)
+    output, cursor, number = [], 0, start_number
+    current_heading = 'Metryka dokumentu'
+    current_section = 'front'
+    local_counts = defaultdict(int)
+    for match in token_re.finditer(segment):
+        output.append(segment[cursor:match.start()])
+        token = match.group(0)
+        if match.group('section'):
+            current_section = match.group(2)
+            output.append(token)
+        elif match.group('heading'):
+            current_heading = _heading_text(token)
+            output.append(token)
+        else:
+            local_counts[current_section] += 1
+            table_key = f'{current_section}-table-{local_counts[current_section]}'
+            if 'data-table-number=' not in token:
+                token = (token[:-1] + f' data-table-number="{number}" '
+                         f'data-table-key="{table_key}">')
+            after = segment[match.end():]
+            if not re.match(r'\s*<caption\b', after, re.I):
+                caption = (f'<caption><span class="table-label">Tabela {number}.</span>'
+                           f'{esc(current_heading)}</caption>')
+                token += caption
+            output.append(token)
+            number += 1
+        cursor = match.end()
+    output.append(segment[cursor:])
+    return ''.join(output), number
+
+
+def _number_mail_tables(segment, start_number):
+    """Opisuje tabele szablonów atrybutami, nie zmieniając ich normatywnej treści."""
+    number = start_number
+    local_index = 0
+
+    def annotate(match):
+        nonlocal number, local_index
+        local_index += 1
+        token = match.group(0)
+        table_key = f'sec-mail-table-{local_index}'
+        token = (token[:-1] + f' data-table-number="{number}" '
+                 f'data-table-key="{table_key}" '
+                 f'aria-label="Tabela {number}. Szablon wiadomości operacyjnej">')
+        number += 1
+        return token
+
+    return re.sub(r'<table\b[^>]*>', annotate, segment, flags=re.I), number, local_index
+
+
+# Wszystkie tabele otrzymują ciągły numer i stabilny klucz. W sekcji 19 wzorców
+# wiadomości podpis jest renderowany przez CSS z atrybutu, aby nie dopisywać tekstu
+# do normatywnej treści wiadomości.
+_mail_section_start = doc.find('<section id="sec-mail">')
+_mail_section_end = doc.find('</section>', _mail_section_start) + len('</section>')
+assert _mail_section_start >= 0 and _mail_section_end > _mail_section_start, (
+    'Nie można wydzielić sekcji szablonów wiadomości przed numeracją tabel')
+_doc_before_mail, _next_table_number = _number_table_segment(doc[:_mail_section_start])
+_doc_mail, _next_table_number, MAIL_TABLE_COUNT = _number_mail_tables(
+    doc[_mail_section_start:_mail_section_end], _next_table_number)
+_doc_after_mail, _next_table_number = _number_table_segment(
+    doc[_mail_section_end:], _next_table_number)
+doc = _doc_before_mail + _doc_mail + _doc_after_mail
+NUMBERED_TABLE_COUNT = _next_table_number - 1
+
 def _restore_asset(match):
     return f'src="{_embedded_sources[int(match.group(1))]}"'
 doc = re.sub(r'src="__EMBEDDED_ASSET_(\d+)__"', _restore_asset, doc)
@@ -1386,21 +1823,24 @@ assert shot_figures, "Brak pełnowymiarowych figur ze zrzutami ekranu"
 
 def _valid_shot_figure(figure):
     source_match = re.search(r'data-source="([^"]+)"', figure, re.I)
+    number_match = re.search(r'data-figure-number="(\d+)"', figure, re.I)
     dimensions_match = re.search(
         r'<img\b[^>]*\bwidth="(\d+)"[^>]*\bheight="(\d+)"', figure, re.I)
     caption_match = re.search(
         r'<span class="caption-text">(.*?)</span>', figure, re.I | re.S)
-    if not source_match or not dimensions_match or not caption_match:
+    if not source_match or not number_match or not dimensions_match or not caption_match:
         return False
     source = html.unescape(source_match.group(1))
     expected = BYFILE.get(source, {}).get('_wh')
+    expected_number = FIGURE_NUMBERS.get(source)
     actual = tuple(map(int, dimensions_match.groups()))
     caption = html.unescape(re.sub(r'<[^>]+>', ' ', caption_match.group(1))).strip()
-    if not expected or actual != expected or not caption:
+    if (not expected or actual != expected or not caption
+            or int(number_match.group(1)) != expected_number):
         return False
     width, height = expected
     return (f'style="--screen-width:{width}px"' in figure
-            and 'class="caption-label">Zrzut ekranu</span>' in figure
+            and f'class="caption-label">Rysunek {expected_number}</span>' in figure
             and 'class="caption-size">'
                 f'Oryginalny rozmiar: {width} × {height} pikseli</span>' in figure)
 
@@ -1410,6 +1850,77 @@ invalid_shot_figures = [
 assert not invalid_shot_figures, (
     f"Figury bez wiarygodnych naturalnych wymiarów lub pełnego podpisu: "
     f"{invalid_shot_figures[:10]}")
+
+figure_pairs = {
+    (html.unescape(source), int(number))
+    for number, source in re.findall(
+        r'<figure class="shot"\s+data-figure-number="(\d+)"[^>]*>.*?data-source="([^"]+)"',
+        doc, re.I | re.S)
+}
+assert len({source for source, _ in figure_pairs}) == 309, (
+    'Dokument musi zawierać 309 unikalnych źródeł rysunków')
+invalid_figure_numbers = sorted(
+    (source, number, FIGURE_NUMBERS.get(source))
+    for source, number in figure_pairs
+    if FIGURE_NUMBERS.get(source) != number)
+assert not invalid_figure_numbers, (
+    f'Numeracja rysunków nie odpowiada kolejności manifestu: {invalid_figure_numbers[:10]}')
+
+all_numbered_tables = re.findall(
+    r'<table\b[^>]*data-table-number="(\d+)"[^>]*data-table-key="([^"]+)"[^>]*>',
+    doc, re.I)
+assert len(all_numbered_tables) == NUMBERED_TABLE_COUNT == len(re.findall(r'<table\b', doc, re.I)), (
+    f'Nie wszystkie tabele dokumentu otrzymały numer: {len(all_numbered_tables)}/{NUMBERED_TABLE_COUNT}')
+assert [int(number) for number, _ in all_numbered_tables] == list(range(1, NUMBERED_TABLE_COUNT + 1)), (
+    'Numeracja tabel nie jest ciągła w kolejności dokumentu')
+table_keys = [key for _, key in all_numbered_tables]
+assert len(table_keys) == len(set(table_keys)), 'Stabilne klucze tabel muszą być unikalne'
+non_mail_doc = (doc[:doc.find('<section id="sec-mail">')]
+                + doc[doc.find('</section>', doc.find('<section id="sec-mail">')) + len('</section>'):])
+captioned_tables = re.findall(
+    r'<table\b[^>]*data-table-number="(\d+)"[^>]*>\s*<caption>\s*'
+    r'<span class="table-label">Tabela \d+\.</span>.*?</caption>',
+    non_mail_doc, re.I | re.S)
+assert len(captioned_tables) == NUMBERED_TABLE_COUNT - MAIL_TABLE_COUNT, (
+    'Tabele poza szablonami wiadomości muszą mieć statyczny podpis')
+_mail_validation_start = doc.find('<section id="sec-mail">')
+_mail_validation_end = doc.find('</section>', _mail_validation_start) + len('</section>')
+mail_section = doc[_mail_validation_start:_mail_validation_end]
+mail_table_numbers = re.findall(
+    r'<table\b[^>]*data-table-number="(\d+)"[^>]*data-table-key="sec-mail-table-\d+"',
+    mail_section, re.I)
+assert len(mail_table_numbers) == MAIL_TABLE_COUNT == 24, (
+    'Wszystkie 24 tabele szablonów wiadomości muszą mieć numer i stabilny klucz')
+assert '.mailtpl table[data-table-number]::before' in doc, (
+    'Brak wizualnego podpisu tabel w szablonach wiadomości')
+
+required_pse_structure = [
+    'class="cover-sheet"',
+    '<h2>Metryka dokumentu</h2>',
+    '<h2>Zatwierdzono</h2>',
+    '<h2>Poprzednie wersje</h2>',
+    '☒ Draft ☐ Final',
+    'Dokument roboczy — niezatwierdzony do formalnego wydania',
+    '<h2>Klauzula ogólna dla przebiegu NOR</h2>',
+    '<section class="formal-toc" id="toc">',
+    '<h3>1.1 Podsumowanie i cel</h3>',
+    '<h3>1.2 Zakres czynności</h3>',
+    '<th>Obszar</th><th>Zakres</th>',
+    '<th>Formalny kod NOR/BUP</th><td>—</td>',
+    'Cały proces IDCC jest procesem automatycznym, jednak nadal wymaga kontroli i nadzoru po stronie dyspozytora.',
+    '<strong class="deadline-critical">CET</strong> (ang. <em>Critical End Time</em>)',
+]
+missing_pse_structure = [item for item in required_pse_structure if item not in doc]
+assert not missing_pse_structure, (
+    f'Brak wymaganych elementów struktury PSE: {missing_pse_structure}')
+assert doc.count('<section id="sec-') == len(SECTIONS), (
+    'Liczba wyrenderowanych sekcji nie odpowiada centralnemu rejestrowi')
+for index, (section_id, title, _, _) in enumerate(SECTIONS, 1):
+    expected_heading = (f'<section id="{section_id}"><h2><span class="tag">{index}</span>'
+                        f'{esc(title)}</h2>')
+    assert expected_heading in doc, f'Niepoprawna numeracja lub tytuł sekcji: {section_id}'
+    assert f'<a href="#{section_id}">{index} · {esc(title)}</a>' in nav_html, (
+        f'Brak sekcji w automatycznej nawigacji: {section_id}')
 
 shot_css_rules = [
     re.sub(r'\s+', '', rule.lower())
@@ -1442,6 +1953,82 @@ visible_doc = re.sub(r'src="data:[^"]+"', 'src="[embedded]"', doc, flags=re.I)
 visible_doc = re.sub(r'<(?:style|script)\b.*?</(?:style|script)>', ' ', visible_doc, flags=re.I | re.S)
 visible_doc = html.unescape(re.sub(r'<[^>]+>', ' ', visible_doc))
 visible_doc = re.sub(r'\s+', ' ', visible_doc)
+
+required_comment_patterns = [
+    '<h3>1.2 Zakres czynności</h3>',
+    '<div class="input-stage">',
+    'id="ac-publish-flow"',
+    'ZP → Connector 2.0 → Core CC Tool.',
+    'id="igm-rcc-flow"',
+    'id="mode-definitions"',
+    'id="tet-cet-action"',
+    '<div class="process-note-muted">',
+    'informuje o dalszych krokach drogą mailową — <a href="#mail-01">wiadomość nr 1</a>',
+    'PSE wysyła brakujące DA AAC bezpośrednio do XBID',
+    '<span class="deadline-target">TET 13:50</span>',
+    'Platforma Udostępniania Transmisyjnych (PuTo)',
+    '<table class="ref file-summary file-timings"',
+    '<span class="mode-badge mode-auto">FALLBACK AUTOMATYCZNY</span>',
+    '<span class="mode-badge mode-backup">DZIAŁANIE BACKUPOWE</span>',
+    '<span class="mode-badge mode-process">DZIAŁANIE PROCESOWE</span>',
+    'UWAGA: MANDATORY',
+]
+missing_comment_patterns = [pattern for pattern in required_comment_patterns if pattern not in doc]
+assert not missing_comment_patterns, (
+    f'Brak elementów wymaganych przez nowe komentarze: {missing_comment_patterns}')
+assert doc.count('<div class="input-stage">') == 4, (
+    'Każdy z czterech etapów danych wejściowych musi mieć spójne formatowanie')
+expected_mail_anchors = {
+    f'mail-{number:02d}' for number in (*range(1, 15), *range(16, 21))
+}
+actual_mail_anchors = set(re.findall(
+    r'<span class="mail-anchor" id="(mail-\d{2})"></span>', doc))
+assert actual_mail_anchors == expected_mail_anchors, (
+    f'Niepoprawny zestaw kotwic 19 wiadomości: {sorted(actual_mail_anchors)}')
+
+operational_markup = re.sub(
+    r'<(?:style|script)\b.*?</(?:style|script)>', ' ', non_mail_doc,
+    flags=re.I | re.S)
+operational_text = html.unescape(re.sub(r'<[^>]+>', ' ', operational_markup))
+operational_text = re.sub(r'\s+', ' ', operational_text)
+forbidden_comment_phrases = [
+    'Działanie operatora procesu Capacity Calculation:',
+    'brak lub negatywny ACK — ID1_1',
+    'przekazuje mail #1',
+    'lokalnym narzędziem',
+    'przez lokalne narzędzie',
+    'przez narzędzie lokalne',
+    'Do końca okna: możliwość aktualizacji EC/ATC',
+    'PSE prowadzi walidację przez co najmniej 25 min',
+    'Zasada eskalacji',
+    'Zarządzane / regulowane przez',
+    'Regulowane przez',
+    '1.3 Narzędzia i protokoły komunikacyjne',
+    'PSE sprawdza poprawność scalenia',
+    'AAC Fallback',
+    'fallback gdy walidacja zawiodła',
+]
+remaining_comment_phrases = [
+    phrase for phrase in forbidden_comment_phrases
+    if phrase.lower() in operational_text.lower()
+]
+assert not remaining_comment_phrases, (
+    f'Pozostały frazy wskazane do usunięcia: {remaining_comment_phrases}')
+_process_comment_start = doc.find('<section id="sec-proces">')
+_process_comment_end = doc.find('</section>', _process_comment_start) + len('</section>')
+process_comment_markup = doc[_process_comment_start:_process_comment_end]
+assert 'Ścieżka: ZP → Connector 2.0 → Core CC Tool → PuTo' not in process_comment_markup, (
+    'Schemat publikacji AC w przeglądzie procesu nie może prowadzić przez PuTo')
+assert not re.search(r'\beskalac\w*', operational_text, re.I), (
+    'Termin „eskalacja” musi być zastąpiony reakcją, działaniem lub powiadomieniem')
+
+tet_without_targets = re.sub(
+    r'<span class="deadline-target">.*?</span>', ' ', operational_markup,
+    flags=re.I | re.S)
+tet_without_targets = html.unescape(re.sub(r'<[^>]+>', ' ', tet_without_targets))
+assert not re.search(r'\bTET\b', tet_without_targets), (
+    'Każde widoczne TET poza chronionymi szablonami wiadomości musi być pomarańczowe')
+
 banned_references = ['Core_Operational_Contact_List.xlsx', 'AC manuall ZP.docx',
                      'PROCEDURA_IDCC_TSO_v5_2', 'QuickRef', 'Operator Manual',
                      'Inwentarz_IDCC.md', 'Karta_ryzyk_IDCC.md', 'Confluence', 'BPD',
@@ -1457,14 +2044,38 @@ unresolved_markers = ['❓', 'TODO', 'do uzupełnienia', 'czy dozwolone',
 found_unresolved = [term for term in unresolved_markers if term.lower() in visible_doc.lower()]
 assert not found_unresolved, f"Pozostały nierozstrzygnięte kroki: {found_unresolved}"
 
+forbidden_formalization = [
+    'należy pobrać/wygeneruj',
+    'Należy otworzyć aplikacji ZP',
+    'Należy ustawić / przywróć',
+    'prawy przycisk myszy → Należy wysłać',
+    'lewy przycisk myszy → Należy wysłać',
+]
+found_bad_formalization = [
+    phrase for phrase in forbidden_formalization if phrase.lower() in visible_doc.lower()
+]
+assert not found_bad_formalization, (
+    f'Formalizacja uszkodziła gramatykę lub nazwę polecenia UI: {found_bad_formalization}')
+damaged_mouse_commands = re.findall(
+    r'(?:prawy|lewy) przycisk myszy[^→]{0,100}→\s*Należy\s+'
+    r'(?:wysłać|pobrać|ustawić|przywrócić|otworzyć)',
+    visible_doc, re.I)
+assert not damaged_mouse_commands, (
+    f'Nazwy poleceń UI po LPM/PPM zostały sformalizowane: {damaged_mouse_commands[:10]}')
+assert 'prawy przycisk myszy → Wyślij' in visible_doc, (
+    'Nazwa polecenia UI „Wyślij” po prawym przycisku myszy musi pozostać bez zmian')
+
+formal_instruction_count = len(re.findall(r'\bnależy\b', visible_doc, re.I))
+residual_imperative_count = len(re.findall(
+    r'\b(?:sprawdź|pobierz|wyślij|wybierz|zgłoś|otwórz|ustaw|kliknij|monitoruj|'
+    r'zadzwoń|poinformuj|potwierdź|zweryfikuj|uruchom|przejdź|odczytaj|wczytaj|'
+    r'spróbuj|wykorzystaj|wykonaj)\b', visible_doc, re.I))
+assert formal_instruction_count >= 500 and formal_instruction_count > residual_imperative_count, (
+    'Forma techniczno-urzędowa „należy” nie dominuje w instrukcjach proceduralnych: '
+    f'należy={formal_instruction_count}, imperatywy={residual_imperative_count}')
+
 legacy_labels = [
     'Procedura IDCC TSO v7',
-    '2 · Proces IDCC',
-    '8 · Czynności w CCM',
-    '9 · IGM / TSO DG / CB / GLSK',
-    '10 · Walidacja FBA',
-    '11 · MinIO/Perun/CCCt',
-    '12 · Kreator i AC w ZP',
     '<strong>IVA</strong> (ang. <em>Individual Validation Adjustment</em>)',
     '<strong>CGM</strong> (ang. <em>Common Grid Model</em>)',
     '<strong>IGM</strong> (ang. <em>Individual Grid Model</em>)',
@@ -1472,7 +2083,7 @@ legacy_labels = [
     '<strong>NTC</strong> (ang. <em>Net Transfer Capacity</em>)',
     '<strong>ATC</strong> (ang. <em>Available Transfer Capacity</em>)',
     '<strong>CCCt</strong> (ang. <em>Core Capacity Calculation Tool</em>)',
-    '<strong>TET</strong> (ang. <em>Target End Time</em>)',
+    '<strong><span class="deadline-target">TET</span></strong> (ang. <em>Target End Time</em>)',
     '<strong class="deadline-critical">CET</strong> (ang. <em>Critical End Time</em>)',
     '<strong>GLSK</strong> (ang. <em>Generation and Load Shift Keys</em>)',
     'BUP DA',
@@ -1510,7 +2121,7 @@ required_editorial_patterns = [
     '<span class="scope-no">nie dotyczy IDCC(a)</span>',
     '<th>FID</th><th>Definicja pliku</th>',
     '<p class="definition">',
-    '<div class="deadline-rule">',
+    '<div class="deadline-rule" id="tet-cet-action">',
     '<strong class="deadline-critical">CET</strong>',
     '<div class="architecture-flow"',
     '<h4>KDM — narzędzia PSE</h4>',
@@ -1571,12 +2182,27 @@ assert doc.count('class="architecture-tool"') == 6, (
 assert doc.count('(ang. <em>') >= 20, (
     'Angielskie rozwinięcia terminów słownikowych nie zostały zapisane kursywą')
 
+source_mail_html = (ROOT / 'process2_mail.html').read_text(encoding='utf-8')
+normalized_mail_section = re.sub(
+    r' data-table-number="\d+" data-table-key="sec-mail-table-\d+" '
+    r'aria-label="Tabela \d+\. Szablon wiadomości operacyjnej"',
+    '', mail_section)
+normalized_mail_section = re.sub(
+    r'<span class="mail-anchor" id="mail-\d{2}"></span>', '', normalized_mail_section)
+assert source_mail_html in normalized_mail_section, (
+    'Po pominięciu neutralnych atrybutów numeracji kompletna sekcja 19 szablonów '
+    'wiadomości musi pozostać identyczna ze źródłem')
 source_when = re.findall(
-    r'<p class="when">.*?</p>',
-    (ROOT / 'process2_mail.html').read_text(encoding='utf-8'), re.I | re.S)
-output_when = re.findall(r'<p class="when">.*?</p>', doc, re.I | re.S)
+    r'<p class="when">.*?</p>', source_mail_html, re.I | re.S)
+output_when = re.findall(r'<p class="when">.*?</p>', normalized_mail_section, re.I | re.S)
 assert output_when == source_when, (
     'Opisy użycia szablonów wiadomości nie zachowują dawnego nazewnictwa')
+source_mail_bodies = re.findall(
+    r'<div class="mailbody">.*?</div>', source_mail_html, re.I | re.S)
+output_mail_bodies = re.findall(
+    r'<div class="mailbody">.*?</div>', normalized_mail_section, re.I | re.S)
+assert len(source_mail_bodies) == 19 and output_mail_bodies == source_mail_bodies, (
+    'Treść 19 szablonów wiadomości musi pozostać identyczna ze źródłem')
 
 damaged_filename_terms = re.findall(
     r'[\w./-]+[-_](?:wyznaczanie zdolności śróddziennych|pulpit monitorowania|'

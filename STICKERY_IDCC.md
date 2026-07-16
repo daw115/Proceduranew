@@ -63,9 +63,9 @@ Każdy krok linkuje do pełnej procedury `PROCEDURA_IDCC_TSO_v7.html`.
 1. [Wygeneruj i wyślij GLSK (FIDx-607)](PROCEDURA_IDCC_TSO_v7.html#s4d)
 1. [Publikacja z Kreatora IDCF (GLSK/CBCORA/RA)](PROCEDURA_IDCC_TSO_v7.html#sec-kreator)
 
-## 📣 Komunikacja i eskalacja
+## 📣 Komunikacja i reakcja
 
 1. [Wybierz właściwy szablon maila Core ID](PROCEDURA_IDCC_TSO_v7.html#proc-mail)
 1. [Telefony i adresy: CCC / USY / kdm6](PROCEDURA_IDCC_TSO_v7.html#kontakty)
 1. [Znajdź ryzyko i skrót działania (R01–R29)](PROCEDURA_IDCC_TSO_v7.html#sec-ryzyka)
-1. [Fallbacki iteracji (b)–(d) wg BPD](PROCEDURA_IDCC_TSO_v7.html#proc-bcd)
+1. [Automatyczne fallbacki i działania backupowe iteracji (b)–(d)](PROCEDURA_IDCC_TSO_v7.html#proc-bcd)
