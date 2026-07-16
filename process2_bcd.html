@@ -24,6 +24,7 @@
   <li><strong>CBCORA (FIDx-617):</strong> Critical Branches, outages i RA dla CNEC PSE.</li>
   <li><strong>IGM:</strong> modele DACF_IGM_UCT.</li>
 </ul>
+<p class="flow-label"><strong>Przebieg komunikacji przy publikacji pliku:</strong></p>
 <div class="flow-diagram flow-four" id="igm-rcc-flow" role="img" aria-label="Przebieg przekazania IGM z PSE przez serwer Swissgrid i TSCNET do Coreso">
   <div class="flow-node"><strong>PSE / TSO Data Preparation</strong><span>przygotowanie IGM</span></div>
   <div class="flow-arrow" aria-hidden="true">→</div>
@@ -89,12 +90,13 @@
 
 <h4>Individual Validation (IVA — Perun4V)</h4>
 <ul class="compact-list">
-  <li><strong>Cel:</strong> weryfikacja bezpieczeństwa Initial FB Domain dla obszaru PSE.</li>
   <li><strong>Pliki wejściowe:</strong> paczka PERUN_IDx: Merged GLSK 610, CGM 620, RefProg 632, Initial FB Domain 645, Real GLSK 657, CB 665, Vertices 701, Initial ATC 882 i RA.</li>
   <li><strong>CNEC-based:</strong> korekta RAM własnych CNEC wraz z uzasadnieniem w <strong>IVA (FIDx-710)</strong>; Perun4V → Connector 2.0 → CCCt.</li>
   <li><strong>ATC-based:</strong> maksymalne ATC dla zorientowanych granic PSE; obowiązuje niższa wartość przekazana przez TSO.</li>
-  <li><strong>Termin IDCC(b):</strong> okno 40 min; TET 21:30; <strong class="deadline-critical">CET 22:06</strong>.</li>
-  <li><strong>IVA BACKUP:</strong> CCA generuje FIDx-710, gdy IVA nie zostanie dostarczone albo jest niezgodne.</li>
+  <li class="procedure-fact fact-time"><strong>Czas:</strong> standardowe okno IVA trwa 40 min; w każdym przypadku PSE musi mieć do dyspozycji co najmniej 25 min.</li>
+  <li class="procedure-fact fact-file"><strong>Termin dostarczenia pliku dla IDCC(b):</strong> <span class="deadline-target">TET 21:30</span>; <strong class="deadline-critical">CET 22:06</strong>.</li>
+  <li class="iva-extension"><strong>Możliwość wydłużenia okna IVA:</strong> jeżeli centralny etap zostanie uruchomiony z opóźnieniem albo wstrzymany, operator procesu pauzuje i wznawia etap tak, aby zachować minimum 25 min. PSE wykonuje walidację w udostępnionym oknie i nie przedłuża go samodzielnie.</li>
+  <li class="backup-action"><strong>Działanie backupowe:</strong> CCA generuje FIDx-710, gdy IVA nie zostanie dostarczone albo jest niezgodne.</li>
   <li><strong>Raport:</strong> RAP_PERUN_IDx — informacyjny.</li>
 </ul>
 
