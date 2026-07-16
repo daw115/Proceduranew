@@ -30,27 +30,31 @@
 </div>
 
 <h4>MCR Data Gathering — Shadow Auction Results</h4>
-<ul class="compact-list">
-  <li><strong>Warunek:</strong> częściowy lub pełny decoupling SDAC na granicach Core.</li>
-  <li><strong>Działanie PSE:</strong> dostarczenie <strong>MD250 — Shadow Auction Results (FID1-250)</strong> przez ECP/EDX.</li>
-  <li><strong>Termin:</strong> TET 15:43; <strong class="deadline-critical">CET 17:24</strong>.</li>
-  <li><strong>Działanie backupowe PSE po CET:</strong> PSE wysyła brakujące DA AAC bezpośrednio do XBID — <a href="#backup-id1-7">przejdź do rozwiązania ID1_7</a>.</li>
-  <li><strong>Działania backupowe:</strong>
-    <ul class="sub-list">
-      <li><a href="#backup-id1-7"><code>ID1_7</code></a> — dostarczenie MD250 zgodnie z <a href="#mail-20">wiadomością nr 20</a>.</li>
-      <li><a href="#backup-id1-8"><code>ID1_8</code>/<code>ID1_9</code></a> — PSE/TSO wysyła wymagane AAC do XBID zgodnie z <a href="#mail-02">wiadomością nr 2</a>.</li>
-      <li><a href="#backup-id1-12"><code>ID1_12</code></a> — PSE jako affected TSO wysyła AAC do XBID.</li>
-    </ul>
-  </li>
+<ul class="compact-list procedure-facts">
+  <li class="procedure-fact fact-cause"><strong>Przyczyna:</strong> częściowy lub pełny decoupling SDAC na granicach Core.</li>
+  <li class="procedure-fact fact-time"><strong>Czas:</strong> <span class="deadline-target">TET 15:43</span>; <strong class="deadline-critical">CET 17:24</strong>.</li>
 </ul>
+<div class="pse-action">
+  <strong>Działanie PSE:</strong> PSE dostarcza <strong>MD250 — Shadow Auction Results (FID1-250)</strong> przez ECP/EDX.
+</div>
+<div class="backup-action">
+  <strong>Działanie backupowe PSE po CET:</strong> PSE wysyła brakujące DA AAC bezpośrednio do XBID — <a href="#backup-id1-7">przejdź do rozwiązania ID1_7</a>.
+  <ul class="sub-list">
+    <li><a href="#backup-id1-7"><code>ID1_7</code></a> — dostarczenie MD250 zgodnie z <a href="#mail-20">wiadomością nr 20</a>.</li>
+    <li><a href="#backup-id1-8"><code>ID1_8</code>/<code>ID1_9</code></a> — PSE/TSO wysyła wymagane AAC do XBID zgodnie z <a href="#mail-02">wiadomością nr 2</a>.</li>
+    <li><a href="#backup-id1-12"><code>ID1_12</code></a> — PSE jako affected TSO wysyła AAC do XBID.</li>
+  </ul>
+</div>
 
 <h4>Individual CB and ATC Validation</h4>
+<div class="pse-action">
+  <strong>Działanie PSE:</strong> PSE wykonuje Individual Validation we własnym narzędziu, np. Perun.
+</div>
 <ul class="compact-list">
-  <li><strong>Cel:</strong> sprawdzenie bezpieczeństwa zdolności na obszarze PSE i możliwości zastosowania RA.</li>
-  <li><strong>Działanie PSE:</strong> Individual Validation we własnym narzędziu, np. Perun.</li>
   <li><strong>Plik:</strong> <strong>FID1-928 — ATC Based Validation</strong>; Core CC Tool → Connector 2.0 → CCM.</li>
-  <li><strong>Termin pliku:</strong> TET 13:40; <strong class="deadline-critical">CET 14:20</strong>.</li>
-  <li><strong>Minimalny czas walidacji:</strong> jeżeli centralne okno zostanie uruchomione z opóźnieniem albo wstrzymane, operator procesu pauzuje i wznawia etap tak, aby PSE miało co najmniej 25 min na wykonanie Individual Validation. PSE nie przedłuża tego okna samodzielnie.</li>
+  <li class="procedure-fact fact-file"><strong>Termin dostarczenia pliku:</strong> <span class="deadline-target">TET 13:40</span>; <strong class="deadline-critical">CET 14:20</strong>.</li>
+  <li class="procedure-fact fact-time"><strong>Czas:</strong> standardowe okno Individual Validation trwa 40 min; w każdym przypadku PSE musi mieć do dyspozycji co najmniej 25 min.</li>
+  <li class="iva-extension"><strong>Możliwość wydłużenia okna IVA:</strong> jeżeli centralne okno zostanie uruchomione z opóźnieniem albo wstrzymane, operator procesu pauzuje i wznawia etap tak, aby zachować co najmniej 25 min na wykonanie Individual Validation. PSE nie przedłuża tego okna samodzielnie.</li>
   <li><strong>Działanie procesowe:</strong> <a href="#process-id1-16"><code>ID1_16</code></a> — pauza i wznowienie centralnego okna z zachowaniem minimum 25 min dla PSE.</li>
 </ul>
 
@@ -60,7 +64,7 @@
   <li><strong>Termin AC:</strong> TET 13:50; <strong class="deadline-critical">CET 14:45</strong>.</li>
   <li><strong>Wynik centralny do monitorowania:</strong> <strong>FID1-921 — Final Intraday NTC</strong> oraz ID1-921-XX dla poszczególnych granic.</li>
   <li><strong>Kanał wyniku:</strong> XBID; kanał zapasowy sFTP.</li>
-  <li><strong>Termin wyniku centralnego:</strong> TET 14:45; <strong class="deadline-critical">CET 14:55</strong>.</li>
+  <li><strong>Czas dostępności wyniku centralnego:</strong> TET 14:45; <strong class="deadline-critical">CET 14:55</strong>.</li>
   <li><strong>Kontrola:</strong> TSO po obu stronach granicy sprawdzają zdolności i potwierdzają wynik operatorowi procesu Capacity Calculation.</li>
   <li><strong>Działania przy zdarzeniu:</strong> zgodnie z tabelą poniżej.</li>
 </ul>
