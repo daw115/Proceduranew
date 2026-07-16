@@ -359,7 +359,7 @@ def file_card(f):
             f'<span><b>Źródło:</b> {linkify_refs(f.get("zrodlo"))}</span>'
             f'<span><b>Wersja:</b> {esc(f.get("wersja"))}</span></div>')
     body = (f'<p class="definition">{esc(f.get("opis_pliku"))}</p>'
-            f'<p class="path"><b>Ścieżka:</b> {linkify_refs(f.get("sciezka_pliku"))}</p>')
+            f'<p class="path"><b>Przebieg komunikacji przy publikacji pliku:</b> {linkify_refs(f.get("sciezka_pliku"))}</p>')
     st_html = ''
     if states:
         rows = ''
@@ -403,7 +403,12 @@ html{scroll-behavior:smooth}
 body{margin:0;font:14.5px/1.5 var(--sans);color:var(--fg);background:var(--paper);
 background-image:linear-gradient(rgba(15,62,99,.045) 1px,transparent 1px),
 linear-gradient(90deg,rgba(15,62,99,.045) 1px,transparent 1px);background-size:28px 28px}
-p{margin:.55em 0}ul,ol{margin:.55em 0;padding-left:1.45em}li{margin:.24em 0}
+p{margin:.55em 0}
+main ul,main ol{margin:.55em 0;padding-left:1.45em}
+main li{margin:.32em 0}
+main ul>li::marker{color:var(--acc);font-size:.92em}
+main ol>li::marker{color:var(--warn);font-family:var(--mono);font-weight:700}
+main ul ul>li::marker{color:var(--mut)}
 ::selection{background:var(--yellow);color:var(--ink)}
 :target{animation:hl 2.2s ease-out 1}
 h2:target,h3:target,h4:target,div:target,section:target{scroll-margin-top:24px}
@@ -432,6 +437,9 @@ h5{font:600 13.5px var(--sans);color:var(--ink);margin:.9em 0 .25em}
 code{font:500 .92em var(--mono);background:var(--idleb);border:1px solid var(--rule);
 border-radius:4px;padding:0 5px;color:var(--ink);word-break:break-all}
 a{color:var(--acc)}
+main a:not(.quickcard):not(.mini){color:var(--acc);text-decoration-line:underline;text-decoration-thickness:1px;text-decoration-color:rgba(14,86,136,.42);text-underline-offset:2px}
+main a:not(.quickcard):not(.mini):hover{color:var(--navy);text-decoration-color:currentColor}
+main a:focus-visible{outline:3px solid var(--yellow);outline-offset:2px;border-radius:2px}
 .lead{font:400 16.5px/1.65 var(--serif);color:#454e5c;font-style:italic}
 .lead code,.lead b,.lead strong{font-style:normal}
 .compact-list{margin:.45em 0;padding-left:1.35em}
@@ -442,7 +450,7 @@ a{color:var(--acc)}
 .cell-list>li{margin:.22em 0}
 .action-table td:nth-last-child(2){min-width:280px}
 .deadline-target{display:inline-block;color:var(--warn)!important;font-weight:850!important;background:var(--warnb);border:1px solid #e2c784;border-radius:3px;padding:0 .25em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
-.deadline-critical{color:var(--err)!important;font-weight:850!important;background:var(--errb);border-radius:3px;padding:0 .22em}
+.deadline-critical{display:inline-block;color:var(--err)!important;font-weight:850!important;background:var(--errb);border:1px solid #dfa39f;border-radius:3px;padding:0 .25em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 .process-note-muted{margin:10px 0 14px;padding:10px 13px;border:1px solid var(--rule2);border-left:4px solid #9aa1aa;border-radius:5px;background:#f1f2f3;color:#535c67;font-size:13.5px}
 .flow-diagram{display:grid;align-items:stretch;gap:8px;margin:13px 0;padding:14px;border:1px solid var(--rule2);border-radius:8px;background:linear-gradient(145deg,#f5f7f8,#eef2f4)}
 .flow-three{grid-template-columns:minmax(145px,1fr) auto minmax(145px,1fr) auto minmax(145px,1fr)}
@@ -450,11 +458,13 @@ a{color:var(--acc)}
 .flow-node{display:flex;flex-direction:column;justify-content:center;min-height:72px;padding:10px 12px;border:1px solid #bac6cf;border-top:4px solid var(--acc);border-radius:6px;background:#fff;text-align:center}
 .flow-node strong{color:var(--navy);font:750 13.5px var(--cond)}.flow-node span{margin-top:4px;color:var(--mut);font-size:11.5px;line-height:1.35}
 .flow-node-hub{border-top-color:var(--run);background:var(--runb)}.flow-node-hub strong{color:var(--run)}
-.flow-arrow{align-self:center;color:var(--acc);font:900 22px var(--mono)}.flow-caption{text-align:center;color:var(--mut);font-size:12.5px}
-.input-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0 18px}
-.input-card{padding:12px 14px;border:1px solid var(--rule2);border-top:4px solid var(--acc);border-radius:7px;background:#fff}
-.input-card-wide{grid-column:1 / -1}.input-card-warning{border-top-color:#d18c00;background:linear-gradient(135deg,var(--warnb),#fff 72%)}
-.input-card h5{margin:.1em 0 .55em;color:var(--navy);font:750 14px var(--cond)}
+.flow-arrow{align-self:center;color:var(--acc);font:900 22px var(--mono)}
+.flow-label{margin:12px 0 5px;color:var(--navy);font-size:13px}
+.flow-label strong{font-family:var(--cond);letter-spacing:.015em}
+.file-list{margin:.55em 0 1.15em;padding-left:1.45em}
+.file-list>li{margin:.8em 0;padding-left:.15em}
+.file-list>li>strong:first-child{color:var(--navy);font-family:var(--cond)}
+.file-list .flow-diagram{margin:7px 0 10px}
 .input-stage{margin:18px 0 28px;padding:18px 20px;border:1px solid var(--rule2);border-top:5px solid var(--navy);border-radius:8px;background:#fff;box-shadow:0 3px 12px rgba(26,34,48,.06)}
 .input-stage>h3:first-child{margin-top:0;padding-bottom:7px;border-bottom:1px solid var(--rule2)}
 .input-stage .box{margin:12px 0;padding:11px 14px;border-radius:6px;background:#f3f5f6;border-left:5px solid #9aa5ae}
@@ -524,15 +534,15 @@ padding:2px 8px;letter-spacing:.05em;vertical-align:2px}
 .legend-warning{border-top-color:#d18c00!important;background:linear-gradient(90deg,var(--warnb),#fff 55%)}
 .legend-danger{border-top-color:var(--err)!important;background:linear-gradient(90deg,var(--errb),#fff 55%)}
 .legend-neutral{border-top-color:var(--idle)!important}
-/* ── tabele ── */
-table caption{caption-side:top;text-align:left;padding:7px 9px 6px;color:var(--ink);font:650 12.5px/1.35 var(--sans);background:#f1eee5;border:1px solid var(--rule2);border-bottom:0}
-.mailtpl table[data-table-number]::before{content:"Tabela " attr(data-table-number) ". Szablon wiadomości operacyjnej";display:table-caption;caption-side:top;text-align:left;padding:7px 9px 6px;color:var(--ink);font:650 12.5px/1.35 var(--sans);background:#f1eee5;border:1px solid var(--rule2);border-bottom:0}
-.table-label{font:800 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin-right:6px}
+/* ── tabele: jeden styl w całym dokumencie ── */
+main table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+main table th,main table td{border:1px solid var(--rule2);padding:6px 9px;text-align:left;vertical-align:top}
+main table th{background:var(--ink);color:#efe9da;font:600 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;border-color:var(--ink)}
+main table tbody tr:nth-child(even) td{background:rgba(15,62,99,.035)}
+main table caption{display:none}
 .sttab,.ref table,table.ref{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
-.sttab th,.sttab td,.ref th,.ref td,table.ref th,table.ref td{border:1px solid var(--rule2);
-padding:6px 9px;text-align:left;vertical-align:top}
-.sttab th,.ref th,table.ref th{background:var(--ink);color:#efe9da;font:600 11px var(--mono);
-letter-spacing:.1em;text-transform:uppercase;border-color:var(--ink)}
+.sttab th,.sttab td,.ref th,.ref td,table.ref th,table.ref td{border:1px solid var(--rule2);padding:6px 9px;text-align:left;vertical-align:top}
+.sttab th,.ref th,table.ref th{background:var(--ink);color:#efe9da;font:600 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;border-color:var(--ink)}
 .sttab tbody tr:nth-child(even) td,.ref tbody tr:nth-child(even) td{background:rgba(15,62,99,.035)}
 .state-row td{transition:background .15s ease}.state-row td:first-child{border-left-width:5px}
 .state-danger td{background:rgba(179,38,30,.045)!important}.state-danger td:first-child{border-left-color:var(--err)}
@@ -621,30 +631,8 @@ border-radius:3px;padding:2px 8px;margin-left:8px;vertical-align:middle}
 .architecture-arrows{display:grid;grid-template-columns:repeat(4,1fr);max-width:900px;margin:2px auto;text-align:center;color:var(--acc);font:900 24px/1 var(--mono)}
 .architecture-arrows-external{grid-template-columns:repeat(2,1fr);max-width:560px;color:var(--run)}
 .architecture-note{margin:12px 0 0;padding:9px 12px;border-left:4px solid var(--acc);background:#fff;color:var(--navy);font-weight:650}
-/* ── okładka i narzędzia dokumentu ── */
-.cover-sheet{margin-bottom:28px}
-.cover-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
-.cover-block{border:1px solid var(--rule2);border-radius:7px;background:#fff;overflow:hidden}
-.cover-block-wide{grid-column:1 / -1}
-.cover-block h2{margin:0;padding:9px 12px;border:0;background:var(--ink);color:#fff;font:750 13px var(--cond);letter-spacing:.07em;text-transform:uppercase}
-.cover-block h2::after{display:none}
-.cover-block table{margin:0;border:0}
-.cover-block table caption{display:none}
-.cover-block td,.cover-block th{padding:7px 10px;border:1px solid var(--rule);vertical-align:top}
-.cover-block th{width:34%;background:#f1eee5;color:var(--ink);font:750 11px var(--mono);letter-spacing:.04em;text-transform:uppercase;text-align:left}
-.cover-note{margin:0;padding:9px 12px;color:var(--mut);font-size:12.5px;background:#fbf9f2}
-.draft-banner{margin:14px 0 0;padding:10px 13px;border:2px solid var(--err);color:var(--err);background:var(--errb);font:800 12px var(--mono);letter-spacing:.08em;text-align:center;text-transform:uppercase}
-.general-clause{margin-top:14px;padding:13px 16px;border:1px solid #d8a44f;border-left:7px solid #d18c00;border-radius:6px;background:var(--warnb)}
-.general-clause h2{margin:0 0 7px;padding:0;border:0;color:var(--ink);font:750 14px var(--cond);text-transform:uppercase}
-.general-clause h2::after{display:none}
-.formal-toc{margin:26px 0;padding:18px 20px;border:1px solid var(--rule2);border-radius:7px;background:#fff}
-.formal-toc h2{margin:0 0 10px}
-.formal-toc ol{columns:2;column-gap:34px;padding-left:1.8em}
-.formal-toc li{break-inside:avoid;margin:.38em 0}
-.formal-toc a{text-decoration:none}
-.intro-block{margin:12px 0 18px;padding:12px 15px;border-left:4px solid var(--navy);background:rgba(15,62,99,.045)}
-.intro-block h3{margin:.15em 0 .55em}
-.hero{position:relative;overflow:hidden;margin:0 0 18px;padding:28px 30px 26px;color:#fff;
+/* ── nagłówek i narzędzia dokumentu — styl sprzed formalnej oprawy PSE ── */
+.hero{position:relative;overflow:hidden;margin:0 0 28px;padding:28px 30px 26px;color:#fff;
 background:linear-gradient(125deg,var(--ink),var(--navy) 58%,#0b6b79);border-radius:10px;
 box-shadow:0 12px 30px rgba(15,62,99,.22)}
 .hero::after{content:"";position:absolute;width:270px;height:270px;right:-90px;top:-120px;
@@ -687,8 +675,6 @@ section>h2{background:linear-gradient(90deg,rgba(15,62,99,.07),transparent 72%);
  body{background:#fff}
  nav,.doc-tools,.screen-dialog{display:none!important}.wrap{display:block}main{max-width:none;padding:0;border:none;box-shadow:none;background:#fff}
  .hero{box-shadow:none;print-color-adjust:exact}.quickgrid{grid-template-columns:repeat(2,1fr)}
- .cover-sheet{break-after:page;page-break-after:always}.cover-meta-grid{grid-template-columns:1fr 1fr}.formal-toc{break-after:page;page-break-after:always}.formal-toc ol{columns:2}
- table caption{print-color-adjust:exact;-webkit-print-color-adjust:exact}
  figure.shot:hover{transform:none}
  .signal,.state-row,.state-label,.semantic-key,.legend-card,.risk-h,.callout,.quickcard{-webkit-print-color-adjust:exact;print-color-adjust:exact}
  details{display:block}details>summary{display:none}
@@ -697,10 +683,9 @@ section>h2{background:linear-gradient(90deg,rgba(15,62,99,.07),transparent 72%);
  figure.shot img{width:auto;height:auto;max-width:100%;max-height:225mm;margin:0 auto;object-fit:contain}
  .fcard,.mailtpl,.step,.stick,.quickcard{break-inside:avoid}
 }
-@media(max-width:1100px){.quickgrid,.semantic-key{grid-template-columns:repeat(2,minmax(0,1fr))}.architecture-tools{grid-template-columns:repeat(2,minmax(0,1fr))}.input-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1100px){.quickgrid,.semantic-key{grid-template-columns:repeat(2,minmax(0,1fr))}.architecture-tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:900px){nav{display:none}main{padding:18px;border:none}.doc-tools{top:4px}}
-@media(max-width:700px){.cover-meta-grid{grid-template-columns:1fr}.cover-block-wide{grid-column:auto}.formal-toc ol{columns:1}}
-@media(max-width:560px){.quickgrid,.semantic-key,.deadline-grid,.architecture-tools,.architecture-external .architecture-tools,.input-card-grid{grid-template-columns:1fr}.architecture-arrows{grid-template-columns:1fr}.architecture-arrows span:not(:first-child){display:none}.flow-three,.flow-four{grid-template-columns:1fr}.flow-arrow{transform:rotate(90deg)}.hero{padding:22px 20px}.hero h1{font-size:28px}.caption-size{grid-column:2;white-space:normal}.caption-text{grid-column:2}.caption-label{grid-row:1 / span 2}}
+@media(max-width:560px){.quickgrid,.semantic-key,.deadline-grid,.architecture-tools,.architecture-external .architecture-tools{grid-template-columns:1fr}.architecture-arrows{grid-template-columns:1fr}.architecture-arrows span:not(:first-child){display:none}.flow-three,.flow-four{grid-template-columns:1fr}.flow-arrow{transform:rotate(90deg)}.hero{padding:22px 20px}.hero h1{font-size:28px}.caption-size{grid-column:2;white-space:normal}.caption-text{grid-column:2}.caption-label{grid-row:1 / span 2}}
 """
 
 def legend_section():
@@ -1123,57 +1108,47 @@ SECTIONS = [
 ]
 
 nav_html = ''.join(
-    ['<a href="#top">Strona tytułowa</a>', '<a href="#toc">Spis treści</a>'] +
+    ['<a href="#top">Start</a>'] +
     [f'<a href="#{id_}">{index} · {esc(title)}</a>'
      for index, (id_, title, _, _) in enumerate(SECTIONS, 1)])
-toc_html = ('<section class="formal-toc" id="toc"><h2>Spis treści</h2><ol>' +
-            ''.join(f'<li><a href="#{id_}">{esc(title)}</a></li>'
-                    for id_, title, _, _ in SECTIONS) + '</ol></section>')
+toc_html = ''
 sections_html = ''.join(
     section(id_, title, str(index), body, stickers)
     for index, (id_, title, body, stickers) in enumerate(SECTIONS, 1))
 
 cover_html = f'''
-<div class="cover-sheet" aria-label="Strona tytułowa i metryka dokumentu">
 <header class="hero">
   <div class="eyebrow">FBA_TSO_IDCC · PSE S.A. · KDM · REGION CORE</div>
   <h1>Procedura operacyjna dyspozytora — proces IDCC</h1>
-  <p class="subtitle">{esc(DOC_META['document_type'])}</p>
-  <div class="hero-meta"><span>ID ROBOCZY: {esc(DOC_META['working_id'])}</span><span>WERSJA: {esc(DOC_META['version'])}</span><span>{esc(DOC_META['status'])}</span><span>309 ZASOBÓW EKRANOWYCH</span><span>TRYB OFFLINE</span></div>
+  <div class="hero-meta"><span>WYDANIE v{esc(DOC_META['version'])}</span><span>18 SEKCJI</span><span>309 ZASOBÓW EKRANOWYCH</span><span>TRYB OFFLINE</span></div>
 </header>
-<div class="draft-banner">Dokument roboczy — niezatwierdzony do formalnego wydania</div>
-<div class="cover-meta-grid">
-  <div class="cover-block cover-block-wide">
-    <h2>Metryka dokumentu</h2>
-    <table><tbody>
-      <tr><th>Identyfikator roboczy</th><td>{esc(DOC_META['working_id'])}</td><th>Typ</th><td>{esc(DOC_META['document_type'])}</td></tr>
-      <tr><th>Formalny kod NOR/BUP</th><td>{esc(DOC_META['formal_code'])}</td><th>Data (DD/MM/YYYY)</th><td>{esc(DOC_META['date'])}</td></tr>
-      <tr><th>Wersja robocza</th><td>{esc(DOC_META['version'])}</td><th>Status</th><td><strong>{esc(DOC_META['status'])}</strong></td></tr>
-    </tbody></table>
-    <p class="cover-note">Brak formalnego kodu pary NOR/BUP i daty wydania w przekazanych materiałach. Pola pozostawiono jawnie nieuzupełnione.</p>
-  </div>
-  <div class="cover-block">
-    <h2>Zatwierdzono</h2>
-    <table><tbody>
-      <tr><th>Opracował</th><td>{esc(DOC_META['author'])}</td></tr>
-      <tr><th>Zatwierdził</th><td>{esc(DOC_META['approver'])}</td></tr>
-      <tr><th>Data zatwierdzenia</th><td>{esc(DOC_META['approval_date'])}</td></tr>
-    </tbody></table>
-    <p class="cover-note">Pola wymagają uzupełnienia przez właściciela dokumentu przed nadaniem statusu Final.</p>
-  </div>
-  <div class="cover-block">
-    <h2>Poprzednie wersje</h2>
-    <table><thead><tr><th>Wersja</th><th>Data</th><th>Zakres zmian</th></tr></thead><tbody>
-      <tr><td>—</td><td>—</td><td>Brak zatwierdzonej historii wersji w przekazanych materiałach.</td></tr>
-    </tbody></table>
-    <p class="cover-note">Wersja 7 jest roboczym identyfikatorem bieżącego, scalonego opracowania.</p>
-  </div>
+<div class="callout callout-danger"><strong>Dokument roboczy — niezatwierdzony do formalnego wydania</strong></div>
+<div class="callout">
+  <strong>Klauzula ogólna dla przebiegu NOR.</strong>
+  Jako generalną zasadę przyjęto – w przypadku pojawienia się zdarzenia wykraczającego poza normalny przebieg procedury użytkownik wykonuje kolejne czynności zgodnie z częścią backupową niniejszego połączonego dokumentu roboczego, w szczególności sekcjami <a href="#sec-happyday">„Przebieg nominalny i scenariusze backupowe”</a>, <a href="#sec-procedury">„Procedury P01–P06”</a> oraz <a href="#sec-ryzyka">„Ryzyka R01–R29”</a>.
 </div>
-<div class="general-clause">
-  <h2>Klauzula ogólna dla przebiegu NOR</h2>
-  <p>Jako generalną zasadę przyjęto – w przypadku pojawienia się zdarzenia wykraczającego poza normalny przebieg procedury użytkownik wykonuje kolejne czynności zgodnie z częścią backupową niniejszego połączonego dokumentu roboczego, w szczególności sekcjami <a href="#sec-happyday">„Przebieg nominalny i scenariusze backupowe”</a>, <a href="#sec-procedury">„Procedury P01–P06”</a> oraz <a href="#sec-ryzyka">„Ryzyka R01–R29”</a>.</p>
-</div>
-</div>'''
+<details class="gal document-metadata">
+  <summary>Metryka dokumentu i historia wersji</summary>
+  <h3>Metryka dokumentu</h3>
+  <table class="ref"><tbody>
+    <tr><th>Identyfikator roboczy</th><td>{esc(DOC_META['working_id'])}</td><th>Typ</th><td>{esc(DOC_META['document_type'])}</td></tr>
+    <tr><th>Formalny kod NOR/BUP</th><td>{esc(DOC_META['formal_code'])}</td><th>Data (DD/MM/YYYY)</th><td>{esc(DOC_META['date'])}</td></tr>
+    <tr><th>Wersja robocza</th><td>{esc(DOC_META['version'])}</td><th>Status</th><td><strong>{esc(DOC_META['status'])}</strong></td></tr>
+  </tbody></table>
+  <p class="note">Brak formalnego kodu pary NOR/BUP i daty wydania w przekazanych materiałach. Pola pozostawiono jawnie nieuzupełnione.</p>
+  <h3>Zatwierdzono</h3>
+  <table class="ref"><tbody>
+    <tr><th>Opracował</th><td>{esc(DOC_META['author'])}</td></tr>
+    <tr><th>Zatwierdził</th><td>{esc(DOC_META['approver'])}</td></tr>
+    <tr><th>Data zatwierdzenia</th><td>{esc(DOC_META['approval_date'])}</td></tr>
+  </tbody></table>
+  <p class="note">Pola wymagają uzupełnienia przez właściciela dokumentu przed nadaniem statusu Final.</p>
+  <h3>Poprzednie wersje</h3>
+  <table class="ref"><thead><tr><th>Wersja</th><th>Data</th><th>Zakres zmian</th></tr></thead><tbody>
+    <tr><td>—</td><td>—</td><td>Brak zatwierdzonej historii wersji w przekazanych materiałach.</td></tr>
+  </tbody></table>
+  <p class="note">Wersja 7 jest roboczym identyfikatorem bieżącego, scalonego opracowania.</p>
+</details>'''
 
 doc = f"""<!doctype html><html lang="pl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -1205,8 +1180,8 @@ border-bottom:1px solid var(--rule);padding-bottom:7px}}
 .stick ol{{margin:0;padding-left:20px}}
 .stick li{{margin:5px 0;font-size:13.5px;line-height:1.4}}
 .stick li::marker{{font:600 11px var(--mono);color:var(--warn)}}
-.stick a{{color:var(--fg);text-decoration:none;border-bottom:1px dotted var(--acc)}}
-.stick a:hover{{color:var(--acc);border-bottom-style:solid}}
+.stick a{{color:var(--acc);text-decoration-line:underline;text-decoration-thickness:1px;text-decoration-color:rgba(14,86,136,.42);text-underline-offset:2px}}
+.stick a:hover{{color:var(--navy);text-decoration-color:currentColor}}
 </style></head><body>
 <div class="wrap">
 <nav><h2>Spis treści</h2>{nav_html}</nav>
@@ -1665,38 +1640,40 @@ doc = (normalize_operational_terms(doc[:_terms_mail_start])
        + normalize_operational_terms(doc[_terms_mail_end:]))
 
 
-def highlight_tet(segment):
-    """Oznacza każde widoczne TET wraz z godziną kolorem pomarańczowym."""
+def highlight_deadlines(segment):
+    """Oznacza widoczne TET i CET wraz z godziną spójnymi ramkami terminów."""
     protected = []
     block_re = re.compile(
         r'<(?P<tag>code|pre|script|style)\b[^>]*>.*?</(?P=tag)>|'
-        r'<(?P<marked>[a-z][\w:-]*)\b[^>]*class="[^"]*\bdeadline-target\b[^"]*"[^>]*>'
+        r'<(?P<marked>[a-z][\w:-]*)\b[^>]*class="[^"]*\bdeadline-(?:target|critical)\b[^"]*"[^>]*>'
         r'.*?</(?P=marked)>',
         re.I | re.S)
 
     def protect(match):
         protected.append(match.group(0))
-        return f'__TET_BLOCK_{len(protected) - 1}__'
+        return f'__DEADLINE_BLOCK_{len(protected) - 1}__'
+
+    def mark(match):
+        deadline_class = 'deadline-target' if match.group(1).upper() == 'TET' else 'deadline-critical'
+        return f'<span class="{deadline_class}">{match.group(0)}</span>'
 
     work = block_re.sub(protect, segment)
     parts = re.split(r'(<[^>]+>)', work)
     work = ''.join(
         part if part.startswith('<') else re.sub(
-            r'\bTET(?:\s+\d{1,2}:\d{2})?',
-            lambda match: f'<span class="deadline-target">{match.group(0)}</span>',
-            part)
+            r'\b(TET|CET)(?:\s+\d{1,2}:\d{2})?', mark, part, flags=re.I)
         for part in parts)
     for index, block in enumerate(protected):
-        work = work.replace(f'__TET_BLOCK_{index}__', block)
+        work = work.replace(f'__DEADLINE_BLOCK_{index}__', block)
     return work
 
 
 # Treść normatywna szablonów wiadomości pozostaje bez zmian.
-_tet_mail_start = doc.find('<section id="sec-mail">')
-_tet_mail_end = doc.find('</section>', _tet_mail_start) + len('</section>')
-doc = (highlight_tet(doc[:_tet_mail_start])
-       + doc[_tet_mail_start:_tet_mail_end]
-       + highlight_tet(doc[_tet_mail_end:]))
+_deadline_mail_start = doc.find('<section id="sec-mail">')
+_deadline_mail_end = doc.find('</section>', _deadline_mail_start) + len('</section>')
+doc = (highlight_deadlines(doc[:_deadline_mail_start])
+       + doc[_deadline_mail_start:_deadline_mail_end]
+       + highlight_deadlines(doc[_deadline_mail_end:]))
 
 
 def _heading_text(markup):
@@ -1732,12 +1709,8 @@ def _number_table_segment(segment, start_number=1):
             table_key = f'{current_section}-table-{local_counts[current_section]}'
             if 'data-table-number=' not in token:
                 token = (token[:-1] + f' data-table-number="{number}" '
-                         f'data-table-key="{table_key}">')
-            after = segment[match.end():]
-            if not re.match(r'\s*<caption\b', after, re.I):
-                caption = (f'<caption><span class="table-label">Tabela {number}.</span>'
-                           f'{esc(current_heading)}</caption>')
-                token += caption
+                         f'data-table-key="{table_key}" '
+                         f'aria-label="Tabela {number}. {esc(current_heading)}">')
             output.append(token)
             number += 1
         cursor = match.end()
@@ -1764,9 +1737,10 @@ def _number_mail_tables(segment, start_number):
     return re.sub(r'<table\b[^>]*>', annotate, segment, flags=re.I), number, local_index
 
 
-# Wszystkie tabele otrzymują ciągły numer i stabilny klucz. W sekcji 19 wzorców
-# wiadomości podpis jest renderowany przez CSS z atrybutu, aby nie dopisywać tekstu
-# do normatywnej treści wiadomości.
+# Wszystkie tabele otrzymują ciągły numer, stabilny klucz i etykietę dostępną
+# dla technologii asystujących. Numeracja nie dodaje widocznych podpisów, dzięki
+# czemu tabele zachowują wcześniejszy, jednolity styl graficzny. Treść 19 wzorców
+# wiadomości pozostaje bez zmian.
 _mail_section_start = doc.find('<section id="sec-mail">')
 _mail_section_end = doc.find('</section>', _mail_section_start) + len('</section>')
 assert _mail_section_start >= 0 and _mail_section_end > _mail_section_start, (
@@ -1877,12 +1851,13 @@ table_keys = [key for _, key in all_numbered_tables]
 assert len(table_keys) == len(set(table_keys)), 'Stabilne klucze tabel muszą być unikalne'
 non_mail_doc = (doc[:doc.find('<section id="sec-mail">')]
                 + doc[doc.find('</section>', doc.find('<section id="sec-mail">')) + len('</section>'):])
-captioned_tables = re.findall(
-    r'<table\b[^>]*data-table-number="(\d+)"[^>]*>\s*<caption>\s*'
-    r'<span class="table-label">Tabela \d+\.</span>.*?</caption>',
-    non_mail_doc, re.I | re.S)
-assert len(captioned_tables) == NUMBERED_TABLE_COUNT - MAIL_TABLE_COUNT, (
-    'Tabele poza szablonami wiadomości muszą mieć statyczny podpis')
+non_mail_table_labels = re.findall(
+    r'<table\b[^>]*data-table-number="\d+"[^>]*aria-label="Tabela \d+\. [^"]+"',
+    non_mail_doc, re.I)
+assert len(non_mail_table_labels) == NUMBERED_TABLE_COUNT - MAIL_TABLE_COUNT, (
+    'Tabele poza szablonami wiadomości muszą mieć spójne etykiety dostępności')
+assert not re.search(r'<caption\b', doc, re.I), (
+    'Przywrócony styl graficzny nie używa widocznych podpisów nad tabelami')
 _mail_validation_start = doc.find('<section id="sec-mail">')
 _mail_validation_end = doc.find('</section>', _mail_validation_start) + len('</section>')
 mail_section = doc[_mail_validation_start:_mail_validation_end]
@@ -1891,18 +1866,17 @@ mail_table_numbers = re.findall(
     mail_section, re.I)
 assert len(mail_table_numbers) == MAIL_TABLE_COUNT == 24, (
     'Wszystkie 24 tabele szablonów wiadomości muszą mieć numer i stabilny klucz')
-assert '.mailtpl table[data-table-number]::before' in doc, (
-    'Brak wizualnego podpisu tabel w szablonach wiadomości')
 
-required_pse_structure = [
-    'class="cover-sheet"',
-    '<h2>Metryka dokumentu</h2>',
-    '<h2>Zatwierdzono</h2>',
-    '<h2>Poprzednie wersje</h2>',
-    '☒ Draft ☐ Final',
+required_document_structure = [
+    '<header class="hero">',
+    '<span>WYDANIE v7</span>',
+    '<details class="gal document-metadata">',
+    '<summary>Metryka dokumentu i historia wersji</summary>',
     'Dokument roboczy — niezatwierdzony do formalnego wydania',
-    '<h2>Klauzula ogólna dla przebiegu NOR</h2>',
-    '<section class="formal-toc" id="toc">',
+    '<strong>Klauzula ogólna dla przebiegu NOR.</strong>',
+    'Brak formalnego kodu pary NOR/BUP i daty wydania w przekazanych materiałach.',
+    'Pola wymagają uzupełnienia przez właściciela dokumentu przed nadaniem statusu Final.',
+    'Wersja 7 jest roboczym identyfikatorem bieżącego, scalonego opracowania.',
     '<h3>1.1 Podsumowanie i cel</h3>',
     '<h3>1.2 Zakres czynności</h3>',
     '<th>Obszar</th><th>Zakres</th>',
@@ -1910,9 +1884,16 @@ required_pse_structure = [
     'Cały proces IDCC jest procesem automatycznym, jednak nadal wymaga kontroli i nadzoru po stronie dyspozytora.',
     '<strong class="deadline-critical">CET</strong> (ang. <em>Critical End Time</em>)',
 ]
-missing_pse_structure = [item for item in required_pse_structure if item not in doc]
-assert not missing_pse_structure, (
-    f'Brak wymaganych elementów struktury PSE: {missing_pse_structure}')
+missing_document_structure = [item for item in required_document_structure if item not in doc]
+assert not missing_document_structure, (
+    f'Brak wymaganych elementów struktury dokumentu: {missing_document_structure}')
+forbidden_formal_graphics = [
+    'class="cover-sheet"', 'class="draft-banner"', 'class="cover-meta-grid"',
+    'class="cover-block', '<section class="formal-toc"',
+]
+found_formal_graphics = [item for item in forbidden_formal_graphics if item in doc]
+assert not found_formal_graphics, (
+    f'Pozostały elementy formalnej oprawy graficznej PSE: {found_formal_graphics}')
 assert doc.count('<section id="sec-') == len(SECTIONS), (
     'Liczba wyrenderowanych sekcji nie odpowiada centralnemu rejestrowi')
 for index, (section_id, title, _, _) in enumerate(SECTIONS, 1):
@@ -1958,7 +1939,10 @@ required_comment_patterns = [
     '<h3>1.2 Zakres czynności</h3>',
     '<div class="input-stage">',
     'id="ac-publish-flow"',
-    'ZP → Connector 2.0 → Core CC Tool.',
+    '<p class="flow-label"><strong>Przebieg komunikacji przy publikacji pliku:</strong></p>',
+    '<div class="flow-node"><strong>ZP</strong><span>przygotowanie AC (FID1-831)</span></div>',
+    '<div class="flow-node flow-node-hub"><strong>Connector 2.0</strong><span>transport pliku</span></div>',
+    '<div class="flow-node"><strong>Core CC Tool</strong><span>odbiór i walidacja</span></div>',
     'id="igm-rcc-flow"',
     'id="mode-definitions"',
     'id="tet-cet-action"',
@@ -1976,6 +1960,25 @@ required_comment_patterns = [
 missing_comment_patterns = [pattern for pattern in required_comment_patterns if pattern not in doc]
 assert not missing_comment_patterns, (
     f'Brak elementów wymaganych przez nowe komentarze: {missing_comment_patterns}')
+required_unified_style = [
+    'main ul,main ol{',
+    'main ul>li::marker{',
+    'main table{width:100%;border-collapse:collapse;',
+    'main table th,main table td{',
+    'main a:not(.quickcard):not(.mini){',
+    '.deadline-target{display:inline-block;',
+    '.deadline-critical{display:inline-block;',
+    '<ul class="file-list">',
+]
+missing_unified_style = [pattern for pattern in required_unified_style if pattern not in doc]
+assert not missing_unified_style, (
+    f'Brak elementów ujednoliconego stylu: {missing_unified_style}')
+assert doc.count('<ul class="file-list">') == 2, (
+    'We Wstępie pliki dostarczane i monitorowane muszą być zapisane jako dwie listy punktowane')
+forbidden_new_graphics = ['input-card-grid', 'class="input-card', 'class="flow-caption"']
+found_new_graphics = [item for item in forbidden_new_graphics if item in doc]
+assert not found_new_graphics, (
+    f'Pozostały niespójne komponenty kart lub podpisów schematów: {found_new_graphics}')
 assert doc.count('<div class="input-stage">') == 4, (
     'Każdy z czterech etapów danych wejściowych musi mieć spójne formatowanie')
 expected_mail_anchors = {
@@ -2007,6 +2010,7 @@ forbidden_comment_phrases = [
     'PSE sprawdza poprawność scalenia',
     'AAC Fallback',
     'fallback gdy walidacja zawiodła',
+    'Ścieżka:',
 ]
 remaining_comment_phrases = [
     phrase for phrase in forbidden_comment_phrases
@@ -2028,6 +2032,13 @@ tet_without_targets = re.sub(
 tet_without_targets = html.unescape(re.sub(r'<[^>]+>', ' ', tet_without_targets))
 assert not re.search(r'\bTET\b', tet_without_targets), (
     'Każde widoczne TET poza chronionymi szablonami wiadomości musi być pomarańczowe')
+
+cet_without_critical = re.sub(
+    r'<(?:span|strong) class="deadline-critical">.*?</(?:span|strong)>', ' ',
+    operational_markup, flags=re.I | re.S)
+cet_without_critical = html.unescape(re.sub(r'<[^>]+>', ' ', cet_without_critical))
+assert not re.search(r'\bCET\b', cet_without_critical), (
+    'Każde widoczne CET poza chronionymi szablonami wiadomości musi mieć czerwoną ramkę')
 
 banned_references = ['Core_Operational_Contact_List.xlsx', 'AC manuall ZP.docx',
                      'PROCEDURA_IDCC_TSO_v5_2', 'QuickRef', 'Operator Manual',
