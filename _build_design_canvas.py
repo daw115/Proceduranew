@@ -2,11 +2,12 @@
 """Buduje pojedynczy canvas A4 wyrażający filozofię „Mierzony Przepływ”."""
 from __future__ import annotations
 
+import hashlib
 import math
 import random
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, __version__ as PILLOW_VERSION, features
 
 ROOT = Path(__file__).parent
 OUT = ROOT / "IDCC_DESIGN_CANVAS_FINAL.png"
@@ -17,15 +18,29 @@ PAPER = "#F3F0E8"
 INK = "#132A43"
 NAVY = "#173F63"
 BLUE = "#1E668F"
-MUTED = "#84909A"
+MUTED = "#566672"
 RULE = "#C9CED0"
 RED = "#B72E2A"
 AMBER = "#B97713"
 GREEN = "#28704D"
 
+EXPECTED_PILLOW_VERSION = "12.3.0"
+EXPECTED_FREETYPE_VERSION = "2.14.3"
+EXPECTED_FONT_SHA256 = "8b23d6341a12454e68e35c2c0917f0504104ded6aa3024d18e9d462da06fadd3"
 FONT_PATH = Path("/usr/share/fonts/google-noto-vf/NotoSans[wght].ttf")
+if PILLOW_VERSION != EXPECTED_PILLOW_VERSION:
+    raise RuntimeError(
+        f"Budowa canvasu wymaga Pillow {EXPECTED_PILLOW_VERSION}; wykryto {PILLOW_VERSION}")
+if features.version_module("freetype2") != EXPECTED_FREETYPE_VERSION:
+    raise RuntimeError(
+        "Budowa canvasu wymaga FreeType "
+        f"{EXPECTED_FREETYPE_VERSION}; wykryto {features.version_module('freetype2')}")
 if not FONT_PATH.exists():
     raise FileNotFoundError("Brak kroju Noto Sans wymaganego do budowy canvasu")
+font_digest = hashlib.sha256(FONT_PATH.read_bytes()).hexdigest()
+if font_digest != EXPECTED_FONT_SHA256:
+    raise RuntimeError(
+        f"Niezgodny plik Noto Sans: {font_digest}; oczekiwano {EXPECTED_FONT_SHA256}")
 
 
 def font(size: int) -> ImageFont.FreeTypeFont:

@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import os
 import runpy
+from importlib.metadata import version
 from pathlib import Path
 
 ROOT = Path(__file__).parent
@@ -12,6 +13,24 @@ SOURCE_HTML = ROOT / "PROCEDURA_IDCC_TSO_v7.html"
 SOURCE_STICKERS = ROOT / "STICKERY_IDCC.md"
 FINAL_HTML = ROOT / "PROCEDURA_IDCC_TSO_v7-final.html"
 FINAL_STICKERS = ROOT / "STICKERY_IDCC-final.md"
+EXPECTED_PACKAGES = {
+    "Markdown": "3.10.2",
+    "Pillow": "12.3.0",
+}
+
+
+def verify_build_environment() -> None:
+    mismatches = {
+        package: (expected, version(package))
+        for package, expected in EXPECTED_PACKAGES.items()
+        if version(package) != expected
+    }
+    if mismatches:
+        details = ", ".join(
+            f"{package}: oczekiwano {expected}, wykryto {actual}"
+            for package, (expected, actual) in mismatches.items()
+        )
+        raise RuntimeError(f"Niezgodne środowisko finalnego buildu: {details}")
 
 
 def digest(path: Path) -> str | None:
@@ -19,6 +38,7 @@ def digest(path: Path) -> str | None:
 
 
 def main() -> None:
+    verify_build_environment()
     protected_before = {
         SOURCE_HTML: digest(SOURCE_HTML),
         SOURCE_STICKERS: digest(SOURCE_STICKERS),

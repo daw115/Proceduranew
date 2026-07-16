@@ -788,11 +788,12 @@ body.edition-final{
 .edition-final .architecture-flow,.edition-final .architecture-layer,.edition-final .architecture-tool,.edition-final .connector-hub,.edition-final .flow-diagram,.edition-final .flow-node{border-radius:0;box-shadow:none}
 .edition-final .stick{transform:none!important;border-radius:0;background:#fffefa;outline-color:var(--rule2);box-shadow:none}
 .edition-final footer{font-size:12px!important;line-height:1.55}
-@media(max-width:900px){.edition-final main{padding:18px}.edition-final .hero{grid-template-columns:1fr}.edition-final .hero-visual{min-height:160px;border-left:0;border-top:1px solid var(--rule2)}.edition-final .quickgrid{grid-template-columns:repeat(2,1fr)}.edition-final .semantic-key{grid-template-columns:repeat(2,1fr)}.edition-final .procedure-section>.section-header{grid-template-columns:68px 1fr}}
+.edition-final .mobile-toc{display:none}
+@media(max-width:900px){.edition-final main{padding:18px}.edition-final .hero{grid-template-columns:1fr}.edition-final .hero-visual{min-height:160px;border-left:0;border-top:1px solid var(--rule2)}.edition-final .quickgrid{grid-template-columns:repeat(2,1fr)}.edition-final .semantic-key{grid-template-columns:repeat(2,1fr)}.edition-final .procedure-section>.section-header{grid-template-columns:68px 1fr}.edition-final .mobile-toc{position:sticky;top:0;z-index:40;display:block;margin:-18px -18px 18px;background:#10283e;color:#fffefa;border-bottom:4px solid var(--err)}.edition-final .mobile-toc summary{padding:13px 18px;cursor:pointer;font:650 13px var(--sans);letter-spacing:.04em}.edition-final .mobile-toc>div{display:grid;max-height:68vh;overflow:auto;padding:5px 12px 14px;border-top:1px solid #496176}.edition-final .mobile-toc a{display:grid;grid-template-columns:34px 1fr;gap:7px;padding:8px 6px;color:#eef2f3;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.1)}.edition-final .mobile-toc a>span{color:#9db5c5;font:700 11px var(--mono)}}
 @media(max-width:560px){.edition-final .hero h1{font-size:32px}.edition-final .quickgrid,.edition-final .semantic-key{grid-template-columns:1fr}.edition-final .quickcard,.edition-final .key-item{border-right:0;border-bottom:1px solid var(--rule2)}.edition-final .procedure-section>.section-header{grid-template-columns:1fr}.edition-final .section-kicker{grid-row:auto;display:flex;align-items:center;gap:10px;padding:0 0 10px;border-right:0;border-bottom:4px solid var(--group-color)}.edition-final .section-number{font-size:30px}.edition-final .section-category{margin:0}.edition-final .procedure-section>.section-header h2,.edition-final .section-summary{padding-left:0}.edition-final .procedure-section>.section-header h2{padding-top:13px}}
 @media print{
  body.edition-final{font-size:10.4pt;background:#fff}.edition-final main{padding:0}.edition-final .hero{grid-template-columns:minmax(0,1fr) 58mm;height:249mm;min-height:249mm;margin:0;padding:15mm 11mm;border:1px solid var(--ink);border-top:5px solid var(--err);box-sizing:border-box;break-after:page}.edition-final .hero-copy{align-self:center}.edition-final .hero-visual{display:block;min-height:0}.edition-final .hero h1{font-size:26pt}.edition-final .quickgrid,.edition-final .semantic-key,.edition-final .doc-tools{display:none!important}
- .edition-final .procedure-section{margin:0 0 14mm;padding:0 0 8mm;break-before:page}.edition-final .procedure-section:first-of-type{break-before:auto}.edition-final .procedure-section>.section-header{margin-bottom:5mm;padding:4mm 0;break-after:avoid}.edition-final h2,.edition-final h3,.edition-final h4,.edition-final h5{break-after:avoid;page-break-after:avoid}.edition-final p,.edition-final li{orphans:3;widows:3}.edition-final tr,.edition-final figure,.edition-final .pse-action,.edition-final .backup-action,.edition-final .iva-extension{break-inside:avoid;page-break-inside:avoid}.edition-final main table{font-size:8.2pt}.edition-final main table th,.edition-final main table td{padding:1.6mm 2mm}.edition-final .procedure-section:last-of-type{margin-bottom:0;padding-bottom:0}.edition-final footer{margin-top:4mm;break-inside:avoid}
+ .edition-final .procedure-section{margin:0 0 14mm;padding:0 0 8mm;break-before:page}.edition-final .procedure-section:first-of-type{break-before:auto}.edition-final .procedure-section>.section-header{margin-bottom:5mm;padding:4mm 0;break-after:avoid}.edition-final h2,.edition-final h3,.edition-final h4,.edition-final h5{break-after:avoid;page-break-after:avoid}.edition-final p,.edition-final li{orphans:3;widows:3}.edition-final tr,.edition-final figure,.edition-final .pse-action,.edition-final .backup-action,.edition-final .iva-extension{break-inside:avoid;page-break-inside:avoid}.edition-final .mobile-toc{display:none!important}.edition-final .proc,.edition-final .tbl-wrap{overflow:visible!important}.edition-final .proc table,.edition-final .tbl-wrap table{display:table;overflow:visible;max-width:100%;table-layout:fixed}.edition-final main table{font-size:8.2pt}.edition-final main table th,.edition-final main table td{padding:1.6mm 2mm;overflow-wrap:anywhere;word-break:normal}.edition-final .procedure-section:last-of-type{margin-bottom:0;padding-bottom:0}.edition-final footer{margin-top:4mm;break-inside:avoid}
 }
 """
 
@@ -1275,6 +1276,13 @@ for group_code, group_meta in NAV_GROUPS.items():
         for id_, title, _, _ in group_sections)
     nav_parts.append('</section>')
 nav_html = ''.join(nav_parts)
+mobile_nav_html = ''.join(
+    ['<a href="#top"><span>00</span>Start dokumentu</a>']
+    + [
+        f'<a href="#{id_}"><span>{SECTION_NUMBERS[id_]}</span>{esc(title)}</a>'
+        for id_, title, _, _ in SECTIONS
+    ]
+)
 toc_html = ''
 sections_html = ''.join(
     section(id_, title, SECTION_NUMBERS[id_], body, stickers)
@@ -1359,6 +1367,7 @@ border-bottom:1px solid var(--rule);padding-bottom:7px}}
 <div class="wrap">
 <nav aria-label="Spis treści"><h2>Spis treści · A–E</h2>{nav_html}</nav>
 <main id="top">
+<details class="mobile-toc"><summary>Spis treści A–E · 18 rozdziałów</summary><div>{mobile_nav_html}</div></details>
 {cover_html}
 {toc_html}
 <div class="doc-tools" aria-label="Narzędzia dokumentu">
@@ -2130,6 +2139,12 @@ assert not found_formal_graphics, (
 if FINAL_LAYOUT:
     assert '<body class="edition-final">' in doc and 'class="hero-visual"' in doc, (
         'Wydanie finalnego składu nie zawiera kompletnej warstwy Mierzony Przepływ')
+    assert ('<details class="mobile-toc">' in doc
+            and '.edition-final .mobile-toc{position:sticky' in doc), (
+        'Wydanie finalne nie zawiera dostępnego mobilnego spisu treści')
+    assert ('.edition-final .proc table,.edition-final .tbl-wrap table{display:table;' in doc
+            and '.edition-final .proc,.edition-final .tbl-wrap{overflow:visible!important}' in doc), (
+        'Wydanie finalne nie resetuje przepełnienia tabel w druku A4')
     assert not INCLUDE_COMMENTS, (
         'Wydanie finalnego składu musi być generowane bez widgetu recenzenckiego')
 assert doc.count('<section id="sec-') == len(SECTIONS), (
