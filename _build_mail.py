@@ -4,7 +4,7 @@
 import base64
 from pathlib import Path
 
-ROOT = Path('/Volumes/SSD/CLAUDE_WORK/Procedura')
+ROOT = Path(__file__).resolve().parent
 IMGS = {
     'cover':  '/tmp/mail/01_cover-0001.png',
     'header': '/tmp/mail/02_header-0002.png',

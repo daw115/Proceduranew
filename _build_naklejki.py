@@ -16,7 +16,7 @@ Kolejność kotwic = bieżąca kolejność stron w CCM/info.pdf (zachowana).
 import json, re, html as htmlmod, subprocess
 from pathlib import Path
 
-ROOT = Path('/Volumes/SSD/CLAUDE_WORK/Procedura')
+ROOT = Path(__file__).resolve().parent
 CCM  = ROOT / 'CCM'
 
 # ── kolejność kotwic z kanonicznego pliku (NIE z info.pdf — unika samo-odwołania) ──

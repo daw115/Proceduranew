@@ -13,7 +13,7 @@ import re, json, pathlib
 import weasyprint
 from pypdf import PdfReader
 
-ROOT = pathlib.Path('/Volumes/SSD/CLAUDE_WORK/Procedura')
+ROOT = pathlib.Path(__file__).resolve().parent
 SRC  = ROOT / 'PROCEDURA_IDCC_TSO_v5_2.html'
 OUT  = ROOT / 'PROCEDURA_IDCC_TSO_v5_2.pdf'
 

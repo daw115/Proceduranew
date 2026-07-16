@@ -23,7 +23,7 @@ import re
 from pathlib import Path
 from openpyxl import load_workbook
 
-ROOT = Path('/Volumes/SSD/CLAUDE_WORK/Procedura')
+ROOT = Path(__file__).resolve().parent
 CCM  = ROOT / 'CCM'
 XLSX = ROOT / 'Stany_kafelkow_per_plik_IDCC.xlsx'
 SAMPLE = CCM / 'staticHints-przyklad-dla-FID1-831.txt'

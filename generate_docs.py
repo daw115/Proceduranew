@@ -4,8 +4,9 @@ import re, sys, os, subprocess
 from pathlib import Path
 from bs4 import BeautifulSoup, NavigableString, Tag
 
-INPUT = Path("/Volumes/SSD/CLAUDE_WORK/Procedura/PROCEDURA_IDCC_TSO_v6 copy.html")
-OUTDIR = Path("/Volumes/SSD/CLAUDE_WORK/Procedura/output")
+ROOT = Path(__file__).resolve().parent
+INPUT = ROOT / "PROCEDURA_IDCC_TSO_v6 copy.html"
+OUTDIR = ROOT / "output"
 OUTDIR.mkdir(exist_ok=True)
 
 html = INPUT.read_text(encoding="utf-8")

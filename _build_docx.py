@@ -10,7 +10,7 @@ Kroki:
 import re, subprocess
 from pathlib import Path
 
-ROOT = Path('/Volumes/SSD/CLAUDE_WORK/Procedura')
+ROOT = Path(__file__).resolve().parent
 SRC = ROOT / 'PROCEDURA_IDCC_TSO_v5_2.html'
 TMP = ROOT / '_v5_2_for_docx.html'
 OUT = ROOT / 'PROCEDURA_IDCC_TSO_v5_2.docx'

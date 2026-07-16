@@ -11,12 +11,19 @@ Wyjście:
   PROCEDURA_IDCC_TSO_v5_2.html                             (bez edytora)
   PROCEDURA_IDCC_TSO_v5_2_EDYTOR.html                      (z edytorem)
 """
-import json, re, html
+import json, os, re, html
 from pathlib import Path
 from openpyxl import load_workbook
 
-ROOT = Path('/Volumes/SSD/CLAUDE_WORK/Procedura')
-SRC  = Path('/Volumes/SSD/Downloads/PROCEDURA_IDCC_TSO_v5_1_v9.html')
+ROOT = Path(__file__).resolve().parent
+# Plik bazowy v5.1 nie jest częścią repo — ścieżkę podaje się przez PROCEDURA_V51_SRC
+SRC  = Path(os.environ.get('PROCEDURA_V51_SRC',
+                           '/Volumes/SSD/Downloads/PROCEDURA_IDCC_TSO_v5_1_v9.html'))
+if not SRC.exists():
+    raise SystemExit(
+        f"Brak pliku bazowego v5.1: {SRC}\n"
+        "Ustaw zmienną środowiskową PROCEDURA_V51_SRC na ścieżkę do "
+        "PROCEDURA_IDCC_TSO_v5_1_v9.html (plik spoza repozytorium).")
 
 def esc(s):
     if s is None: return ''
