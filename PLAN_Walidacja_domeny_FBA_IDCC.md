@@ -5,10 +5,10 @@
 > **Źródła analizy:**
 > - FBA_TSO_NOR_03 — Walidacja domeny FBA v0.21 (01.08.2025)
 > - FBA_TSO_BUP_03 — Walidacja domeny FBA v0.31 (01.08.2025)
-> - Core IDCC Flow-Based Business Process Documentation v5.0 (02-03-2026) — treści wyekstrahowane w repo (`process_intro.html`, `process2_glos.html`, `process2_a.html`, `process2_bcd.html`, `process_d.html`, `process2_mail.html`)
+> - Core IDCC Flow-Based Business Process Documentation v5.0 (02-03-2026) — plik „…(3).docx" dostarczony przez autora zlecenia + treści wyekstrahowane w repo (`process_intro.html`, `process2_glos.html`, `process2_a.html`, `process2_bcd.html`, `process_d.html`, `process2_mail.html`)
 > - Inwentarz_IDCC.md, Karta_ryzyk_IDCC.md, Ryzyka_pelna_baza_IDCC.html, frag7_walidacja.html
 >
-> ⚠ **Zastrzeżenie źródła:** mapowanie do BPD oparto na wersji v5.0 (ekstrakty w repo). Po dostarczeniu pliku „Core IDCC Flow Based Business Process Documentation (3).docx" należy wykonać weryfikację opisaną w [części B, pkt B.5](#b5-punkt-weryfikacji-z-3docx).
+> ✅ **Weryfikacja źródła wykonana:** dostarczony plik „Core IDCC Flow Based Business Process Documentation (3).docx" to **wersja 5.0 (02-03-2026)** — ta sama, na której oparto ekstrakty w repo („(3)" w nazwie pliku to licznik pobrań, nie wersja). Wyniki weryfikacji: [część B, pkt B.5](#b5-punkt-weryfikacji-z-3docx).
 
 ---
 
@@ -35,7 +35,7 @@ Procedury DA opisują jeden dobowy przebieg walidacji (domena DA + domena LTA + 
 | Krok walidacji | Perun4V — domena DA i LTA | IDCC(b)/(c)/(d): Individual Validation w Perun4V (CNEC-based + ATC-based); IDCC(a): wyłącznie walidacja ATC (FID1-928) + dostarczenie AC (FID1-831 z ZP) |
 | Plik wynikowy | IVA **F310** | IVA **FIDx-710** (+ wariant IVA BACKUP generowany przez CCA); raport RAP_PERUN_IDx |
 | Skład paczki do Perun4V | F109/F308 (CGM), F110 (RefProg), F112 (Merged GLSK), F515 (MergingLog), F212 (Intermediate FB Domain), F226 (Real GLSK), F312 (Individual Filtered CB), F327 (konfiguracja RAO), F320_CCA/F320_LTA, CORE_FB_DA_RA_PL.xlsx, VERTICES_MAP_CCA/LTA | paczka **PERUN_IDx**: Merged GLSK (FIDx-610), CGM (FIDx-620), RefProg (FIDx-632), Initial FB Domain (FIDx-645), Real GLSK (FIDx-657), CB (FIDx-665), Vertices (FIDx-701), Initial Intraday ATC (FIDx-882), RA |
-| Terminy IVA (TET / CET) | DA: 07:15 / 08:50; LTA: 07:15 / 08:00 | ID2: 21:30 / 22:06 · ID3C: 04:00 / 04:36 · ID3: 09:30 / 10:06; okno IVA 40 min, gwarantowane min. **25 min** (pauza/wznowienie wyłącznie po stronie operatora procesu — PSE nie przedłuża okna samodzielnie) |
+| Terminy IVA (TET / CET) | DA: 07:15 / 08:50; LTA: 07:15 / 08:00 | ID2: 21:30 / 22:06 · ID3C: 04:00 / 04:36 · ID3: 09:30 / 10:06; okno IVA 40 min; przy opóźnieniu: IDCC(a) — gwarancja min. **25 min** (pauza/wznowienie, ID1_16), IDCC(b)–(d) — CCCt przesuwa całe okno; PSE nie przedłuża okna samodzielnie (por. B.5 pkt 5) |
 | Terminy plików wejściowych PSE | — | GLSK (FIDx-607) i CBCORA (FIDx-617): ID2 20:00/20:19 · ID3C 00:00/00:56 · ID3 06:20/07:30; AC (FIDx-831): ID2 21:45/21:55 · ID3C 04:15/04:25 · ID3 08:40/09:25; AC dla IDCC(a): 13:50/14:45 |
 | Buckety MinIO | perun/DA_FBCC/in·out, cca/DA_FBCC/in·out | perun/**ID_FBCC**/in·out, cca/**ID_FBCC**/in·out (per BD) |
 | Pulpit CCM | „DACC FB Pulpit dyspozytorski" | „**IDCC FB Pulpit dyspozytorski**" / „IDCC (do 3C) z ATC i SFTP Pulpit dyspozytorski" |
@@ -166,7 +166,7 @@ Po każdym etapie tabela ryzyk z odwołaniami do FBA_TSO_BUP_04 (numeracja wg [A
 
 Struktura BPD: rozdziały per iteracja (IDCC(a); IDCC(b); IDCC(c)/(d) przez odwołanie do (b) z tabelą różnic), słownik i encje, harmonogram HLBP, szare tabele backup na końcu każdego rozdziału, numerowane szablony maili (#1–#33).
 
-**B.1. Punkt zaczepienia = krok „Individual Validation".** W opisie kroku każdego rozdziału iteracyjnego BPD dodać odwołanie: *„TSO PSE wykonuje Individual Validation zgodnie z procedurą lokalną FBA_TSO_NOR_04; w sytuacjach awaryjnych FBA_TSO_BUP_04"* — analogicznie do istniejącego zapisu BPD „own tool, e.g. Perun". Dla IDCC(a) punktem zaczepienia jest krok „Individual CB and ATC Validation".
+**B.1. Punkt zaczepienia = krok „Individual Validation".** Konkretne sekcje BPD v5.0: **§5.7** „Individual CB and ATC validation" (IDCC(a)), **§6.7**, **§7.7**, **§8.7** „Individual Validation" (odpowiednio IDCC(b), (c), (d)). BPD stanowi: *„The Core TSOs perform validation of the initial FB computation results individually with local tools"* oraz *„How the validation is done is TSOs responsibility"* — nowa procedura PSE jest właśnie tym „local tool procedure". W opisie kroku dodać odwołanie: *„TSO PSE wykonuje Individual Validation zgodnie z procedurą lokalną FBA_TSO_NOR_04; w sytuacjach awaryjnych FBA_TSO_BUP_04"*. BPD nie wymienia Perun4V z nazwy — wskazanie narzędzia pozostaje po stronie procedury lokalnej.
 
 **B.2. Tabela krzyżowa kodów zdarzeń BPD → ryzyka procedury.** Nowa procedura zawiera tabelę mapującą każdy kod istotny dla PSE na numer własnego ryzyka i klasyfikację (słownik przyjęty w repo):
 
@@ -189,12 +189,14 @@ Struktura BPD: rozdziały per iteracja (IDCC(a); IDCC(b); IDCC(c)/(d) przez odwo
 **B.4. Terminy — jedno źródło prawdy.** Tabele TET/CET procedury (FIDx-607/617/710/831 per iteracja) muszą być 1:1 z harmonogramem HLBP; BPD pełni rolę referencji. Przy każdej aktualizacji HLBP aktualizować tabelę w procedurze.
 
 <a id="b5-punkt-weryfikacji-z-3docx"></a>
-**B.5. Punkt weryfikacji z plikiem (3).docx.** Po uzyskaniu dostępu do „Core IDCC Flow Based Business Process Documentation (3).docx" porównać z konspektem:
-1. numerację rozdziałów i nazwy kroków (m.in. czy krok nazywa się „Initial FB Computation" — w DA odpowiednik to „Intermediate FB Computation"),
-2. kody zdarzeń ID1_x / ID2_x / ID3C_x / ID3_x (kompletność i numeracja),
-3. numery szablonów maili,
-4. czasy TET/CET wszystkich plików PSE,
-5. czy wersja (3) różni się od v5.0 w zakresie okna IVA (40/25 min) i listy plików paczki PERUN_IDx.
+**B.5. Weryfikacja z plikiem (3).docx — WYKONANA (16.07.2026).** Dostarczony plik = BPD **v5.0 (02-03-2026)**, identyczny z wersją, na której oparto ekstrakty w repo. Wyniki:
+
+1. **Rozdziały i nazwy kroków — potwierdzone.** Rozdziały iteracyjne: 5=IDCC(a), 6=IDCC(b), 7=IDCC(c), 8=IDCC(d); kroki walidacji: §5.7 / §6.7 / §7.7 / §8.7. Krok obliczeniowy nazywa się **„Initial flow-based computation"** (nie „Intermediate" jak w DA). Rozdziału IDCC(e) w BPD v5.0 **nie ma** — Część 5 konspektu (placeholder) pozostaje poza mapowaniem BPD, oparta wyłącznie na HLBP („IDCCe Option A/B").
+2. **Kody zdarzeń — potwierdzone, pełne zakresy:** ID1_1–ID1_29, ID2_1–ID2_25, ID3C_1–ID3C_23, ID3_1–ID3_25. Zakresy zgodne z tabelą krzyżową w B.2 (tabela obejmuje kody istotne dla PSE; pozostałe to działania CCC/JAO/XBID bez udziału PSE).
+3. **Szablony maili — potwierdzone.** Tabele backup posługują się kolumną „Email Template #" (użyte m.in. #2, 5, 7, 8, 9, 10, 12, 20, 26, 29, 30, 31); treści szablonów BPD utrzymuje jako osobny dokument na ProjectPlace (link w §2.1 BPD). Zasada B.3 (odwołania po numerach) — poprawna.
+4. **Czasy TET/CET — potwierdzona zasada B.4.** BPD w tabelach kroków odsyła do harmonogramu HLBP („See HLBP timetable as referred to under '2. Related documents'") i nie powiela godzin — jedynym źródłem prawdy dla tabel TET/CET nowej procedury jest **HLBP**.
+5. **Okno IVA — istotny niuans do NOR_04:** gwarancja „min. 25 min nawet przy opóźnieniu/fallbacku" jest w BPD zapisana **wprost tylko dla IDCC(a)** (§5.7 + kod ID1_16: pauza okna przy opóźnieniu >15 min, wznowienie po 25 min). Dla IDCC(b)–(d) BPD stanowi, że 40-minutowe okno przy opóźnieniu jest **przesuwane w całości** przez CCCt („this process phase (validation only) is shifted accordingly"). W NOR_04 rozdzielić te dwa mechanizmy zamiast stosować regułę 25 min do wszystkich iteracji.
+6. **Paczka PERUN_IDx** — BPD operuje na poziomie plików MD/IDx wymienianych z CCCt i nie definiuje składu paczki do narzędzia lokalnego (to konstrukt wewnętrzny PSE) — skład paczki pozostaje do potwierdzenia u PSE-I (TODO #1).
 
 ---
 
@@ -210,4 +212,5 @@ Struktura BPD: rozdziały per iteracja (IDCC(a); IDCC(b); IDCC(c)/(d) przez odwo
 | 5 | Ścieżki katalogów sieciowych dla plików IDCC (odpowiednik `\\uo-data\...\Pliki wejściowe do DA FBA\rrrrMMdd\PERUN\`) — czy per iteracja | WPO |
 | 6 | Czy narzędzie stand-alone (odpowiednik fbc_lta_vertices.exe) występuje w procesie ID; jeżeli nie — potwierdzić usunięcie ryzyka 14 | PSE-I |
 | 7 | Spodziewane prawidłowe wielkości plików paczki PERUN_IDx na MinIO (do ryzyka „błędna paczka") | PSE-I |
-| 8 | Dostarczenie pliku „Core IDCC Flow Based Business Process Documentation (3).docx" → wykonać weryfikację B.5 | autor zlecenia |
+| ~~8~~ | ~~Dostarczenie pliku „Core IDCC Flow Based Business Process Documentation (3).docx" → wykonać weryfikację B.5~~ — **wykonane 16.07.2026** (plik = v5.0; wyniki w B.5) | — |
+| 9 | W NOR_04 rozdzielić mechanizmy okna IVA: IDCC(a) — gwarancja min. 25 min (pauza/wznowienie, ID1_16); IDCC(b)–(d) — przesunięcie całego 40-minutowego okna przez CCCt | redakcja NOR_04 |
