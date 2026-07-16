@@ -44,9 +44,12 @@
 </div>
 
 <h4>Pliki dostarczane przez TSO</h4>
-<div class="input-card-grid">
-  <article class="input-card input-card-wide">
-    <h5>IGM do RCC</h5>
+<ul class="file-list">
+  <li>
+    <strong>IGM do RCC</strong>
+    <p>IGM należy przekazać przed target run DACF/IDCF.</p>
+    <div class="scope-list"><span class="scope-yes">IDCC(b)</span><span class="scope-yes">IDCC(c)</span><span class="scope-yes">IDCC(d)</span><span class="scope-yes">IDCC(e)</span><span class="scope-no">nie dotyczy IDCC(a)</span></div>
+    <p class="flow-label"><strong>Przebieg komunikacji przy publikacji pliku:</strong></p>
     <div class="flow-diagram flow-four" role="img" aria-label="Przebieg przekazania IGM z PSE do procesu centralnego">
       <div class="flow-node"><strong>PSE / TSO Data Preparation</strong><span>przygotowanie IGM</span></div>
       <div class="flow-arrow" aria-hidden="true">→</div>
@@ -56,31 +59,18 @@
       <div class="flow-arrow" aria-hidden="true">→</div>
       <div class="flow-node"><strong>Coreso / Core CC Tool</strong><span>merging package</span></div>
     </div>
-    <p>IGM należy przekazać przed target run DACF/IDCF.</p>
-    <span class="scope-list"><span class="scope-yes">IDCC(b)</span><span class="scope-yes">IDCC(c)</span><span class="scope-yes">IDCC(d)</span><span class="scope-yes">IDCC(e)</span><span class="scope-no">nie dotyczy IDCC(a)</span></span>
-  </article>
-  <article class="input-card input-card-warning">
-    <h5>CB i GLSK</h5>
-    <p><strong>CB (FIDx-617)</strong> i <strong>GLSK (FIDx-607)</strong> należy dostarczyć do CCCt w fazie <em>TSO Data Gathering</em>.</p>
-    <p><strong class="mandatory-note">UWAGA: oba pliki są MANDATORY.</strong></p>
-  </article>
-  <article class="input-card">
-    <h5>IVA</h5>
-    <p><strong>IVA (FIDx-710)</strong> jest wynikiem Individual Validation wykonywanej w Perun4V.</p>
-  </article>
-  <article class="input-card">
-    <h5>AC dla IDCC(a)</h5>
-    <p><strong>AC (FID1-831)</strong> jest przygotowywany w ZP. Docelowym systemem jest Platforma Udostępniania Transmisyjnych (PuTo), a plik jest używany także w procesie Core.</p>
-    <p><strong>Termin:</strong> TET 13:50; <strong class="deadline-critical">CET 14:45</strong>.</p>
-  </article>
-</div>
+  </li>
+  <li><strong>CB i GLSK</strong> — <strong>CB (FIDx-617)</strong> i <strong>GLSK (FIDx-607)</strong> należy dostarczyć do CCCt w fazie <em>TSO Data Gathering</em>. <strong class="mandatory-note">UWAGA: oba pliki są MANDATORY.</strong></li>
+  <li><strong>IVA</strong> — <strong>IVA (FIDx-710)</strong> jest wynikiem Individual Validation wykonywanej w Perun4V.</li>
+  <li><strong>AC dla IDCC(a)</strong> — <strong>AC (FID1-831)</strong> jest przygotowywany w ZP. Docelowym systemem jest Platforma Udostępniania Transmisyjnych (PuTo), a plik jest używany także w procesie Core. <strong>Termin:</strong> TET 13:50; <strong class="deadline-critical">CET 14:45</strong>.</li>
+</ul>
 
 <h4>Pliki monitorowane przez PSE</h4>
-<div class="input-card-grid">
-  <article class="input-card"><h5>ATC Based Validation</h5><p><strong>FIDx-928</strong> jest plikiem wynikowym procesu centralnego; PSE monitoruje jego dostępność.</p></article>
-  <article class="input-card"><h5>Final Intraday NTC</h5><p><strong>FIDx-921</strong> zawiera finalne NTC; PSE monitoruje wynik procesu.</p></article>
-  <article class="input-card"><h5>IVA BACKUP</h5><p>PSE monitoruje plik i wykonuje ręczną wysyłkę wyłącznie w scenariuszu backupowym wskazanym w procedurze.</p></article>
-</div>
+<ul class="file-list">
+  <li><strong>ATC Based Validation</strong> — <strong>FIDx-928</strong> jest plikiem wynikowym procesu centralnego; PSE monitoruje jego dostępność.</li>
+  <li><strong>Final Intraday NTC</strong> — <strong>FIDx-921</strong> zawiera finalne NTC; PSE monitoruje wynik procesu.</li>
+  <li><strong>IVA BACKUP</strong> — PSE monitoruje plik i wykonuje ręczną wysyłkę wyłącznie w scenariuszu backupowym wskazanym w procedurze.</li>
+</ul>
 
 <h4>Terminy plików dostarczanych przez PSE — IDCC(b)–(d)</h4>
 <table class="ref file-summary file-timings">
