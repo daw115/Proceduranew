@@ -21,46 +21,74 @@
     <tr><td><strong>MCP</strong> (ang. <em>Market Coupling Process</em>)</td><td>Proces łączenia rynków wykorzystujący udostępnione zdolności przesyłowe.</td></tr>
     <tr><td><strong>CCCt</strong> (ang. <em>Core Capacity Calculation Tool</em>)</td><td>Centralne narzędzie regionu Core do realizacji procesu Capacity Calculation.</td></tr>
     <tr><td><strong>TET</strong> (ang. <em>Target End Time</em>)</td><td>Docelowy termin zakończenia kroku lub dostarczenia pliku. Jeżeli dotrzymanie TET jest zagrożone, PSE informuje operatora procesu Capacity Calculation i uzgadnia dalsze działanie.</td></tr>
-    <tr><td><strong class="deadline-critical">CET</strong> (ang. <em>Critical End Time</em>)</td><td>Krytyczny, najpóźniejszy termin zakończenia kroku po uzgodnionym przedłużeniu. Przed CET należy zakończyć działanie albo uruchomić fallback lub backup wskazany dla danego kroku.</td></tr>
+    <tr><td><strong class="deadline-critical">CET</strong> (ang. <em>Critical End Time</em>)</td><td>Krytyczny, najpóźniejszy termin zakończenia kroku po uzgodnionym przedłużeniu. Przed CET należy zakończyć działanie albo uruchomić właściwy tryb wskazany dla danego zdarzenia.</td></tr>
+    <tr id="mode-definitions"><td><span class="mode-badge mode-auto">FALLBACK AUTOMATYCZNY</span></td><td>Działanie wykonywane automatycznie przez system centralny bez reakcji dyspozytora PSE, np. użycie skonfigurowanych danych zastępczych.</td></tr>
+    <tr><td><span class="mode-badge mode-backup">DZIAŁANIE BACKUPOWE</span></td><td>Ręczna czynność wymagana po stronie dyspozytora PSE, np. pobranie pliku, Manual Upload, wysłanie przez ZP albo potwierdzenie wykonania.</td></tr>
+    <tr><td><span class="mode-badge mode-process">DZIAŁANIE PROCESOWE</span></td><td>Komunikacja albo czynność operatora procesu, która nie wymaga ręcznego obejścia po stronie dyspozytora PSE; PSE wykonuje wyłącznie monitoring lub wskazane potwierdzenie.</td></tr>
     <tr><td><strong>GLSK</strong> (ang. <em>Generation and Load Shift Keys</em>)</td><td>Klucz określający rozdział zmiany net position na jednostki wytwórcze i odbiorcze.</td></tr>
     <tr><td><strong>CB</strong> (ang. <em>Critical Branch</em>) / <strong>CNEC</strong> (ang. <em>Critical Network Element and Contingency</em>)</td><td>Element sieci lub para element–contingency uwzględniana w obliczeniach i walidacji domeny.</td></tr>
   </tbody>
 </table>
 
-<h4>Pliki dostarczane przez TSO</h4>
-<ul class="compact-list">
-  <li><strong>IGM do RCC</strong> — PSE / TSO Data Preparation → serwer Swissgrid → TSCNET (RCC odpowiedzialny za PSE); przed target run DACF/IDCF.
-    <span class="scope-list"><span class="scope-yes">IDCC(b)</span><span class="scope-yes">IDCC(c)</span><span class="scope-yes">IDCC(d)</span><span class="scope-yes">IDCC(e)</span><span class="scope-no">nie dotyczy IDCC(a)</span></span>
-  </li>
-  <li><strong>CB (FIDx-617)</strong> i <strong>GLSK (FIDx-607)</strong> — do CCCt w fazie <em>TSO Data Gathering</em>; oba pliki są MANDATORY.</li>
-  <li><strong>IVA (FIDx-710)</strong> — wynik Individual Validation w Perun4V.</li>
-  <li><strong>ATC Based Validation (FIDx-928)</strong> i <strong>IVA BACKUP</strong> — monitorowanie procesu i plików wynikowych.</li>
-  <li><strong>AC (FIDx-831)</strong> — plik ograniczeń alokacyjnych dla PuTo.</li>
-  <li><strong>NTC (FIDx-921)</strong> — monitorowanie finalnych NTC.</li>
-</ul>
-<div class="deadline-rule">
-  <h4>TET i CET — zasada operacyjna</h4>
+<div class="deadline-rule" id="tet-cet-action">
+  <h4>UWAGA! Stosowanie CET przy niedotrzymaniu TET</h4>
   <div class="deadline-grid">
     <div class="deadline-tet"><strong>TET</strong><span>Docelowy termin zakończenia kroku lub dostarczenia pliku.</span></div>
     <div class="deadline-cet"><strong>CET</strong><span>Krytyczny, najpóźniejszy termin zakończenia po uzgodnionym przedłużeniu.</span></div>
   </div>
   <ol class="compact-list">
-    <li>Jeżeli dotrzymanie TET jest zagrożone, poinformuj operatora procesu Capacity Calculation.</li>
-    <li>Uzgodnij przedłużenie do <strong class="deadline-critical">CET</strong>.</li>
-    <li>Zakończ krok albo zastosuj fallback lub backup wskazany dla danego zdarzenia.</li>
+    <li>Jeżeli dotrzymanie TET jest zagrożone, należy poinformować operatora procesu Capacity Calculation.</li>
+    <li>Należy uzgodnić możliwość zakończenia kroku do <strong class="deadline-critical">CET</strong>.</li>
+    <li>Przed CET należy zakończyć krok. Jeżeli nie jest to możliwe, należy zastosować właściwe działanie opisane dla danego zdarzenia: <span class="mode-badge mode-auto">FALLBACK AUTOMATYCZNY</span>, <span class="mode-badge mode-backup">DZIAŁANIE BACKUPOWE</span> albo <span class="mode-badge mode-process">DZIAŁANIE PROCESOWE</span>.</li>
   </ol>
 </div>
 
-<table class="ref file-summary">
-  <thead><tr><th>FID</th><th>Definicja pliku</th><th>Źródło</th><th>Iteracja</th><th>TET / CET</th></tr></thead>
+<h4>Pliki dostarczane przez TSO</h4>
+<div class="input-card-grid">
+  <article class="input-card input-card-wide">
+    <h5>IGM do RCC</h5>
+    <div class="flow-diagram flow-four" role="img" aria-label="Przebieg przekazania IGM z PSE do procesu centralnego">
+      <div class="flow-node"><strong>PSE / TSO Data Preparation</strong><span>przygotowanie IGM</span></div>
+      <div class="flow-arrow" aria-hidden="true">→</div>
+      <div class="flow-node"><strong>serwer Swissgrid</strong><span>przekazanie modelu</span></div>
+      <div class="flow-arrow" aria-hidden="true">→</div>
+      <div class="flow-node flow-node-hub"><strong>TSCNET</strong><span>RCC odpowiedzialny za PSE</span></div>
+      <div class="flow-arrow" aria-hidden="true">→</div>
+      <div class="flow-node"><strong>Coreso / Core CC Tool</strong><span>merging package</span></div>
+    </div>
+    <p>IGM należy przekazać przed target run DACF/IDCF.</p>
+    <span class="scope-list"><span class="scope-yes">IDCC(b)</span><span class="scope-yes">IDCC(c)</span><span class="scope-yes">IDCC(d)</span><span class="scope-yes">IDCC(e)</span><span class="scope-no">nie dotyczy IDCC(a)</span></span>
+  </article>
+  <article class="input-card input-card-warning">
+    <h5>CB i GLSK</h5>
+    <p><strong>CB (FIDx-617)</strong> i <strong>GLSK (FIDx-607)</strong> należy dostarczyć do CCCt w fazie <em>TSO Data Gathering</em>.</p>
+    <p><strong class="mandatory-note">UWAGA: oba pliki są MANDATORY.</strong></p>
+  </article>
+  <article class="input-card">
+    <h5>IVA</h5>
+    <p><strong>IVA (FIDx-710)</strong> jest wynikiem Individual Validation wykonywanej w Perun4V.</p>
+  </article>
+  <article class="input-card">
+    <h5>AC dla IDCC(a)</h5>
+    <p><strong>AC (FID1-831)</strong> jest przygotowywany w ZP. Docelowym systemem jest Platforma Udostępniania Transmisyjnych (PuTo), a plik jest używany także w procesie Core.</p>
+    <p><strong>Termin:</strong> TET 13:50; <strong class="deadline-critical">CET 14:45</strong>.</p>
+  </article>
+</div>
+
+<h4>Pliki monitorowane przez PSE</h4>
+<div class="input-card-grid">
+  <article class="input-card"><h5>ATC Based Validation</h5><p><strong>FIDx-928</strong> jest plikiem wynikowym procesu centralnego; PSE monitoruje jego dostępność.</p></article>
+  <article class="input-card"><h5>Final Intraday NTC</h5><p><strong>FIDx-921</strong> zawiera finalne NTC; PSE monitoruje wynik procesu.</p></article>
+  <article class="input-card"><h5>IVA BACKUP</h5><p>PSE monitoruje plik i wykonuje ręczną wysyłkę wyłącznie w scenariuszu backupowym wskazanym w procedurze.</p></article>
+</div>
+
+<h4>Terminy plików dostarczanych przez PSE — IDCC(b)–(d)</h4>
+<table class="ref file-summary file-timings">
+  <thead><tr><th>FID</th><th>Definicja pliku</th><th>Źródło</th><th>IDCC(b)</th><th>IDCC(c)</th><th>IDCC(d)</th></tr></thead>
   <tbody>
-    <tr><td>617</td><td><strong>CBCORA</strong> — Critical Branches, CNEC, outages i RA przekazywane przez PSE.</td><td>Kreator (N07/N08)</td><td>IDCC(b)/(c)/(d)</td><td>20:00/20:19 · 00:00/00:56 · 06:20/07:30</td></tr>
-    <tr><td>607</td><td><strong>GLSK</strong> — Generation and Load Shift Keys dla strefy PL.</td><td>Kreator (N07/N08)</td><td>IDCC(b)/(c)/(d)</td><td>20:00/20:19 · 00:00/00:56 · 06:20/07:30</td></tr>
-    <tr><td>620</td><td><strong>CGM</strong> — CGM utworzony z IGM dla DACF/IDCF.</td><td>proces Core / Kreator</td><td>IDCC(b)/(c)/(d)</td><td>20:40/21:05 · 02:40/03:30 · 08:30/09:05</td></tr>
-    <tr><td>632</td><td><strong>RefProg</strong> — Reference Program zawierający net positions.</td><td>proces Core</td><td>IDCC(b)/(c)/(d)</td><td>20:40/21:05 · 02:40/03:30 · 08:30/09:05</td></tr>
-    <tr><td>710</td><td><strong>IVA</strong> — wynik Individual Validation; także wariant IVA BACKUP.</td><td>Perun4V (N03) / CCA backup (N09)</td><td>IDCC(b)/(c)/(d)</td><td>21:30/22:06 · 04:00/04:36 · 09:30/10:06</td></tr>
-    <tr><td>928</td><td><strong>ATC Based Validation</strong> — wynik centralnej walidacji ATC.</td><td>Core CC Tool (N02)</td><td>IDCC(a)/(b)/(c)/(d)</td><td>13:40/14:20 · 21:40/22:05 · 03:10/03:50 · 08:45/09:20</td></tr>
-    <tr><td>831</td><td><strong>AC</strong> — Allocation Constraints wyznaczone przez PSE.</td><td>ZP (N06)</td><td>IDCC(a)/(b)/(c)/(d)</td><td>13:50/14:45 · 21:45/21:55 · 04:15/04:25 · 08:40/09:25</td></tr>
-    <tr><td>921</td><td><strong>NTC</strong> — finalne NTC z procesu IDCC.</td><td>proces Core</td><td>IDCC(a)/(b)/(c)/(d)</td><td>14:45/14:55 · 21:45/21:49 · 04:15/04:30 · 09:20/09:45</td></tr>
+    <tr><td>617</td><td><strong>CBCORA</strong> — Critical Branches, CNEC, outages i RA przekazywane przez PSE.</td><td>Kreator (N07/N08)</td><td>TET 20:00<br>CET 20:19</td><td>TET 00:00<br>CET 00:56</td><td>TET 06:20<br>CET 07:30</td></tr>
+    <tr><td>607</td><td><strong>GLSK</strong> — Generation and Load Shift Keys dla strefy PL.</td><td>Kreator (N07/N08)</td><td>TET 20:00<br>CET 20:19</td><td>TET 00:00<br>CET 00:56</td><td>TET 06:20<br>CET 07:30</td></tr>
+    <tr><td>710</td><td><strong>IVA</strong> — wynik Individual Validation; także wariant IVA BACKUP.</td><td>Perun4V (N03) / CCA backup (N09)</td><td>TET 21:30<br>CET 22:06</td><td>TET 04:00<br>CET 04:36</td><td>TET 09:30<br>CET 10:06</td></tr>
+    <tr><td>831</td><td><strong>AC</strong> — Allocation Constraints wyznaczone przez PSE.</td><td>ZP (N06)</td><td>TET 21:45<br>CET 21:55</td><td>TET 04:15<br>CET 04:25</td><td>TET 08:40<br>CET 09:25</td></tr>
   </tbody>
 </table>
