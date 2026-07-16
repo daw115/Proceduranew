@@ -1,5 +1,6 @@
 .DS_Store
 .history/
+.claude/.history/
 __pycache__/
 Procedura_new/
 Procedura (1).zip
@@ -16,3 +17,4 @@ PROCEDURA_IDCC_TSO_v5_2.docx
 PROCEDURA_IDCC_TSO_v5_2.pdf
 PROCEDURA_IDCC_TSO_v5_2_EDYTOR.html
 PROCEDURA_IDCC_TSO_v6.html
+anchors_pages.json

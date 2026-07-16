@@ -9,8 +9,8 @@ Markdown==3.10.2
 Pillow==12.3.0
 
 # Skrypty legacy i narzędzia pomocnicze
-beautifulsoup4   # generate_docs.py, generate_full.py
-python-docx      # _build_docx.py, _build_naklejki.py, generate_docs.py, generate_full.py
+beautifulsoup4   # generate_full.py
+python-docx      # _build_docx.py, _build_naklejki.py, generate_full.py
 weasyprint       # _build_info_pdf.py, _build_procedure_pdf.py, generate_full.py
 reportlab        # _build_naklejki.py
 openpyxl         # _build_procedure.py, _build_statichints.py, _build_naklejki.py

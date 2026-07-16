@@ -48,13 +48,15 @@ Uwagi:
 `_build_procedure.py` (v5.2; baza v5.1 spoza repo — ścieżka przez env
 `PROCEDURA_V51_SRC`), `_build_docx.py` (v5.2→DOCX, wymaga `pandoc`),
 `_build_procedure_pdf.py` (v5.2→PDF), `_build_procedura_v6.py` (v6),
-`generate_docs.py` / `generate_full.py` (ekstrakcja z v6). Pozostawione dla
+`generate_full.py` (ekstrakcja z v6). Pozostawione dla
 odtwarzalności historycznych wersji; pełne zależności: `pip install -r requirements.txt`.
 
 ## Narzędzia pomocnicze
 
 - `_build_statichints.py` — `Stany_kafelkow_per_plik_IDCC.xlsx` → `CCM/staticHints-IDCC-all.txt`
 - `_build_naklejki.py` / `_build_info_pdf.py` — naklejki i `CCM/info.pdf`
+  (oba skrypty nadpisują ten sam `CCM/info.pdf`; wersją nadrzędną jest
+  `_build_info_pdf.py` — uruchamiać go jako ostatni)
 - `_build_mail.py` — `CCM/mail_opis_prac.html`
 
 ## Bieżąca praca merytoryczna
