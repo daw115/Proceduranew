@@ -16,9 +16,9 @@
   <li><em>[jeśli dotyczy]</em> <strong>IVA BACKUP</strong> → PPM → „Wyślij do CCTool" → opis → Tak; CCtool zwalid. zielony po ~30 s.</li>
 </ol>
 
-<h4 id="hd-a">IDCC(a) — monitoring FID1-928 (bez Perun4V)</h4>
+<h4 id="hd-a">IDCC(a) — monitorowanie FID1-928 (bez Perun4V)</h4>
 <ul class="compact-list">
-  <li><strong>Zakres PSE:</strong> monitoring pliku zwrotnego <strong>FID1-928</strong> w CCM.</li>
+  <li><strong>Zakres PSE:</strong> monitorowanie pliku zwrotnego <strong>FID1-928</strong> w CCM.</li>
   <li><strong>Poza zakresem:</strong> w IDCC(a) nie występują paczka Perun ani IVA FBA.</li>
   <li><strong>Wersja v1:</strong> około 10:00 D-1; wartości zerowe używane jako fallback.</li>
   <li><strong>Wersja v2:</strong> wynik ATC Based Validation publikowany po sprawdzeniu CNEC PL przez CCA.</li>
@@ -84,7 +84,7 @@
 
 <h4 id="hd-inne">Pozostałe scenariusze awaryjne</h4>
 <table class="ref action-table">
-  <thead><tr><th>Problem</th><th>Postępowanie</th><th>Eskalacja</th></tr></thead>
+  <thead><tr><th>Problem</th><th>Postępowanie</th><th>Powiadomienie</th></tr></thead>
   <tbody>
     <tr><td>Perun4V niedostępny</td><td><ul class="cell-list"><li>Wyślij IVA BACKUP v1 do Core CC Tool.</li><li>Jeżeli BACKUP jest niedostępny, zadzwoń do operatora procesu Capacity Calculation.</li><li>Nie stosuj fallbacku 20% Fmax.</li></ul></td><td><ul class="cell-list"><li>Operator procesu Capacity Calculation</li><li>Helpdesk CCC</li></ul></td></tr>
     <tr><td>Wyłączenie awaryjne elementu sieci</td><td><ul class="cell-list"><li>Perun4V: Configurations → Additional NEC/outage.</li><li>Uruchom obliczenia.</li><li>Wyślij IVA w wyższej wersji.</li></ul></td><td><ul class="cell-list"><li>Operator procesu Capacity Calculation</li></ul></td></tr>

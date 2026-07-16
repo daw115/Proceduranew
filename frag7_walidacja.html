@@ -3,7 +3,7 @@
   <li><strong>Zakres:</strong> walidacja domeny Day-Ahead i LTA w Perun4V.</li>
   <li><strong>Wynik:</strong> IVA na przeciążonych CNEC — plik <strong>F310</strong>.</li>
   <li><strong>Tryb normalny:</strong> FBA_TSO_NOR_03 v0.21.</li>
-  <li><strong>Tryb backup:</strong> FBA_TSO_BUP_03 <strong>v0.32</strong> z 05.01.2026; zmiana przepływu <strong>F109 → F308</strong>.</li>
+  <li><strong>Tryb backupowy:</strong> FBA_TSO_BUP_03 <strong>v0.32</strong> z 05.01.2026; zmiana przepływu <strong>F109 → F308</strong>.</li>
   <li><strong>IDCC:</strong> odpowiednikiem jest Individual Validation — patrz <a href="#happyday">przebieg nominalny</a>.</li>
 </ul>
 
@@ -25,17 +25,17 @@
 <p><strong>Monitorowanie:</strong></p>
 <ul>
   <li><strong>CCM</strong> (pulpit DACC): kafelek „Paczka ZIP_CCA na MinIO do PERUN" / „Paczka ZIP_LTA do PERUN" zielony; kolumna „sFTP/ZP wysł." potwierdza przekazanie przez Connector; następnie przekazanie IVA do CCCt i odbiór raportów z Perun.</li>
-  <li><strong>Perun4V</strong> (<code>lccv.tscnet.eu</code>, Local Login): obliczenia widoczne dla usera <code>sFTP@pse.pl</code>; sprawdź BD i status.</li>
+  <li><strong>Perun4V</strong> (<code>lccv.tscnet.eu</code>, Local Login): obliczenia widoczne dla użytkownika <code>sFTP@pse.pl</code>; sprawdź BD i status.</li>
   <li><strong>E-mail</strong> (<code>kdm6@pse.pl</code>): raport CCA — czy wszystkie godziny policzone (raport VALIDATION_OVERVIEW, maks. IVA) oraz raporty obcięć LTA (arkusze „LTA IVA PL", „LTA IVA nonPL", „top CNEC (IVA)"; kolumny LTA-XX-YY_init / curtailment). Raport także na MinIO: <code>cca/DA_FBCC/out/&lt;BD&gt;</code>.</li>
 </ul>
 
-<h4 id="wal-bup">Tryb backup (BUP v0.32) — ręczne przygotowanie paczki i walidacji</h4>
+<h4 id="wal-bup">Tryb backupowy (BUP v0.32) — ręczne przygotowanie paczki i walidacji</h4>
 <p>Stosowany, gdy wystąpi zdarzenie poza normalnym przebiegiem (brak paczki na MinIO,
 awaria Connector 2.0, brak dostępu do MinIO). Kroki:</p>
 <ol>
   <li><strong>Pobierz pliki wejściowe ręcznie z CCCt</strong>: Message Viewer → w polu Message Definition wpisz numer pliku → Apply → pobierz strzałką w dół. Lista: <strong>F110</strong> (RefProg), <strong>F112</strong> (Merged GLSK), <strong>F212</strong> (Intermediate FB Domain), <strong>F226</strong> (Real GLSK), <strong>F308</strong> (Merged / Merged Best Optimized D-2CF CGM — <em>zmiana v0.32: dawniej F109</em>), <strong>F312</strong> (Individual Filtered CB — odbiorcą musi być PSE!), <strong>F327</strong> (konfiguracja RAO), <strong>F515</strong> (MergingLog; F123 i F515 zamiennie). Dodatkowo do narzędzia stand-alone: F320, F118, F114, F110.</li>
-  <li><strong>Przygotuj F320_CCA i VERTICES_MAP_CCA</strong> narzędziem <code>fbc_lta_vertices.exe</code> (wg Ryzyka 14). Dołącz <code>yyyy_MM_dd_CORE_FB_DA_RA_PL.xlsx</code> z katalogu sieciowego <code>\\uo-data\…\FBA\Pliki wejściowe do DA FBA\rrrrMMdd\</code>.</li>
-  <li><strong>Spakuj paczkę</strong> (7-Zip → „Dodaj do archiwum…", format <strong>zip</strong>, bez hasła; np. <code>rrrrMMddPerun1.zip</code>) — skład wg Tabeli 1 BUP (11 pozycji, maski <code>YYYYmmDD-Fxxx-vX-17XTSO-CS------W-to-10V1001C--00085T.*</code>).</li>
+  <li><strong>Przygotuj F320_CCA i VERTICES_MAP_CCA</strong> narzędziem <code>fbc_lta_vertices.exe</code> (zgodnie z opisem Ryzyka 14). Dołącz <code>yyyy_MM_dd_CORE_FB_DA_RA_PL.xlsx</code> z katalogu sieciowego <code>\\uo-data\…\FBA\Pliki wejściowe do DA FBA\rrrrMMdd\</code>.</li>
+  <li><strong>Spakuj paczkę</strong> (7-Zip → „Dodaj do archiwum…", format <strong>zip</strong>, bez hasła; np. <code>rrrrMMddPerun1.zip</code>) — skład zgodnie z Tabelą 1 BUP (11 pozycji, maski <code>YYYYmmDD-Fxxx-vX-17XTSO-CS------W-to-10V1001C--00085T.*</code>).</li>
   <li><strong>Perun4V</strong>: wskaż rodzaj procesu → przeciągnij ZIP (data w nazwie ustawia BD) → sprawdź datę BD → uruchom obliczenia („Calculation started") → po zakończeniu status <em>Calculating</em> zmienia się na datę zakończenia.</li>
   <li><strong>Pobierz wyniki</strong>: F310 (przycisk pobrania) oraz raporty (Status → „Download reports"); zapisz do katalogu sieciowego <code>…\rrrrMMdd\PERUN\</code>.</li>
   <li><strong>Wgraj F310 do CCCt</strong>: Message Viewer → „Manual Upload" → wybierz plik → „Upload file" → odśwież → Message Definition „310 – Individual CB Validation" → Apply → dla sendera PSE status <strong>Processed</strong>.</li>
