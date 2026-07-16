@@ -2,14 +2,14 @@
 
 <ul class="compact-list">
   <li><strong>Wspólna struktura:</strong> IDCC(b) (ID2), IDCC(c) (ID3C) i IDCC(d) (ID3).</li>
-  <li><strong>Różnice:</strong> liczba timestampów, TET/CET, prefiksy FID oraz kody fallback.</li>
+  <li><strong>Różnice:</strong> liczba timestampów, TET/CET, prefiksy FID oraz kody zdarzeń.</li>
   <li><strong>Rola PSE:</strong> TSO dostarczający dane, wykonujący Individual Validation i monitorujący wyniki.</li>
   <li><strong>Poza zakresem:</strong> kroki centralne CCCt/RCC/FBPCM niewymagające działania PSE.</li>
 </ul>
 
 <h4>Różnice między iteracjami</h4>
 <table class="ref">
-  <thead><tr><th>Iteracja</th><th>Prefiks FID</th><th>Liczba TS</th><th>AAC — start</th><th>NTC do XBID — termin / po terminie</th><th>Po opóźnieniu</th><th>Kody fallback</th></tr></thead>
+  <thead><tr><th>Iteracja</th><th>Prefiks FID</th><th>Liczba TS</th><th>AAC — start</th><th>NTC do XBID — termin / po terminie</th><th>Po opóźnieniu</th><th>Kody zdarzeń</th></tr></thead>
   <tbody>
     <tr><td>IDCC(b) / ID2</td><td>FID2-###</td><td>24</td><td>~20:00 (D-1)</td><td>21:45 / po 21:55</td><td>restart po IDA2; NTC &lt; 22:30</td><td>ID2_1–ID2_25</td></tr>
     <tr><td>IDCC(c) / ID3C</td><td>FID3C-###</td><td>18</td><td>02:00 (D)</td><td>brak odrębnego progu opóźnienia</td><td>—</td><td>ID3C_1–ID3C_23</td></tr>
@@ -22,14 +22,21 @@
 <ul class="compact-list">
   <li><strong>GLSK (FIDx-607):</strong> Generation and Load Shift Keys dla strefy PL.</li>
   <li><strong>CBCORA (FIDx-617):</strong> Critical Branches, outages i RA dla CNEC PSE.</li>
-  <li><strong>IGM:</strong> modele DACF_IGM_UCT.
-    <ul class="sub-list">
-      <li><strong>Ścieżka:</strong> PSE / TSO Data Preparation → serwer Swissgrid → TSCNET (RCC odpowiedzialny za PSE).</li>
-      <li><strong>CGM:</strong> TSCNET tworzy CGM (FIDx-620), a Coreso jako Merging Entity przekazuje merging package do CCCt.</li>
-      <li><strong>IDCC(b):</strong> Combined DACF.</li>
-      <li><strong>IDCC(c)–(d):</strong> TSCNET IDCF.</li>
-    </ul>
-  </li>
+  <li><strong>IGM:</strong> modele DACF_IGM_UCT.</li>
+</ul>
+<div class="flow-diagram flow-four" id="igm-rcc-flow" role="img" aria-label="Przebieg przekazania IGM z PSE przez serwer Swissgrid i TSCNET do Coreso">
+  <div class="flow-node"><strong>PSE / TSO Data Preparation</strong><span>przygotowanie IGM</span></div>
+  <div class="flow-arrow" aria-hidden="true">→</div>
+  <div class="flow-node"><strong>serwer Swissgrid</strong><span>przekazanie modelu</span></div>
+  <div class="flow-arrow" aria-hidden="true">→</div>
+  <div class="flow-node flow-node-hub"><strong>TSCNET</strong><span>RCC odpowiedzialny za PSE; utworzenie CGM</span></div>
+  <div class="flow-arrow" aria-hidden="true">→</div>
+  <div class="flow-node"><strong>Coreso / Core CC Tool</strong><span>merging package i proces centralny</span></div>
+</div>
+<ul class="compact-list">
+  <li><strong>CGM:</strong> TSCNET tworzy CGM (FIDx-620), a Coreso jako Merging Entity przekazuje merging package do CCCt.</li>
+  <li><strong>IDCC(b):</strong> Combined DACF.</li>
+  <li><strong>IDCC(c)–(d):</strong> TSCNET IDCF.</li>
   <li><strong>RefProg (FIDx-632):</strong> wynik centralny przekazywany do PSE.</li>
   <li><strong>External Constraints:</strong> ograniczenia net position strefy PL zgodne z art. 10 ID CCM.</li>
   <li><strong>RA / RA Settings / TOPO:</strong> środki zaradcze i aktualizacje topologii IGM.</li>
@@ -43,7 +50,7 @@
   <li><strong>Dystrybucja do PSE:</strong> CGM, RefProg i DA Domain.</li>
   <li><strong>Liczba paczek:</strong> 3 dla IDCC(b); 2 dla IDCC(c) i IDCC(d).</li>
   <li><strong>Działanie PSE:</strong> monitorowanie odbioru plików; w tym kroku nie przewidziano ponownej wysyłki IGM przez PSE.</li>
-  <li><strong>Fallback:</strong>
+  <li><strong>Automatyczny fallback:</strong> <span class="mode-badge mode-auto">FALLBACK AUTOMATYCZNY</span>
     <ul class="sub-list">
       <li><code>ID2_5</code> — Coreso/Merging Entity kolejno przygotowuje merging package z Combined DACF, najnowszym dostępnym DACF Coreso, a następnie najnowszym dostępnym DACF TSCNET. Jeżeli CGM nadal nie zostanie dostarczony, CCCt stosuje automatyczny fallback; brak części TS jest komunikowany osobno.</li>
       <li><code>ID3C_5</code> / <code>ID3_5</code> — przy braku całego merging package CCCt stosuje automatyczny fallback, a Coreso informuje wszystkie strony; przy braku części TS operator procesu Capacity Calculation przekazuje informację mailowo.</li>
@@ -103,7 +110,7 @@
   <li><strong>Wynik:</strong> Final NTC (FIDx-921) i ATC (FIDx-922) dla granic PSE.</li>
   <li><strong>Kontrola:</strong> przy ręcznej wysyłce przez sFTP lub problemie z ACK TSO po obu stronach granicy sprawdzają zdolności.</li>
   <li><strong>Terminy:</strong> IDCC(b) 21:45 / 21:55; IDCC(d) 09:45 / 09:55.</li>
-  <li><strong>Działanie PSE:</strong> monitorowanie finalnych NTC oraz, jeżeli wymaga tego fallback, potwierdzenie wyniku operatorowi procesu Capacity Calculation.</li>
+  <li><strong>Działanie PSE:</strong> monitorowanie finalnych NTC oraz potwierdzenie wyniku wyłącznie wtedy, gdy operator procesu zwróci się o nie w związku ze zdarzeniem procesowym.</li>
 </ul>
 
 <h4>Export CGM at AAC / Nodal PTDF / Translate Domain to AAC / Net Positions / Distribute Inputs</h4>
@@ -113,22 +120,23 @@
   <li><strong>Działanie PSE:</strong> odbiór i monitorowanie; brak czynności ręcznej w przebiegu nominalnym.</li>
 </ul>
 
-<h4>Fallbacki istotne dla PSE / TSO</h4>
+<h4>Automatyczne fallbacki i działania backupowe istotne dla PSE / TSO</h4>
+<p class="mode-legend"><span class="mode-badge mode-auto">FALLBACK AUTOMATYCZNY</span> wykonuje system bez reakcji dyspozytora. <span class="mode-badge mode-backup">DZIAŁANIE BACKUPOWE</span> wymaga ręcznej reakcji PSE. <span class="mode-badge mode-process">DZIAŁANIE PROCESOWE</span> oznacza komunikację lub czynność operatora procesu bez ręcznego obejścia po stronie PSE.</p>
 <table class="ref action-table">
   <thead><tr><th>Kod</th><th>Krok</th><th>Sytuacja</th><th>Działanie PSE / operatora procesu</th><th>Mail #</th></tr></thead>
   <tbody>
-    <tr><td>ID2_4 / ID3C_4 / ID3_4</td><td>TSO Data Gathering</td><td>Brak AAC z IDCC(a)</td><td><ul class="cell-list"><li>PSE wysyła AAC do XBID lokalnym narzędziem przed terminem: IDCC(b) 20:00 / IDCC(c) 02:00 / IDCC(d) 07:00.</li><li>PSE potwierdza obecność AAC operatorowi procesu Capacity Calculation.</li></ul></td><td>—</td></tr>
-    <tr><td>ID2_6 / ID3C_6 / ID3_6</td><td>TSO Data Merging</td><td>Brak pliku MANDATORY</td><td><ul class="cell-list"><li>Operator procesu Capacity Calculation kontaktuje się z PSE.</li><li>PSE dostarcza brakujący plik przed <strong class="deadline-critical">CET</strong>.</li><li>Operator procesu informuje pozostałe strony.</li></ul></td><td>4</td></tr>
-    <tr><td>ID2_7 / ID3C_7 / ID3_7</td><td>TSO Data Merging</td><td>Brak lub błąd GLSK PSE</td><td><ul class="cell-list"><li>Na instrukcję operatora procesu PSE dostarcza lub koryguje GLSK.</li><li>PSE może zaproponować replacement strategy.</li><li>Jeżeli problem pozostaje, operator procesu wymusza bramki i kontynuuje z Fallback Domain.</li></ul></td><td>3</td></tr>
-    <tr><td>ID2_8 / ID3C_8 / ID3_8</td><td>TSO Data Merging</td><td>Brak lub błąd External Constraints PSE</td><td><ul class="cell-list"><li>Na instrukcję operatora procesu PSE dostarcza lub koryguje External Constraints.</li><li>PSE może zaproponować replacement strategy.</li><li>Jeżeli problem pozostaje, operator procesu wymusza bramki i kontynuuje z Fallback Domain.</li></ul></td><td>3</td></tr>
-    <tr><td>ID2_9 / ID3C_9 / ID3_9</td><td>TSO Data Merging</td><td>Brak lub błąd CB PSE</td><td><ul class="cell-list"><li>Na instrukcję operatora procesu PSE dostarcza lub koryguje CB.</li><li>PSE może zaproponować replacement strategy.</li><li>Jeżeli problem pozostaje, operator procesu wymusza bramki i kontynuuje z Fallback Domain.</li></ul></td><td>3</td></tr>
-    <tr><td>ID2_11 / ID3C_11 / ID3_11</td><td>Initial FB Computation</td><td>Fallback dla części TS</td><td><ul class="cell-list"><li>PSE przyjmuje do wiadomości mail z listą TS.</li><li>Brak działania PSE.</li></ul></td><td>5</td></tr>
-    <tr><td>ID2_13 / ID3C_13 / ID3_13</td><td>Final FB Computation</td><td>Fallback dla części TS</td><td><ul class="cell-list"><li>PSE przyjmuje do wiadomości mail z listą TS.</li><li>Brak działania PSE.</li></ul></td><td>5</td></tr>
-    <tr><td>ID2_15 / ID3_15</td><td>ID ATC Extraction</td><td>NTC po terminie: IDCC(b) 21:45 / IDCC(d) 09:45</td><td><ul class="cell-list"><li>PSE monitoruje informację.</li><li>Operator procesu publikuje UMM.</li></ul></td><td>ID2: 24,22 / ID3: 23,22</td></tr>
-    <tr><td>ID2_16 / ID3_16</td><td>ID ATC Extraction</td><td>NTC po 21:55 / 09:55</td><td><ul class="cell-list"><li>PSE monitoruje informację.</li><li>Operator procesu publikuje UMM o opóźnieniu.</li></ul></td><td>32,33</td></tr>
-    <tr><td>ID2_17 / ID3C_15 / ID3_17</td><td>ID ATC Extraction</td><td>Nieudana ekstrakcja ATC</td><td><ul class="cell-list"><li>PSE monitoruje informację mailową.</li><li>Operator procesu publikuje UMM.</li></ul></td><td>ID2: 2,27 / ID3C: 2,28 / ID3: 2,29</td></tr>
-    <tr><td>ID2_19 / ID3C_17 / ID3_19</td><td>ID ATC Extraction</td><td>Brak lub negatywny ACK dla NTC (FIDx-921)</td><td><ul class="cell-list"><li>TSO po obu stronach granicy weryfikują zdolności w XBID.</li><li>TSO potwierdzają wynik operatorowi procesu Capacity Calculation.</li></ul></td><td>12,7</td></tr>
-    <tr><td>ID2_23 / ID3C_21 / ID3_23</td><td>Cały proces</td><td>CCCt niedostępny w CET</td><td><ul class="cell-list"><li>PSE monitoruje informację mailową o awarii.</li><li>Operator procesu publikuje UMM.</li></ul></td><td>ID2: 2,27 / ID3C: 2,28 / ID3: 2,29</td></tr>
-    <tr><td>ID2_24 / ID3C_22 / ID3_24</td><td>Cały proces</td><td>Problem EDX/ECP TSO↔CCCt</td><td><ul class="cell-list"><li>Operator PSE zgłasza problem do Helpdesk CCC.</li><li>PSE wysyła pliki wejściowe przez Message Viewer albo mailem, zgodnie z otrzymaną instrukcją.</li></ul></td><td>—</td></tr>
+    <tr><td>ID2_4 / ID3C_4 / ID3_4</td><td>TSO Data Gathering</td><td><span class="mode-badge mode-backup">DZIAŁANIE BACKUPOWE</span> Brak AAC z IDCC(a)</td><td><ul class="cell-list"><li>PSE wysyła AAC do XBID przez ZP przed terminem: IDCC(b) 20:00 / IDCC(c) 02:00 / IDCC(d) 07:00.</li><li>PSE potwierdza obecność AAC operatorowi procesu Capacity Calculation.</li></ul></td><td>—</td></tr>
+    <tr><td>ID2_6 / ID3C_6 / ID3_6</td><td>TSO Data Merging</td><td><span class="mode-badge mode-backup">DZIAŁANIE BACKUPOWE</span> Brak pliku <strong class="mandatory-note">UWAGA: MANDATORY</strong></td><td><ul class="cell-list"><li>Operator procesu Capacity Calculation kontaktuje się z PSE.</li><li>PSE dostarcza brakujący plik przed <strong class="deadline-critical">CET</strong>.</li><li>Operator procesu informuje pozostałe strony.</li></ul></td><td>4</td></tr>
+    <tr><td>ID2_7 / ID3C_7 / ID3_7</td><td>TSO Data Merging</td><td><span class="mode-badge mode-backup">DZIAŁANIE BACKUPOWE</span> Brak lub błąd GLSK PSE</td><td><ul class="cell-list"><li>Na instrukcję operatora procesu PSE dostarcza lub koryguje GLSK.</li><li>PSE może zaproponować replacement strategy.</li><li>Jeżeli problem pozostaje, operator procesu wymusza bramki i kontynuuje z Fallback Domain.</li></ul></td><td>3</td></tr>
+    <tr><td>ID2_8 / ID3C_8 / ID3_8</td><td>TSO Data Merging</td><td><span class="mode-badge mode-backup">DZIAŁANIE BACKUPOWE</span> Brak lub błąd External Constraints PSE</td><td><ul class="cell-list"><li>Na instrukcję operatora procesu PSE dostarcza lub koryguje External Constraints.</li><li>PSE może zaproponować replacement strategy.</li><li>Jeżeli problem pozostaje, operator procesu wymusza bramki i kontynuuje z Fallback Domain.</li></ul></td><td>3</td></tr>
+    <tr><td>ID2_9 / ID3C_9 / ID3_9</td><td>TSO Data Merging</td><td><span class="mode-badge mode-backup">DZIAŁANIE BACKUPOWE</span> Brak lub błąd CB PSE</td><td><ul class="cell-list"><li>Na instrukcję operatora procesu PSE dostarcza lub koryguje CB.</li><li>PSE może zaproponować replacement strategy.</li><li>Jeżeli problem pozostaje, operator procesu wymusza bramki i kontynuuje z Fallback Domain.</li></ul></td><td>3</td></tr>
+    <tr><td>ID2_11 / ID3C_11 / ID3_11</td><td>Initial FB Computation</td><td><span class="mode-badge mode-auto">FALLBACK AUTOMATYCZNY</span> Fallback dla części TS</td><td><ul class="cell-list"><li>PSE przyjmuje do wiadomości mail z listą TS.</li><li>Brak działania PSE.</li></ul></td><td>5</td></tr>
+    <tr><td>ID2_13 / ID3C_13 / ID3_13</td><td>Final FB Computation</td><td><span class="mode-badge mode-auto">FALLBACK AUTOMATYCZNY</span> Fallback dla części TS</td><td><ul class="cell-list"><li>PSE przyjmuje do wiadomości mail z listą TS.</li><li>Brak działania PSE.</li></ul></td><td>5</td></tr>
+    <tr><td>ID2_15 / ID3_15</td><td>ID ATC Extraction</td><td><span class="mode-badge mode-process">DZIAŁANIE PROCESOWE</span> NTC po terminie: IDCC(b) 21:45 / IDCC(d) 09:45</td><td><ul class="cell-list"><li>PSE monitoruje informację.</li><li>Operator procesu publikuje UMM.</li></ul></td><td>ID2: 24,22 / ID3: 23,22</td></tr>
+    <tr><td>ID2_16 / ID3_16</td><td>ID ATC Extraction</td><td><span class="mode-badge mode-process">DZIAŁANIE PROCESOWE</span> NTC po 21:55 / 09:55</td><td><ul class="cell-list"><li>PSE monitoruje informację.</li><li>Operator procesu publikuje UMM o opóźnieniu.</li></ul></td><td>32,33</td></tr>
+    <tr><td>ID2_17 / ID3C_15 / ID3_17</td><td>ID ATC Extraction</td><td><span class="mode-badge mode-process">DZIAŁANIE PROCESOWE</span> Nieudana ekstrakcja ATC</td><td><ul class="cell-list"><li>PSE monitoruje informację mailową.</li><li>Operator procesu publikuje UMM.</li></ul></td><td>ID2: 2,27 / ID3C: 2,28 / ID3: 2,29</td></tr>
+    <tr><td>ID2_19 / ID3C_17 / ID3_19</td><td>ID ATC Extraction</td><td><span class="mode-badge mode-process">DZIAŁANIE PROCESOWE</span> Brak lub negatywny ACK dla NTC (FIDx-921)</td><td><ul class="cell-list"><li>TSO po obu stronach granicy weryfikują zdolności w XBID.</li><li>TSO potwierdzają wynik operatorowi procesu Capacity Calculation.</li></ul></td><td>12,7</td></tr>
+    <tr><td>ID2_23 / ID3C_21 / ID3_23</td><td>Cały proces</td><td><span class="mode-badge mode-process">DZIAŁANIE PROCESOWE</span> CCCt niedostępny w CET</td><td><ul class="cell-list"><li>PSE monitoruje informację mailową o awarii.</li><li>Operator procesu publikuje UMM.</li></ul></td><td>ID2: 2,27 / ID3C: 2,28 / ID3: 2,29</td></tr>
+    <tr><td>ID2_24 / ID3C_22 / ID3_24</td><td>Cały proces</td><td><span class="mode-badge mode-backup">DZIAŁANIE BACKUPOWE</span> Problem EDX/ECP TSO↔CCCt</td><td><ul class="cell-list"><li>Operator PSE zgłasza problem do Helpdesk CCC.</li><li>PSE wysyła pliki wejściowe przez Message Viewer albo mailem, zgodnie z otrzymaną instrukcją.</li></ul></td><td>—</td></tr>
   </tbody>
 </table>
