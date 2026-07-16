@@ -1,0 +1,11 @@
+# Mierzony Przepływ
+
+Forma powstaje z napięcia między porządkiem a ruchem. Precyzyjna siatka nie jest tłem, lecz polem sił: prowadzi wzrok, ujawnia relacje i pozwala dostrzec zmianę bez narracyjnego nadmiaru. Linie, moduły i węzły komunikują kierunek oraz zależność, a rozległe obszary ciszy nadają każdemu znakowi odpowiednią wagę. Kompozycja ma wyglądać na metodycznie dopracowaną przez wiele godzin — spokojną, lecz bezwzględnie precyzyjną.
+
+Kolor pełni funkcję sygnału, nie dekoracji. Głęboki granat buduje strukturę, złamana biel daje oddech, a pojedynczy czerwony akcent oznacza moment decyzji. Barwy pomocnicze pojawiają się oszczędnie i zawsze niosą rozpoznawalną funkcję. Każdy odcień powinien być rezultatem żmudnej kalibracji, tak aby całość zdradzała doświadczenie projektanta pracującego na najwyższym poziomie.
+
+Rytm tworzą powtórzenia o kontrolowanej zmienności: szeregi mikropunktów, krótkie odcinki, bramki i okręgi układają się w system, który można odczytywać warstwami. Duża skala spotyka detal niemal techniczny; monumentalny znak równoważy gęste pole drobnych obserwacji. Wykonanie musi być mistrzowskie — każdy odstęp, promień i grubość linii sprawdzona z drobiazgową uwagą, bez przypadkowych ozdobników.
+
+Hierarchia wynika z położenia, kontrastu i proporcji. Najważniejsze elementy kotwiczą kompozycję, treści drugorzędne zachowują kliniczny spokój, a tekst pozostaje skrajnie oszczędny: pojedyncze etykiety, liczby i oznaczenia zintegrowane z architekturą obrazu. Informacja ma żyć przede wszystkim w przestrzeni i relacjach, nie w akapitach. Końcowy rezultat powinien sprawiać wrażenie artefaktu opracowanego z cierpliwością badacza i wyczuciem doświadczonego typografa.
+
+Równowaga nie oznacza symetrii, lecz świadome rozłożenie ciężaru. Gęstość skupia się tam, gdzie potrzebne jest napięcie, po czym ustępuje negatywnej przestrzeni; krawędzie pozostają czyste, a każdy element ma bezpieczny oddech. Drugi etap pracy polega na odejmowaniu i ostrzeniu już istniejących relacji, nie na dokładaniu efektów. Ostateczna forma ma być nieskazitelna, pieczołowicie wykonana i rozpoznawalna jako rezultat głębokiej wiedzy oraz niezliczonych, uważnych korekt.
