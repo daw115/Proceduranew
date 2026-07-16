@@ -12,13 +12,17 @@ Warstwy:
   CCM/staticHints-IDCC-all.txt — 974 stany / 71 plików (sytuacja + procedury awaryjne)
   screens_manifest.json        — 309 screenów (opis, mapowanie, podpis, jakość)
 """
-import json, re, html, base64, mimetypes
+import json, re, html, base64, mimetypes, os
 from pathlib import Path
 from collections import defaultdict, OrderedDict
 import markdown
 
 ROOT = Path(__file__).parent
-OUT  = ROOT / 'PROCEDURA_IDCC_TSO_v7.html'
+OUT = ROOT / os.environ.get('PROCEDURA_OUTPUT', 'PROCEDURA_IDCC_TSO_v7.html')
+STICKERS_OUT = ROOT / os.environ.get('PROCEDURA_STICKERS_OUTPUT', 'STICKERY_IDCC.md')
+FINAL_LAYOUT = os.environ.get('PROCEDURA_LAYOUT', '').strip().lower() == 'measured-flow'
+INCLUDE_COMMENTS = os.environ.get('PROCEDURA_INCLUDE_COMMENTS', '1') != '0'
+BODY_CLASS = 'edition-final' if FINAL_LAYOUT else 'edition-standard'
 
 # Metryka wydania roboczego. Pola formalne pozostają jawnie puste, ponieważ
 # materiały źródłowe nie wskazują autora, zatwierdzającego ani dat zatwierdzenia.
@@ -285,7 +289,9 @@ RYZ_HTML = re.sub(r'<h1', '<h4 class="risk-h"', RYZ_HTML); RYZ_HTML = re.sub(r'<
 
 def load_frag7(name):
     p = ROOT / name
-    return p.read_text(encoding='utf-8') if p.exists() else f'<!-- brak {name} -->'
+    if not p.is_file():
+        raise FileNotFoundError(f'Brak wymaganego fragmentu procedury: {name}')
+    return p.read_text(encoding='utf-8')
 
 
 # rejestr narzędzi: kod Nxx → unikalna nazwa (krótka, bez numeru)
@@ -708,6 +714,88 @@ border-radius:999px;font:700 10.5px var(--mono)}
 @media(max-width:560px){.quickgrid,.semantic-key,.deadline-grid,.procedure-facts,.architecture-tools,.architecture-external .architecture-tools{grid-template-columns:1fr}.architecture-arrows{grid-template-columns:1fr}.architecture-arrows span:not(:first-child){display:none}.flow-three,.flow-four{grid-template-columns:1fr}.flow-arrow{transform:rotate(90deg)}.hero{padding:22px 20px}.hero h1{font-size:28px}.procedure-section>.section-header h2{font-size:22px}.section-kicker{align-items:flex-start;flex-direction:column;gap:5px}.caption-size{grid-column:2;white-space:normal}.caption-text{grid-column:2}.caption-label{grid-row:1 / span 2}}
 """
 
+FINAL_CSS = r"""
+/* ── wydanie finalne: system „Mierzony Przepływ” ── */
+body.edition-final{
+ --paper:#efede5;--panel:#fffefa;--ink:#132a43;--fg:#24364a;--mut:#677684;
+ --rule:#d6d8d4;--rule2:#b9c0c4;--navy:#173f63;--acc:#1e668f;--accbg:#e8f0f4;
+ --warn:#9a6208;--warnb:#f8eedb;--err:#b72e2a;--errb:#f8e9e6;
+ --ok:#28704d;--okb:#e7f1ea;--run:#62549a;--runb:#eeebf6;
+ --sans:'Noto Sans','Segoe UI',Arial,sans-serif;
+ --cond:'Noto Sans','Segoe UI Semibold',Arial,sans-serif;
+ --serif:'Noto Sans','Segoe UI',Arial,sans-serif;
+ --mono:'Noto Sans Mono','Cascadia Mono',Consolas,monospace;
+ background:#e8e8e3;font-size:15.25px;line-height:1.62;
+}
+.edition-final .wrap{max-width:1720px;background:var(--panel)}
+.edition-final nav:not(.section-links){width:318px;background:#10283e;padding:27px 16px 46px;border-right:1px solid #28455e}
+.edition-final nav:not(.section-links)>h2{margin:0 7px 22px;padding-bottom:15px;color:#aebdca;letter-spacing:.16em}
+.edition-final .nav-group{margin-bottom:22px}
+.edition-final .nav-group-heading{gap:10px;margin:0 7px 7px;padding-bottom:7px;font-size:11.5px}
+.edition-final .nav-group-heading span{width:25px;height:25px;border-radius:0;background:transparent;color:#f6f4ec;border:1px solid #879aaa}
+.edition-final nav:not(.section-links) a{grid-template-columns:31px 1fr;padding:7px 9px;border-left-width:2px;border-radius:0;color:#dce3e7}
+.edition-final nav:not(.section-links) a>span{color:#8ca6b9}
+.edition-final .nav-start{margin-bottom:23px;background:transparent;border-top:1px solid rgba(255,255,255,.14);border-bottom:1px solid rgba(255,255,255,.14)}
+.edition-final main{max-width:1340px;padding:38px 58px 82px;border:0;box-shadow:18px 0 50px rgba(19,42,67,.08)}
+.edition-final h1,.edition-final h2,.edition-final h3,.edition-final h4{font-family:var(--cond)}
+.edition-final h3{margin-top:2em;font-size:18px}.edition-final h4{margin-top:1.35em}
+.edition-final .hero{display:grid;grid-template-columns:minmax(0,1fr) 315px;gap:32px;min-height:330px;margin:0 0 25px;padding:31px 34px;color:var(--ink);background:var(--paper);border:1px solid var(--ink);border-top:8px solid var(--err);border-radius:0;box-shadow:none;overflow:hidden}
+.edition-final .hero-copy{position:relative;z-index:2;align-self:end}
+.edition-final .hero .eyebrow{color:var(--mut);font-size:10px;letter-spacing:.18em}
+.edition-final .hero h1{max-width:690px;margin:.55em 0 .22em;color:var(--ink);font-size:42px;line-height:1.08;letter-spacing:-.025em}
+.edition-final .hero .subtitle{max-width:700px;color:#40566a;font-size:15.5px;line-height:1.58}
+.edition-final .hero-meta{gap:7px 19px;margin-top:24px;padding-top:14px;border-top:1px solid var(--ink);color:var(--navy);font-size:10px}
+.edition-final .hero-visual{position:relative;min-height:260px;border-left:1px solid var(--rule2);background:repeating-linear-gradient(0deg,transparent 0 27px,rgba(19,42,67,.11) 27px 28px)}
+.edition-final .hero-visual::before,.edition-final .hero-visual::after{content:"";position:absolute;border-radius:50%;border:2px solid var(--navy);right:-58px;bottom:-92px}
+.edition-final .hero-visual::before{width:294px;height:294px}.edition-final .hero-visual::after{width:196px;height:196px;right:-9px;bottom:-43px;border-color:var(--err);border-width:5px}
+.edition-final .hero-rails{display:grid;grid-template-columns:repeat(5,1fr);height:100%}
+.edition-final .hero-rails span{position:relative;border-right:1px solid rgba(19,42,67,.18)}
+.edition-final .hero-rails span::before{content:attr(data-label);position:absolute;top:7px;left:9px;font:700 11px var(--mono);color:var(--mut)}
+.edition-final .hero-rails span:nth-child(4)::after{content:"40 / 25";position:absolute;right:8px;bottom:9px;font:700 13px var(--mono);color:var(--err)}
+.edition-final .callout{border-radius:0}.edition-final .callout::before{width:8px;background:var(--warn)}
+.edition-final .callout-danger::before{background:var(--err)}
+.edition-final .doc-tools{top:8px;margin-bottom:24px;padding:8px 12px;background:rgba(255,254,250,.96);border-radius:0;box-shadow:0 7px 22px rgba(19,42,67,.08)}
+.edition-final .doc-tools button{border-radius:0;padding:6px 11px}.edition-final .offline-badge{border-radius:2px}
+.edition-final .quickgrid{gap:0;margin:23px 0 28px;border:1px solid var(--rule2)}
+.edition-final .quickcard{min-height:112px;padding:15px 17px;border:0;border-right:1px solid var(--rule2);border-top:5px solid var(--navy);border-radius:0;box-shadow:none}
+.edition-final .quickcard:last-child{border-right:0}.edition-final .quickcard:hover{transform:none;background:#f7f8f5;box-shadow:inset 0 -4px 0 var(--acc)}
+.edition-final .quickcard .qicon{font:700 20px var(--mono)}.edition-final .quickcard b{margin:9px 0 3px;font-size:14px}
+.edition-final .semantic-key{gap:0;margin:0 0 35px;border:1px solid var(--rule2)}
+.edition-final .key-item{min-height:58px;border:0;border-right:1px solid var(--rule2);border-radius:0;background:#fbfbf7}
+.edition-final .key-item:last-child{border-right:0}.edition-final .key-dot{width:5px;height:34px;border-radius:0}
+.edition-final .procedure-section{--group-color:var(--navy);margin:66px 0 92px;padding-bottom:38px;border-bottom:1px solid var(--ink)}
+.edition-final .procedure-section[data-group="A"]{--group-color:#6f7e89}.edition-final .procedure-section[data-group="B"]{--group-color:var(--acc)}
+.edition-final .procedure-section[data-group="C"]{--group-color:var(--navy)}.edition-final .procedure-section[data-group="D"]{--group-color:var(--warn)}
+.edition-final .procedure-section[data-group="E"]{--group-color:var(--err)}
+.edition-final .procedure-section>.section-header{display:grid;grid-template-columns:82px 1fr;margin:0 0 19px;padding:22px 0 19px;border:0;border-top:2px solid var(--ink);border-bottom:1px solid var(--rule2);border-radius:0;background:transparent}
+.edition-final .section-kicker{grid-row:1 / span 2;display:block;margin:0;padding-right:17px;border-right:5px solid var(--group-color)}
+.edition-final .section-number{display:block;min-width:0;height:auto;padding:0;background:transparent;color:var(--ink);font:500 42px/1 var(--cond);letter-spacing:-.04em;text-align:left}
+.edition-final .section-category{display:block;margin-top:12px;color:var(--group-color);font-size:9px;line-height:1.35;letter-spacing:.1em}
+.edition-final .procedure-section>.section-header h2{align-self:end;margin:0;padding:0 0 4px 22px;font-size:27px;line-height:1.18;letter-spacing:-.012em}
+.edition-final .section-summary{align-self:start;margin:0;padding-left:22px;max-width:900px;font-size:13.5px;line-height:1.5}
+.edition-final .section-links{margin:0 0 25px;padding:9px 12px;border-radius:0;background:#f6f6f2}
+.edition-final .mini{border-radius:0;background:transparent;border-color:var(--rule2)}
+.edition-final .procedure-fact,.edition-final .pse-action,.edition-final .backup-action,.edition-final .iva-extension{border-radius:0;box-shadow:none}
+.edition-final .pse-action{border-color:#9fb8c8;border-left-color:var(--acc)}.edition-final .backup-action{border-color:#d8aaa6;border-left-color:var(--err)}
+.edition-final .input-stage,.edition-final .fcard,.edition-final .mailtpl,.edition-final .step,.edition-final details.gal{border-radius:0;box-shadow:none}
+.edition-final .input-stage{border-top-width:4px}.edition-final .step{border-left-width:5px;box-shadow:none}
+.edition-final main table{margin:12px 0 20px;font-size:12.8px}.edition-final main table th,.edition-final main table td{padding:7px 9px}
+.edition-final main table th{background:var(--ink);color:#fffefa;font:650 10.5px var(--sans);letter-spacing:.045em;text-transform:none}
+.edition-final main table tbody tr:nth-child(even) td{background:#f4f5f2}
+.edition-final figure.shot{border-radius:0;border-top-width:3px;box-shadow:0 8px 24px rgba(19,42,67,.1)}
+.edition-final figure.shot:hover{transform:none;box-shadow:0 11px 30px rgba(19,42,67,.15)}
+.edition-final .caption-label{border-radius:0}.edition-final summary{border-radius:0}
+.edition-final .architecture-flow,.edition-final .architecture-layer,.edition-final .architecture-tool,.edition-final .connector-hub,.edition-final .flow-diagram,.edition-final .flow-node{border-radius:0;box-shadow:none}
+.edition-final .stick{transform:none!important;border-radius:0;background:#fffefa;outline-color:var(--rule2);box-shadow:none}
+.edition-final footer{font-size:12px!important;line-height:1.55}
+@media(max-width:900px){.edition-final main{padding:18px}.edition-final .hero{grid-template-columns:1fr}.edition-final .hero-visual{min-height:160px;border-left:0;border-top:1px solid var(--rule2)}.edition-final .quickgrid{grid-template-columns:repeat(2,1fr)}.edition-final .semantic-key{grid-template-columns:repeat(2,1fr)}.edition-final .procedure-section>.section-header{grid-template-columns:68px 1fr}}
+@media(max-width:560px){.edition-final .hero h1{font-size:32px}.edition-final .quickgrid,.edition-final .semantic-key{grid-template-columns:1fr}.edition-final .quickcard,.edition-final .key-item{border-right:0;border-bottom:1px solid var(--rule2)}.edition-final .procedure-section>.section-header{grid-template-columns:1fr}.edition-final .section-kicker{grid-row:auto;display:flex;align-items:center;gap:10px;padding:0 0 10px;border-right:0;border-bottom:4px solid var(--group-color)}.edition-final .section-number{font-size:30px}.edition-final .section-category{margin:0}.edition-final .procedure-section>.section-header h2,.edition-final .section-summary{padding-left:0}.edition-final .procedure-section>.section-header h2{padding-top:13px}}
+@media print{
+ body.edition-final{font-size:10.4pt;background:#fff}.edition-final main{padding:0}.edition-final .hero{grid-template-columns:minmax(0,1fr) 58mm;height:249mm;min-height:249mm;margin:0;padding:15mm 11mm;border:1px solid var(--ink);border-top:5px solid var(--err);box-sizing:border-box;break-after:page}.edition-final .hero-copy{align-self:center}.edition-final .hero-visual{display:block;min-height:0}.edition-final .hero h1{font-size:26pt}.edition-final .quickgrid,.edition-final .semantic-key,.edition-final .doc-tools{display:none!important}
+ .edition-final .procedure-section{margin:0 0 14mm;padding:0 0 8mm;break-before:page}.edition-final .procedure-section:first-of-type{break-before:auto}.edition-final .procedure-section>.section-header{margin-bottom:5mm;padding:4mm 0;break-after:avoid}.edition-final h2,.edition-final h3,.edition-final h4,.edition-final h5{break-after:avoid;page-break-after:avoid}.edition-final p,.edition-final li{orphans:3;widows:3}.edition-final tr,.edition-final figure,.edition-final .pse-action,.edition-final .backup-action,.edition-final .iva-extension{break-inside:avoid;page-break-inside:avoid}.edition-final main table{font-size:8.2pt}.edition-final main table th,.edition-final main table td{padding:1.6mm 2mm}.edition-final .procedure-section:last-of-type{margin-bottom:0;padding-bottom:0}.edition-final footer{margin-top:4mm;break-inside:avoid}
+}
+"""
+
 def legend_section():
     tiles = [
      ('zielony.png','Sukces (SUCCESS)','Plik wysłany i potwierdzony ACK — przebieg nominalny.'),
@@ -881,7 +969,8 @@ TH_PL = {
 }
 def load_frag(name):
     p = ROOT / name
-    if not p.exists(): return f'<!-- brak {name} -->'
+    if not p.is_file():
+        raise FileNotFoundError(f'Brak wymaganego fragmentu procedury: {name}')
     h = p.read_text(encoding='utf-8')
     for en, pl in TH_PL.items():   # ujednolić nagłówki tabel na polski
         h = re.sub(r'(<th[^>]*>)\s*' + re.escape(en) + r'\s*(</th>)', r'\1' + pl + r'\2', h)
@@ -909,7 +998,7 @@ cel_body = f'''
 <h3>1.2 Zakres czynności</h3>
 <table class="ref"><thead><tr><th>Obszar</th><th>Zakres</th></tr></thead><tbody>
 <tr><td><strong>Zakres działań</strong></td><td>Operator procesu Capacity Calculation koordynuje przebieg centralny. Dyspozytor PSE wykonuje i monitoruje czynności przypisane TSO. Coreso pełni rolę Merging Entity w etapach scalania danych.</td></tr>
-<tr><td><strong>Czynności PSE</strong></td><td>Dostarczanie danych wejściowych, monitoring, walidacja, obsługa plików, działania ręczne oraz reakcja na zdarzenia związane z procesem IDCC.</td></tr>
+<tr><td><strong>Czynności PSE</strong></td><td>Dostarczanie danych wejściowych, monitorowanie, walidacja, obsługa plików, działania ręczne oraz reakcja na zdarzenia związane z procesem IDCC.</td></tr>
 </tbody></table>
 </div>
 {load_frag('process2_glos.html')}
@@ -925,7 +1014,11 @@ happyday_body = (load_frag7('frag7_happyday.html')
 
 def _inject_ids(html_, mapping):
     for pref, hid in mapping:
-        html_ = re.sub(r'(<h4)([^>]*>\s*' + re.escape(pref) + ')', r'\1 id="' + hid + r'"\2', html_, count=1)
+        pattern = re.compile(r'<h4(?P<attrs>[^>]*)>(?P<label>\s*' + re.escape(pref) + ')')
+        def replace_heading(match):
+            attrs = re.sub(r'\s+id=(?:"[^"]*"|\'[^\']*\')', '', match.group('attrs'))
+            return f'<h4{attrs} id="{hid}">{match.group("label")}'
+        html_ = pattern.sub(replace_heading, html_, count=1)
     return html_
 
 ccm_ext = v52_h3block(['7M.1.','7M.3.','7M.7.','7M.8.','7M.9.','7M.10.','7M.11.','7M.12.','7M.13.','7M.14.'])
@@ -976,7 +1069,7 @@ igm_body = ''.join([
 
 walidacja_body = (load_frag7('frag7_walidacja.html')
  + '<h4>Ekrany — tryb normalny (NOR)</h4>' + gallery('nor','Walidacja NOR')
- + '<h4>Ekrany — tryb backup (BUP)</h4>' + gallery('bup','Walidacja BUP')
+ + '<h4>Ekrany — tryb backupowy (BUP)</h4>' + gallery('bup','Walidacja BUP')
  + '<h4 id="wal-glsk">GLSK (FIDx-607) — katalog 32 stanów kafelka</h4>' + gallery('fid607','GLSK 607 — stany kafelka'))
 
 ops_body = v52_slice('s8','s9')
@@ -997,7 +1090,7 @@ kontakty_body = '''<h3 id="kontakty">Kontakty operacyjne</h3>
 <table class="ref">
   <thead><tr><th>Podmiot / narzędzie</th><th>E-mail / kanał</th><th>Telefon</th><th>Zakres</th></tr></thead>
   <tbody>
-    <tr><td><strong>TSCNET — operator procesu Capacity Calculation</strong></td><td>operator@tscnet.eu</td><td>+49 89 45554 201</td><td>Obsługa CCCt; decyzje backup/kill</td></tr>
+    <tr><td><strong>TSCNET — operator procesu Capacity Calculation</strong></td><td>operator@tscnet.eu</td><td>+49 89 45554 201</td><td>Obsługa CCCt; decyzje dotyczące działania backupowego lub zatrzymania procesu</td></tr>
     <tr><td><strong>Coreso — Merging Entity</strong></td><td>day-ahead.engineer@coreso.eu</td><td>+32 2 743 21 10</td><td>Scalanie CGM i merging package</td></tr>
     <tr><td><strong>Helpdesk CCC</strong></td><td>idcc.helpdesk@unicorn.com</td><td>+420 221 400 540</td><td>CCCt: GUI, pliki i obliczenia</td></tr>
     <tr><td><strong>USY ECP/EDX</strong></td><td>global-ecp@unicorn.com</td><td>+420 221 400 902</td><td>Kanał ECP/EDX</td></tr>
@@ -1144,7 +1237,7 @@ SECTIONS = [
      [('#sec-harmonogram', 'harmonogram'), ('#sec-ryzyka', 'ryzyka')]),
     ('sec-walidacja', 'Walidacja domeny FBA (NOR / BUP / GLSK)', walidacja_body,
      [('#sec-happyday', 'scenariusze B1–B4'), ('#sec-ops', 'Perun4V')]),
-    ('sec-ccm', 'Monitoring i czynności w CCM (C.1–C.12 + katalog 7M)', ccm_body,
+    ('sec-ccm', 'Monitorowanie i czynności w CCM (C.1–C.12 + katalog 7M)', ccm_body,
      [('#sec-legenda', 'legenda statusów'), ('#sec-ryzyka', 'ryzyka')]),
     ('sec-ops', 'Obsługa MinIO, Perun4V i Core CC Tool', ops_body,
      [('#sec-narzedzia', 'narzędzia'), ('#sec-procedury', 'procedury')]),
@@ -1164,7 +1257,7 @@ SECTIONS = [
      [('#kontakty', 'kontakty'), ('#sec-ryzyka', 'ryzyka')]),
     ('sec-minio', 'Buckety MinIO, mapa relacji i kontakty', minio_body,
      [('#sec-katalog', 'pliki'), ('#sec-narzedzia', 'MinIO')]),
-    ('sec-stickery', 'STICKERY — szybkie kroki działania', stickery_section_html(),
+    ('sec-stickery', 'Karty szybkiego działania', stickery_section_html(),
      [('#top', 'początek dokumentu')]),
 ]
 
@@ -1187,12 +1280,20 @@ sections_html = ''.join(
     section(id_, title, SECTION_NUMBERS[id_], body, stickers)
     for id_, title, body, stickers in SECTIONS)
 
+hero_visual_html = ''
+if FINAL_LAYOUT:
+    rails = ''.join(f'<span data-label="{label}"></span>' for label in 'ABCDE')
+    hero_visual_html = f'<div class="hero-visual" aria-hidden="true"><div class="hero-rails">{rails}</div></div>'
+
 cover_html = f'''
 <header class="hero">
-  <div class="eyebrow">FBA_TSO_IDCC · PSE S.A. · KDM · REGION CORE</div>
-  <h1>Procedura operacyjna dyspozytora — proces IDCC</h1>
-  <p class="subtitle">Kompletna instrukcja przygotowania, realizacji i obsługi procesu z perspektywy PSE, uporządkowana w pięciu częściach operacyjnych A–E.</p>
-  <div class="hero-meta"><span>WYDANIE v{esc(DOC_META['version'])}</span><span>5 CZĘŚCI · 18 ROZDZIAŁÓW</span><span>309 ZASOBÓW EKRANOWYCH</span><span>TRYB OFFLINE</span></div>
+  <div class="hero-copy">
+    <div class="eyebrow">FBA_TSO_IDCC · PSE S.A. · KDM · REGION CORE</div>
+    <h1>Procedura operacyjna dyspozytora — proces IDCC</h1>
+    <p class="subtitle">Kompletna instrukcja przygotowania, realizacji i obsługi procesu z perspektywy PSE, uporządkowana w pięciu częściach operacyjnych A–E.</p>
+    <div class="hero-meta"><span>WYDANIE v{esc(DOC_META['version'])}</span><span>5 CZĘŚCI · 18 ROZDZIAŁÓW</span><span>309 ZASOBÓW EKRANOWYCH</span><span>TRYB OFFLINE</span></div>
+  </div>
+  {hero_visual_html}
 </header>
 <div class="callout callout-danger"><strong>Dokument roboczy — niezatwierdzony do formalnego wydania</strong></div>
 <div class="callout">
@@ -1226,7 +1327,7 @@ doc = f"""<!doctype html><html lang="pl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0f3e63">
 <title>Procedura IDCC TSO v7 — kompletna instrukcja z ekranami</title>
-<style>{CSS}
+<style>{CSS}{FINAL_CSS if FINAL_LAYOUT else ''}
 /* v5_2 compat */
 .tbl-wrap{{overflow-x:auto}}
 .subhead{{font:600 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--navy);margin:1em 0 .35em}}
@@ -1254,7 +1355,7 @@ border-bottom:1px solid var(--rule);padding-bottom:7px}}
 .stick li::marker{{font:600 11px var(--mono);color:var(--warn)}}
 .stick a{{color:var(--acc);text-decoration-line:underline;text-decoration-thickness:1px;text-decoration-color:rgba(14,86,136,.42);text-underline-offset:2px}}
 .stick a:hover{{color:var(--navy);text-decoration-color:currentColor}}
-</style></head><body>
+</style></head><body class="{BODY_CLASS}">
 <div class="wrap">
 <nav aria-label="Spis treści"><h2>Spis treści · A–E</h2>{nav_html}</nav>
 <main id="top">
@@ -1681,7 +1782,9 @@ doc = (formalize_procedural_language(doc[:_formal_mail_start])
 
 
 def normalize_operational_terms(segment):
-    """Zastępuje nieprecyzyjne określenie eskalacji reakcją lub powiadomieniem."""
+    """Ujednolica terminologię operacyjną bez naruszania nazw technicznych."""
+    protected_monitoring = '__CAPACITY_CALCULATION_MONITORING__'
+    segment = segment.replace('Capacity Calculation Monitoring', protected_monitoring)
     segment = re.sub(
         r'\bwymaga eskalacji do\b',
         'wymaga powiadomienia', segment, flags=re.I)
@@ -1701,7 +1804,15 @@ def normalize_operational_terms(segment):
     segment = re.sub(
         r'\b(?:przez lokalne narzędzie|przez narzędzie lokalne)\b',
         'przez ZP', segment, flags=re.I)
-    return segment
+    segment = re.sub(
+        r'\bMonitoring\b', 'Monitorowanie', segment)
+    segment = re.sub(
+        r'\bmonitoring\b', 'monitorowanie', segment)
+    segment = re.sub(
+        r'\bTryb backup\b', 'Tryb backupowy', segment)
+    segment = re.sub(
+        r'\btryb backup\b', 'tryb backupowy', segment)
+    return segment.replace(protected_monitoring, 'Capacity Calculation Monitoring')
 
 
 def normalize_procedure_components(segment):
@@ -1874,8 +1985,9 @@ def _restore_asset(match):
 doc = re.sub(r'src="__EMBEDDED_ASSET_(\d+)__"', _restore_asset, doc)
 
 # warstwa komentarzy recenzenta (offline, localStorage + eksport JSON/MD)
+# Wydanie finalnego składu jest czyste; źródłowy wariant v7 zachowuje recenzowanie.
 _cw = (ROOT/'_comments_widget.html')
-if _cw.exists():
+if INCLUDE_COMMENTS and _cw.exists():
     doc = doc.replace('</body>', _cw.read_text(encoding='utf-8') + '\n</body>')
 
 # ── walidacja kompletności i samowystarczalności ─────────────────────────────
@@ -1964,6 +2076,8 @@ all_numbered_tables = re.findall(
     doc, re.I)
 assert len(all_numbered_tables) == NUMBERED_TABLE_COUNT == len(re.findall(r'<table\b', doc, re.I)), (
     f'Nie wszystkie tabele dokumentu otrzymały numer: {len(all_numbered_tables)}/{NUMBERED_TABLE_COUNT}')
+assert NUMBERED_TABLE_COUNT == 150, (
+    f'Dokument finalny musi zachować dokładnie 150 tabel; wykryto {NUMBERED_TABLE_COUNT}')
 assert [int(number) for number, _ in all_numbered_tables] == list(range(1, NUMBERED_TABLE_COUNT + 1)), (
     'Numeracja tabel nie jest ciągła w kolejności dokumentu')
 table_keys = [key for _, key in all_numbered_tables]
@@ -2013,6 +2127,11 @@ forbidden_formal_graphics = [
 found_formal_graphics = [item for item in forbidden_formal_graphics if item in doc]
 assert not found_formal_graphics, (
     f'Pozostały elementy formalnej oprawy graficznej PSE: {found_formal_graphics}')
+if FINAL_LAYOUT:
+    assert '<body class="edition-final">' in doc and 'class="hero-visual"' in doc, (
+        'Wydanie finalnego składu nie zawiera kompletnej warstwy Mierzony Przepływ')
+    assert not INCLUDE_COMMENTS, (
+        'Wydanie finalnego składu musi być generowane bez widgetu recenzenckiego')
 assert doc.count('<section id="sec-') == len(SECTIONS), (
     'Liczba wyrenderowanych sekcji nie odpowiada centralnemu rejestrowi')
 for index, (section_id, title, _, _) in enumerate(SECTIONS, 1):
@@ -2410,13 +2529,13 @@ print('Rozmiar:', OUT.stat().st_size, 'B |', doc.count('<figure'), 'figur |',
 
 # ── STICKERY_IDCC.md (ten sam wsad) ──────────────────────────────────────────
 DOCNAME = OUT.name
-lines = ['# STICKERY IDCC — szybkie kroki działania', '',
+lines = ['# KARTY IDCC — szybkie kroki działania', '',
          f'Każdy krok linkuje do pełnej procedury `{DOCNAME}`.', '']
 for title, steps in STICKER_STEPS:
     lines.append(f'## {title}'); lines.append('')
     for t,h in steps:
         lines.append(f'1. [{t}]({DOCNAME}{h})')
     lines.append('')
-ST = ROOT / 'STICKERY_IDCC.md'
+ST = STICKERS_OUT
 ST.write_text('\n'.join(lines), encoding='utf-8')
 print('Zapisano:', ST, f'({len(STICKER_STEPS)} grup, {sum(len(s) for _,s in STICKER_STEPS)} kroków)')
