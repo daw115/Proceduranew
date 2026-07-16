@@ -1,4 +1,4 @@
-# STICKERY IDCC — szybkie kroki działania
+# KARTY IDCC — szybkie kroki działania
 
 Każdy krok linkuje do pełnej procedury `PROCEDURA_IDCC_TSO_v7.html`.
 
