@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FBA_TSO_NOR_04 / FBA_TSO_BUP_04 — Walidacja domeny FBA IDCC (v0.1 DRAFT)</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; max-width: 1100px; margin: 0 auto; padding: 24px; line-height: 1.55; color: #172B4D; background: #fafafa; }
+h1 { background: linear-gradient(90deg,#1F4E78,#2E75B6); color: white; padding: 10px 16px; border-radius: 6px; }
+h2 { color: #1F4E78; border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-top: 32px; }
+h3 { color: #2E75B6; margin-top: 22px; background: #F2F7FC; padding: 6px 12px; border-left: 4px solid #2E75B6; border-radius: 0 4px 4px 0; }
+h4 { color: #1F4E78; margin-top: 18px; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0; background: white; font-size: 0.95em; }
+th, td { border: 1px solid #ccc; padding: 7px 10px; text-align: left; vertical-align: top; }
+th { background: #1F4E78; color: white; }
+tr:nth-child(even) { background: #f8f8f8; }
+code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-family: "SF Mono", Consolas, monospace; font-size: 0.9em; }
+a { color: #0052CC; text-decoration: none; }
+a:hover { text-decoration: underline; }
+blockquote { background: #FFF9E6; border-left: 4px solid #F9A825; padding: 10px 16px; margin: 12px 0; }
+.uwaga { background: #FFF8E1; border-left: 4px solid #FB8C00; padding: 10px 14px; margin: 12px 0; font-weight: 600; }
+.info { background: #E8F1FB; border-left: 4px solid #2E75B6; padding: 10px 14px; margin: 12px 0; }
+.backup { background: #FDECEA; border-left: 4px solid #C0392B; padding: 10px 14px; margin: 12px 0; }
+.rysunek { background: #EEE; border: 1px dashed #999; color: #555; padding: 14px; margin: 10px 0; text-align: center; font-style: italic; }
+.krok { counter-increment: krok; }
+ol.kroki { padding-left: 1.4em; }
+ol.kroki li { margin: 6px 0; }
+.tag { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 0.8em; font-weight: 700; margin-right: 4px; }
+.tag-bup { background: #FDECEA; color: #C0392B; border: 1px solid #C0392B; }
+.tag-fal { background: #EAF7EE; color: #1E8449; border: 1px solid #1E8449; }
+.tag-pro { background: #E8F1FB; color: #1F4E78; border: 1px solid #1F4E78; }
+.toc { background: white; border: 1px solid #ccc; border-radius: 6px; padding: 14px 22px; }
+.toc ul { margin: 4px 0; }
+:target { background: #FFF3CD; padding: 4px; border-radius: 4px; }
+.status-chip { display:inline-block; width:14px; height:14px; border-radius:3px; vertical-align:middle; margin-right:6px; border:1px solid #888; }
+footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid #ccc; color: #666; font-size: 0.85em; }
+</style>
+</head>
+<body>
+
+<h1>Walidacja domeny FBA — proces IDCC<br><small>FBA_TSO_NOR_04 (tryb normalny) · FBA_TSO_BUP_04 (tryb backupowy)</small></h1>
+
+<!-- ======================= METRYKA ======================= -->
+<table>
+  <tr><th style="width:20%">Wersja</th><td>0.1</td></tr>
+  <tr><th>Data</th><td>16.07.2026</td></tr>
+  <tr><th>Status</th><td>☒ Draft &nbsp;&nbsp; ☐ Final</td></tr>
+</table>
+
+<h4>Zatwierdzono</h4>
+<table>
+  <tr><th>Wersja</th><th>Data</th><th>Osoba odpowiedzialna</th><th>Funkcja</th><th>Podpis</th></tr>
+  <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>
+</table>
+
+<h4>Poprzednie wersje</h4>
+<table>
+  <tr><th>Wersja</th><th>Data</th><th>Autor</th><th>Podsumowanie zmian</th></tr>
+  <tr><td>0.1</td><td>16.07.2026</td><td>—</td><td>Initial draft — struktura wg PLAN_Walidacja_domeny_FBA_IDCC.md; treści operacyjne CCM wg Instrukcji Użytkownika Dyspozytora ID v2.6 (24.03.2026); mapowanie do Core IDCC FB BPD v5.0 (02-03-2026)</td></tr>
+</table>
+
+<div class="uwaga">Uwaga ogólna — jako generalną zasadę przyjęto: w przypadku pojawienia się zdarzenia wykraczającego poza normalny przebieg procedury użytkownik wykonuje kolejne czynności zgodnie z częścią backupową <b>FBA_TSO_BUP_04</b> (rozdział 4).</div>
+
+<div class="uwaga">⚠ Każde ryzyko należy zgłosić do: CIZ, WPO, PSE-I (PSE Innowacje).</div>
+
+<!-- ======================= SPIS TREŚCI ======================= -->
+<div class="toc">
+<b>Spis treści</b>
+<ul>
+  <li><a href="#r1">1. Wstęp</a> — cel, IVA, dane wejściowe, terminy, narzędzia</li>
+  <li><a href="#r2">2. Przegląd ogólny procesu</a> — części procedury i harmonogram iteracji</li>
+  <li><a href="#r3">3. Tryb normalny (NOR)</a>
+    <ul>
+      <li><a href="#r31">3.1. Przebieg automatyczny IDCC(b)–(d)</a></li>
+      <li><a href="#r32">3.2. Paczka PERUN_IDx</a></li>
+      <li><a href="#r33">3.3. Monitorowanie w CCM</a></li>
+      <li><a href="#r34">3.4. Monitorowanie w Perun4V</a></li>
+      <li><a href="#r35">3.5. Monitorowanie na poczcie e-mail</a></li>
+      <li><a href="#r36">3.6. IDCC(a) — walidacja ATC i dostarczenie AC</a></li>
+      <li><a href="#r37">3.7. IDCC(e) — placeholder</a></li>
+    </ul></li>
+  <li><a href="#r4">4. Tryb backupowy (BUP)</a> — tabela ryzyk + rozwiązania szczegółowe</li>
+  <li><a href="#r5">5. Mapowanie do Core IDCC FB BPD v5.0</a></li>
+  <li><a href="#za">Załącznik A — legenda statusów kafelków CCM</a></li>
+  <li><a href="#zb">Załącznik B — komunikaty walidacyjne CCM</a></li>
+  <li><a href="#zc">Załącznik C — pozycje do potwierdzenia (TODO)</a></li>
+</ul>
+</div>
+
+<!-- ======================= 1. WSTĘP ======================= -->
+<h2 id="r1">1. Wstęp</h2>
+
+<div class="rysunek">[RYSUNEK 1: High level process — schemat iteracji IDCC(a)–(d) na osi doby]</div>
+
+<p>Procedura opisuje sposób walidacji domeny Flow-Based w procesie <b>Intraday Capacity Calculation (IDCC)</b> przy pomocy narzędzia <b>Perun4V</b>, której wynikiem jest wielkość <b>IVA</b> na przeciążonych CNEC-ach, oraz sposób obsługi walidacji ATC i dostarczenia Allocation Constraints (AC) w iteracji IDCC(a).</p>
+
+<p><b>IVA (FIDx-710, Individual Validation Adjustment)</b> — indywidualna korekta walidacyjna.</p>
+
+<h3>1.1. Cel procedury</h3>
+<p>Głównym celem procedury jest opis postępowania po kroku <i>Initial FB Computation</i> każdej iteracji procesu IDCC, mający określić możliwość wykonania domeny Flow-Based. Dokument opisuje czynności użytkownika (dyspozytora), w tym: przygotowanie, weryfikację i udostępnienie danych na platformy Perun4V, MinIO (buckety <code>perun/ID_FBCC</code>, <code>cca/ID_FBCC</code>) oraz Core CC Tool.</p>
+
+<h3>1.2. Opis IVA</h3>
+<p>IVA określa możliwość zmniejszenia wartości RAM na danym CNEC-u. Może mieć tylko dodatnią wartość i redukować RAM wyłącznie do wartości bezpiecznej z punktu widzenia bezpieczeństwa pracy sieci, przy wykorzystaniu dostępnych bezkosztowych i kosztowych środków zaradczych. Redukcja zdolności za pomocą IVA musi zapewnić nieujemną wartość RAM.</p>
+<p>IVA może być wprowadzona w następujących wypadkach:</p>
+<ul>
+  <li>wystąpienia wyjątkowego zdarzenia awaryjnego lub wymuszonego wyłączenia (CCM CORE art. 20 (5));</li>
+  <li>gdy wszystkie dostępne środki kosztowe i bezkosztowe są niewystarczające do zapewnienia bezpiecznej pracy sieci;</li>
+  <li>błędu w danych wejściowych do Core CC Tool-a, prowadzącego do przeszacowania międzyobszarowych zdolności z perspektywy bezpieczeństwa pracy sieci;</li>
+  <li>potencjalnego pokrycia przepływów mocy biernej na niektórych CNEC-ach.</li>
+</ul>
+<p>W procesie IDCC walidacja może być wykonana jako <b>CNEC-based</b> (korekta RAM własnych CNEC z uzasadnieniem w pliku IVA) lub <b>ATC-based</b> (maksymalne ATC dla zorientowanych granic PSE; jeżeli finalna ekstrakcja ATC da wartość wyższą niż maksimum ustawione przez TSO, wynik zostaje nadpisany wartością TSO — przy dwóch TSO na jednej granicy obowiązuje wartość niższa).</p>
+
+<h3>1.3. Dane wejściowe (paczka PERUN_IDx)</h3>
+<ul>
+  <li><b>FIDx-610</b> — Merged GLSK</li>
+  <li><b>FIDx-620</b> — CGM (Common Grid Model)</li>
+  <li><b>FIDx-632</b> — RefProg (Reference Program)</li>
+  <li><b>FIDx-645</b> — Initial FB Domain</li>
+  <li><b>FIDx-657</b> — Real GLSK</li>
+  <li><b>FIDx-665</b> — Individual Filtered Critical Branches (CB)</li>
+  <li><b>FIDx-701</b> — Vertices of Initial FB Domain</li>
+  <li><b>FIDx-882</b> — Initial Intraday ATC</li>
+  <li><b>RA</b> — kosztowe i bezkosztowe środki zaradcze (FIDx_RA z Kreatora)</li>
+</ul>
+<div class="info">Prefiks <code>FIDx</code> zależy od iteracji: <code>FID1-</code> = IDCC(a), <code>FID2-</code> = IDCC(b), <code>FID3C-</code> = IDCC(c), <code>FID3-</code> = IDCC(d). Numer pliku pozostaje wspólny, np. GLSK: FID2-607 / FID3C-607 / FID3-607.</div>
+
+<h3>1.4. Terminy (TET / CET)</h3>
+<p>W przypadku, gdy jest prawdopodobne niedotrzymanie terminu dostarczenia danych dla danego etapu (Target End Time), należy niezwłocznie poinformować operatora procesu (CORESO/TSCNET) o konieczności opóźnienia zakończenia etapu. Maksymalny czas opóźnienia określa Critical End Time.</p>
+<table>
+  <tr><th>Plik</th><th>Źródło</th><th>IDCC(a)/ID1</th><th>IDCC(b)/ID2</th><th>IDCC(c)/ID3C</th><th>IDCC(d)/ID3</th></tr>
+  <tr><td><b>FIDx-607</b> GLSK</td><td>Kreator</td><td>—</td><td>TET 20:00 / CET 20:19</td><td>TET 00:00 / CET 00:56</td><td>TET 06:20 / CET 07:30</td></tr>
+  <tr><td><b>FIDx-617</b> CBCORA</td><td>Kreator</td><td>—</td><td>TET 20:00 / CET 20:19</td><td>TET 00:00 / CET 00:56</td><td>TET 06:20 / CET 07:30</td></tr>
+  <tr><td><b>FIDx-710</b> IVA</td><td>Perun4V / CCA (backup)</td><td>—</td><td><b>TET 21:30 / CET 22:06</b></td><td><b>TET 04:00 / CET 04:36</b></td><td><b>TET 09:30 / CET 10:06</b></td></tr>
+  <tr><td><b>FIDx-831</b> AC</td><td>ZP</td><td>TET 13:50 / CET 14:45</td><td>TET 21:45 / CET 21:55</td><td>TET 04:15 / CET 04:25</td><td>TET 08:40 / CET 09:25</td></tr>
+  <tr><td><b>FID1-928</b> walidacja ATC</td><td>CCCt (monitorowany)</td><td>TET 13:40 / CET 14:20</td><td>—</td><td>—</td><td>—</td></tr>
+</table>
+<div class="info"><b>Okno walidacji indywidualnej:</b> standardowo 40 minut.
+<ul>
+  <li><b>IDCC(a):</b> walidacja musi trwać co najmniej <b>25 minut</b>, nawet w fallbacku lub przy opóźnieniu procesu. Przy opóźnieniu &gt; 15 min operator procesu pauzuje okno walidacji i wznawia je po zapewnieniu 25 minut (kod BPD ID1_16).</li>
+  <li><b>IDCC(b)–(d):</b> przy opóźnieniu procesu CCCt przesuwa <b>całe 40-minutowe okno</b>.</li>
+  <li>PSE w żadnym wypadku nie przedłuża okna samodzielnie.</li>
+</ul>
+Jedynym źródłem prawdy dla terminów jest harmonogram <b>HLBP</b>; powyższa tabela ma charakter operacyjny i podlega aktualizacji wraz z HLBP.</div>
+
+<h3>1.5. Zarządzane / Regulowane przez</h3>
+<ul>
+  <li>High Level Business Process (HLBP) — harmonogram,</li>
+  <li>Core IDCC Flow Based Business Process Documentation v5.0 (02-03-2026) — rozdziały 5–8, sekcje walidacji §5.7 / §6.7 / §7.7 / §8.7 (mapowanie: <a href="#r5">rozdział 5</a>).</li>
+</ul>
+
+<h3>1.6. Narzędzia i protokoły komunikacyjne</h3>
+<table>
+  <tr><th style="width:22%">Narzędzie</th><th>Opis / rola w procedurze</th></tr>
+  <tr><td><b>Core CC Tool</b> (CCCt)</td><td>System centralny procesu Core FB Capacity Calculation (UNICORN; zarządzany przez TSCNET i CORESO): sterowanie i monitorowanie procesu, wymiana danych, obliczenia FB, publikacja wyników. <b>Uwaga:</b> przy pracy w horyzoncie Intraday należy każdorazowo ustawić selektor procesu <code>ID1 / ID2 / ID3C / ID3</code> (domyślny jest DA).</td></tr>
+  <tr><td><b>Connector 2.0</b> (CN2)</td><td>Główne narzędzie transportowe (PSE Innowacje) — wymiana plików między narzędziami PSE oraz między PSE a systemami zewnętrznymi (w tym CCCt).</td></tr>
+  <tr><td><b>CCM</b></td><td>Capacity Calculation Monitoring — przeglądarkowy pulpit dyspozytorski (<a href="https://ccm.spsm.pse.pl">https://ccm.spsm.pse.pl</a>). Monitoring statusów, wysyłka i pobieranie plików, wysyłka IVA BACKUP, status ręczny. Pulpity: „IDCC FB Pulpit dyspozytorski", „IDCC (do 3C) z ATC i SFTP Pulpit dyspozytorski". Obsługa wg Instrukcji Użytkownika Dyspozytora ID v2.6.</td></tr>
+  <tr><td><b>Perun4V</b></td><td>Narzędzie indywidualnej walidacji (<a href="https://lccv.tscnet.eu">https://lccv.tscnet.eu</a>) — sprawdza, czy domena FB jest bezpieczna przy uwzględnieniu dostępnych środków zaradczych; wynik: plik IVA (FIDx-710) + raporty.</td></tr>
+  <tr><td><b>MinIO</b></td><td>Centralne repozytorium plików procesowych w sieci PSE (<a href="https://minio-gui.pse.pl">https://minio-gui.pse.pl</a>); buckety <code>perun/ID_FBCC/in|out/[BD]</code>, <code>cca/ID_FBCC/in|out/[BD]</code>.</td></tr>
+  <tr><td><b>CCA</b></td><td>Capacity Calculation Application (PSE) — generuje raporty walidacyjne oraz plik <b>IVA BACKUP</b> (publikacja do <code>cca/ID_FBCC/out/[BD]</code>), zasila funkcję wysyłki backupowej w CCM.</td></tr>
+  <tr><td><b>ZP</b></td><td>Aplikacja zdolności przesyłowych — źródło pliku AC (FIDx-831); kanał awaryjny wysyłki AAC do XBID.</td></tr>
+  <tr><td><b>KreatorDACF&amp;2DAF_CGMES / KreatorIDCF_CGMES</b></td><td>Generatory IGM oraz plików GLSK (FIDx-607), CBCORA (FIDx-617) i RA — Kreator DACF dla IDCC(b), Kreator IDCF dla IDCC(c)–(e).</td></tr>
+  <tr><td><b>XBID</b></td><td>Europejska platforma intraday — odbiorca AAC i finalnych NTC (FIDx-921).</td></tr>
+  <tr><td><b>Outlook</b></td><td>Poczta — skrzynka <code>kdm6@pse.pl</code> (raporty CCA/Perun4V, komunikaty operatora procesu).</td></tr>
+</table>
+<p><b>Protokoły komunikacyjne:</b> e-mail, ECP/EDX (wymiana TSO ↔ CCCt), sFTP (transport paczek MinIO ↔ Perun4V).</p>
+
+<!-- ======================= 2. PRZEGLĄD ======================= -->
+<h2 id="r2">2. Przegląd ogólny procesu</h2>
+
+<p><b>Warunek wstępny:</b> dostępne dane z kroku <i>Initial FB Computation</i> danej iteracji jako dane wejściowe do Perun4V do wyliczenia IVA.</p>
+
+<div class="rysunek">[RYSUNEK 2: Schemat poglądowy procesu walidacji domeny w iteracjach IDCC(b)–(d)]</div>
+
+<table>
+  <tr><th>#</th><th>Część / proces</th><th>TET / CET</th><th>Narzędzie</th><th>BACKUP</th></tr>
+  <tr><td colspan="5" style="background:#E8F1FB"><b>Część 1: IDCC(b) / ID2 — walidacja domeny FB (24 TS)</b></td></tr>
+  <tr><td>1</td><td>Weryfikacja zdolności ID2 w Perun4V i dostarczenie IVA (FID2-710) do CCCt</td><td>21:30 / 22:06</td><td>CN2 / MinIO / CCM / Perun4V</td><td>FBA_TSO_BUP_04</td></tr>
+  <tr><td>2</td><td>Monitorowanie procesu (CCM · Perun4V · e-mail)</td><td>—</td><td>CCM / Perun4V / Outlook</td><td>FBA_TSO_BUP_04</td></tr>
+  <tr><td colspan="5" style="background:#E8F1FB"><b>Część 2: IDCC(c) / ID3C — walidacja domeny FB (18 TS)</b></td></tr>
+  <tr><td>3</td><td>Weryfikacja zdolności ID3C w Perun4V i dostarczenie IVA (FID3C-710) do CCCt</td><td>04:00 / 04:36</td><td>CN2 / MinIO / CCM / Perun4V</td><td>FBA_TSO_BUP_04</td></tr>
+  <tr><td>4</td><td>Monitorowanie procesu (CCM · Perun4V · e-mail)</td><td>—</td><td>CCM / Perun4V / Outlook</td><td>FBA_TSO_BUP_04</td></tr>
+  <tr><td colspan="5" style="background:#E8F1FB"><b>Część 3: IDCC(d) / ID3 — walidacja domeny FB (12 TS)</b></td></tr>
+  <tr><td>5</td><td>Weryfikacja zdolności ID3 w Perun4V i dostarczenie IVA (FID3-710) do CCCt</td><td>09:30 / 10:06</td><td>CN2 / MinIO / CCM / Perun4V</td><td>FBA_TSO_BUP_04</td></tr>
+  <tr><td>6</td><td>Monitorowanie procesu (CCM · Perun4V · e-mail)</td><td>—</td><td>CCM / Perun4V / Outlook</td><td>FBA_TSO_BUP_04</td></tr>
+  <tr><td colspan="5" style="background:#E8F1FB"><b>Część 4: IDCC(a) / ID1 — walidacja ATC + Allocation Constraints</b></td></tr>
+  <tr><td>7</td><td>Monitorowanie walidacji ATC (FID1-928)</td><td>13:40 / 14:20</td><td>CCM / CCCt</td><td>FBA_TSO_BUP_04</td></tr>
+  <tr><td>8</td><td>Dostarczenie AC (FID1-831) z ZP</td><td>13:50 / 14:45</td><td>ZP / CN2 / CCM</td><td>FBA_TSO_BUP_04</td></tr>
+  <tr><td colspan="5" style="background:#E8F1FB"><b>Część 5: IDCC(e) — placeholder</b></td></tr>
+  <tr><td>9</td><td>Proces nieuruchomiony operacyjnie (HLBP „IDCCe Option A/B"); brak czynności</td><td>—</td><td>—</td><td>—</td></tr>
+</table>
+
+<div class="info"><b>Doba monitorowana w CCM (pulpit ID):</b> w godzinach 00:01–10:15 pulpit domyślnie prezentuje dobę <b>D</b>, w godzinach 10:16–00:00 — dobę <b>D+1</b>. Dobę można przełączać strzałkami (zielone = doba monitorowana, czerwone = inna) lub z kalendarza.</div>
+
+<!-- ======================= 3. TRYB NORMALNY ======================= -->
+<h2 id="r3">3. Tryb normalny (NOR) — FBA_TSO_NOR_04</h2>
+
+<h3 id="r31">3.1. Przebieg automatyczny — wspólny dla IDCC(b), (c), (d)</h3>
+<p>Cały proces weryfikacji zdolności jest procesem automatycznym, jednak nadal wymaga kontroli i nadzoru po stronie dyspozytora. Poniższa sekwencja obowiązuje w każdej iteracji z Perun4V; różnice sprowadzają się do prefiksu FID, liczby timestampów i terminów (patrz tabela w <a href="#r2">rozdziale 2</a>).</p>
+<ol class="kroki">
+  <li>Connector 2.0 odbiera dane z CCCt oraz Kreatora na potrzeby przygotowania paczki do weryfikacji domeny IDx.</li>
+  <li>Connector 2.0 tworzy agregat (paczkę) <b>AGR_PERUN_IDx</b> ze składowych wymienionych w <a href="#r32">pkt 3.2</a> i przesyła go na MinIO do bucket <code>perun/ID_FBCC/in/rrrr-mm-dd</code>.</li>
+  <li>Równolegle paczka przekazywana jest do sFTP; Connector nadaje jej maskę czytaną przez Perun4V <i>(maska do potwierdzenia u PSE-I — patrz <a href="#zc">Załącznik C</a>)</i>.</li>
+  <li>Z sFTP paczka o odpowiedniej masce trafia do Perun4V, gdzie obliczenia uruchamiają się automatycznie (użytkownik dostarczający: <code>sFTP@pse.pl</code>). Od przekazania paczki do sFTP do startu obliczeń mija około 2 minut.</li>
+  <li>Po obliczeniach paczka z raportami <b>RAP_PERUN_IDx</b> oraz plik IVA (<b>FIDx-710</b>) przekazywane są z powrotem do sFTP (czas ok. 1 minuty).</li>
+  <li>Connector 2.0 rozpoznaje plik IVA po masce <code>rrrrmmdd-FIDx-710-v*-10XPL-TSO------P-to-10V1001C--00264T.xml</code> i wysyła go do CCCt (przepływ <code>FIDx-710-SFTP_PERUN-EDX_KAFKA_CCCTOOL</code>).</li>
+  <li>Jednocześnie Connector 2.0 przesyła IVA i raporty do narzędzia CCA (przepływy <code>FIDx-710-SFTP_PERUN-MINIO_CCA</code>, <code>RAP_PERUN_IDx-SFTP_PERUN2-MINIO_CCA</code>) — bucket <code>cca/ID_FBCC/in/[BD]</code>.</li>
+  <li>Narzędzie CCA na podstawie otrzymanych danych przygotowuje plik <b>IVA BACKUP</b> oraz raporty i publikuje je do <code>cca/ID_FBCC/out/[BD]</code> oraz na skrzynkę <code>kdm6@pse.pl</code>.</li>
+</ol>
+<div class="rysunek">[RYSUNEK 3: Schemat wymiany danych w procesie weryfikacji zdolności IDx — CN2 / MinIO / sFTP / Perun4V / CCCt / CCA]</div>
+
+<h3 id="r32">3.2. Paczka PERUN_IDx — zestawienie danych</h3>
+<table>
+  <tr><th>#</th><th>Plik (składowa agregatu AGR_PERUN_IDx)</th><th>Opis przygotowania</th></tr>
+  <tr><td>1</td><td><code>FIDx-610</code> — Merged GLSK</td><td>dostarczone przez CONNECTOR 2.0 (z CCCt)</td></tr>
+  <tr><td>2</td><td><code>FIDx-620</code> — CGM</td><td>dostarczone przez CONNECTOR 2.0 (z CCCt)</td></tr>
+  <tr><td>3</td><td><code>FIDx-632</code> — RefProg</td><td>dostarczone przez CONNECTOR 2.0 (z CCCt)</td></tr>
+  <tr><td>4</td><td><code>FIDx-645</code> — Initial FB Domain</td><td>dostarczone przez CONNECTOR 2.0 (z CCCt)</td></tr>
+  <tr><td>5</td><td><code>FIDx-657</code> — Real GLSK</td><td>dostarczone przez CONNECTOR 2.0 (z CCCt)</td></tr>
+  <tr><td>6</td><td><code>FIDx-665</code> — Individual Filtered CB</td><td>dostarczone przez CONNECTOR 2.0 (z CCCt; odbiorcą musi być PSE)</td></tr>
+  <tr><td>7</td><td><code>FIDx-701</code> — Vertices of Initial FB Domain</td><td>dostarczone przez CONNECTOR 2.0 (z CCCt)</td></tr>
+  <tr><td>8</td><td><code>FIDx-882</code> — Initial Intraday ATC</td><td>dostarczone przez CONNECTOR 2.0 (z CCCt)</td></tr>
+  <tr><td>9</td><td><code>FIDx_RA</code> — środki zaradcze</td><td>Kreator (DACF dla ID2 / IDCF dla ID3C, ID3)</td></tr>
+</table>
+<div class="info"><b>Status agregatu „Paczka ZIP do Perun" (AGR_PERUN_IDx)</b> w CCM jest zgodny z <b>najgorszym</b> statusem składowych:
+<ul>
+  <li>jedna składowa za mała → cały agregat <b>czerwony z wykrzyknikiem</b>;</li>
+  <li>proces jednej składowej zakończony błędem → agregat <b>czerwony</b>;</li>
+  <li>brak co najmniej jednej składowej (paczka nie powstaje) → agregat <b>czarny</b>;</li>
+  <li>wszystkie składowe wysłane z poziomu CCM → agregat <b>zielony</b> (paczka tworzy się automatycznie ze składowych); przy wysyłce składowych po CET agregat może być fioletowy, jeżeli upłynął także czas utworzenia paczki.</li>
+</ul></div>
+
+<h3 id="r33">3.3. Monitorowanie w CCM</h3>
+<p>Narzędzie CCM pozwala zweryfikować m.in. poprawność przygotowania paczki na potrzeby weryfikacji zdolności oraz dostarczenie wyników. Obsługa wg Instrukcji Użytkownika Dyspozytora ID v2.6.</p>
+<ol class="kroki">
+  <li>Uruchomić <a href="https://ccm.spsm.pse.pl">https://ccm.spsm.pse.pl</a> (na stanowisku dyspozytorskim logowanie automatyczne) i wybrać pulpit dedykowany procesowi ID: <b>„IDCC FB Pulpit dyspozytorski"</b> (lub „IDCC (do 3C) z ATC i SFTP"), przyciskiem z okiem.</li>
+  <li>Sprawdzić dobę monitorowaną (00:01–10:15 → D; 10:16–00:00 → D+1); w razie potrzeby przełączyć strzałkami lub z kalendarza. Zielone strzałki = doba monitorowana.</li>
+  <li>Ustawić tryb odświeżania: <b>wolny 5 min</b> (domyślny) / szybki 30 s / ultraszybki 10 s; pulpit można też odświeżyć ręcznie (przycisk z licznikiem → „Odśwież").</li>
+  <li><b>Przygotowanie paczki:</b> obserwować składowe agregatu i kafelek „Paczka ZIP do Perun" (AGR_PERUN_IDx) — utworzenie paczki sygnalizuje zapalenie się kafelka na <b>zielono</b>.</li>
+  <li><b>Przekazanie do sFTP:</b> kolumna „sFTP/ZP wysł." — zielony kwadrat oznacza wyłącznie, że Connector 2.0 przekazał paczkę do sFTP (nie potwierdza odbioru przez Perun4V). Po ok. 2 minutach obliczenia powinny wystartować w Perun4V.</li>
+  <li><b>Wyniki:</b> po obliczeniach zweryfikować zapalenie na zielono kafelków w wierszach <b>„IVA"</b> (przekazanie FIDx-710 do CCCt — kolumna „CCCTool", potem „CCTool zwalid." po ACK) oraz <b>„Raporty z Perun"</b> (kolumna „MinIO" — dostarczenie do CCA).</li>
+  <li><b>ACK:</b> status czerwony ze znakiem zapytania przy pliku = oczekiwanie na ACK przekroczyło 5 minut (lub skonfigurowaną wartość); status czerwony przy ACK = plik odrzucony w narzędziu centralnym — najechać kursorem, odczytać komunikat (np. <code>gateClosed</code>, <code>duplicatedVersion</code>) i przejść do <a href="#r4">BUP</a>.</li>
+  <li><b>Powiadomienia:</b> przy braku dostarczenia dokumentu do CET CCM wyświetla powiadomienia systemowe (od okna CET do jego upłynięcia; co ~1 min w trybie szybkim/ultraszybkim). Zezwolić przeglądarce na powiadomienia i zweryfikować przyciskiem „Test powiadomień".</li>
+  <li>W razie potrzeby szczegółów pliku: LPM na kafelek → <b>„Informacje"</b> (otrzymany/oczekiwany rozmiar, lokalizacja na MinIO, data dostarczenia).</li>
+</ol>
+<div class="rysunek">[RYSUNEK 4: Pulpit „IDCC FB Pulpit dyspozytorski" — obszar Individual Validation z kafelkami Paczka ZIP do Perun / IVA / IVA BACKUP / Raporty z Perun]</div>
+
+<h3 id="r34">3.4. Monitorowanie w Perun4V</h3>
+<ol class="kroki">
+  <li>Uruchomić stronę <a href="https://lccv.tscnet.eu">https://lccv.tscnet.eu</a> (skrót na pulpicie dyspozytorskim stanowiska VI).</li>
+  <li>W pierwszym oknie logowania kliknąć „Local Login", następnie podać login i hasło, zaznaczyć „Read and accept the TSCNET Policy to be able to login" i kliknąć <b>Login</b>.</li>
+  <li>Zweryfikować, czy obliczenia dla danej iteracji (proces IDx) uruchomiły się — dostarczającym (Userem) jest <code>sFTP@pse.pl</code> — oraz czy nie ma problemów w przeliczaniu poszczególnych timestampów.</li>
+  <li>Liczba timestampów w kolumnie Timestamps: <b>ID2: 24+1</b>, <b>ID3C: 18+1</b>, <b>ID3: 12+1</b> (dodatkowy TS = raporty po zakończonych obliczeniach).</li>
+</ol>
+<div class="rysunek">[RYSUNEK 5: Główne okno Perun4V — lista obliczeń z procesami IDx]</div>
+<div class="info">Ze względu na różnicę konwencji zapisu godzin pomiędzy Perun4V a CCCt, godzina 01:30 w Perun4V oznacza godzinę 2 w Core CC Tool.</div>
+
+<h3 id="r35">3.5. Monitorowanie na poczcie e-mail</h3>
+<p>CCA po zakończonym procesie weryfikacji zdolności w Perun4V dokonuje analizy otrzymanych danych, a następnie wysyła raport z tej analizy m.in. na skrzynkę <code>kdm6@pse.pl</code>. Otrzymany e-mail zawiera informację, czy wszystkie timestampy danej iteracji policzyły się w Perun4V i jaka jest maksymalna wyliczona wielkość parametru IVA.</p>
+<div class="rysunek">[RYSUNEK 6: Przykład e-maila CCA z informacją o przebiegu przeliczenia iteracji IDx w Perun4V]</div>
+
+<table>
+  <tr><th>#</th><th>Ryzyka etapu walidacji IDCC(b)–(d)</th><th>Rozwiązanie</th></tr>
+  <tr><td>1</td><td>Brak działania sFTP (1.1–1.5)</td><td><a href="#b1">BUP §4.1</a></td></tr>
+  <tr><td>2</td><td>Brak dostępu do MinIO / awaria Connector 2.0</td><td><a href="#b2">BUP §4.2</a></td></tr>
+  <tr><td>3</td><td>Brak paczki plików na MinIO</td><td><a href="#b3">BUP §4.3</a></td></tr>
+  <tr><td>4</td><td>Brak dostępu do platformy Perun4V</td><td><a href="#b4">BUP §4.4</a></td></tr>
+  <tr><td>5</td><td>Brak wyników IVA i raportów z sFTP</td><td><a href="#b5">BUP §4.5</a></td></tr>
+  <tr><td>6</td><td>Błąd w obliczeniach na pojedyncze timestampy (ERR-I)</td><td><a href="#b6">BUP §4.6</a></td></tr>
+  <tr><td>7</td><td>Błąd w obliczeniach na całą iterację (Process failed)</td><td><a href="#b7">BUP §4.7</a></td></tr>
+  <tr><td>8</td><td>Brak możliwości pobrania pliku wynikowego FIDx-710 z Perun4V</td><td><a href="#b8">BUP §4.8</a></td></tr>
+  <tr><td>9</td><td>Dodanie wyłączenia awaryjnego w Perun4V</td><td><a href="#b9">BUP §4.9</a></td></tr>
+  <tr><td>10</td><td>Connector 2.0 nie kopiuje IVA i raportów do bucketów cca</td><td><a href="#b10">BUP §4.10</a></td></tr>
+  <tr><td>11</td><td>Brak dostępu do Core CC Tool</td><td><a href="#b11">BUP §4.11</a></td></tr>
+  <tr><td>12</td><td>Brak dostarczonego pliku FIDx-710 do CCCt</td><td><a href="#b12">BUP §4.12</a></td></tr>
+  <tr><td>13</td><td>Plik FIDx-710 został odrzucony</td><td><a href="#b13">BUP §4.13</a></td></tr>
+  <tr><td>14</td><td>Brak dostępu do CCM</td><td><a href="#b14">BUP §4.14</a></td></tr>
+  <tr><td>15</td><td>Błędna paczka do Perun4V / nieprawidłowe dane w paczce</td><td><a href="#b15">BUP §4.15</a></td></tr>
+</table>
+
+<h3 id="r36">3.6. IDCC(a) — walidacja ATC i dostarczenie AC (bez Perun4V)</h3>
+<p>W iteracji IDCC(a) nie wykonuje się walidacji domeny w Perun4V. Rola PSE obejmuje:</p>
+<ol class="kroki">
+  <li><b>Monitorowanie testu komunikacji:</b> operator procesu wysyła high-negative NTC (FID1-921) do XBID; PSE monitoruje wynik na swoich granicach. Przy negatywnym ACK operator procesu ponawia wysyłkę i informuje o dalszych krokach mailowo (kod ID1_1, mail #1) — <span class="tag tag-pro">DZIAŁANIE PROCESOWE</span>.</li>
+  <li><b>Dostarczenie AC (FID1-831):</b> plik przygotowany w ZP, przebieg ZP → Connector 2.0 → CCCt. Termin: TET 13:50 / CET 14:45. Monitorowanie dostarczenia i ACK w CCM (obszar AC); szczegóły obsługi ZP — procedura „AC manuall ZP".</li>
+  <li><b>Walidacja ATC:</b> w oknie „Individual CB and ATC Validation" PSE wykonuje walidację ATC narzędziem lokalnym; wynik centralny <b>FID1-928</b> (ATC Based Validation) monitorowany w CCM (przepływ CCCt → CN2 → CCM), TET 13:40 / CET 14:20. Walidacja musi trwać co najmniej 25 minut — przy opóźnieniu operator procesu pauzuje i wznawia okno (ID1_16).</li>
+  <li><b>Wynik finalny:</b> monitorowanie FID1-921 (Final Intraday NTC, także ID1-921-XX per granica) — dostępność TET 14:45 / CET 14:55; kanał XBID, zapasowo sFTP. Na wezwanie operatora procesu TSO po obu stronach granicy sprawdzają zdolności i potwierdzają wynik (ID1_23).</li>
+</ol>
+<div class="backup"><b>Działania backupowe IDCC(a)</b> (szczegóły i klasyfikacja w <a href="#r5">rozdziale 5</a>):
+<ul>
+  <li><b>ID1_7</b> — decoupling SDAC: PSE dostarcza MD250 (FID1-250) przez ECP/EDX do TET 15:43 / CET 17:24; po 17:24 PSE wysyła brakujące DA AAC bezpośrednio do XBID (mail #20).</li>
+  <li><b>ID1_8 / ID1_9 / ID1_12</b> — błąd obliczeń AAC / brak rozwiązania: PSE wysyła wymagane AAC do XBID przez ZP (mail #2).</li>
+  <li><b>ID1_26</b> — ID CCCt niedostępny: PSE wysyła AAC do XBID przez ZP do 20:00 i potwierdza obecność AAC operatorowi procesu.</li>
+  <li><b>ID1_27</b> — problem EDX/ECP PSE↔CCCt: zgłoszenie do Helpdesk CCC; wysyłka plików wejściowych przez Message Viewer / Manual Upload albo mailem, zgodnie z instrukcją Helpdesku.</li>
+</ul></div>
+
+<h3 id="r37">3.7. IDCC(e) — placeholder</h3>
+<p>Piąta iteracja (warianty czasowe „IDCCe Option A/B" w HLBP) nie jest uruchomiona operacyjnie i nie występuje w Core IDCC FB BPD v5.0. IDCC(e) traktuje się wyłącznie jako placeholder widoczny w tabelach — bez podstawienia do kodów IDx/FIDx, harmonogramów TET/CET i bez wykonywania czynności procesowych.</p>
+
+<!-- ======================= 4. TRYB BACKUPOWY ======================= -->
+<h2 id="r4">4. Tryb backupowy (BUP) — FBA_TSO_BUP_04</h2>
+
+<p>Rozdział opisuje działania w sytuacji pojawienia się zdarzenia wykraczającego poza normalny przebieg wg rozdziału 3. Ryzyka obowiązują w każdej iteracji z Perun4V (ID2 / ID3C / ID3), o ile nie wskazano inaczej. Numery U## odsyłają do rejestru ryzyk IDCC (Karta_ryzyk_IDCC.md).</p>
+
+<div class="uwaga">Reakcje muszą być wykonalne w oknie walidacji (40 min). Jeżeli reakcja ręczna nie jest wykonalna przed CET danej iteracji, domyślnym działaniem jest wysyłka <b>IVA BACKUP</b> (<a href="#b4">§4.4</a>).</div>
+
+<h3 id="b1">4.1. Brak działania sFTP <small>[U14]</small></h3>
+<p>Stosować, gdy w CCM paczka do weryfikacji domeny powstała (kafelek „Paczka ZIP do Perun" zielony), ale kwadrat w kolumnie „sFTP/ZP wysł." pozostaje szary ze znakiem zapytania mimo upływu 2 minut.</p>
+
+<h4>4.1.1. Pobranie przygotowanej paczki danych</h4>
+<ol class="kroki">
+  <li>Poczekać, aż dla przepływu „Paczka ZIP do Perun" (AGR_PERUN_IDx) kwadrat w kolumnie „MinIO" będzie zielony.</li>
+  <li>W CCM kliknąć LPM na zielony kafelek → wybrać <b>„Pobierz"</b>. Pobieranie możliwe jest wyłącznie w dobie monitorowanej i dla statusów: zielony, czerwony z wykrzyknikiem, zielony z W, ciemnozielony W, fioletowy.</li>
+  <li>Zapisać paczkę do katalogu sieciowego dla danej iteracji <i>(ścieżka do potwierdzenia — <a href="#zc">Załącznik C</a>; odpowiednik <code>\\uo-data\ZUO\Pion_UOD\Wydzial_DP\MODELE\5_DYSP\FBA\...</code>)</i>.</li>
+</ol>
+
+<h4>4.1.2. Wczytanie danych do Peruna</h4>
+<ol class="kroki">
+  <li>Zalogować się do Perun4V (<a href="#r34">§3.4</a>); automatycznie wczytają się ustawienia domyślne.</li>
+  <li>Na oknie głównym wskazać rodzaj procesu, który będzie weryfikowany (<b>IDx</b> — właściwa iteracja).</li>
+  <li>Przeciągnąć plik paczki na pole wczytywania lub wybrać go z dysku (jeżeli nazwa zawiera datę, Perun4V automatycznie ustawi dzień obliczeń).</li>
+  <li>Sprawdzić poprawność daty BD, na którą wykonywane są obliczenia.</li>
+</ol>
+
+<h4>4.1.3. Uruchomienie obliczeń w Perunie</h4>
+<ol class="kroki">
+  <li>Po wczytaniu plików kliknąć przycisk uruchomienia obliczeń.</li>
+  <li>Poprawne uruchomienie sygnalizowane jest komunikatem na środku okna; obliczenie pojawi się na liście.</li>
+</ol>
+
+<h4>4.1.4. Pobranie pliku wynikowego</h4>
+<ol class="kroki">
+  <li>Po zakończeniu obliczeń status „Calculating" zmieni się na datę zakończenia.</li>
+  <li>Pobrać plik wynikowy FIDx-710 (przycisk pobrania) oraz raporty (Status → „Download reports").</li>
+  <li>Oba pliki zapisać do katalogu sieciowego iteracji.</li>
+</ol>
+
+<h4>4.1.5. Dostarczenie wyników do MinIO i CCCt</h4>
+<ol class="kroki">
+  <li>W CCM kliknąć LPM na kafelek w wierszu <b>„IVA"</b> (obszar Individual Validation) → <b>„wyślij"</b> → wybrać plik FIDx-710 z dysku. CCM waliduje maskę pliku — wysyłka pliku o błędnej nazwie lub dacie biznesowej jest niemożliwa (Załącznik B).</li>
+  <li>Analogicznie wysłać raporty — kafelek „Raporty z Perun". CCM obsługuje maski wyjątków:
+    <ul>
+      <li><code>rrrrmmdd-FID2-710-v*-10XPL-TSO------P-to-10V1001C--00264T.xml</code> (przepływ FID2-710_ATC-SFTP_PERUN-MINIO_CCA),</li>
+      <li><code>rrrrmmdd-FID3C-710-v*-10XPL-TSO------P-to-10V1001C--00264T.xml</code> (przepływ FID3C-710_SFTP_PERUN-EDX_KAFKA_CCCTOOL),</li>
+      <li>raporty: <code>rrrrmmdd_*_Validation_Reports.zip</code> (przepływy RAP_PERUN_ID2[_ATC], RAP_PERUN_ID3C[_ATC]).</li>
+    </ul></li>
+  <li>Prawidłowo przesłany plik otrzyma status <b>zielony z literą W</b>; wersja pliku zaktualizuje się. Jeżeli plik był składową utworzonego już agregatu, wersja agregatu również podniesie się o 1, a plik zostanie zaktualizowany w paczce ZIP.</li>
+  <li>Po upłynięciu CET wysyłka jest możliwa wyłącznie dla składowych agregatów, do końca doby monitorowanej — opcja <b>„wyślij po CET"</b> (status: ciemnozielone W).</li>
+</ol>
+<div class="rysunek">[RYSUNEK 7: CCM — rozwijane menu kafelka: wyślij / wyślij po CET / pobierz / informacje / status ręczny]</div>
+
+<h3 id="b2">4.2. Brak dostępu do MinIO / awaria Connector 2.0 <small>[U03, U04]</small></h3>
+<ol class="kroki">
+  <li>Zalogować się do CCCt; na niebieskim tle wybrać dzień handlowy oraz <b>proces IDx</b> (selektor ID1/ID2/ID3C/ID3 — nie domyślny DA).</li>
+  <li>Przejść do <b>Message Viewer</b>; w polu „Message Definition" wpisywać numery plików paczki (610, 620, 632, 645, 657, 665, 701, 882) i klikać „Apply".</li>
+  <li>Pobierać pliki strzałką w dół po prawej stronie okna. Przy pliku FIDx-665 zwrócić uwagę, aby odbiorcą było PSE.</li>
+  <li>Dołączyć plik RA z Kreatora (lokalizacja robocza iteracji).</li>
+  <li>Wszystkie pliki spakować 7-Zip → „Dodaj do archiwum…", format <b>zip</b>, bez hasła.</li>
+  <li>Przeprowadzić obliczenia i dostarczyć wyniki zgodnie z <a href="#b1">§4.1.2–4.1.5</a>; jeżeli CCM także nie działa — wgrać FIDx-710 przez Manual Upload w CCCt (<a href="#b12">§4.12</a>).</li>
+</ol>
+
+<h3 id="b3">4.3. Brak paczki plików na MinIO <small>[U08, U09]</small></h3>
+<ol class="kroki">
+  <li>Brakujące składowe wskazuje CCM: kafelek siwy (plik niedostępny), czerwony (błąd składowej lub &lt; 30 min do CET), czarny (upłynął CET).</li>
+  <li>Pobrać brakujące pliki z CCCt (Message Viewer, <a href="#b2">§4.2</a>).</li>
+  <li>Wgrać brakujące składowe przez CCM: LPM na kafelek składowej → „wyślij" (status musi być inny niż czarny; po CET użyć „wyślij po CET"). Wersja dokumentu zostanie podbita o jeden.</li>
+  <li>Po wgraniu wszystkich brakujących plików kafelek „Paczka ZIP do Perun" zmieni kolor na zielony — dalej zgodnie z trybem normalnym (paczka wysyłana jest automatycznie po stworzeniu ze składowych).</li>
+</ol>
+
+<h3 id="b4">4.4. Brak dostępu do platformy Perun4V — wysyłka IVA BACKUP <small>[U05, U19]</small></h3>
+<p>W sytuacji, gdy platforma Perun4V jest niedostępna, wartości IVA należy wprowadzić wykorzystując CCM i plik <b>IVA BACKUP</b> przygotowany przez CCA.</p>
+<div class="info"><b>Warunki wysyłki backupowej w CCM (instrukcja v2.6):</b>
+<ol>
+  <li>funkcjonalność jest dostępna w pozycji <b>IVA BACKUP</b>, gdy dokument został dostarczony (status zielony, zielony z literą W lub fioletowy) w dobie monitorowanej;</li>
+  <li>plik IVA BACKUP jest w wersji <b>wyższej</b> niż plik IVA.</li>
+</ol>
+Różnicę wersji IVA i IVA BACKUP sygnalizuje status <b>zielony z pulsującym czerwonym obramowaniem</b> (czas zapalenia otoczki przed TET jest konfigurowalny serwisowo, np. 20 minut przed TET).</div>
+<ol class="kroki">
+  <li>Na pulpicie ID, w pozycji <b>IVA BACKUP</b>, kliknąć LPM na kafelek → wybrać opcję <b>„backup"</b>.</li>
+  <li>W formatce opcjonalnie wpisać powód/uzasadnienie (np. „wysyłka backupowa pliku IVA") i zatwierdzić — uruchomi się proces wysyłki; w lewym dolnym rogu pojawi się komunikat o uruchomieniu procesu.</li>
+  <li>Po odświeżeniu pulpitu w pozycji <b>IVA</b> pojawi się status dostarczenia dokumentu. Status w kolumnie „CCTool zwalid." zmieni się po otrzymaniu ACK z CCCt.</li>
+  <li>Zasady wersjonowania: numer wersji dokumentu w przepływie <code>FIDx-710-SFTP_PERUN-EDX_KAFKA_CCCTOOL</code> (kolumna CCCTool) jest analogiczny jak wysyłanego z pozycji IVA BACKUP; wersja w przepływie <code>FIDx-710-SFTP_PERUN-MINIO_CCA</code> (kolumna MinIO) nie ulega zmianie.</li>
+  <li>Próba backupowej wysyłki tej samej lub niższej wersji niż IVA z Perun4V zostanie zablokowana komunikatem — wysyłka backup możliwa jest wyłącznie dla wersji wyższej (kody błędów 24–30, Załącznik B).</li>
+</ol>
+<div class="rysunek">[RYSUNEK 8: CCM — pozycja IVA BACKUP z pulsującą czerwoną otoczką i menu „backup"; formatka wysyłki backupowej]</div>
+<div class="backup">Jeżeli IVA BACKUP nie jest dostępna (szary kafelek — brak działania CCA lub MinIO), wartości IVA wprowadzić przez GUI CCCt: zakładka <b>View Results</b> → wybrać BD i krok <i>Initial FB Computation</i> danej iteracji <i>(nazwa kroku w View Results dla ID do potwierdzenia — Załącznik C)</i>, TSO Origin = PL → Filter → Edit → <b>Edit Bulk</b> → opcja <code>MinRAM%_Core zeroBalanced</code>, Value = 20%, Justification = „Individual Validation Tool failed. Applying bulk reductions", TSO fallback = <code>true</code> → Apply.</div>
+
+<h3 id="b5">4.5. Brak wyników IVA i raportów z sFTP <small>[U12, U14]</small></h3>
+<p>Gdy pomimo przekazania paczki do Perun4V obliczenia nie wystartowały (brak obliczeń widocznych w Perun4V lub wszystkie TS failed), o czym świadczy czas oczekiwania na IVA i raporty &gt; 30 min — przesłać paczkę ręcznie przez GUI i postępować wg <a href="#b1">§4.1</a>. Jeżeli obliczenia nie startują, sprawdzić w GUI komunikaty:</p>
+<ol class="kroki">
+  <li><b>Błędny BD</b> — komunikat w górnej części okna; w sekcji „Select timestamp date" ustawić poprawny BD.</li>
+  <li><b>Brak pliku w paczce</b> — komunikat o braku pliku; sprawdzić zawartość ZIP i datę w nazwie pliku, uzupełnić z CCCt (<a href="#b3">§4.3</a>), spakować ponownie, uruchomić obliczenia.</li>
+  <li><b>Błędny plik w paczce</b> — przy błędzie wczytania danych ręcznie ściągnąć z CCCt wszystkie pliki paczki (<a href="#b3">§4.3</a>) i powtórzyć. Jeżeli to nie pomoże — wysłać IVA BACKUP (<a href="#b4">§4.4</a>).</li>
+</ol>
+
+<h3 id="b6">4.6. Błąd w obliczeniach na pojedyncze timestampy (ERR-I) <small>[U15]</small></h3>
+<ol class="kroki">
+  <li>Obliczenia z co najmniej jednym niepoliczonym TS sygnalizuje dopisek <b>ERR-I</b>; kolumna Timestamps pokazuje Failed/Success/Running/Total (ID2: 25, ID3C: 19, ID3: 13 — łącznie z TS raportowym). Szczegóły: Status → Details, kolumna [Result].</li>
+  <li>Sprawdzić w CCCt (Process Detail → data BD → okno BD), czy na dane TS zastosowano <b>DFP lub Spanning hours</b> (żółte pole; przy fallbacku żółty znak ostrzegawczy przy wyborze BD; informacja przychodzi też mailem). Jeśli tak — zachowanie normalne, IVA na te TS nie jest wyznaczana; <b>bez działań backupowych</b>.</li>
+  <li>Jeżeli wszystkie TS przebiegają w trybie normalnym — proces przebiegnie automatycznie: IVA z niepoliczonymi TS trafi do CCCt i CCA; CCA rozpozna niepoliczone TS i uzupełni je wielkościami z pliku backupowego, zapisując F710 w wersji o jeden wyższej.</li>
+  <li>Zadanie dyspozytora: <b>ręczna wysyłka backupowej IVA</b> — odczekać kilka minut, aż w wierszu „IVA BACKUP" pojawi się wersja o jeden wyższa niż w kolumnie „IVA" (zapali się pulsująca otoczka), następnie wykonać wysyłkę backup wg <a href="#b4">§4.4</a>.</li>
+  <li><b>UWAGA:</b> wysyłka uzupełnionej IVA wymaga wersji IVA BACKUP co najmniej 2 — wersja 1 oznacza pełną IVA backupową na wszystkie TS.</li>
+</ol>
+<div class="backup"><b>Brak działania CCM:</b> pobrać IVA BACKUP bezpośrednio z MinIO (bucket <code>cca/ID_FBCC/out/[BD]</code>: zaznaczyć plik → „Download"), a następnie wgrać do CCCt przez Manual Upload (<a href="#b12">§4.12</a>). <b>Brak działania CCA lub MinIO:</b> wprowadzić IVA jako 20% Fmax przez View Results → Edit Bulk (<a href="#b4">§4.4</a>).</div>
+
+<h3 id="b7">4.7. Błąd w obliczeniach na całą iterację (Process failed) <small>[U16]</small></h3>
+<ol class="kroki">
+  <li>Obliczenia bez żadnego policzonego TS mają status <b>„Process failed"</b>.</li>
+  <li>Sprawdzić w CCCt, czy na wszystkie TS zastosowano DFP/Spanning (<a href="#b6">§4.6</a>). Jeśli tak — zachowanie normalne, IVA nie powinna zostać wyznaczona.</li>
+  <li>W przeciwnym razie wysłać <b>IVA BACKUP v1</b> (pełny backup na wszystkie TS) przez CCM wg <a href="#b4">§4.4</a>; jeżeli BACKUP niedostępny — telefon do operatora procesu (CORESO/TSCNET) i View Results → Edit Bulk.</li>
+</ol>
+
+<h3 id="b8">4.8. Brak możliwości pobrania pliku wynikowego FIDx-710 z Perun4V <small>[U13]</small></h3>
+<ol class="kroki">
+  <li>Wejść w status obliczenia i kliknąć <b>„Download output files"</b> — pobrać pełną paczkę wyników; rozpakować (wewnątrz FIDx-710 i raporty).</li>
+  <li>Wgrać FIDx-710 i raporty przez CCM („wyślij" na kafelkach IVA / Raporty z Perun — <a href="#b1">§4.1.5</a>). Po ręcznym wprowadzeniu do CCCt zmienić status pliku w CCM na <b>ręczny „R"</b>: LPM na kafelek → „status ręczny" → pozostawić „Nowa wersja" (aplikacja podpowie wersję o 1 wyższą) → opcjonalny opis → „Tak".</li>
+  <li>Alternatywnie wgrać FIDx-710 bezpośrednio do CCCt przez Manual Upload (<a href="#b12">§4.12</a>).</li>
+  <li>Jeżeli powyższe nie skutkuje — wysyłka IVA BACKUP (<a href="#b4">§4.4</a>).</li>
+</ol>
+
+<h3 id="b9">4.9. Dodanie wyłączenia awaryjnego w Perun4V <small>[warunkowe]</small></h3>
+<div class="uwaga">Okno walidacji IDCC trwa 40 minut. Ponowne przeliczenie z dodatkowym wyłączeniem wykonywać tylko, jeżeli zmieści się przed CET iteracji; wykonalność operacyjna do potwierdzenia z WPO (<a href="#zc">Załącznik C</a>). W przeciwnym razie przyjąć wynik automatyczny.</div>
+<ol class="kroki">
+  <li>Pamiętać, że pierwsza faza przebiegnie automatycznie — IVA v1 bez dodatkowego wyłączenia trafi do CCCt.</li>
+  <li>Załadować paczkę do Perun4V (bez uruchamiania obliczeń) → Configurations → <b>CC Validation Region (Additional NEC or outage)</b>.</li>
+  <li>Ustawić filtry elementu (Country, Line/transformers, Voltage level), wybrać element, wskazać godziny i kliknąć <b>Add outage</b>; listę wyłączeń można podejrzeć w „View saved additional outages" (przycisk obok usuwa wyłączenie!).</li>
+  <li>Uruchomić obliczenia; IVA pobrać w wersji <b>wyższej</b> niż wysłana do CCCt (pole „F710 V □" przy przycisku Download).</li>
+  <li>Wysłać nową wersję przez CCM (<a href="#b1">§4.1.5</a>); po ręcznym wgraniu do CCCt ustawić w CCM status ręczny „R".</li>
+</ol>
+
+<h3 id="b10">4.10. Connector 2.0 nie kopiuje IVA i raportów do bucketów cca <small>[U03]</small></h3>
+<ol class="kroki">
+  <li>CCA sprawdza dostępność IVA i raportów w <code>cca/ID_FBCC/in/[BD]</code>; przy braku wysyła e-mail o brakujących plikach.</li>
+  <li>Przy pomocy CCM pobrać wskazane w mailu pliki (LPM → „Pobierz") na zasób sieciowy, a następnie umieścić je na MinIO (<a href="https://minio-gui.pse.pl/login">https://minio-gui.pse.pl</a>) we wskazanej w mailu lokalizacji.</li>
+  <li>Jeżeli z poziomu CCM nie można pobrać plików (po ok. 30 min od stworzenia paczki nadal szary kafelek) — przeprowadzić obliczenia ponownie wg <a href="#b1">§4.1.2–4.1.4</a> i wgrać brakujące dane na MinIO.</li>
+</ol>
+
+<h3 id="b11">4.11. Brak dostępu do Core CC Tool <small>[U02]</small></h3>
+<ol class="kroki">
+  <li>Sprawdzić statusy dostarczenia/odebrania plików w CCM — pozwala to ustalić, czy problem dotyczy tylko GUI CCCt.</li>
+  <li>Jeżeli statusy wskazują na niedostarczenie dokumentów — telefon do operatora procesu (CORESO/TSCNET): czy problem występuje też u innych operatorów; problem po stronie PSE niezwłocznie zgłosić do służb IT PSE.</li>
+  <li>Dla potwierdzenia, że pliki wysłane automatycznie dotarły do CCCt (przy braku GUI) — potwierdzić telefonicznie.</li>
+  <li>Dla wymiany danych uzgodnić ścieżkę alternatywną: ECP (automatyczna) → GUI CCCt (ręczna) → ostatecznie e-mail. Adresy operatorów procesu: <code>operator@tscnet.eu</code>, <code>day-ahead.engineer@coreso.eu</code>. Załączniki spakować (&lt; 20 MB).</li>
+  <li>Przy konieczności pobrania dużej ilości danych do walidacji — od razu przejść do wysyłki mailem pliku IVA BACKUP v1 (<code>rrrrmmdd-FIDx-710-v1-…xml</code> z <code>cca/ID_FBCC/out/[BD]</code>).</li>
+  <li>Odpowiada kodom BPD <b>ID2_24 / ID3C_22 / ID3_24</b> (problem EDX/ECP → zgłoszenie do Helpdesk CCC, wysyłka przez Message Viewer albo mailem wg instrukcji Helpdesku).</li>
+</ol>
+
+<h3 id="b12">4.12. Brak dostarczonego pliku FIDx-710 do CCCt — Manual Upload <small>[U10, U11]</small></h3>
+<ol class="kroki">
+  <li>Jeżeli z CCM (lub przy braku CCM — z CCCt) wynika, że FIDx-710 nie został dostarczony, wgrać plik ręcznie przez GUI CCCt.</li>
+  <li>Plik uprzednio pobrać z Perun4V i zapisać na zasobie sieciowym iteracji.</li>
+  <li>Zalogować się do CCCt → wybrać BD i proces IDx → Message Viewer → <b>Manual Upload</b> → wybrać plik FIDx-710 z dysku → <b>Upload file</b>.</li>
+  <li>Po odświeżeniu strony w Message Viewer wpisać w Message Definition „710 – Individual CB Validation" → Apply → dla sendera PSE sprawdzić status <b>Processed</b> (prawidłowe przyjęcie pliku).</li>
+  <li>Po ręcznym wgraniu ustawić w CCM status ręczny „R" (<a href="#b8">§4.8</a> krok 2).</li>
+</ol>
+
+<h3 id="b13">4.13. Plik FIDx-710 został odrzucony <small>[U10, U12]</small></h3>
+<ol class="kroki">
+  <li>Odczytać przyczynę: w CCM najechać na czerwony kafelek ACK (komunikaty: <code>gateClosed</code> — „Gate for provided message definition is not opened", <code>duplicatedVersion</code> — „Provided version is not higher than already stored data") lub w CCCt Message Viewer (status Rejected).</li>
+  <li>Zmienić wersję pliku na wyższą niż zapisana w CCCt: w Perun4V wpisać numer wersji przy „F710 V □" i pobrać ponownie, albo ręcznie zmodyfikować numer wersji w nazwie i wewnątrz pliku.</li>
+  <li>Wysłać plik ponownie (CCM „wyślij" lub Manual Upload — <a href="#b12">§4.12</a>).</li>
+</ol>
+
+<h3 id="b14">4.14. Brak dostępu do CCM <small>[U01]</small></h3>
+<ol class="kroki">
+  <li>Sprawdzić sieć/VPN, spróbować w innej przeglądarce lub trybie prywatnym; zgłosić awarię.</li>
+  <li>Monitorować bezpośrednio w narzędziach docelowych:
+    <ul>
+      <li>MinIO <code>perun/ID_FBCC/in/[BD]</code> — pojawienie się paczek do Perun4V dla poszczególnych iteracji;</li>
+      <li>Perun4V — uruchomienie obliczeń IDx od user: <code>sFTP@pse.pl</code>;</li>
+      <li>MinIO <code>cca/ID_FBCC/out/[BD]</code> i skrzynka kdm6 — raporty i IVA BACKUP.</li>
+    </ul></li>
+  <li>Pliki wysyłać ręcznie przez Manual Upload w CCCt (<a href="#b12">§4.12</a>); IVA BACKUP pobierać z MinIO (<a href="#b6">§4.6</a> — ramka).</li>
+  <li>Po przywróceniu CCM uzupełnić statusy (status ręczny „R" z opisem).</li>
+</ol>
+
+<h3 id="b15">4.15. Błędna paczka do Perun4V / nieprawidłowe dane w paczce <small>[U09]</small></h3>
+<ol class="kroki">
+  <li>Błędną wielkość pliku sygnalizuje w CCM <b>czerwony kafelek z wykrzyknikiem</b> (plik prawdopodobnie niekompletny). Zweryfikować rozbieżność: LPM → „Informacje" (otrzymany vs oczekiwany rozmiar; dla plików spakowanych prezentowana jest wielkość pliku spakowanego).</li>
+  <li>Pobrać prawidłowy plik z CCCt (Message Viewer, numer błędnego pliku → Apply → pobrać strzałką).</li>
+  <li>Wysłać plik przez CCM: LPM na kafelek → „wyślij" (status inny niż czarny; po CET — „wyślij po CET" dla składowych agregatu). Wersja dokumentu i agregatu podbije się o jeden, plik zostanie zaktualizowany w paczce ZIP.</li>
+  <li>Po skompletowaniu składowych kafelek „Paczka ZIP do Perun" zmieni kolor na zielony — dalej tryb normalny.</li>
+  <li><i>Minimalne oczekiwane wielkości plików paczki PERUN_IDx — do ustalenia (Załącznik C).</i></li>
+</ol>
+
+<h3 id="b16">4.16. Ryzyka strumienia ATC / AAC (zamiast gałęzi LTA z procedury DA)</h3>
+<table>
+  <tr><th>Zdarzenie</th><th>Klasyfikacja</th><th>Działanie PSE</th><th>Kody BPD</th></tr>
+  <tr><td>Brak AAC z IDCC(a) <small>[U20]</small></td><td><span class="tag tag-bup">DZIAŁANIE BACKUPOWE</span></td><td>Wysłać AAC do XBID przez ZP przed terminem: IDCC(b) 20:00 / IDCC(c) 02:00 D / IDCC(d) 07:00 D; potwierdzić obecność AAC operatorowi procesu.</td><td>ID2_4 / ID3C_4 / ID3_4</td></tr>
+  <tr><td>Decoupling SDAC — wymagane Shadow Auction <small>[U21]</small></td><td><span class="tag tag-bup">DZIAŁANIE BACKUPOWE</span></td><td>Dostarczyć MD250 (FID1-250) do CCCt: TET 15:43 / CET 17:24; po 17:24 wysłać brakujące DA AAC bezpośrednio do XBID.</td><td>ID1_7 (mail #20)</td></tr>
+  <tr><td>Niezakończenie walidacji ATC w czasie <small>[U17]</small></td><td><span class="tag tag-pro">DZIAŁANIE PROCESOWE</span></td><td>Poinformować operatora procesu; operator pauzuje/wznawia okno (IDCC(a) — gwarancja 25 min).</td><td>ID1_16</td></tr>
+  <tr><td>Late NTC delivery <small>[U22]</small></td><td><span class="tag tag-pro">DZIAŁANIE PROCESOWE</span></td><td>Monitorować komunikaty; operator procesu publikuje UMM (NTC po 21:45/21:55 dla ID2; po 09:45/09:55 dla ID3; restart po IDA2/IDA3).</td><td>ID2_15–16 / ID3_15–16</td></tr>
+  <tr><td>Brak / negatywny ACK dla NTC (FIDx-921)</td><td><span class="tag tag-pro">DZIAŁANIE PROCESOWE</span></td><td>TSO po obu stronach granicy weryfikują zdolności w XBID i potwierdzają wynik operatorowi procesu.</td><td>ID1_23 / ID2_19 / ID3C_17 / ID3_19 (mail #12, #7)</td></tr>
+  <tr><td>Brak raportu CCA <small>[U23]</small></td><td><span class="tag tag-bup">DZIAŁANIE BACKUPOWE</span></td><td>Zgłosić mailowo na skrzynkę Sysplan (OSP) <code>sysplan@pse.pl</code>; raport pobrać ze skrzynki kdm6 lub z <code>cca/ID_FBCC/out/[BD]</code>.</td><td>—</td></tr>
+</table>
+
+<h3 id="b17">4.17. Braki plików wejściowych PSE w TSO Data Merging (GLSK / EC / CB)</h3>
+<div class="backup">Pliki GLSK (FIDx-607) i CB/CBCORA (FIDx-617) są <b>MANDATORY</b>. Na instrukcję operatora procesu PSE dostarcza lub koryguje plik przed CET (Kreator → CN2 → CCCt; awaryjnie CCM „wyślij" lub Manual Upload). PSE może zaproponować replacement strategy. Jeżeli problem pozostaje, operator procesu wymusza bramki i kontynuuje z Fallback Domain. Kody: ID2_6–9 / ID3C_6–9 / ID3_6–9 (mail #3, #4).</div>
+
+<h3 id="b18">4.18. Fallbacki automatyczne (bez działań PSE)</h3>
+<div class="info"><span class="tag tag-fal">FALLBACK AUTOMATYCZNY</span> Fallback dla części TS w Initial/Final FB Computation (kody ID2_11/13, ID3C_11/13, ID3_11/13, mail #5) oraz fallback merging package (ID2_5 / ID3C_5 / ID3_5): PSE wyłącznie przyjmuje do wiadomości mail z listą TS. Na te TS nie jest wyznaczana IVA (por. <a href="#b6">§4.6</a>).</div>
+
+<!-- ======================= 5. MAPOWANIE DO BPD ======================= -->
+<h2 id="r5">5. Mapowanie do Core IDCC Flow Based Business Process Documentation v5.0</h2>
+
+<p>Procedura realizuje krok <i>Individual Validation</i> opisany w BPD v5.0 (02-03-2026): <b>§5.7</b> „Individual CB and ATC validation" (IDCC(a)), <b>§6.7</b>, <b>§7.7</b>, <b>§8.7</b> „Individual Validation" (IDCC(b)–(d)). BPD stanowi: <i>„The Core TSOs perform validation of the initial FB computation results individually with local tools"</i> — niniejszy dokument jest procedurą lokalną PSE w rozumieniu tego zapisu. Szablony maili: numeracja wg BPD (dokument „Email templates" na ProjectPlace, link w §2.1 BPD). Terminy: jedyne źródło prawdy — harmonogram HLBP.</p>
+
+<table>
+  <tr><th>Kod BPD</th><th>Klasyfikacja</th><th>Sytuacja</th><th>Sekcja procedury</th><th>Mail #</th></tr>
+  <tr><td>ID1_1</td><td><span class="tag tag-pro">PROCESOWE</span></td><td>Negatywny ACK dla high-negative NTC</td><td><a href="#r36">§3.6</a></td><td>1</td></tr>
+  <tr><td>ID1_7</td><td><span class="tag tag-bup">BACKUPOWE</span></td><td>Decoupling SDAC — MD250</td><td><a href="#b16">§4.16</a></td><td>20</td></tr>
+  <tr><td>ID1_8 / ID1_9 / ID1_12</td><td><span class="tag tag-bup">BACKUPOWE</span></td><td>Błąd obliczeń AAC — AAC do XBID przez ZP</td><td><a href="#r36">§3.6</a></td><td>2</td></tr>
+  <tr><td>ID1_16</td><td><span class="tag tag-pro">PROCESOWE</span></td><td>Opóźnione okno walidacji (gwarancja 25 min)</td><td><a href="#r1">§1.4</a>, <a href="#b16">§4.16</a></td><td>—</td></tr>
+  <tr><td>ID1_23</td><td><span class="tag tag-pro">PROCESOWE</span></td><td>Brak/negatywny ACK dla NTC na granicy</td><td><a href="#b16">§4.16</a></td><td>12, 7</td></tr>
+  <tr><td>ID1_26</td><td><span class="tag tag-bup">BACKUPOWE</span></td><td>ID CCCt niedostępny — AAC do XBID do 20:00</td><td><a href="#r36">§3.6</a></td><td>—</td></tr>
+  <tr><td>ID1_27, ID2_24 / ID3C_22 / ID3_24</td><td><span class="tag tag-bup">BACKUPOWE</span></td><td>Problem EDX/ECP TSO↔CCCt</td><td><a href="#b11">§4.11</a></td><td>—</td></tr>
+  <tr><td>ID2_4 / ID3C_4 / ID3_4</td><td><span class="tag tag-bup">BACKUPOWE</span></td><td>Brak AAC z IDCC(a)</td><td><a href="#b16">§4.16</a></td><td>—</td></tr>
+  <tr><td>ID2_6–9 / ID3C_6–9 / ID3_6–9</td><td><span class="tag tag-bup">BACKUPOWE</span></td><td>Brak/błąd plików PSE (GLSK/EC/CB — MANDATORY)</td><td><a href="#b17">§4.17</a></td><td>3, 4</td></tr>
+  <tr><td>ID2_11, ID2_13 (odp. ID3C/ID3)</td><td><span class="tag tag-fal">FALLBACK AUTO</span></td><td>Fallback dla części TS</td><td><a href="#b18">§4.18</a></td><td>5</td></tr>
+  <tr><td>ID2_15–17, ID3_15–17, ID3C_15</td><td><span class="tag tag-pro">PROCESOWE</span></td><td>Strumień NTC/ATC — opóźnienia, UMM</td><td><a href="#b16">§4.16</a></td><td>22–33 (wg iteracji)</td></tr>
+  <tr><td>ID2_19 / ID3C_17 / ID3_19</td><td><span class="tag tag-pro">PROCESOWE</span></td><td>Weryfikacja NTC (FIDx-921) po obu stronach granicy</td><td><a href="#b16">§4.16</a></td><td>12, 7</td></tr>
+  <tr><td>ID2_23 / ID3C_21 / ID3_23</td><td><span class="tag tag-pro">PROCESOWE</span></td><td>CCCt niedostępny w CET — UMM</td><td><a href="#b11">§4.11</a></td><td>2, 27–29</td></tr>
+  <tr><td>ID3_1 – ID3_3</td><td>działania CCC</td><td>Obsługa AAC po stronie CCC/XBID</td><td>kontekst — bez działań PSE</td><td>13, 2</td></tr>
+</table>
+
+<!-- ======================= ZAŁĄCZNIKI ======================= -->
+<h2 id="za">Załącznik A — legenda statusów kafelków CCM (instrukcja v2.6)</h2>
+<table>
+  <tr><th style="width:26%">Status</th><th>Znaczenie</th></tr>
+  <tr><td><span class="status-chip" style="background:#BDBDBD"></span>szary</td><td>Plik niedostarczony, ale jeszcze niewymagany (&gt; 30 min do TET).</td></tr>
+  <tr><td><span class="status-chip" style="background:#E53935;border:2px solid #FB8C00"></span>czerwony z pomarańczowym obramowaniem</td><td>Plik niedostarczony, a w normalnym procesie powinien już być (opóźnienie względem TET wg konfiguracji).</td></tr>
+  <tr><td><span class="status-chip" style="background:#E53935"></span>czerwony</td><td>Plik niedostarczony (przed CET, wg skonfigurowanego opóźnienia) albo wysyłka zakończona błędem; dla ACK — plik odrzucony w narzędziu centralnym (komunikat po najechaniu, np. gateClosed / duplicatedVersion).</td></tr>
+  <tr><td><span class="status-chip" style="background:#43A047"></span>zielony</td><td>Plik dostarczony / w katalogu / zwalidowany bez błędu.</td></tr>
+  <tr><td><span class="status-chip" style="background:#43A047;box-shadow:0 0 0 2px #E53935"></span>zielony z pulsującą czerwoną otoczką</td><td>Dokument dostarczony, ale wymagana dodatkowa akcja użytkownika — wysyłka Backup do CCCt (pozycja IVA BACKUP, <a href="#b4">§4.4</a>).</td></tr>
+  <tr><td><span class="status-chip" style="background:#43A047"></span>zielone „R"</td><td>Dokument wysłany ręcznie — status nadany przez użytkownika przed CET (LPM → „status ręczny").</td></tr>
+  <tr><td><span class="status-chip" style="background:#43A047"></span>zielone „W"</td><td>Dokument przesłany z poziomu CCM przed CET (dowolne dokumenty poza ACK i Paczką ZIP do Perun).</td></tr>
+  <tr><td><span class="status-chip" style="background:#1B5E20"></span>ciemnozielone „W"</td><td>Dokument przesłany z poziomu CCM po CET, przed końcem doby monitorowanej (tylko składowe agregatów).</td></tr>
+  <tr><td><span class="status-chip" style="background:#8E24AA"></span>fioletowy</td><td>Plik dostarczony/zwalidowany, ale obsłużony po upłynięciu CET.</td></tr>
+  <tr><td><span class="status-chip" style="background:#212121"></span>czarny</td><td>Dokument niedostarczony i upłynął CET.</td></tr>
+  <tr><td><span class="status-chip" style="background:#E53935"></span>czerwony z wykrzyknikiem</td><td>Plik dostarczony, ale rozmiar mniejszy od minimalnego — prawdopodobnie niekompletne dane (LPM → „Informacje").</td></tr>
+  <tr><td><span class="status-chip" style="background:#E53935"></span>czerwony ze znakiem zapytania</td><td>Oczekiwanie na ACK przekroczyło 5 minut (lub skonfigurowaną wartość) — nie oznacza braku dokumentu.</td></tr>
+  <tr><td><span class="status-chip" style="background:#BDBDBD"></span>szary ze znakiem zapytania</td><td>Proces w Connector 2.0 utworzony i w trakcie wykonywania.</td></tr>
+</table>
+
+<h2 id="zb">Załącznik B — komunikaty walidacyjne CCM (wybrane)</h2>
+<table>
+  <tr><th>Akcja</th><th>Kod</th><th>Komunikat / działanie</th></tr>
+  <tr><td>Wysyłka backup</td><td>24–30</td><td>Wysyłka backup niemożliwa (m.in. brak wpisu widoku/pozycji/definicji dokumentu) — skontaktuj się z administratorem; wysyłka backup możliwa wyłącznie dla wersji wyższej niż IVA.</td></tr>
+  <tr><td>Wycofanie statusu ręcznego</td><td>35</td><td>Zmiana statusu niemożliwa — proces nie istnieje; kontakt z administratorem.</td></tr>
+  <tr><td>Wysyłka pliku</td><td>37–38</td><td>Wysyłka niemożliwa — brak konfiguracji maski pliku / brak wpisu o przepływie; kontakt z administratorem.</td></tr>
+  <tr><td>Wysyłka pliku</td><td>39–41</td><td>Nazwa pliku niezgodna z maską — poprawić nazwę wg wzoru (maska w definicji przepływu w CN2); walidowana jest także data biznesowa.</td></tr>
+  <tr><td>Pobranie pliku</td><td>43–44</td><td>Pobranie niemożliwe (plik niedostępny na MinIO / brak konfiguracji).</td></tr>
+  <tr><td>Wysyłka z CCM / IVA Backup / status ręczny</td><td>72–75</td><td>Błędy operacji z poziomu CCM — postępować wg komunikatu; w razie potrzeby kontakt z administratorem.</td></tr>
+</table>
+<p>Pełna lista komunikatów: Instrukcja Użytkownika Dyspozytora ID v2.6, rozdział „Komunikaty walidacyjne".</p>
+
+<h2 id="zc">Załącznik C — pozycje do potwierdzenia (TODO)</h2>
+<table>
+  <tr><th>#</th><th>Pozycja</th><th>Adresat</th></tr>
+  <tr><td>1</td><td>Maski nazw paczek sFTP↔Perun4V dla iteracji IDx (odpowiedniki <code>PSE_RRRRMMDD_DA_v*_input_validation_DACCA.zip</code>) oraz dokładny skład agregatu AGR_PERUN_IDx per iteracja</td><td>PSE-I</td></tr>
+  <tr><td>2</td><td>Numeracja procedur (NOR_04/BUP_04 czy inna konwencja) i podział na 1 lub 2 dokumenty</td><td>właściciel procedur / WPO</td></tr>
+  <tr><td>3</td><td>Nazwa kroku w CCCt View Results dla bulk edit IVA w procesie ID (odpowiednik „Intermediate FB Computation V_1")</td><td>WPO / CORESO</td></tr>
+  <tr><td>4</td><td>Wykonalność ponownego przeliczenia w Perun4V (dodatkowe wyłączenie, §4.9) w oknie 40 min</td><td>WPO</td></tr>
+  <tr><td>5</td><td>Ścieżki katalogów sieciowych dla plików IDCC (odpowiednik <code>\\uo-data\...\Pliki wejściowe do DA FBA\rrrrMMdd\PERUN\</code>) — czy per iteracja</td><td>WPO</td></tr>
+  <tr><td>6</td><td>Minimalne oczekiwane wielkości plików paczki PERUN_IDx na MinIO (do §4.15)</td><td>PSE-I</td></tr>
+  <tr><td>7</td><td>Zrzuty ekranu do miejsc oznaczonych [RYSUNEK] (pulpit IDCC CCM, Perun4V z procesem IDx, formatki wysyłki backup)</td><td>redakcja</td></tr>
+</table>
+
+<footer>
+FBA_TSO_NOR_04 / FBA_TSO_BUP_04 — Walidacja domeny FBA IDCC · v0.1 DRAFT · 16.07.2026<br>
+Źródła: FBA_TSO_NOR_03 v0.21 · FBA_TSO_BUP_03 v0.31 · Core IDCC FB BPD v5.0 (02-03-2026) · CCM Instrukcja Użytkownika Dyspozytora ID v2.6 (24.03.2026) · Inwentarz_IDCC / Karta_ryzyk_IDCC · PLAN_Walidacja_domeny_FBA_IDCC.md
+</footer>
+
+</body>
+</html>
