@@ -357,18 +357,23 @@ Stosowany dla: **24 modele IGM (DACF_IGM_UCT), Raporty z Perun (RAP_PERUN_*), Fi
 ## 3.A. Grupa I — Dostępność narzędzi
 
 <a id="U01"></a>**U01 — Brak dostępu do CCM** *([N01](#N01))*
+- **Procedura:** [FBA_TSO_BUP_04 §4.14](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b14)
 - HTML §9: R06 | BUP DA: #27 (str. 69) | NOR DA: #27
 
 <a id="U02"></a>**U02 — Brak dostępu do Core CC Tool** *([N02](#N02))*
+- **Procedura:** [FBA_TSO_BUP_04 §4.11](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b11)
 - HTML §9: R07 | BUP DA: #11 (str. 47) | NOR DA: #11
 
 <a id="U03"></a>**U03 — Brak dostępu / awaria Connector 2.0** *([N05](#N05))* — *obejmuje też scalone U18 (CN2 nie kopiuje do bucketów)*
+- **Procedura:** [FBA_TSO_BUP_04 §4.2](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b2), [FBA_TSO_BUP_04 §4.10](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b10)
 - HTML §9: R09 + R16 | BUP DA: #1 (str. 9), #2 (str. 17), #10 (str. 46), #16 (str. 54), #24 | NOR DA: #2, #10, #16, #24
 
 <a id="U04"></a>**U04 — Brak dostępu do MinIO** *([N04](#N04))*
+- **Procedura:** [FBA_TSO_BUP_04 §4.2](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b2)
 - BUP DA: #2 (częściowo), #24, #25 (str. 67) | NOR DA: #24, #25
 
 <a id="U05"></a>**U05 — Brak dostępu do Perun4V** *([N03](#N03))*
+- **Procedura:** [FBA_TSO_BUP_04 §4.4](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b4)
 - BUP DA: #4 (str. 26), #17 | NOR DA: #4, #17
 
 <a id="U06"></a>**U06 — Brak dostępu do źródła pliku** *([N06](#N06), [N07](#N07), [N08](#N08), [N09](#N09))*
@@ -380,41 +385,51 @@ Stosowany dla: **24 modele IGM (DACF_IGM_UCT), Raporty z Perun (RAP_PERUN_*), Fi
 ## 3.B. Grupa II — Plik i dostarczenie
 
 <a id="U08"></a>**U08 — Plik niedostarczony w czasie**
+- **Procedura:** [FBA_TSO_BUP_04 §4.3](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b3)
 - HTML §9: R04 | BUP DA: #3 (str. 22), #28 | Stany: czarny, czerwony, pomarańczowy
 - **Kryterium:** przekroczenie F<sub>max</sub> dla czasu dostarczenia pliku (TET/CET)
 
 <a id="U09"></a>**U09 — Plik dostarczony, ale błędny (rozmiar / struktura)**
+- **Procedura:** [FBA_TSO_BUP_04 §4.3](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b3), [FBA_TSO_BUP_04 §4.15](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b15)
 - HTML §9: R04 (rozszerzony) | ACK kod 30 (file size mismatch); „Message has some invalid timeSeries…"
 
 <a id="U10"></a>**U10 — ACK negatywny (odrzucenie)**
+- **Procedura:** [FBA_TSO_BUP_04 §4.12](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b12), [FBA_TSO_BUP_04 §4.13](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b13)
 - HTML §9: R05 | BUP DA: #13 (str. 49) | Kody ACK: 20 (gateClosed), 21 (duplicatedVersion), 22 (Negative — historyczny), 30 (size)
 
 <a id="U11"></a>**U11 — Brak ACK (timeout)**
+- **Procedura:** [FBA_TSO_BUP_04 §4.12](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b12)
 - HTML §9: R05 (zawężenie) | BUP DA: #12 (str. 48)
 
 <a id="U12"></a>**U12 — Niezgodność wersji pliku**
+- **Procedura:** [FBA_TSO_BUP_04 §4.5](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b5), [FBA_TSO_BUP_04 §4.13](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b13)
 - ACK kod 21 (duplicatedVersion), kod 40 (Backup version lower)
 
 <a id="U13"></a>**U13 — Plik dostarczony po CET (informacyjne)**
+- **Procedura:** [FBA_TSO_BUP_04 §4.8](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b8)
 - Stan: fioletowy; bez działań naprawczych poza [P06](#P06)
 
 ## 3.C. Grupa III — Proces obliczeniowy (Perun4V / IVA)
 
 <a id="U14"></a>**U14 — Brak uruchomienia obliczeń w Perun4V**
+- **Procedura:** [FBA_TSO_BUP_04 §4.1](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b1), [FBA_TSO_BUP_04 §4.5](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b5)
 - HTML §9: R01 | BUP DA: #1 (str. 9)
 - **Kryterium:** proces obliczeniowy nie został uruchomiony przed startem fazy centralnej
 
 <a id="U15"></a>**U15 — ERR-I (część TS niepoliczona)**
+- **Procedura:** [FBA_TSO_BUP_04 §4.6](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b6)
 - HTML §9: R02 | BUP DA: #6 (str. 29), #20
 - **Kryterium:** analiza bezpieczeństwa N-1 nie powiodła się dla subsetu godzin — niektóre TS zwróciły ERR-I
 
 <a id="U16"></a>**U16 — Process failed (wszystkie TS niepoliczone)**
+- **Procedura:** [FBA_TSO_BUP_04 §4.7](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b7)
 - HTML §9: R03 | BUP DA: #7 (str. 39), #21
 - **Kryterium:** proces Perun4V nie zwrócił wyniku po N<sub>max</sub> próbach — wszystkie TS zwróciły Process failed
 
 ## 3.D. Grupa IV — Strumień ATC
 
 <a id="U17"></a>**U17 — Niezakończenie walidacji ATC w czasie**
+- **Procedura:** [FBA_TSO_BUP_04 §4.16](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b16)
 - HTML §9: R11 | Dotyczy: FIDx-928
 
 ## 3.E. Grupa V — Transport zwrotny
@@ -422,22 +437,27 @@ Stosowany dla: **24 modele IGM (DACF_IGM_UCT), Raporty z Perun (RAP_PERUN_*), Fi
 <a id="U18"></a>**~~U18~~** → scalone z [U03](#U03)
 
 <a id="U19"></a>**U19 — Niezgodność wersji IVA / IVA BACKUP**
+- **Procedura:** [FBA_TSO_BUP_04 §4.4](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b4)
 - HTML §9: R12 | Dotyczy: FIDx-710 (3COL) vs FIDx-710 (MIN — IVA Backup)
 
 ## 3.F. Grupa VI — Zgłoszenie zewnętrzna
 
 <a id="U20"></a>**U20 — AAC Fallback** *([N17](#N17))*
+- **Procedura:** [FBA_TSO_BUP_04 §4.16](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b16)
 - HTML §9: R13 | Deadliny: 20:00 D-1 (IDCC(b)), 02:00 D (IDCC(c)), 07:00 D (IDCC(d))
 - **Kryterium:** F<sub>max</sub> dla AAC nie spełnione — fallback do NTC (FIDx-921)
 
 <a id="U21"></a>**U21 — Decoupling SDAC — konieczność MD250** *([N16](#N16))*
+- **Procedura:** [FBA_TSO_BUP_04 §4.16](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b16)
 - HTML §9: R14 | Plik: FID1-250 (Shadow Auction)
 - **Kryterium:** F<sub>max</sub> na granicy PL-DE przekraczalna bez Shadow Auction — konieczna wysyłka FID1-250
 
 <a id="U22"></a>**U22 — Late NTC delivery po IDA2** *([N17](#N17))*
+- **Procedura:** [FBA_TSO_BUP_04 §4.16](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b16)
 - HTML §9: R15 | Plik: FIDx-921
 
 <a id="U23"></a>**U23 — Brak raportu CCA** *([N09](#N09))*
+- **Procedura:** [FBA_TSO_BUP_04 §4.16](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html#b16)
 - HTML §9: R20 | BUP DA: #26 (str. 69) | Bucket: `cca/ID_FBCC/out/[BD]/`
 
 ## 3.G. Tabela kodów ACK (CCCt)

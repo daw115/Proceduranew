@@ -62,5 +62,6 @@ odtwarzalności historycznych wersji; pełne zależności: `pip install -r requi
 ## Bieżąca praca merytoryczna
 
 Procedura walidacji domeny FBA dla IDCC — patrz `PLAN_Walidacja_domeny_FBA_IDCC.md`
-(roadmapa v0.1 → 1.0) i draft `FBA_TSO_IDCC_Walidacja_domeny_v0.1.html`.
+(roadmapa v0.1 → 1.0) i draft `FBA_TSO_IDCC_Walidacja_domeny_v0.2.html`. Otwarte pytania
+do PSE-I/WPO/CORESO zebrane w `TODO_Pytania_FBA_IDCC_v0.2.md`.
 Filozofia wizualna dokumentu: `IDCC_DESIGN_PHILOSOPHY.md` („Mierzony Przepływ").

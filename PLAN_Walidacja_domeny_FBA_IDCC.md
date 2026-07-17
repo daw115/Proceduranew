@@ -229,13 +229,14 @@ Struktura BPD: rozdziały per iteracja (IDCC(a); IDCC(b); IDCC(c)/(d) przez odwo
 | 2 | Weryfikacja z plikiem „(3).docx" (= Core IDCC BPD v5.0, 02-03-2026) | ✅ wykonane — wyniki w [B.5](#b5-punkt-weryfikacji-z-3docx) |
 | 3 | Ekstrakcja treści operacyjnych z „CCM_Instrukcja_Użytkownika_Dyspozytora_ID v2.6" (24.03.2026): statusy kafelków, wysyłka przed/po CET, wyjątki FIDx-710_ATC i raportów `*_Validation_Reports.zip`, wysyłka IVA BACKUP w horyzoncie ID, status ręczny „R", komunikaty walidacyjne, doba monitorowana pulpitu ID | ✅ wykonane |
 | 4 | **Draft procedury w HTML:** `FBA_TSO_IDCC_Walidacja_domeny_v0.1.html` — NOR_04 + BUP_04 w jednym dokumencie: rozdz. 1 Wstęp, rozdz. 2 Przegląd, rozdz. 3 NOR (przebieg automatyczny, paczka PERUN_IDx, monitorowanie CCM/Perun4V/e-mail, IDCC(a), IDCC(e)), rozdz. 4 BUP (§4.1–4.18), rozdz. 5 mapowanie do BPD, załączniki A–C | ✅ wykonane — [PR #7](https://github.com/daw115/Proceduranew/pull/7) |
+| 5 | **v0.2:** rysunki 1–8 osadzone (base64), linkowanie zwrotne U## ↔ BUP_04 w `Karta_ryzyk_IDCC.md`/`Inwentarz_IDCC.md`, pakiet pytań `TODO_Pytania_FBA_IDCC_v0.2.md` wysłany do adresatów | ✅ wykonane — [FBA_TSO_IDCC_Walidacja_domeny_v0.2.html](FBA_TSO_IDCC_Walidacja_domeny_v0.2.html) |
 
 ### 5.2. Plan dalszego działania (roadmapa v0.1 → 1.0)
 
-**Etap 1 — uzupełnienie treści draftu (v0.2):**
-1. Zastąpić placeholdery `[RYSUNEK 1–8]` zrzutami ekranu: pulpit „IDCC FB Pulpit dyspozytorski" (obszar Individual Validation), okno Perun4V z procesem IDx, formatka wysyłki backup IVA, menu kontekstowe kafelka CCM. Źródła w repo: `Pulpit IDCC CCM.docx`, `Pulpit_IDCC_CCM_opisy_kafelkow.xlsx`, `screens_manifest_*.json`.
-2. Rozstrzygnąć TODO #1–#7 z rozdziału 4 (blokujące finalizację): maski paczek sFTP i skład AGR_PERUN_IDx per iteracja (PSE-I), nazwa kroku View Results dla ID (WPO/CORESO), wykonalność re-runu Perun4V w oknie 40 min (WPO), ścieżki katalogów sieciowych (WPO), minimalne wielkości plików (PSE-I).
-3. Dopisać w `Karta_ryzyk_IDCC.md` / `Inwentarz_IDCC.md` odnośniki zwrotne do sekcji §4.x procedury (dwukierunkowe linkowanie U## ↔ BUP_04).
+**Etap 1 — uzupełnienie treści draftu (v0.2):** ✅ wykonane (17.07.2026)
+1. ✅ Placeholdery `[RYSUNEK 1–8]` zastąpione — 5 rysunków dedykowanych IDCC (BPD v5.0, Pulpit IDCC CCM, menu CCM), 3 rysunki (schemat wymiany danych, okno Perun4V, e-mail CCA) tymczasowo w wariancie DA — podmiana na dedykowane zrzuty IDx pozostaje jako TODO #7 w [TODO_Pytania_FBA_IDCC_v0.2.md](TODO_Pytania_FBA_IDCC_v0.2.md).
+2. ✅ TODO #1–#6 z rozdziału 4 spakowane do osobnego dokumentu roboczego [TODO_Pytania_FBA_IDCC_v0.2.md](TODO_Pytania_FBA_IDCC_v0.2.md) (pytania pogrupowane per adresat: PSE-I, WPO, WPO/CORESO, redakcja) — gotowe do wysłania; **odpowiedzi wciąż oczekiwane**, procedura oznacza te miejsca znacznikiem `[DO POTWIERDZENIA #N]`.
+3. ✅ Dopisano w `Karta_ryzyk_IDCC.md` (20/20 kart) i `Inwentarz_IDCC.md` (20/20 wpisów) odnośniki zwrotne `**Procedura FBA IDCC:**` do sekcji §4.x dokumentu v0.2 (dwukierunkowe linkowanie U## ↔ BUP_04).
 
 **Etap 2 — recenzja (v0.3):**
 4. Przegląd merytoryczny WPO + dyspozytorzy (czytelność kroków, zgodność z praktyką stanowiska VI).
